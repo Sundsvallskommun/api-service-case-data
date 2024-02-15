@@ -10,15 +10,13 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>se.sundsvall</groupId>
-    <artifactId>ms-case-data</artifactId>
+    <artifactId>api-service-case-data</artifactId>
     <version>3.0</version>
-    <name>ms-case-data</name>
-    <description>ms-case-data</description>
+    <name>api-service-case-data</name>
+    <description>api-service-case-data</description>
     <properties>
         <app.jvm.xmx.mb>512</app.jvm.xmx.mb>
-        <generated-sources-path>
-            ${project.build.directory}/generated-sources
-        </generated-sources-path>
+        <generated-sources-path>${project.build.directory}/generated-sources</generated-sources-path>
         <generated-sources-java-path>src/main/java</generated-sources-java-path>
         <!-- Dependencies -->
         <spring-filter.version>3.1.5</spring-filter.version>
