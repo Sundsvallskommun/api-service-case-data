@@ -1,0 +1,63 @@
+spring:
+  flyway:
+    enabled: true
+
+  #----------------------------------------
+  # Db settings
+  #----------------------------------------
+  jpa:
+    properties:
+      jakarta:
+        persistence:
+          schema-generation:
+            database:
+              action: update
+            scripts:
+              action: create
+              create-target: target/database/generated-schema.sql
+            create-source: metadata
+      hibernate:
+        hbm2ddl:
+          charset_name: UTF-8
+          schema-generation:
+            script:
+              append: "false"
+        format_sql: "true"
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mariadb:10.6.4:///junit
+
+
+#----------------------------------------
+# Integration settings
+#----------------------------------------
+config:
+  web-message-collector:
+    base-url: http://localhost:8080
+    client-id: client-id
+    client-secret: client-secret
+    token-url: token-url
+  parkingpermit:
+    base-url: http://localhost:8080
+    client-id: client-id
+    client-secret: client-secret
+    token-url: token-url
+  landandexploitation:
+    base-url: http://localhost:8080
+    client-id: client-id
+    client-secret: client-secret
+    token-url: token-url
+  email-reader:
+    base-url: http://localhost:8080
+    client-id: client-id
+    client-secret: client-secret
+    token-url: token-url
+
+#----------------------------------------
+# Scheduler settings
+#----------------------------------------
+scheduler:
+  message-collector:
+    enabled: false
+  emailreader:
+    enabled: false

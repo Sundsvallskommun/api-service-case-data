@@ -1,0 +1,164 @@
+{
+  "decisionType": "FINAL",
+  "decisionOutcome": "DISMISSAL",
+  "description": "This is a put description",
+  "law": [
+    {
+      "heading": "this is a heading",
+      "sfs": "this is a sfs",
+      "chapter": "this is a chapter",
+      "article": "this is an article"
+    }
+  ],
+  "decidedBy": {
+    "id": "123",
+    "version": 1,
+    "created": "2024-01-03T12:00:00.000+00:00",
+    "updated": "2024-01-03T12:00:00.000+00:00",
+    "firstName": "John",
+    "lastName": "Doe",
+    "personId": "3ed5bc30-6308-4fd5-a5a7-78d7f96f4438",
+    "organizationName": "Test Organization",
+    "organizationNumber": "19901010-1234",
+    "authorizedSignatory": "Test Testorsson",
+    "adAccount": "AD-account",
+    "roles": [
+      "PAYMENT_PERSON"
+    ],
+    "addresses": [
+      {
+        "street": "test street",
+        "houseNumber": "18",
+        "postalCode": "123 45",
+        "city": "Test City",
+        "country": "Test Country",
+        "careOf": "Test CareOf",
+        "attention": "Test Attention",
+        "propertyDesignation": "Test PropertyDesignation",
+        "apartmentNumber": "LGH Test",
+        "izZoningPlanArea": "true",
+        "invoiceMarking": "Test InvoiceMarking",
+        "location": {
+          "latitude": 1.0,
+          "longitude": 1.0
+        }
+      }
+    ],
+    "contactInformation": [
+      {
+        "contactType": "PHONE",
+        "value": "0701234567"
+      }
+    ]
+  },
+  "decidedAt": "2024-01-02T12:00:00.000+00:00",
+  "validFrom": "2024-01-01T12:00:00.000+00:00",
+  "validTo": "2025-01-02T12:00:00.000+00:00",
+  "appeal": {
+    "appealedBy": {
+      "id": "123",
+      "version": 1,
+      "created": "2024-01-03T12:00:00.000+00:00",
+      "updated": "2024-01-03T12:00:00.000+00:00",
+      "firstName": "John",
+      "lastName": "Doe",
+      "personId": "3ed5bc30-6308-4fd5-a5a7-78d7f96f4438",
+      "organizationName": "Test Organization",
+      "organizationNumber": "19901010-1234",
+      "authorizedSignatory": "Test Testorsson",
+      "adAccount": "AD-account",
+      "roles": [
+        "PAYMENT_PERSON"
+      ],
+      "addresses": [
+        {
+          "street": "test street",
+          "houseNumber": "18",
+          "postalCode": "123 45",
+          "city": "Test City",
+          "country": "Test Country",
+          "careOf": "Test CareOf",
+          "attention": "Test Attention",
+          "propertyDesignation": "Test PropertyDesignation",
+          "apartmentNumber": "LGH Test",
+          "izZoningPlanArea": "true",
+          "invoiceMarking": "Test InvoiceMarking",
+          "location": {
+            "latitude": 1.0,
+            "longitude": 1.0
+          }
+        }
+      ],
+      "contactInformation": [
+        {
+          "contactType": "PHONE",
+          "value": "0701234567"
+        }
+      ]
+    },
+    "judicialAuthorisation": {
+      "id": "123",
+      "version": 1,
+      "created": "2024-01-03T12:00:00.000+00:00",
+      "updated": "2024-01-03T12:00:00.000+00:00",
+      "firstName": "John",
+      "lastName": "Doe",
+      "personId": "3ed5bc30-6308-4fd5-a5a7-78d7f96f4438",
+      "organizationName": "Test Organization",
+      "organizationNumber": "19901010-1234",
+      "authorizedSignatory": "Test Testorsson",
+      "adAccount": "AD-account",
+      "roles": [
+        "PAYMENT_PERSON"
+      ],
+      "addresses": [
+        {
+          "street": "test street",
+          "houseNumber": "18",
+          "postalCode": "123 45",
+          "city": "Test City",
+          "country": "Test Country",
+          "careOf": "Test CareOf",
+          "attention": "Test Attention",
+          "propertyDesignation": "Test PropertyDesignation",
+          "apartmentNumber": "LGH Test",
+          "izZoningPlanArea": "true",
+          "invoiceMarking": "Test InvoiceMarking",
+          "location": {
+            "latitude": 1.0,
+            "longitude": 1.0
+          }
+        }
+      ],
+      "contactInformation": [
+        {
+          "contactType": "PHONE",
+          "value": "0701234567"
+        }
+      ]
+    },
+    "attachments:": [
+      {
+        "category": "FAPL",
+        "name": "Test name",
+        "note": "Test note",
+        "extension": "test extension",
+        "mimeType": "test mimeType",
+        "file": "test file",
+        "errandNumber": "test errandNumber"
+      }
+    ]
+  },
+  "attachments": [
+    {
+      "category": "FAPL",
+      "name": "Test name",
+      "note": "Test note",
+      "extension": "test extension",
+      "mimeType": "test mimeType",
+      "file": "test file",
+      "errandNumber": "test errandNumber"
+    }
+  ],
+  "extraParameters": {}
+}

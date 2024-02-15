@@ -1,0 +1,17 @@
+{
+  "id": 1,
+  "version": 0,
+  "created": "2022-12-02T15:13:45.363+01:00",
+  "updated": "2022-12-02T15:15:01.563+01:00",
+  "type": "PERSON",
+  "firstName": "John",
+  "lastName": "Doe",
+  "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
+  "adAccount": "AD-1",
+  "roles": [
+    "APPLICANT"
+  ],
+  "addresses": [],
+  "contactInformation": [],
+  "extraParameters": {}
+}

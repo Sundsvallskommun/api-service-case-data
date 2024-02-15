@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mariadb:10.6.4:///
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+#----------------------------------------
+# Integration settings
+#----------------------------------------
+config:
+  parkingpermit:
+    base-url: http://localhost:${wiremock.server.port:}/parkingpermit
+    token-url: http://localhost:${wiremock.server.port:}/token
+    client-id: client-id
+    client-secret: client-secret
+  landandexploitation:
+    base-url: http://localhost:${wiremock.server.port:}/landandexploitation
+    token-url: http://localhost:${wiremock.server.port:}/token
+    client-id: client-id
+    client-secret: client-secret
+  web-message-collector:
+    base-url: http://localhost:${wiremock.server.port:}/webmessagecollector
+    client-id: client-id
+    client-secret: client-secret
+    token-url: http://localhost:${wiremock.server.port:}/token
+  email-reader:
+    base-url: http://localhost:${wiremock.server.port:}/emailreader
+    token-url: http://localhost:${wiremock.server.port:}/token
+    client-id: client-id
+    client-secret: client-secret
+#----------------------------------------
+# Scheduler settings
+#----------------------------------------
+scheduler:
+  message-collector:
+    enabled: false
+  emailreader:
+    enabled: false

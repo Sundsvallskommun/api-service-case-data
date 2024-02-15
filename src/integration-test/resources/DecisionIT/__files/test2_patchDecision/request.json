@@ -1,0 +1,9 @@
+{
+  "decisionType": "FINAL",
+  "decisionOutcome": "DISMISSAL",
+  "description": "new description",
+  "decidedAt": "2024-01-02T12:00:00.000+00:00",
+  "validFrom": "2024-01-01T12:00:00.000+00:00",
+  "validTo": "2025-01-02T12:00:00.000+00:00",
+  "extraParameters": {}
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "artefactPermitNumber": "Test value1",
+    "errandId": 1
+  },
+  {
+    "artefactPermitNumber": "Test value2",
+    "errandId": 2
+  }
+]

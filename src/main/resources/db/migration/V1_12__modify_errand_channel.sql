@@ -1,0 +1,2 @@
+ALTER TABLE errand
+    MODIFY COLUMN channel ENUM ('ESERVICE', 'EMAIL', 'WEB_UI','MOBILE', 'SYSTEM');

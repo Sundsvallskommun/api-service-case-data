@@ -1,0 +1,304 @@
+[
+  {
+    "changeType": "NewObject",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    }
+  },
+  {
+    "changeType": "InitialValueChange",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    },
+    "property": "errandNumber",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "left": null,
+    "right": "PRH-2022-000001"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    },
+    "property": "caseType",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "left": null,
+    "right": "PARKING_PERMIT"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    },
+    "property": "priority",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "left": null,
+    "right": "MEDIUM"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    },
+    "property": "description",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "left": null,
+    "right": ""
+  },
+  {
+    "changeType": "InitialValueChange",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    },
+    "property": "caseTitleAddition",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "left": null,
+    "right": "Nytt parkeringstillstånd"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    },
+    "property": "diaryNumber",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "left": null,
+    "right": ""
+  },
+  {
+    "changeType": "InitialValueChange",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    },
+    "property": "phase",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "left": null,
+    "right": "Aktualisering"
+  },
+  {
+    "changeType": "ListChange",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    },
+    "property": "statuses",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "elementChanges": [
+      {
+        "elementChangeType": "ValueAdded",
+        "index": 0,
+        "value": {
+          "valueObject": "se.sundsvall.casedata.integration.db.model.Status",
+          "ownerId": {
+            "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+            "cdoId": 1
+          },
+          "fragment": "statuses/0"
+        }
+      }
+    ]
+  },
+  {
+    "changeType": "InitialValueChange",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    },
+    "property": "municipalityId",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "left": null,
+    "right": "1234"
+  },
+  {
+    "changeType": "ListChange",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    },
+    "property": "stakeholders",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "elementChanges": [
+      {
+        "elementChangeType": "ValueAdded",
+        "index": 0,
+        "value": {
+          "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder",
+          "cdoId": 1
+        }
+      }
+    ]
+  },
+  {
+    "changeType": "MapChange",
+    "globalId": {
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand",
+      "cdoId": 1
+    },
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "properties": [],
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00
+    },
+    "property": "extraParameters",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "entryChanges": [
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "disability.walkingAbility",
+        "value": "true"
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "application.applicant.testimonial",
+        "value": "true"
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "consent.view.transportationServiceDetails",
+        "value": "false"
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "disability.aid",
+        "value": "Inget"
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "disability.canBeAloneWhileParking",
+        "value": "true"
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "application.role",
+        "value": "SELF"
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "application.applicant.capacity",
+        "value": "DRIVER"
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "application.applicant.signingAbility",
+        "value": "false"
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "disability.walkingDistance.max",
+        "value": ""
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "disability.walkingDistance.beforeRest",
+        "value": ""
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "consent.contact.doctor",
+        "value": "false"
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "application.reason",
+        "value": ""
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "disability.canBeAloneWhileParking.note",
+        "value": ""
+      },
+      {
+        "entryChangeType": "EntryAdded",
+        "key": "disability.duration",
+        "value": "P6M"
+      }
+    ]
+  }
+]

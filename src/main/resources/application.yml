@@ -1,0 +1,140 @@
+#========================================
+# Common settings
+#========================================
+spring:
+  application:
+    name: ms-case-data
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    password: ${config.datasource.password}
+    url: ${config.datasource.url}
+    username: ${config.datasource.username}
+  flyway:
+    enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: validate
+  security:
+    oauth2:
+      client:
+        provider:
+          parkingpermit:
+            token-uri: ${config.parkingpermit.token-url}
+          landandexploitation:
+            token-uri: ${config.landandexploitation.token-url}
+          email-reader:
+            token-uri: ${config.email-reader.token-url}
+          web-message-collector:
+            token-uri: ${config.web-message-collector.token-url}
+        registration:
+          parkingpermit:
+            authorization-grant-type: client_credentials
+            provider: parkingpermit
+            client-id: ${config.parkingpermit.client-id}
+            client-secret: ${config.parkingpermit.client-secret}
+          landandexploitation:
+            authorization-grant-type: client_credentials
+            provider: landandexploitation
+            client-id: ${config.landandexploitation.client-id}
+            client-secret: ${config.landandexploitation.client-secret}
+          email-reader:
+            authorization-grant-type: client_credentials
+            provider: email-reader
+            client-id: ${config.email-reader.client-id}
+            client-secret: ${config.email-reader.client-secret}
+          web-message-collector:
+            authorization-grant-type: client_credentials
+            provider: web-message-collector
+            client-id: ${config.web-message-collector.client-id}
+            client-secret: ${config.web-message-collector.client-secret}
+
+#----------------------------------------
+# Open API
+#----------------------------------------
+openapi:
+  name: ${spring.application.name}
+  title: ${spring.application.name}
+  version: '@project.version@'
+
+#----------------------------------------
+# Integration settings
+#----------------------------------------
+integration:
+  parkingpermit:
+    base-url: ${config.parkingpermit.base-url}
+    connectTimeout: 5
+    readTimeout: 20
+  landandexploitation:
+    base-url: ${config.landandexploitation.base-url}
+    connectTimeout: 5
+    readTimeout: 20
+  web-message-collector:
+    base-url: ${config.web-message-collector.base-url}
+    connectTimeout: 5
+    readTimeout: 20
+    family-ids: [ "123" ]
+  email-reader:
+    base-url: ${config.email-reader.base-url}
+    connectTimeout: 5
+    readTimeout: 30
+    municipality-id: ${config.email-reader.municipality-id}
+    namespace: ${config.email-reader.namespace}
+
+#----------------------------------------
+# Circuit breakers
+#----------------------------------------
+resilience4j:
+  circuitbreaker:
+    instances:
+      parkingpermit:
+        ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
+      landandexploitation:
+        ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
+
+  #----------------------------------------
+  # Retry
+  #----------------------------------------
+  retry:
+    instances:
+      OptimisticLocking:
+        max-attempts: 5
+        retry-exceptions: org.springframework.dao.OptimisticLockingFailureException
+      parkingpermit:
+        max-attempts: 5
+        wait-duration: 1s
+      landandexploitation:
+        max-attempts: 5
+        wait-duration: 1s
+server:
+  tomcat:
+    relaxed-query-chars: '[,]'
+
+#----------------------------------------
+# Logbook
+#----------------------------------------
+logbook:
+  body-filters:
+    json-path:
+      - key: '$..file'
+        value: '[base64]'
+      - key: '$..content'
+        value: '[base64]'
+
+#----------------------------------------
+# Spring-filter settings
+#----------------------------------------
+turkraft:
+  springfilter:
+    offsetdatetimeformatter:
+      pattern: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+#----------------------------------------
+# Scheduler settings
+#----------------------------------------
+scheduler:
+  message-collector:
+    fixedRate: PT10M
+    initialDelay: PT10M
+  emailreader:
+    fixedRate: PT10M
+    initialDelay: PT10M
