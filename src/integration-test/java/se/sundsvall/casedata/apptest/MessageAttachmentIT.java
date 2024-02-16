@@ -11,10 +11,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
-import se.sundsvall.casedata.CaseDataApplication;
+import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
-@WireMockAppTestSuite(files = "classpath:/MessageAttachmentIT/", classes = CaseDataApplication.class)
+@WireMockAppTestSuite(files = "classpath:/MessageAttachmentIT/", classes = Application.class)
 @Sql({
 	"/db/scripts/truncate.sql",
 	"/db/scripts/testdata-it.sql"

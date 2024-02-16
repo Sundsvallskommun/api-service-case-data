@@ -29,7 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
-import se.sundsvall.casedata.CaseDataApplication;
+import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.model.Attachment;
@@ -37,7 +37,7 @@ import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
 import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
-@WireMockAppTestSuite(files = "classpath:/AttachmentResourceIT", classes = CaseDataApplication.class)
+@WireMockAppTestSuite(files = "classpath:/AttachmentResourceIT", classes = Application.class)
 @Sql({
 	"/db/scripts/truncate.sql",
 	"/db/scripts/testdata-it.sql"

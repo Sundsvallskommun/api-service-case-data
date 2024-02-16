@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
-import se.sundsvall.casedata.CaseDataApplication;
+import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -34,7 +34,7 @@ import se.sundsvall.casedata.integration.db.model.enums.CaseType;
 import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
-@WireMockAppTestSuite(files = "classpath:/ErrandListenerIT", classes = CaseDataApplication.class)
+@WireMockAppTestSuite(files = "classpath:/ErrandListenerIT", classes = Application.class)
 class ErrandListenerIT extends CustomAbstractAppTest {
 
 	@Autowired

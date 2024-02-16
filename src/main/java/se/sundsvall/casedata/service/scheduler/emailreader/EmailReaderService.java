@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
@@ -21,15 +22,10 @@ public class EmailReaderService {
 	private static final Logger LOG = LoggerFactory.getLogger(EmailReaderService.class.getName());
 
 	private final MessageRepository messageRepository;
-
 	private final ErrandRepository errandRepository;
-
 	private final AttachmentRepository attachmentRepository;
-
 	private final EmailReaderClient emailReaderClient;
-
 	private final EmailReaderProperties emailReaderProperties;
-
 	private final EmailReaderMapper emailReaderMapper;
 
 	public EmailReaderService(final MessageRepository repository, final ErrandRepository errandRepository, final AttachmentRepository attachmentRepository, final EmailReaderClient client, final EmailReaderProperties emailReaderProperties,
@@ -43,6 +39,7 @@ public class EmailReaderService {
 	}
 
 	@Scheduled(initialDelayString = "${scheduler.emailreader.initialDelay}", fixedRateString = "${scheduler.emailreader.fixedRate}")
+	@SchedulerLock(name = "emailreader", lockAtMostFor = "${scheduler.emailreader.shedlock-lock-at-most-for}")
 	void getAndProcessEmails() {
 
 		try {
@@ -69,5 +66,4 @@ public class EmailReaderService {
 			LOG.error("Error when fetching emails from EmailReader", e);
 		}
 	}
-
 }

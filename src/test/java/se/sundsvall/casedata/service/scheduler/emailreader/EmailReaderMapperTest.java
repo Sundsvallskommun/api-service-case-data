@@ -17,14 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import se.sundsvall.casedata.CaseDataApplication;
+import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.model.EmailHeader;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 
 import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
 
-@SpringBootTest(classes = {CaseDataApplication.class}, webEnvironment = MOCK)
+@SpringBootTest(classes = {Application.class}, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class EmailReaderMapperTest {
 

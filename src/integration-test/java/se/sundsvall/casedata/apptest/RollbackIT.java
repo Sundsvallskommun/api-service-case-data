@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import se.sundsvall.casedata.CaseDataApplication;
+import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
@@ -17,7 +17,7 @@ import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.integration.db.model.enums.CaseType.PARKING_PERMIT;
 
-@WireMockAppTestSuite(files = "classpath:/RollbackIT", classes = CaseDataApplication.class)
+@WireMockAppTestSuite(files = "classpath:/RollbackIT", classes = Application.class)
 class RollbackIT extends CustomAbstractAppTest {
 
 	@Autowired

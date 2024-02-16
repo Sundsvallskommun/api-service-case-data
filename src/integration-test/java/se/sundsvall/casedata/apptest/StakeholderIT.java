@@ -16,11 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
-import se.sundsvall.casedata.CaseDataApplication;
+import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.StakeholderRepository;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
-@WireMockAppTestSuite(files = "classpath:/StakeholderIT/", classes = CaseDataApplication.class)
+@WireMockAppTestSuite(files = "classpath:/StakeholderIT/", classes = Application.class)
 @Sql({
 	"/db/script/truncate.sql",
 	"/db/script/stakeholderIT-testdata.sql"

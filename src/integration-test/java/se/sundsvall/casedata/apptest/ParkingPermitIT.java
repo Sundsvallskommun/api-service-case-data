@@ -6,10 +6,10 @@ import static org.springframework.http.HttpStatus.OK;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
-import se.sundsvall.casedata.CaseDataApplication;
+import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
-@WireMockAppTestSuite(files = "classpath:/ParkingPermitIT", classes = CaseDataApplication.class)
+@WireMockAppTestSuite(files = "classpath:/ParkingPermitIT", classes = Application.class)
 class ParkingPermitIT extends CustomAbstractAppTest {
 
 	private static final String PATH = "/parking-permits";

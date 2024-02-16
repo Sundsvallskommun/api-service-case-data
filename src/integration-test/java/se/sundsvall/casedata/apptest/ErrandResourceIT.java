@@ -45,7 +45,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import se.sundsvall.casedata.CaseDataApplication;
+import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
@@ -57,7 +57,7 @@ import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
-@WireMockAppTestSuite(files = "classpath:/ErrandResourceIT", classes = CaseDataApplication.class)
+@WireMockAppTestSuite(files = "classpath:/ErrandResourceIT", classes = Application.class)
 class ErrandResourceIT extends CustomAbstractAppTest {
 
 	private static final String AD_USER_HEADER_VALUE = "user";
