@@ -19,8 +19,8 @@
         <generated-sources-path>${project.build.directory}/generated-sources</generated-sources-path>
         <generated-sources-java-path>src/main/java</generated-sources-java-path>
         <!-- Dependencies -->
+        <javers.version>7.3.7</javers.version>
         <spring-filter.version>3.1.7</spring-filter.version>
-        <javers.version>7.3.3</javers.version>
         <!-- Jenkins pipeline -->
         <docker.image.name>ms-case-data</docker.image.name>
         <exposed.app.port>8080</exposed.app.port>
