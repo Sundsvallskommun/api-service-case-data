@@ -24,7 +24,6 @@
         <shedlock.version>5.11.0</shedlock.version>
         <!-- Jenkins pipeline -->
         <docker.image.name>ms-case-data</docker.image.name>
-        <exposed.app.port>8080</exposed.app.port>
         <published.container.port.test>7002</published.container.port.test>
         <published.container.port.production>7002</published.container.port.production>
     </properties>
@@ -107,7 +106,6 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>**/se/sundsvall/casedata/Application*</exclude>
                         <exclude>**/util/Constants*</exclude>
                         <exclude>**/generated/**</exclude>
                         <exclude>**/db/model/Q*</exclude>
