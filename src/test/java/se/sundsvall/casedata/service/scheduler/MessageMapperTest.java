@@ -18,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 
-import se.sundsvall.casedata.CaseDataApplication;
+import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.MessageRequest.AttachmentRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.api.model.MessageResponse.AttachmentResponse;
@@ -34,7 +34,7 @@ import se.sundsvall.dept44.common.validators.annotation.impl.ValidUuidConstraint
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import generated.se.sundsvall.webmessagecollector.MessageDTO.DirectionEnum;
 
-@SpringBootTest(classes = {CaseDataApplication.class}, webEnvironment = MOCK)
+@SpringBootTest(classes = {Application.class}, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class MessageMapperTest {
 

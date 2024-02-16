@@ -135,6 +135,8 @@ scheduler:
   message-collector:
     fixedRate: PT10M
     initialDelay: PT10M
+    shedlock-lock-at-most-for: PT10M
   emailreader:
     fixedRate: PT10M
     initialDelay: PT10M
+    shedlock-lock-at-most-for: PT10M

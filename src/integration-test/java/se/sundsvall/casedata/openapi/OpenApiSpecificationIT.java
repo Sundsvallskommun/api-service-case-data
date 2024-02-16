@@ -15,7 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import se.sundsvall.casedata.CaseDataApplication;
+import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.util.ResourceUtils;
 
 import net.javacrumbs.jsonunit.core.Option;
@@ -23,7 +23,7 @@ import net.javacrumbs.jsonunit.core.Option;
 @ActiveProfiles("it")
 @SpringBootTest(
 	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-	classes = CaseDataApplication.class,
+	classes = Application.class,
 	properties = {
 		"spring.main.banner-mode=off",
 		"logging.level.se.sundsvall.dept44.payload=OFF",
