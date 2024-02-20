@@ -147,13 +147,13 @@
         country varchar(255),
         description varchar(255),
         facility_collection_name varchar(255),
+        facility_type varchar(255),
         house_number varchar(255),
         invoice_marking varchar(255),
         postal_code varchar(255),
         property_designation varchar(255),
         street varchar(255),
         address_category enum ('POSTAL_ADDRESS','INVOICE_ADDRESS','VISITING_ADDRESS'),
-        facility_type enum ('ONE_FAMILY_HOUSE','APARTMENT_BLOCK','WEEKEND_COTTAGE','OFFICE_BUILDING','INDUSTRIAL_BUILDING','GARAGE','CARPORT','STOREHOUSE','GREENHOUSE','GUEST_HOUSE','WAREHOUSE','WORKSHOP_BUILDING','RESTAURANT','SCHOOL','PRESCHOOL','PARKING','DEPOT','MARINA','WALL','PALING','RECYCLING_STATION','OTHER','FURNISHING_OF_ADDITIONAL_DWELLING','ANCILLARY_BUILDING','ANCILLARY_HOUSING_BUILDING','DORMER','EXTENSION'),
         primary key (id)
     ) engine=InnoDB;
 

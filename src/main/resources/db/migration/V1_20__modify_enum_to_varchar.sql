@@ -22,4 +22,16 @@ alter table attachment
 
 alter table attachment
     change column category_tmp category varchar(255);
+
+alter table facility
+    add column facility_type_tmp varchar(255);
+
+update facility
+    set facility_type_tmp = facility_type;
+
+alter table facility
+    drop column facility_type;
+
+alter table facility
+    change column facility_type_tmp facility_type varchar(255);
 COMMIT;

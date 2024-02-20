@@ -14,6 +14,7 @@ import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
 import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.enums.CaseType;
+import se.sundsvall.casedata.api.model.enums.FacilityType;
 import se.sundsvall.casedata.integration.db.model.Address;
 import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
@@ -369,7 +370,7 @@ public final class EntityMapper {
 				.withAddress(toAddress(dto.getAddress()))
 				.withFacilityCollectionName(dto.getFacilityCollectionName())
 				.withMainFacility(dto.isMainFacility())
-				.withFacilityType(dto.getFacilityType())
+				.withFacilityType(toFacilityType(dto.getFacilityType()))
 				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -385,7 +386,7 @@ public final class EntityMapper {
 				.withAddress(toAddressDto(facility.getAddress()))
 				.withFacilityCollectionName(facility.getFacilityCollectionName())
 				.withMainFacility(facility.isMainFacility())
-				.withFacilityType(facility.getFacilityType())
+				.withFacilityType(FacilityType.valueOf(facility.getFacilityType()))
 				.withExtraParameters(Optional.ofNullable(facility.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -446,5 +447,9 @@ public final class EntityMapper {
 
 	static String toCategory(final AttachmentCategory category) {
 		return Optional.ofNullable(category).map(AttachmentCategory::toString).orElse(null);
+	}
+
+	static String toFacilityType(final FacilityType facilityType) {
+		return Optional.ofNullable(facilityType).map(FacilityType::toString).orElse(null);
 	}
 }

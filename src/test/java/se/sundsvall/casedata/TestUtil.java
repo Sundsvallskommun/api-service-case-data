@@ -23,6 +23,7 @@ import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
 import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.enums.CaseType;
+import se.sundsvall.casedata.api.model.enums.FacilityType;
 import se.sundsvall.casedata.integration.db.model.Address;
 import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
@@ -40,7 +41,6 @@ import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.ContactType;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
-import se.sundsvall.casedata.integration.db.model.enums.FacilityType;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
@@ -386,7 +386,7 @@ public class TestUtil {
 			.withVersion(1)
 			.withExtraParameters(createExtraParameters())
 			.withAddress(createAddress())
-			.withFacilityType(FacilityType.GARAGE)
+			.withFacilityType(FacilityType.GARAGE.name())
 			.withErrand(null)
 			.withMainFacility(true)
 			.build();

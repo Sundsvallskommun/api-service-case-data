@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.enums.FacilityType;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
 import se.sundsvall.casedata.integration.db.model.enums.ContactType;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
@@ -154,7 +155,7 @@ class EntityMapperTest {
 		var facility = EntityMapper.toFacility(facilityDto);
 
 		assertThat(facility).satisfies(f -> {
-			assertThat(f.getFacilityType()).isEqualTo(facilityDto.getFacilityType());
+			assertThat(f.getFacilityType()).isEqualTo(facilityDto.getFacilityType().name());
 			assertThat(f.getUpdated()).isEqualTo(facilityDto.getUpdated());
 			assertThat(f.getCreated()).isEqualTo(facilityDto.getCreated());
 			assertThat(f.getDescription()).isEqualTo(facilityDto.getDescription());
@@ -172,7 +173,7 @@ class EntityMapperTest {
 
 		assertThat(facilityDto).satisfies(f -> {
 			assertThat(f.getDescription()).isEqualTo(facility.getDescription());
-			assertThat(f.getFacilityType()).isEqualTo(facility.getFacilityType());
+			assertThat(f.getFacilityType()).isEqualTo(FacilityType.valueOf(facility.getFacilityType()));
 			assertThat(f.getUpdated()).isEqualTo(facility.getUpdated());
 			assertThat(f.getCreated()).isEqualTo(facility.getCreated());
 			assertThat(f.getExtraParameters()).isEqualTo(facility.getExtraParameters());
