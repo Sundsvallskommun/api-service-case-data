@@ -1,5 +1,17 @@
 package se.sundsvall.casedata.api.model;
 
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.TestUtil;
+import se.sundsvall.casedata.api.model.enums.CaseType;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.Random;
+import java.util.UUID;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -8,19 +20,6 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.Random;
-import java.util.UUID;
-
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.integration.db.model.enums.CaseType;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 class PatchErrandDTOTest {
 

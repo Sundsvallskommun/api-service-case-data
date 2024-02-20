@@ -1,10 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
-
 import se.sundsvall.casedata.api.model.AddressDTO;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
@@ -17,6 +12,7 @@ import se.sundsvall.casedata.api.model.LawDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
+import se.sundsvall.casedata.api.model.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.Address;
 import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
@@ -29,6 +25,11 @@ import se.sundsvall.casedata.integration.db.model.Law;
 import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.Status;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 
 public final class EntityMapper {
@@ -45,7 +46,7 @@ public final class EntityMapper {
 				.withUpdated(errand.getUpdated())
 				.withErrandNumber(errand.getErrandNumber())
 				.withExternalCaseId(errand.getExternalCaseId())
-				.withCaseType(errand.getCaseType())
+				.withCaseType(CaseType.valueOf(errand.getCaseType()))
 				.withChannel(errand.getChannel())
 				.withPriority(errand.getPriority())
 				.withDescription(errand.getDescription())
@@ -80,7 +81,7 @@ public final class EntityMapper {
 				.withUpdated(dto.getUpdated())
 				.withErrandNumber(dto.getErrandNumber())
 				.withExternalCaseId(dto.getExternalCaseId())
-				.withCaseType(dto.getCaseType())
+				.withCaseType(toCaseType(dto.getCaseType()))
 				.withChannel(dto.getChannel())
 				.withPriority(dto.getPriority())
 				.withDescription(dto.getDescription())
@@ -436,6 +437,10 @@ public final class EntityMapper {
 				.withExtraParameters(Optional.ofNullable(appeal.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
+	}
+
+	static String toCaseType(final CaseType caseType) {
+		return Optional.ofNullable(caseType).map(CaseType::toString).orElse(null);
 	}
 
 }

@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.casedata.integration.db.model.enums.CaseType;
+import se.sundsvall.casedata.api.model.enums.CaseType;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
 
@@ -39,7 +39,7 @@ class ProcessServiceTest {
 	void startProcess_whenParkingPermit(final String enumValue) {
 		final var errand = createErrand();
 		final var result = new StartProcessResponse();
-		errand.setCaseType(CaseType.valueOf(enumValue));
+		errand.setCaseType(enumValue);
 		when(parkingPermitIntegration.startProcess(errand)).thenReturn(result);
 
 		var result1 = processService.startProcess(errand);
@@ -55,7 +55,7 @@ class ProcessServiceTest {
 	void startProcess_whenMEX(final String enumValue) {
 		final var errand = createErrand();
 		final var result = new StartProcessResponse();
-		errand.setCaseType(CaseType.valueOf(enumValue));
+		errand.setCaseType(enumValue);
 		when(landAndExploitationIntegration.startProcess(errand)).thenReturn(result);
 
 		var result1 = processService.startProcess(errand);
@@ -70,7 +70,7 @@ class ProcessServiceTest {
 	@MethodSource("parkingPermitTypesProvider")
 	void updateProcess_whenParkingPermit(final String enumValue) {
 		final var errand = createErrand();
-		errand.setCaseType(CaseType.valueOf(enumValue));
+		errand.setCaseType(enumValue);
 		errand.setUpdatedByClient("Not camunda wso2 - Should update");
 
 		processService.updateProcess(errand);
@@ -84,7 +84,7 @@ class ProcessServiceTest {
 	@MethodSource("mexTypesProvider")
 	void updateProcess_whenMEX(final String enumValue) {
 		final var errand = createErrand();
-		errand.setCaseType(CaseType.valueOf(enumValue));
+		errand.setCaseType(enumValue);
 		errand.setUpdatedByClient("Not camunda wso2 - Should update");
 
 		processService.updateProcess(errand);

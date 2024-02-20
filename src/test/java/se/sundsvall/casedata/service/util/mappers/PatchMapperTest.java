@@ -1,5 +1,12 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
@@ -17,14 +24,6 @@ import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchErrand
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNote;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
 class PatchMapperTest {
 
 	@Test
@@ -35,7 +34,7 @@ class PatchMapperTest {
 		var patchedErrand = patchErrand(errand, patch);
 
 		assertThat(patchedErrand).isNotNull().satisfies(e -> {
-			assertThat(e.getCaseType()).isEqualTo(patch.getCaseType());
+			assertThat(e.getCaseType()).isEqualTo(patch.getCaseType().name());
 			assertThat(e.getDescription()).isEqualTo(patch.getDescription());
 			assertThat(e.getExternalCaseId()).isEqualTo(patch.getExternalCaseId());
 			assertThat(e.getPriority()).isEqualTo(patch.getPriority());

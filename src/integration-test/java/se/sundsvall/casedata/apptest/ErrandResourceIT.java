@@ -21,9 +21,9 @@ import static se.sundsvall.casedata.TestUtil.createStatusDTO;
 import static se.sundsvall.casedata.TestUtil.getRandomOffsetDateTime;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.PARKING_PERMIT_START_URL;
-import static se.sundsvall.casedata.integration.db.model.enums.CaseType.LOST_PARKING_PERMIT;
-import static se.sundsvall.casedata.integration.db.model.enums.CaseType.PARKING_PERMIT;
-import static se.sundsvall.casedata.integration.db.model.enums.CaseType.PARKING_PERMIT_RENEWAL;
+import static se.sundsvall.casedata.api.model.enums.CaseType.LOST_PARKING_PERMIT;
+import static se.sundsvall.casedata.api.model.enums.CaseType.PARKING_PERMIT;
+import static se.sundsvall.casedata.api.model.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,8 +44,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.DecisionDTO;
@@ -254,7 +253,7 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 			.getResponseBody();
 
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
-		final ErrandDTO result = resultList.getContent().get(0);
+		final ErrandDTO result = resultList.getContent().getFirst();
 
 		assertNotNull(result.getProcessId());
 
@@ -336,7 +335,7 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 			.getResponseBody();
 
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
-		final ErrandDTO result = resultList.getContent().get(0);
+		final ErrandDTO result = resultList.getContent().getFirst();
 
 		assertNotNull(result.getProcessId());
 
@@ -358,7 +357,7 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 		postErrand(inputPostErrandDTO);
 
 		final ErrandDTO anotherErrandWithSameFirstName = createErrandDTO();
-		anotherErrandWithSameFirstName.getStakeholders().get(0).setFirstName(NAME_PREFIX + WORD_IN_THE_MIDDLE + RandomStringUtils.random(10));
+		anotherErrandWithSameFirstName.getStakeholders().getFirst().setFirstName(NAME_PREFIX + WORD_IN_THE_MIDDLE + RandomStringUtils.random(10));
 		postErrand(anotherErrandWithSameFirstName);
 
 		final Page<ErrandDTO> resultPage = webTestClient.get().uri(
@@ -444,7 +443,7 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 			.getResponseBody();
 
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
-		final ErrandDTO result = resultList.getContent().get(0);
+		final ErrandDTO result = resultList.getContent().getFirst();
 
 		assertNotNull(result.getProcessId());
 		assertThat(inputPostErrandDTO_1)
@@ -500,7 +499,7 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 			.getResponseBody();
 
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
-		final ErrandDTO result = resultList.getContent().get(0);
+		final ErrandDTO result = resultList.getContent().getFirst();
 
 		assertNotNull(result.getProcessId());
 		assertThat(inputPostErrandDTO_1)
@@ -539,7 +538,7 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 			.getResponseBody();
 
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
-		final ErrandDTO result = resultList.getContent().get(0);
+		final ErrandDTO result = resultList.getContent().getFirst();
 
 		assertThat(inputPostErrandDTO_1)
 			.usingRecursiveComparison()
@@ -565,6 +564,14 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 				.encode()
 				.build()
 				.toUri())
+				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+					.path("errands")
+					.queryParam("filter", "stakeholders.addresses.street:'%s'".formatted(person.getAddresses().getFirst().getStreet()) +
+						"and " +
+						"stakeholders.addresses.houseNumber:'%s'".formatted(person.getAddresses().getFirst().getHouseNumber()))
+					.encode()
+					.build()
+					.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -575,7 +582,7 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 			.getResponseBody();
 
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
-		final ErrandDTO result = resultList.getContent().get(0);
+		final ErrandDTO result = resultList.getContent().getFirst();
 
 		assertThat(inputPostErrandDTO_1)
 			.usingRecursiveComparison()
@@ -631,7 +638,7 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 			.getResponseBody();
 
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
-		final ErrandDTO result = resultList.getContent().get(0);
+		final ErrandDTO result = resultList.getContent().getFirst();
 
 		assertThat(inputPostErrandDTO_1)
 			.usingRecursiveComparison()
@@ -666,7 +673,7 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 			.getResponseBody();
 
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
-		final ErrandDTO result = resultList.getContent().get(0);
+		final ErrandDTO result = resultList.getContent().getFirst();
 
 		assertThat(errandDto)
 			.usingRecursiveComparison()

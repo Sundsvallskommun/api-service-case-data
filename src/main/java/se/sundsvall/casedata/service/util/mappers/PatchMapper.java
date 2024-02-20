@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 import se.sundsvall.casedata.api.model.AttachmentDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.PatchDecisionDTO;
@@ -14,6 +11,9 @@ import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 public final class PatchMapper {
 
 	private PatchMapper() {
@@ -22,7 +22,7 @@ public final class PatchMapper {
 	public static Errand patchErrand(final Errand errand, final PatchErrandDTO patch) {
 		//ExtraParameters are not patched, they are posted for whatever reason.
 		Optional.ofNullable(patch.getExtraParameters()).ifPresent(s -> errand.getExtraParameters().putAll(patch.getExtraParameters()));
-		Optional.ofNullable(patch.getCaseType()).ifPresent(errand::setCaseType);
+		Optional.ofNullable(patch.getCaseType()).ifPresent(caseType -> errand.setCaseType(caseType.name()));
 		Optional.ofNullable(patch.getExternalCaseId()).ifPresent(errand::setExternalCaseId);
 		Optional.ofNullable(patch.getPriority()).ifPresent(errand::setPriority);
 		Optional.ofNullable(patch.getDescription()).ifPresent(errand::setDescription);

@@ -1,23 +1,21 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.Comparator;
-import java.util.Optional;
-
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostUpdate;
 import jakarta.persistence.PrePersist;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
+import se.sundsvall.casedata.api.model.enums.CaseType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.enums.CaseType;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.Comparator;
+import java.util.Optional;
 
 @Component
 public class ErrandListener {
@@ -62,9 +60,10 @@ public class ErrandListener {
 		}
 	}
 
-	private String generateErrandNumber(final CaseType caseType) {
+	private String generateErrandNumber(final String caseType) {
 		// Get the latest errand with an errandNumber and only the ones within the same year. If this year i different, a new sequenceNumber begins.
-		final Optional<Errand> latestErrand = errandRepository.findAllByErrandNumberStartingWith(caseType.getAbbreviation())
+		final var abbreviation = CaseType.valueOf(caseType).getAbbreviation();
+		final Optional<Errand> latestErrand = errandRepository.findAllByErrandNumberStartingWith(abbreviation)
 			.stream()
 			.filter(errand -> errand.getErrandNumber() != null
 				&& !errand.getErrandNumber().isBlank()
@@ -80,8 +79,8 @@ public class ErrandListener {
 		}
 
 		final StringBuilder stringBuilder = new StringBuilder();
-		final String prefix = caseType.getAbbreviation();
-		stringBuilder.append(prefix).append(DELIMITER);
+		// prefix with the abbreviation
+		stringBuilder.append(abbreviation).append(DELIMITER);
 		stringBuilder.append(LocalDate.now().getYear()).append(DELIMITER);
 		stringBuilder.append(String.format("%06d", nextSequenceNumber));
 		return stringBuilder.toString();
