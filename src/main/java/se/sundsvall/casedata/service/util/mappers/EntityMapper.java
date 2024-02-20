@@ -12,6 +12,7 @@ import se.sundsvall.casedata.api.model.LawDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
+import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.Address;
 import se.sundsvall.casedata.integration.db.model.Appeal;
@@ -166,7 +167,7 @@ public final class EntityMapper {
 				.withVersion(dto.getVersion())
 				.withCreated(dto.getCreated())
 				.withUpdated(dto.getUpdated())
-				.withCategory(dto.getCategory())
+				.withCategory(toCategory(dto.getCategory()))
 				.withName(dto.getName())
 				.withNote(dto.getNote())
 				.withExtension(dto.getExtension())
@@ -184,7 +185,7 @@ public final class EntityMapper {
 				.withVersion(attachment.getVersion())
 				.withCreated(attachment.getCreated())
 				.withUpdated(attachment.getUpdated())
-				.withCategory(attachment.getCategory())
+				.withCategory(AttachmentCategory.valueOf(attachment.getCategory()))
 				.withName(attachment.getName())
 				.withNote(attachment.getNote())
 				.withExtension(attachment.getExtension())
@@ -443,4 +444,7 @@ public final class EntityMapper {
 		return Optional.ofNullable(caseType).map(CaseType::toString).orElse(null);
 	}
 
+	static String toCategory(final AttachmentCategory category) {
+		return Optional.ofNullable(category).map(AttachmentCategory::toString).orElse(null);
+	}
 }

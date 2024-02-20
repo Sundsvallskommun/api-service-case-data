@@ -1,5 +1,24 @@
 package se.sundsvall.casedata.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.zalando.problem.Status;
+import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.casedata.api.model.AttachmentDTO;
+import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
+import se.sundsvall.casedata.integration.db.model.Attachment;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,26 +32,6 @@ import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachmentDto;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
-
-import se.sundsvall.casedata.api.model.AttachmentDTO;
-import se.sundsvall.casedata.integration.db.AttachmentRepository;
-import se.sundsvall.casedata.integration.db.model.Attachment;
-import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
 
 @ExtendWith(MockitoExtension.class)
 class AttachmentServiceTest {

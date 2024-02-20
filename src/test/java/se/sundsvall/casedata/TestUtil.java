@@ -21,6 +21,7 @@ import se.sundsvall.casedata.api.model.PatchDecisionDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
+import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.Address;
 import se.sundsvall.casedata.integration.db.model.Appeal;
@@ -35,7 +36,6 @@ import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.Status;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.ContactType;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
@@ -491,7 +491,7 @@ public class TestUtil {
 			.withMimeType("mimeType")
 			.withNote("note")
 			.withErrandNumber("errandNumber")
-			.withCategory(AttachmentCategory.POLICE_REPORT)
+			.withCategory(AttachmentCategory.POLICE_REPORT.name())
 			.build();
 	}
 

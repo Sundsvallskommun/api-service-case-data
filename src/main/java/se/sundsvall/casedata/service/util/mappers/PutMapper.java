@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 import se.sundsvall.casedata.api.model.AttachmentDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
@@ -12,6 +9,9 @@ import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 public final class PutMapper {
 
 	private PutMapper() {
@@ -20,7 +20,7 @@ public final class PutMapper {
 	public static Attachment putAttachment(final Attachment oldAttachment, final AttachmentDTO dto) {
 		Optional.ofNullable(dto).ifPresent(newAttachment -> {
 			oldAttachment.setExtraParameters(newAttachment.getExtraParameters());
-			oldAttachment.setCategory(newAttachment.getCategory());
+			oldAttachment.setCategory(EntityMapper.toCategory(newAttachment.getCategory()));
 			oldAttachment.setName(newAttachment.getName());
 			oldAttachment.setNote(newAttachment.getNote());
 			oldAttachment.setExtension(newAttachment.getExtension());

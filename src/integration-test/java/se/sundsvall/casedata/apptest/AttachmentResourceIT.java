@@ -1,24 +1,5 @@
 package se.sundsvall.casedata.apptest;
 
-import static java.util.Collections.emptyMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
-import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
-import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
-import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
-import static se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory.ANSUPA;
-import static se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory.PASSPORT_PHOTO;
-import static se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory.POLICE_REPORT;
-import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
-
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Random;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Assertions;
@@ -28,14 +9,32 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
+import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.model.Attachment;
-import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
 import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Random;
+
+import static java.util.Collections.emptyMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
+import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
+import static se.sundsvall.casedata.api.model.enums.AttachmentCategory.ANSUPA;
+import static se.sundsvall.casedata.api.model.enums.AttachmentCategory.PASSPORT_PHOTO;
+import static se.sundsvall.casedata.api.model.enums.AttachmentCategory.POLICE_REPORT;
+import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
+import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
+import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
 @WireMockAppTestSuite(files = "classpath:/AttachmentResourceIT", classes = Application.class)
 @Sql({
@@ -164,7 +163,7 @@ class AttachmentResourceIT extends CustomAbstractAppTest {
 
 		assertThat(result).hasSize(initialAttachments.size() + 1).element(result.size() - 1).satisfies(attachment -> {
 				assertThat(attachment.getId()).isNotNull();
-				assertThat(attachment.getCategory()).isEqualTo(dto.getCategory());
+				assertThat(attachment.getCategory()).isEqualTo(dto.getCategory().name());
 				assertThat(attachment.getExtension()).isEqualTo(dto.getExtension());
 				assertThat(attachment.getFile()).isEqualTo(dto.getFile());
 				assertThat(attachment.getMimeType()).isEqualTo(dto.getMimeType());

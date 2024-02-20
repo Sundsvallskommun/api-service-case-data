@@ -68,7 +68,7 @@ public final class PatchMapper {
 	public static Attachment patchAttachment(final Attachment attachment, final AttachmentDTO patch) {
 		//ExtraParameters are not patched, they are posted for whatever reason.
 		Optional.ofNullable(patch.getExtraParameters()).ifPresent(s -> attachment.getExtraParameters().putAll(patch.getExtraParameters()));
-		Optional.ofNullable(patch.getCategory()).ifPresent(attachment::setCategory);
+		Optional.ofNullable(patch.getCategory()).ifPresent(category -> attachment.setCategory(category.name()));
 		Optional.ofNullable(patch.getName()).ifPresent(attachment::setName);
 		Optional.ofNullable(patch.getNote()).ifPresent(attachment::setNote);
 		Optional.ofNullable(patch.getExtension()).ifPresent(attachment::setExtension);

@@ -1,7 +1,7 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
@@ -115,7 +115,7 @@ class PatchMapperTest {
 		var patchedAttachment = patchAttachment(attachment, patch);
 
 		assertThat(patchedAttachment).isNotNull().satisfies(a -> {
-			assertThat(a.getCategory()).isEqualTo(patch.getCategory());
+			assertThat(a.getCategory()).isEqualTo(patch.getCategory().name());
 			assertThat(a.getName()).isEqualTo(patch.getName());
 			assertThat(a.getNote()).isEqualTo(patch.getNote());
 			assertThat(a.getExtension()).isEqualTo(patch.getExtension());
