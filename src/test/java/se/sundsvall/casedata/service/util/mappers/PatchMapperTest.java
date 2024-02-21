@@ -2,7 +2,7 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import org.junit.jupiter.api.Test;
 import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
+import se.sundsvall.casedata.api.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 import java.util.List;
@@ -80,7 +80,7 @@ class PatchMapperTest {
 			assertThat(s.getOrganizationNumber()).isEqualTo(patch.getOrganizationNumber());
 			assertThat(s.getAuthorizedSignatory()).isEqualTo(patch.getAuthorizedSignatory());
 			assertThat(s.getAdAccount()).isEqualTo(patch.getAdAccount());
-			assertThat(s.getRoles()).isEqualTo(patch.getRoles());
+			assertThat(s.getRoles()).isEqualTo(patch.getRoles().stream().map(StakeholderRole::name).toList());
 			assertThat(s.getAddresses()).isEqualTo(patch.getAddresses().stream().map(EntityMapper::toAddress).toList());
 			assertThat(s.getContactInformation()).isEqualTo(patch.getContactInformation().stream().map(EntityMapper::toContactInformation).toList());
 			assertThat(s.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
@@ -100,7 +100,7 @@ class PatchMapperTest {
 			assertThat(s.getFirstName()).isEqualTo(patch.getFirstName());
 			assertThat(s.getLastName()).isEqualTo(patch.getLastName());
 			assertThat(s.getAdAccount()).isEqualTo(patch.getAdAccount());
-			assertThat(s.getRoles()).isEqualTo(patch.getRoles());
+			assertThat(s.getRoles()).isEqualTo(patch.getRoles().stream().map(StakeholderRole::name).toList());
 			assertThat(s.getAddresses()).isEqualTo(patch.getAddresses().stream().map(EntityMapper::toAddress).toList());
 			assertThat(s.getContactInformation()).isEqualTo(patch.getContactInformation().stream().map(EntityMapper::toContactInformation).toList());
 			assertThat(s.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());

@@ -5,6 +5,7 @@ import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.PatchDecisionDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
+import se.sundsvall.casedata.api.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.Errand;
@@ -59,7 +60,7 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getOrganizationNumber()).ifPresent(stakeholder::setOrganizationNumber);
 		Optional.ofNullable(patch.getAuthorizedSignatory()).ifPresent(stakeholder::setAuthorizedSignatory);
 		Optional.ofNullable(patch.getAdAccount()).ifPresent(stakeholder::setAdAccount);
-		Optional.ofNullable(patch.getRoles()).ifPresent(stakeholder::setRoles);
+		Optional.ofNullable(patch.getRoles()).ifPresent(roles -> stakeholder.setRoles(new ArrayList<>(patch.getRoles().stream().map(StakeholderRole::name).toList())));
 		Optional.ofNullable(patch.getAddresses()).ifPresent(s -> stakeholder.setAddresses(new ArrayList<>(patch.getAddresses().stream().map(EntityMapper::toAddress).toList())));
 		Optional.ofNullable(patch.getContactInformation()).ifPresent(s -> stakeholder.setContactInformation(new ArrayList<>(patch.getContactInformation().stream().map(EntityMapper::toContactInformation).toList())));
 		return stakeholder;

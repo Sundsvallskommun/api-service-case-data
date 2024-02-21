@@ -24,6 +24,7 @@ import se.sundsvall.casedata.api.model.StatusDTO;
 import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.enums.CaseType;
 import se.sundsvall.casedata.api.model.enums.FacilityType;
+import se.sundsvall.casedata.api.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Address;
 import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
@@ -43,7 +44,6 @@ import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitClient;
 
@@ -394,7 +394,7 @@ public class TestUtil {
 
 	public static Stakeholder createStakeholder() {
 		return Stakeholder.builder()
-			.withRoles(new ArrayList<>(List.of(StakeholderRole.APPLICANT)))
+			.withRoles(new ArrayList<>(List.of(StakeholderRole.APPLICANT.name())))
 			.withType(StakeholderType.PERSON)
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())

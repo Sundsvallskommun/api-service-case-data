@@ -4,6 +4,7 @@ import se.sundsvall.casedata.api.model.AttachmentDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
+import se.sundsvall.casedata.api.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.Note;
@@ -20,7 +21,7 @@ public final class PutMapper {
 	public static Attachment putAttachment(final Attachment oldAttachment, final AttachmentDTO dto) {
 		Optional.ofNullable(dto).ifPresent(newAttachment -> {
 			oldAttachment.setExtraParameters(newAttachment.getExtraParameters());
-			oldAttachment.setCategory(EntityMapper.toCategory(newAttachment.getCategory()));
+			oldAttachment.setCategory(EntityMapper.toCategoryString(newAttachment.getCategory()));
 			oldAttachment.setName(newAttachment.getName());
 			oldAttachment.setNote(newAttachment.getNote());
 			oldAttachment.setExtension(newAttachment.getExtension());
@@ -41,7 +42,7 @@ public final class PutMapper {
 			oldStakeholder.setOrganizationNumber(newStakeholder.getOrganizationNumber());
 			oldStakeholder.setAuthorizedSignatory(newStakeholder.getAuthorizedSignatory());
 			oldStakeholder.setAdAccount(newStakeholder.getAdAccount());
-			oldStakeholder.setRoles(newStakeholder.getRoles());
+			oldStakeholder.setRoles(new ArrayList<>(newStakeholder.getRoles().stream().map(StakeholderRole::name).toList()));
 			oldStakeholder.setAddresses(new ArrayList<>(newStakeholder.getAddresses().stream().map(EntityMapper::toAddress).toList()));
 			oldStakeholder.setContactInformation(new ArrayList<>(newStakeholder.getContactInformation().stream().map(EntityMapper::toContactInformation).toList()));
 		});

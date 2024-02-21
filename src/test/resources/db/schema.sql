@@ -276,7 +276,7 @@
     create table stakeholder_roles (
         role_order integer not null,
         stakeholder_id bigint not null,
-        roles enum ('CONTROL_OFFICIAL','APPLICANT','PROPERTY_OWNER','PAYMENT_PERSON','INVOICE_RECIPENT','OPERATOR','CONTACT_PERSON','ADMINISTRATOR','FELLOW_APPLICANT','DRIVER','PASSENGER','DOCTOR'),
+        roles varchar(255),
         primary key (role_order, stakeholder_id)
     ) engine=InnoDB;
 

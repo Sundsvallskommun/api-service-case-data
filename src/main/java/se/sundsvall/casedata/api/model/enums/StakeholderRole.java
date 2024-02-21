@@ -1,4 +1,4 @@
-package se.sundsvall.casedata.integration.db.model.enums;
+package se.sundsvall.casedata.api.model.enums;
 
 import lombok.Getter;
 

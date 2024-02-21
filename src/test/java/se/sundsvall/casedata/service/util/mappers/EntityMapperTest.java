@@ -5,9 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.enums.FacilityType;
+import se.sundsvall.casedata.api.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
 import se.sundsvall.casedata.integration.db.model.enums.ContactType;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 import java.util.List;
@@ -198,7 +198,7 @@ class EntityMapperTest {
 			assertThat(s.getOrganizationName()).isEqualTo(stakeholderDto.getOrganizationName());
 			assertThat(s.getOrganizationNumber()).isEqualTo(stakeholderDto.getOrganizationNumber());
 			assertThat(s.getPersonId()).isEqualTo(stakeholderDto.getPersonId());
-			assertThat(s.getRoles()).isEqualTo(stakeholderDto.getRoles());
+			assertThat(s.getRoles()).isEqualTo(stakeholderDto.getRoles().stream().map(StakeholderRole::name).toList());
 			assertThat(s.getId()).isEqualTo(stakeholderDto.getId());
 			assertThat(s.getVersion()).isEqualTo(stakeholderDto.getVersion());
 		});
@@ -219,7 +219,7 @@ class EntityMapperTest {
 			assertThat(s.getOrganizationName()).isEqualTo(stakeholder.getOrganizationName());
 			assertThat(s.getOrganizationNumber()).isEqualTo(stakeholder.getOrganizationNumber());
 			assertThat(s.getPersonId()).isEqualTo(stakeholder.getPersonId());
-			assertThat(s.getRoles()).isEqualTo(stakeholder.getRoles());
+			assertThat(s.getRoles()).isEqualTo(stakeholder.getRoles().stream().map(StakeholderRole::valueOf).toList());
 			assertThat(s.getId()).isEqualTo(stakeholder.getId());
 			assertThat(s.getVersion()).isEqualTo(stakeholder.getVersion());
 		});

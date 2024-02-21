@@ -34,4 +34,16 @@ alter table facility
 
 alter table facility
     change column facility_type_tmp facility_type varchar(255);
+
+alter table stakeholder_roles
+    add column roles_tmp varchar(255);
+
+update stakeholder_roles
+    set roles_tmp = roles;
+
+alter table stakeholder_roles
+    drop column roles;
+
+alter table stakeholder_roles
+    change column roles_tmp roles varchar(255);
 COMMIT;
