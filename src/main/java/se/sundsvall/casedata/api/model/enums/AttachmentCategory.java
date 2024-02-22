@@ -276,11 +276,11 @@ public enum AttachmentCategory {
 	///////////////////////////////////
 	LEASE_REQUEST("Förfrågan arrende", null),
 	RECEIVED_MAP("Karta inkommen", null),
-	RECIVIED_CONTRACT("Avtal inkommit", null),
+	RECEIVED_CONTRACT("Avtal inkommit", null),
 	LAND_PURCHASE_REQUEST("Förfrågan markköp", null),
 	INQUIRY_LAND_SALE("Förfrågan markförsäljning", null),
 	APPLICATION_SQUARE_PLACE("Ansökan torgplats", null),
-	F_TAX("F-skattsedel", null),
+	CORPORATE_TAX_CARD("F-skattsedel", null),
 	TERMINATION_OF_HUNTING_RIGHTS("Uppsägning jakträtt", null),
 	REQUEST_TO_BUY_SMALL_HOUSE_PLOT("Förfrågan köpa småhustomt", null),
 	CONTRACT_DRAFT("Avtalsutkast", null);
