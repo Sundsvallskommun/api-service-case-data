@@ -9,6 +9,7 @@ import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
 import static se.sundsvall.casedata.service.util.Constants.MEX_CASE_TYPES;
 import static se.sundsvall.casedata.service.util.Constants.PARKING_PERMIT_CASE_TYPES;
@@ -41,12 +42,20 @@ public class ProcessService {
 			LOGGER.warn("Errand with id: {} was updated by camunda user, no need to update process", errand.getId());
 			return;
 		}
-		if (PARKING_PERMIT_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType()))) {
+		if (isValidParkingPermitCase(errand)) {
 			parkingPermitIntegration.updateProcess(errand);
-		} else if (MEX_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType()))) {
+		} else if (isValidMexCase(errand)) {
 			landAndExploitationIntegration.updateProcess(errand);
 		} else {
 			LOGGER.info("No camunda process found for updating case with caseType: {}", errand.getCaseType());
 		}
+	}
+
+	private boolean isValidParkingPermitCase(final Errand errand) {
+		return PARKING_PERMIT_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType())) && isNotEmpty(errand.getProcessId());
+	}
+
+	private boolean isValidMexCase(final Errand errand) {
+		return MEX_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType())) && isNotEmpty(errand.getProcessId());
 	}
 }
