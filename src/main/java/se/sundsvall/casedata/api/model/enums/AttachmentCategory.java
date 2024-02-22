@@ -243,24 +243,18 @@ public enum AttachmentCategory {
 	VS("VS-handling", "VVS"),
 	VVSH("VVS-handling", "VVS"),
 
-
 	///////////////////////////////////
 	// Ecos
 	///////////////////////////////////
 	ANMALAN_LIVSMEDELSANLAGGNING("3AD42CEE-C09E-401B-ABE8-0CD5D03FE6B4", null),
-
 	ANMALAN_ENSKILT_AVLOPP("E9F85119-9E94-47AD-B531-BB91EF75368A", null),
 	ANSOKAN_ENSKILT_AVLOPP("296B51FA-C77B-42E7-AFBE-F0A74CAE4FD2", null),
 	ANMALAN_ANDRING_AVLOPPSANLAGGNING("3FBEECCA-099D-4E51-8FFA-D023AF79017D", null),
 	ANMALAN_ANDRING_AVLOPPSANORDNING("52E2898B-D780-4EB5-B9CA-24842714E6DF", null),
-
 	ANMALAN_VARMEPUMP("ACCC629C-4D26-4466-9DFD-578DB746D119", null),
 	ANSOKAN_TILLSTAND_VARMEPUMP_MINDRE_AN_100KW("3F6DBE03-DB41-47AA-A56A-ECD87C8133B1", null),
-
 	ANMALAN_HALSOSKYDDSVERKSAMHET("EA5D5EBE-DCBE-4EAA-A2B9-8662B128BD96", null),
-
 	SITUATIONSPLAN("9288F033-8E1A-48AE-858F-CB7345F81359", null),
-
 	SKRIVELSE("A06E65AD-E4B1-4B84-BCC6-7843CDE6B0A1", null),
 
 	MEDICAL_CONFIRMATION("Läkarintyg", null),
@@ -275,7 +269,21 @@ public enum AttachmentCategory {
 	///////////////////////////////////
 	ERRAND_SCANNED_APPLICATION("Ärende (Skannad ansökan)", null),
 	SERVICE_RECEIPT("Delgivningskvitto", null),
-	OTHER_ATTACHMENT("Övriga bilagor", null);
+	OTHER_ATTACHMENT("Övriga bilagor", null),
+
+	///////////////////////////////////
+	// MEX
+	///////////////////////////////////
+	LEASE_REQUEST("Förfrågan arrende", null),
+	RECEIVED_MAP("Karta inkommen", null),
+	RECEIVED_CONTRACT("Avtal inkommit", null),
+	LAND_PURCHASE_REQUEST("Förfrågan markköp", null),
+	INQUIRY_LAND_SALE("Förfrågan markförsäljning", null),
+	APPLICATION_SQUARE_PLACE("Ansökan torgplats", null),
+	CORPORATE_TAX_CARD("F-skattsedel", null),
+	TERMINATION_OF_HUNTING_RIGHTS("Uppsägning jakträtt", null),
+	REQUEST_TO_BUY_SMALL_HOUSE_PLOT("Förfrågan köpa småhustomt", null),
+	CONTRACT_DRAFT("Avtalsutkast", null);
 
 	@Getter
 	private final String description;
