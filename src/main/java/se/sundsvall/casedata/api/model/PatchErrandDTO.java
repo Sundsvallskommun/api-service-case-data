@@ -1,25 +1,22 @@
 package se.sundsvall.casedata.api.model;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
-
-import jakarta.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-
-import se.sundsvall.casedata.integration.db.model.enums.CaseType;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import se.sundsvall.casedata.api.model.enums.CaseType;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor

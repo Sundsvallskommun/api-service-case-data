@@ -4,8 +4,6 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
@@ -19,7 +17,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.With;
 import lombok.experimental.SuperBuilder;
-import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,9 +33,8 @@ import static org.hibernate.Length.LONG32;
 @AllArgsConstructor
 public class Attachment extends BaseEntity {
 
-	@Enumerated(EnumType.STRING)
 	@Column(name = "category")
-	private AttachmentCategory category;
+	private String category;
 
 	@Column(name = "name")
 	private String name;
@@ -73,7 +69,7 @@ public class Attachment extends BaseEntity {
 		if (o == null || getClass() != o.getClass()) return false;
 		if (!super.equals(o)) return false;
 		final Attachment that = (Attachment) o;
-		return category == that.category && Objects.equals(name, that.name) && Objects.equals(note, that.note) && Objects.equals(extension, that.extension) && Objects.equals(mimeType, that.mimeType) && Objects.equals(file, that.file) && Objects.equals(errandNumber, that.errandNumber) && Objects.equals(extraParameters, that.extraParameters);
+		return Objects.equals(category,that.category) && Objects.equals(name, that.name) && Objects.equals(note, that.note) && Objects.equals(extension, that.extension) && Objects.equals(mimeType, that.mimeType) && Objects.equals(file, that.file) && Objects.equals(errandNumber, that.errandNumber) && Objects.equals(extraParameters, that.extraParameters);
 	}
 
 	@Override

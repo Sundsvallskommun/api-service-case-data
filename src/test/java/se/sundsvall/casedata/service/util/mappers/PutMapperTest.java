@@ -1,5 +1,12 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
@@ -14,14 +21,6 @@ import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putNote;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putStakeholder;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
 class PutMapperTest {
 
 	@Test
@@ -30,7 +29,7 @@ class PutMapperTest {
 		final var attachmentDTO = createAttachmentDTO(AttachmentCategory.ANSUPA);
 
 		assertThat(attachment).satisfies(a -> {
-			assertThat(a.getCategory()).isNotEqualTo(attachmentDTO.getCategory());
+			assertThat(a.getCategory()).isNotEqualTo(attachmentDTO.getCategory().name());
 			assertThat(a.getName()).isNotEqualTo(attachmentDTO.getName());
 			assertThat(a.getNote()).isNotEqualTo(attachmentDTO.getNote());
 			assertThat(a.getExtension()).isNotEqualTo(attachmentDTO.getExtension());
@@ -41,7 +40,7 @@ class PutMapperTest {
 		putAttachment(attachment, attachmentDTO);
 
 		assertThat(attachment).satisfies(a -> {
-			assertThat(a.getCategory()).isEqualTo(attachmentDTO.getCategory());
+			assertThat(a.getCategory()).isEqualTo(attachmentDTO.getCategory().name());
 			assertThat(a.getName()).isEqualTo(attachmentDTO.getName());
 			assertThat(a.getNote()).isEqualTo(attachmentDTO.getNote());
 			assertThat(a.getExtension()).isEqualTo(attachmentDTO.getExtension());
@@ -79,7 +78,7 @@ class PutMapperTest {
 			assertThat(s.getOrganizationNumber()).isEqualTo(stakeholderDTO.getOrganizationNumber());
 			assertThat(s.getAuthorizedSignatory()).isEqualTo(stakeholderDTO.getAuthorizedSignatory());
 			assertThat(s.getAdAccount()).isEqualTo(stakeholderDTO.getAdAccount());
-			assertThat(s.getRoles()).isEqualTo(stakeholderDTO.getRoles());
+			assertThat(s.getRoles()).isEqualTo(stakeholderDTO.getRoles().stream().map(StakeholderRole::name).toList());
 			assertThat(s.getExtraParameters()).containsAllEntriesOf(stakeholderDTO.getExtraParameters());
 			assertThat(s.getAddresses()).isEqualTo(stakeholderDTO.getAddresses().stream().map(EntityMapper::toAddress).toList());
 			assertThat(s.getContactInformation()).isEqualTo(stakeholderDTO.getContactInformation().stream().map(EntityMapper::toContactInformation).toList());

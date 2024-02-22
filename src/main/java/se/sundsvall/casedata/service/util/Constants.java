@@ -1,6 +1,6 @@
 package se.sundsvall.casedata.service.util;
 
-import se.sundsvall.casedata.integration.db.model.enums.CaseType;
+import se.sundsvall.casedata.api.model.enums.CaseType;
 
 import java.util.List;
 

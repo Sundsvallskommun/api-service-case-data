@@ -1,5 +1,17 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.enums.FacilityType;
+import se.sundsvall.casedata.api.model.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
+import se.sundsvall.casedata.integration.db.model.enums.ContactType;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.createAddress;
 import static se.sundsvall.casedata.TestUtil.createAddressDTO;
@@ -25,18 +37,6 @@ import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
 import static se.sundsvall.casedata.TestUtil.createStatus;
 import static se.sundsvall.casedata.TestUtil.createStatusDTO;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
-import se.sundsvall.casedata.integration.db.model.enums.ContactType;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 @ExtendWith(MockitoExtension.class)
 class EntityMapperTest {
@@ -155,7 +155,7 @@ class EntityMapperTest {
 		var facility = EntityMapper.toFacility(facilityDto);
 
 		assertThat(facility).satisfies(f -> {
-			assertThat(f.getFacilityType()).isEqualTo(facilityDto.getFacilityType());
+			assertThat(f.getFacilityType()).isEqualTo(facilityDto.getFacilityType().name());
 			assertThat(f.getUpdated()).isEqualTo(facilityDto.getUpdated());
 			assertThat(f.getCreated()).isEqualTo(facilityDto.getCreated());
 			assertThat(f.getDescription()).isEqualTo(facilityDto.getDescription());
@@ -173,7 +173,7 @@ class EntityMapperTest {
 
 		assertThat(facilityDto).satisfies(f -> {
 			assertThat(f.getDescription()).isEqualTo(facility.getDescription());
-			assertThat(f.getFacilityType()).isEqualTo(facility.getFacilityType());
+			assertThat(f.getFacilityType()).isEqualTo(FacilityType.valueOf(facility.getFacilityType()));
 			assertThat(f.getUpdated()).isEqualTo(facility.getUpdated());
 			assertThat(f.getCreated()).isEqualTo(facility.getCreated());
 			assertThat(f.getExtraParameters()).isEqualTo(facility.getExtraParameters());
@@ -198,7 +198,7 @@ class EntityMapperTest {
 			assertThat(s.getOrganizationName()).isEqualTo(stakeholderDto.getOrganizationName());
 			assertThat(s.getOrganizationNumber()).isEqualTo(stakeholderDto.getOrganizationNumber());
 			assertThat(s.getPersonId()).isEqualTo(stakeholderDto.getPersonId());
-			assertThat(s.getRoles()).isEqualTo(stakeholderDto.getRoles());
+			assertThat(s.getRoles()).isEqualTo(stakeholderDto.getRoles().stream().map(StakeholderRole::name).toList());
 			assertThat(s.getId()).isEqualTo(stakeholderDto.getId());
 			assertThat(s.getVersion()).isEqualTo(stakeholderDto.getVersion());
 		});
@@ -219,7 +219,7 @@ class EntityMapperTest {
 			assertThat(s.getOrganizationName()).isEqualTo(stakeholder.getOrganizationName());
 			assertThat(s.getOrganizationNumber()).isEqualTo(stakeholder.getOrganizationNumber());
 			assertThat(s.getPersonId()).isEqualTo(stakeholder.getPersonId());
-			assertThat(s.getRoles()).isEqualTo(stakeholder.getRoles());
+			assertThat(s.getRoles()).isEqualTo(stakeholder.getRoles().stream().map(StakeholderRole::valueOf).toList());
 			assertThat(s.getId()).isEqualTo(stakeholder.getId());
 			assertThat(s.getVersion()).isEqualTo(stakeholder.getVersion());
 		});
@@ -231,7 +231,7 @@ class EntityMapperTest {
 		var attachment = EntityMapper.toAttachment(attachmentDto);
 
 		assertThat(attachment).satisfies(a -> {
-			assertThat(a.getCategory()).isEqualTo(attachmentDto.getCategory());
+			assertThat(a.getCategory()).isEqualTo(attachmentDto.getCategory().name());
 			assertThat(a.getCreated()).isEqualTo(attachmentDto.getCreated());
 			assertThat(a.getUpdated()).isEqualTo(attachmentDto.getUpdated());
 			assertThat(a.getId()).isEqualTo(attachmentDto.getId());
@@ -245,7 +245,7 @@ class EntityMapperTest {
 		var attachmentDto = EntityMapper.toAttachmentDto(attachment);
 
 		assertThat(attachmentDto).satisfies(a -> {
-			assertThat(a.getCategory()).isEqualTo(attachment.getCategory());
+			assertThat(a.getCategory()).isEqualTo(AttachmentCategory.valueOf(attachment.getCategory()));
 			assertThat(a.getCreated()).isEqualTo(attachment.getCreated());
 			assertThat(a.getUpdated()).isEqualTo(attachment.getUpdated());
 			assertThat(a.getId()).isEqualTo(attachment.getId());

@@ -1,26 +1,11 @@
 package se.sundsvall.casedata;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.function.Consumer;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import org.apache.commons.lang3.RandomStringUtils;
-
 import se.sundsvall.casedata.api.model.AddressDTO;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
@@ -36,6 +21,10 @@ import se.sundsvall.casedata.api.model.PatchDecisionDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
+import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.enums.CaseType;
+import se.sundsvall.casedata.api.model.enums.FacilityType;
+import se.sundsvall.casedata.api.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Address;
 import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
@@ -49,20 +38,29 @@ import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.Status;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
-import se.sundsvall.casedata.integration.db.model.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.ContactType;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
-import se.sundsvall.casedata.integration.db.model.enums.FacilityType;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitClient;
 
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.function.Consumer;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 public class TestUtil {
 
@@ -388,7 +386,7 @@ public class TestUtil {
 			.withVersion(1)
 			.withExtraParameters(createExtraParameters())
 			.withAddress(createAddress())
-			.withFacilityType(FacilityType.GARAGE)
+			.withFacilityType(FacilityType.GARAGE.name())
 			.withErrand(null)
 			.withMainFacility(true)
 			.build();
@@ -396,7 +394,7 @@ public class TestUtil {
 
 	public static Stakeholder createStakeholder() {
 		return Stakeholder.builder()
-			.withRoles(new ArrayList<>(List.of(StakeholderRole.APPLICANT)))
+			.withRoles(new ArrayList<>(List.of(StakeholderRole.APPLICANT.name())))
 			.withType(StakeholderType.PERSON)
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
@@ -493,7 +491,7 @@ public class TestUtil {
 			.withMimeType("mimeType")
 			.withNote("note")
 			.withErrandNumber("errandNumber")
-			.withCategory(AttachmentCategory.POLICE_REPORT)
+			.withCategory(AttachmentCategory.POLICE_REPORT.name())
 			.build();
 	}
 
@@ -526,7 +524,7 @@ public class TestUtil {
 			.withVersion(1)
 			.withPriority(Priority.HIGH)
 			.withChannel(Channel.EMAIL)
-			.withCaseType(CaseType.PARKING_PERMIT)
+			.withCaseType(CaseType.PARKING_PERMIT.name())
 			.build();
 	}
 }

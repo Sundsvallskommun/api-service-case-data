@@ -1,7 +1,8 @@
-package se.sundsvall.casedata.integration.db.model.enums;
+package se.sundsvall.casedata.api.model.enums;
 
 import lombok.Getter;
 
+@Getter
 public enum FacilityType {
 
 	// ByggR - Ärendeklasser (Used for CaseType=NYBYGGNAD_ANSOKAN_OM_BYGGLOV)
@@ -37,10 +38,8 @@ public enum FacilityType {
 	DORMER("TAK", "takkupa"),
 	EXTENSION("TILL", "tillbyggnad");
 
-	@Getter
 	private final String value;
 
-	@Getter
 	private final String description;
 
 	FacilityType(final String value, final String description) {

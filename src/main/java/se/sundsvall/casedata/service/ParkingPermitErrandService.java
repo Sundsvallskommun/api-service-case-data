@@ -1,23 +1,22 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Objects.nonNull;
-import static se.sundsvall.casedata.service.util.Constants.PERMIT_NUMBER_EXTRA_PARAMETER_KEY;
-import static se.sundsvall.casedata.service.util.Constants.PERMIT_STATUS_EXTRA_PARAMETER_KEY;
+import org.springframework.stereotype.Service;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
+import se.sundsvall.casedata.api.model.ErrandDTO;
+import se.sundsvall.casedata.api.model.GetParkingPermitDTO;
+import se.sundsvall.casedata.api.model.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
-
-import se.sundsvall.casedata.api.model.ErrandDTO;
-import se.sundsvall.casedata.api.model.GetParkingPermitDTO;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import static java.util.Objects.nonNull;
+import static se.sundsvall.casedata.service.util.Constants.PERMIT_NUMBER_EXTRA_PARAMETER_KEY;
+import static se.sundsvall.casedata.service.util.Constants.PERMIT_STATUS_EXTRA_PARAMETER_KEY;
 
 @Service
 public class ParkingPermitErrandService {
@@ -60,7 +59,7 @@ public class ParkingPermitErrandService {
 		return errandRepository.findAll().stream()
 			.filter(errand -> errand.getStakeholders().stream()
 				.filter(stakeholder -> nonNull(stakeholder.getPersonId()))
-				.anyMatch(stakeholder -> stakeholder.getPersonId().equals(personId) && stakeholder.getRoles().contains(StakeholderRole.APPLICANT)))
+				.anyMatch(stakeholder -> stakeholder.getPersonId().equals(personId) && stakeholder.getRoles().contains(StakeholderRole.APPLICANT.name())))
 			.toList();
 	}
 

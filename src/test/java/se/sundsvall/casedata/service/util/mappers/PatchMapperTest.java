@@ -1,5 +1,12 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
@@ -17,14 +24,6 @@ import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchErrand
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNote;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import se.sundsvall.casedata.integration.db.model.enums.AttachmentCategory;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
 class PatchMapperTest {
 
 	@Test
@@ -35,7 +34,7 @@ class PatchMapperTest {
 		var patchedErrand = patchErrand(errand, patch);
 
 		assertThat(patchedErrand).isNotNull().satisfies(e -> {
-			assertThat(e.getCaseType()).isEqualTo(patch.getCaseType());
+			assertThat(e.getCaseType()).isEqualTo(patch.getCaseType().name());
 			assertThat(e.getDescription()).isEqualTo(patch.getDescription());
 			assertThat(e.getExternalCaseId()).isEqualTo(patch.getExternalCaseId());
 			assertThat(e.getPriority()).isEqualTo(patch.getPriority());
@@ -81,7 +80,7 @@ class PatchMapperTest {
 			assertThat(s.getOrganizationNumber()).isEqualTo(patch.getOrganizationNumber());
 			assertThat(s.getAuthorizedSignatory()).isEqualTo(patch.getAuthorizedSignatory());
 			assertThat(s.getAdAccount()).isEqualTo(patch.getAdAccount());
-			assertThat(s.getRoles()).isEqualTo(patch.getRoles());
+			assertThat(s.getRoles()).isEqualTo(patch.getRoles().stream().map(StakeholderRole::name).toList());
 			assertThat(s.getAddresses()).isEqualTo(patch.getAddresses().stream().map(EntityMapper::toAddress).toList());
 			assertThat(s.getContactInformation()).isEqualTo(patch.getContactInformation().stream().map(EntityMapper::toContactInformation).toList());
 			assertThat(s.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
@@ -101,7 +100,7 @@ class PatchMapperTest {
 			assertThat(s.getFirstName()).isEqualTo(patch.getFirstName());
 			assertThat(s.getLastName()).isEqualTo(patch.getLastName());
 			assertThat(s.getAdAccount()).isEqualTo(patch.getAdAccount());
-			assertThat(s.getRoles()).isEqualTo(patch.getRoles());
+			assertThat(s.getRoles()).isEqualTo(patch.getRoles().stream().map(StakeholderRole::name).toList());
 			assertThat(s.getAddresses()).isEqualTo(patch.getAddresses().stream().map(EntityMapper::toAddress).toList());
 			assertThat(s.getContactInformation()).isEqualTo(patch.getContactInformation().stream().map(EntityMapper::toContactInformation).toList());
 			assertThat(s.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
@@ -116,7 +115,7 @@ class PatchMapperTest {
 		var patchedAttachment = patchAttachment(attachment, patch);
 
 		assertThat(patchedAttachment).isNotNull().satisfies(a -> {
-			assertThat(a.getCategory()).isEqualTo(patch.getCategory());
+			assertThat(a.getCategory()).isEqualTo(patch.getCategory().name());
 			assertThat(a.getName()).isEqualTo(patch.getName());
 			assertThat(a.getNote()).isEqualTo(patch.getNote());
 			assertThat(a.getExtension()).isEqualTo(patch.getExtension());

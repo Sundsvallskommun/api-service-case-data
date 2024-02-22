@@ -1,34 +1,28 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import se.sundsvall.casedata.integration.db.listeners.FacilityListener;
-import se.sundsvall.casedata.integration.db.model.enums.FacilityType;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import se.sundsvall.casedata.integration.db.listeners.FacilityListener;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Entity(name = "facility")
 @EntityListeners(FacilityListener.class)
@@ -56,9 +50,8 @@ public class Facility extends BaseEntity {
 	@Column(name = "main_facility")
 	private boolean mainFacility;
 
-	@Enumerated(EnumType.STRING)
 	@Column(name = "facility_type")
-	private FacilityType facilityType;
+	private String facilityType;
 
 	@ElementCollection
 	@CollectionTable(name = "facility_extra_parameters",
@@ -73,7 +66,7 @@ public class Facility extends BaseEntity {
 		if (this == o) return true;
 		if (!(o instanceof final Facility facility)) return false;
 		if (!super.equals(o)) return false;
-		return mainFacility == facility.mainFacility && Objects.equals(description, facility.description) && Objects.equals(address, facility.address) && Objects.equals(facilityCollectionName, facility.facilityCollectionName) && facilityType == facility.facilityType && Objects.equals(extraParameters, facility.extraParameters);
+		return Objects.equals(mainFacility, facility.mainFacility) && Objects.equals(description, facility.description) && Objects.equals(address, facility.address) && Objects.equals(facilityCollectionName, facility.facilityCollectionName) && Objects.equals(facilityType, facility.facilityType) && Objects.equals(extraParameters, facility.extraParameters);
 	}
 
 	@Override

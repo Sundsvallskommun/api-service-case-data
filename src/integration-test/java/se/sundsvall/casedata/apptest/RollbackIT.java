@@ -15,7 +15,7 @@ import java.util.List;
 
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
-import static se.sundsvall.casedata.integration.db.model.enums.CaseType.PARKING_PERMIT;
+import static se.sundsvall.casedata.api.model.enums.CaseType.PARKING_PERMIT;
 
 @WireMockAppTestSuite(files = "classpath:/RollbackIT", classes = Application.class)
 class RollbackIT extends CustomAbstractAppTest {
