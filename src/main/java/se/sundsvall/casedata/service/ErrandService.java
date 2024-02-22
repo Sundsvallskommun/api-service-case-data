@@ -1,30 +1,12 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Objects.isNull;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecision;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecisionDto;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandDto;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteDto;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholder;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderDto;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
-
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
@@ -38,7 +20,23 @@ import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
 
-import io.github.resilience4j.retry.annotation.Retry;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecision;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecisionDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholder;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
 
 @Service
 public class ErrandService {
@@ -129,8 +127,8 @@ public class ErrandService {
 		final var errand = toErrand(errandDTO);
 		final var resultErrand = errandRepository.save(errand);
 
-		//Will not start a process if it's not a parking permit errand
-		startParkingPermitProcess(resultErrand);
+		//Will not start a process if it's not a parking permit or mex errand
+		startProcess(resultErrand);
 
 		return toErrandDto(resultErrand);
 	}
@@ -247,7 +245,7 @@ public class ErrandService {
 		processService.updateProcess(updatedErrand);
 	}
 
-	private void startParkingPermitProcess(final Errand errand) {
+	private void startProcess(final Errand errand) {
 		try {
 			final var startProcessResponse = processService.startProcess(errand);
 			if (!isNull(startProcessResponse)) {
