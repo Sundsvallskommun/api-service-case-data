@@ -2,6 +2,7 @@ package se.sundsvall.casedata.api.model.enums;
 
 import lombok.Getter;
 
+@Getter
 public enum StakeholderRole {
 
 	// Kontrollansvarig
@@ -21,9 +22,17 @@ public enum StakeholderRole {
 	FELLOW_APPLICANT("Medsökande"),
 	DRIVER("Förare"),
 	PASSENGER("Passagerare"),
-	DOCTOR("Läkare");
+	DOCTOR("Läkare"),
 
-	@Getter
+	GRANTOR("Upplåtare"),
+	SELLER("Säljare"),
+	BUYER("Köpare"),
+	LEASEHOLDER("Arrendator"),
+	COMPANY_SIGNATORY("Firmatecknare"),
+	ASSOCIATION_REPRESENTATIVE("Föreningsrepresentant"),
+	CASHIER("Kassör"),
+	CHAIRMAN("Ordförande");
+
 	private final String text;
 
 	StakeholderRole(final String text) {
