@@ -1,42 +1,56 @@
 package se.sundsvall.casedata.api.model.enums;
 
-import lombok.Getter;
 
-@Getter
 public enum StakeholderRole {
 
 	// Kontrollansvarig
-	CONTROL_OFFICIAL("KOA"),
+	CONTROL_OFFICIAL,
 	// Sökande
-	APPLICANT("SOK"),
+	APPLICANT,
 	// Fastighetsägare
-	PROPERTY_OWNER("FAG"),
+	PROPERTY_OWNER,
 	// Betalningsansvarig
-	PAYMENT_PERSON("BETA"),
+	PAYMENT_PERSON,
+	// "Fakturamottagare"
+	INVOICE_RECIPIENT,
+	// "Verksamhetsutövare"
+	OPERATOR,
+	// "KPER"
+	CONTACT_PERSON,
+	// "Handläggare"
+	ADMINISTRATOR,
+	// "Medsökande"
+	FELLOW_APPLICANT,
+	// "Förare"
+	DRIVER,
+	// "Passagerare"
+	PASSENGER,
+	// "Läkare"
+	DOCTOR,
+	// "Upplåtare"
+	GRANTOR,
+	// "Säljare"
+	SELLER,
+	// "Köpare"
+	BUYER,
+	// "Arrendator"
+	LEASEHOLDER,
+	// "Firmatecknare"
+	COMPANY_SIGNATORY,
+	// "Föreningsrepresentant"
+	ASSOCIATION_REPRESENTATIVE,
+	// "Kassör"
+	CASHIER,
+	// "Ordförande"
+	CHAIRMAN,
+	// Tomträttshavare
+	LAND_RIGHT_OWNER,
+	//Ombud
+	DELEGATE,
+	// Nyttjanderättshavare
+	USUFRUCTUARY;
 
-	INVOICE_RECIPENT("Fakturamottagare"),
-	OPERATOR("Verksamhetsutövare"),
-
-	CONTACT_PERSON("KPER"),
-	ADMINISTRATOR("Handläggare"),
-	FELLOW_APPLICANT("Medsökande"),
-	DRIVER("Förare"),
-	PASSENGER("Passagerare"),
-	DOCTOR("Läkare"),
-
-	GRANTOR("Upplåtare"),
-	SELLER("Säljare"),
-	BUYER("Köpare"),
-	LEASEHOLDER("Arrendator"),
-	COMPANY_SIGNATORY("Firmatecknare"),
-	ASSOCIATION_REPRESENTATIVE("Föreningsrepresentant"),
-	CASHIER("Kassör"),
-	CHAIRMAN("Ordförande");
-
-	private final String text;
-
-	StakeholderRole(final String text) {
-		this.text = text;
+	StakeholderRole() {
 	}
 
 }
