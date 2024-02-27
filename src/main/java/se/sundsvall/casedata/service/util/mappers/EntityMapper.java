@@ -1,5 +1,9 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Optional;
+
 import se.sundsvall.casedata.api.model.AddressDTO;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
@@ -12,10 +16,6 @@ import se.sundsvall.casedata.api.model.LawDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
-import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.enums.CaseType;
-import se.sundsvall.casedata.api.model.enums.FacilityType;
-import se.sundsvall.casedata.api.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Address;
 import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
@@ -28,10 +28,6 @@ import se.sundsvall.casedata.integration.db.model.Law;
 import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.Status;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Optional;
 
 
 public final class EntityMapper {
@@ -48,7 +44,7 @@ public final class EntityMapper {
 				.withUpdated(errand.getUpdated())
 				.withErrandNumber(errand.getErrandNumber())
 				.withExternalCaseId(errand.getExternalCaseId())
-				.withCaseType(CaseType.valueOf(errand.getCaseType()))
+				.withCaseType(errand.getCaseType())
 				.withChannel(errand.getChannel())
 				.withPriority(errand.getPriority())
 				.withDescription(errand.getDescription())
@@ -83,7 +79,7 @@ public final class EntityMapper {
 				.withUpdated(dto.getUpdated())
 				.withErrandNumber(dto.getErrandNumber())
 				.withExternalCaseId(dto.getExternalCaseId())
-				.withCaseType(toCaseTypeString(dto.getCaseType()))
+				.withCaseType(dto.getCaseType())
 				.withChannel(dto.getChannel())
 				.withPriority(dto.getPriority())
 				.withDescription(dto.getDescription())
@@ -134,7 +130,7 @@ public final class EntityMapper {
 				.withAdAccount(dto.getAdAccount())
 				.withAddresses(new ArrayList<>(dto.getAddresses().stream().map(EntityMapper::toAddress).toList()))
 				.withContactInformation(new ArrayList<>(dto.getContactInformation().stream().map(EntityMapper::toContactInformation).toList()))
-				.withRoles(new ArrayList<>(dto.getRoles().stream().map(StakeholderRole::name).toList()))
+				.withRoles(dto.getRoles())
 				.withExtraParameters(Optional.of(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -156,7 +152,7 @@ public final class EntityMapper {
 				.withAdAccount(stakeholder.getAdAccount())
 				.withAddresses(new ArrayList<>(stakeholder.getAddresses().stream().map(EntityMapper::toAddressDto).toList()))
 				.withContactInformation(new ArrayList<>(stakeholder.getContactInformation().stream().map(EntityMapper::toContactInformationDto).toList()))
-				.withRoles(new ArrayList<>(stakeholder.getRoles().stream().map(StakeholderRole::valueOf).toList()))
+				.withRoles(stakeholder.getRoles())
 				.withExtraParameters(Optional.of(stakeholder.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -168,7 +164,7 @@ public final class EntityMapper {
 				.withVersion(dto.getVersion())
 				.withCreated(dto.getCreated())
 				.withUpdated(dto.getUpdated())
-				.withCategory(toCategoryString(dto.getCategory()))
+				.withCategory(dto.getCategory())
 				.withName(dto.getName())
 				.withNote(dto.getNote())
 				.withExtension(dto.getExtension())
@@ -186,7 +182,7 @@ public final class EntityMapper {
 				.withVersion(attachment.getVersion())
 				.withCreated(attachment.getCreated())
 				.withUpdated(attachment.getUpdated())
-				.withCategory(AttachmentCategory.valueOf(attachment.getCategory()))
+				.withCategory(attachment.getCategory())
 				.withName(attachment.getName())
 				.withNote(attachment.getNote())
 				.withExtension(attachment.getExtension())
@@ -370,7 +366,7 @@ public final class EntityMapper {
 				.withAddress(toAddress(dto.getAddress()))
 				.withFacilityCollectionName(dto.getFacilityCollectionName())
 				.withMainFacility(dto.isMainFacility())
-				.withFacilityType(toFacilityTypeString(dto.getFacilityType()))
+				.withFacilityType(dto.getFacilityType())
 				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -386,7 +382,7 @@ public final class EntityMapper {
 				.withAddress(toAddressDto(facility.getAddress()))
 				.withFacilityCollectionName(facility.getFacilityCollectionName())
 				.withMainFacility(facility.isMainFacility())
-				.withFacilityType(FacilityType.valueOf(facility.getFacilityType()))
+				.withFacilityType(facility.getFacilityType())
 				.withExtraParameters(Optional.ofNullable(facility.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -441,19 +437,4 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	static String toCaseTypeString(final CaseType caseType) {
-		return Optional.ofNullable(caseType).map(CaseType::toString).orElse(null);
-	}
-
-	static String toCategoryString(final AttachmentCategory category) {
-		return Optional.ofNullable(category).map(AttachmentCategory::toString).orElse(null);
-	}
-
-	static String toFacilityTypeString(final FacilityType facilityType) {
-		return Optional.ofNullable(facilityType).map(FacilityType::toString).orElse(null);
-	}
-
-	public static String toRoleString(final StakeholderRole role) {
-		return Optional.ofNullable(role).map(StakeholderRole::name).orElse(null);
-	}
 }

@@ -28,9 +28,9 @@ import org.springframework.http.HttpStatus;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.api.model.enums.CaseType;
 import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -97,7 +97,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 	void test3_generateErrandNumberForSameAbbreviation() throws JsonProcessingException {
 
 		final ErrandDTO errandDTO1 = createErrandDTO();
-		errandDTO1.setCaseType(CaseType.PARKING_PERMIT);
+		errandDTO1.setCaseType(CaseType.PARKING_PERMIT.name());
 		setupCall()
 			.withHttpMethod(HttpMethod.POST)
 			.withServicePath("/errands")
@@ -106,7 +106,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		final ErrandDTO errandDTO2 = createErrandDTO();
-		errandDTO2.setCaseType(CaseType.LOST_PARKING_PERMIT);
+		errandDTO2.setCaseType(CaseType.LOST_PARKING_PERMIT.name());
 		setupCall()
 			.withHttpMethod(HttpMethod.POST)
 			.withServicePath("/errands")
@@ -115,7 +115,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		final ErrandDTO errandDTO3 = createErrandDTO();
-		errandDTO3.setCaseType(CaseType.PARKING_PERMIT_RENEWAL);
+		errandDTO3.setCaseType(CaseType.PARKING_PERMIT_RENEWAL.name());
 		setupCall()
 			.withHttpMethod(HttpMethod.POST)
 			.withServicePath("/errands")
@@ -135,7 +135,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 	@EnumSource(CaseType.class)
 	void test4_generateErrandNumberForDifferentAbbreviation(final CaseType caseType) throws JsonProcessingException {
 		final ErrandDTO errandDTO1 = createErrandDTO();
-		errandDTO1.setCaseType(caseType);
+		errandDTO1.setCaseType(caseType.name());
 
 		setupCall()
 			.withHttpMethod(HttpMethod.POST)
@@ -143,7 +143,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO1))
 			.withExpectedResponseStatus(HttpStatus.CREATED)
 			.sendRequestAndVerifyResponse();
-		
+
 		final List<Errand> resultList = errandRepository.findAll();
 		resultList.forEach(errand -> assertFalse(errand.getErrandNumber() == null || errand.getErrandNumber().isBlank()));
 	}

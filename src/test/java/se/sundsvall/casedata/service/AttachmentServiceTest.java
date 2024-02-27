@@ -1,24 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
-import se.sundsvall.casedata.api.model.AttachmentDTO;
-import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
-import se.sundsvall.casedata.integration.db.AttachmentRepository;
-import se.sundsvall.casedata.integration.db.model.Attachment;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,6 +13,26 @@ import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachmentDto;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.zalando.problem.Status;
+import org.zalando.problem.ThrowableProblem;
+
+import se.sundsvall.casedata.api.model.AttachmentDTO;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
+import se.sundsvall.casedata.integration.db.model.Attachment;
 
 @ExtendWith(MockitoExtension.class)
 class AttachmentServiceTest {
@@ -78,7 +79,7 @@ class AttachmentServiceTest {
 		final var mockAttachment = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(attachment), Attachment.class);
 		doReturn(Optional.of(mockAttachment)).when(attachmentRepository).findById(any());
 
-		final AttachmentDTO putDTO = createAttachmentDTO((AttachmentCategory.ANKVU));
+		final AttachmentDTO putDTO = createAttachmentDTO((AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT));
 
 		attachmentService.replaceAttachment(attachment.getId(), putDTO);
 
@@ -130,7 +131,7 @@ class AttachmentServiceTest {
 	@Test
 	void testFindByErrandNumber() {
 
-		final var attachment = toAttachment(createAttachmentDTO(AttachmentCategory.ANKVU));
+		final var attachment = toAttachment(createAttachmentDTO(AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT));
 		attachment.setErrandNumber("someErrandNumber");
 		doReturn(List.of(attachment)).when(attachmentRepository).findAllByErrandNumber(any(String.class));
 
@@ -162,7 +163,7 @@ class AttachmentServiceTest {
 		attachment.setErrandNumber("someErrandNumber");
 		doReturn(attachment).when(attachmentRepository).save(any(Attachment.class));
 
-		final var result = attachmentService.createAttachment(createAttachmentDTO(AttachmentCategory.ADRESS));
+		final var result = attachmentService.createAttachment(createAttachmentDTO(AttachmentCategory.ADDRESS_SHEET));
 		assertEquals(attachment, result);
 
 		verify(attachmentRepository, times(1)).save(any(Attachment.class));

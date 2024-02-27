@@ -1,21 +1,22 @@
 package se.sundsvall.casedata.apptest;
 
+import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
+import static se.sundsvall.casedata.TestUtil.createErrandDTO;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
+
+import java.util.List;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
-
-import java.util.List;
-
-import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
-import static se.sundsvall.casedata.TestUtil.createErrandDTO;
-import static se.sundsvall.casedata.api.model.enums.CaseType.PARKING_PERMIT;
 
 @WireMockAppTestSuite(files = "classpath:/RollbackIT", classes = Application.class)
 class RollbackIT extends CustomAbstractAppTest {
@@ -28,7 +29,7 @@ class RollbackIT extends CustomAbstractAppTest {
 	void test1_500rollback() throws JsonProcessingException {
 		final List<Errand> listBefore = errandRepository.findAll();
 		final var errandDTO = createErrandDTO();
-		errandDTO.setCaseType(PARKING_PERMIT);
+		errandDTO.setCaseType(PARKING_PERMIT.name());
 
 		setupCall()
 			.withHttpMethod(HttpMethod.POST)

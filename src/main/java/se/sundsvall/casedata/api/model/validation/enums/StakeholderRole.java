@@ -1,8 +1,7 @@
-package se.sundsvall.casedata.api.model.enums;
+package se.sundsvall.casedata.api.model.validation.enums;
 
 
 public enum StakeholderRole {
-
 	// Kontrollansvarig
 	CONTROL_OFFICIAL,
 	// Sökande
@@ -51,9 +50,6 @@ public enum StakeholderRole {
 	//Ombud
 	DELEGATE,
 	// Nyttjanderättshavare
-	USUFRUCTUARY;
-
-	StakeholderRole() {
-	}
+	USUFRUCTUARY
 
 }

@@ -1,13 +1,10 @@
 package se.sundsvall.casedata.service.util;
 
-import se.sundsvall.casedata.api.model.enums.CaseType;
-
 import java.util.List;
 
-public final class Constants {
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
-	private Constants() {
-	}
+public final class Constants {
 
 	public static final String PROCESS_ENGINE_PROBLEM_DETAIL = "Unexpected response from ProcessEngine API.";
 
@@ -30,4 +27,8 @@ public final class Constants {
 	public static final List<CaseType> PARKING_PERMIT_CASE_TYPES = CaseType.getValuesByAbbreviation("PRH");
 
 	public static final List<CaseType> MEX_CASE_TYPES = CaseType.getValuesByAbbreviation("MEX");
+
+	private Constants() {
+	}
+
 }

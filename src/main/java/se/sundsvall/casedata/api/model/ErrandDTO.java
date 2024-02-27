@@ -1,10 +1,24 @@
 package se.sundsvall.casedata.api.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+
+import se.sundsvall.casedata.api.model.validation.ValidCaseType;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,18 +26,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-import se.sundsvall.casedata.api.model.enums.CaseType;
-import se.sundsvall.casedata.integration.db.model.enums.Channel;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Data
 @ToString(callSuper = true)
@@ -40,8 +42,8 @@ public class ErrandDTO extends BaseDTO {
 	@Size(max = 255)
 	private String externalCaseId;
 
-	@NotNull
-	private CaseType caseType;
+	@ValidCaseType
+	private String caseType;
 
 	@Schema(description = "How the errand was created", example = "EMAIL", nullable = true)
 	private Channel channel;

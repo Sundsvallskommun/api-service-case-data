@@ -1,11 +1,26 @@
 package se.sundsvall.casedata;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.function.Consumer;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import org.apache.commons.lang3.RandomStringUtils;
+
 import se.sundsvall.casedata.api.model.AddressDTO;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
@@ -21,10 +36,10 @@ import se.sundsvall.casedata.api.model.PatchDecisionDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
-import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.enums.CaseType;
-import se.sundsvall.casedata.api.model.enums.FacilityType;
-import se.sundsvall.casedata.api.model.enums.StakeholderRole;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Address;
 import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
@@ -47,20 +62,7 @@ import se.sundsvall.casedata.integration.db.model.enums.Priority;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitClient;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.function.Consumer;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 
 public class TestUtil {
 
@@ -73,7 +75,7 @@ public class TestUtil {
 	public static ErrandDTO createErrandDTO() {
 		final var errandDTO = new ErrandDTO();
 		errandDTO.setExternalCaseId(UUID.randomUUID().toString());
-		errandDTO.setCaseType(CaseType.PARKING_PERMIT);
+		errandDTO.setCaseType(CaseType.PARKING_PERMIT.name());
 		errandDTO.setChannel(Channel.EMAIL);
 		errandDTO.setPriority(Priority.HIGH);
 		errandDTO.setErrandNumber(RandomStringUtils.random(10, true, true));
@@ -102,8 +104,8 @@ public class TestUtil {
 		return errandDTO;
 	}
 
-	public static StakeholderRole getRandomStakeholderRole() {
-		return StakeholderRole.values()[new Random().nextInt(StakeholderRole.values().length)];
+	public static String getRandomStakeholderRole() {
+		return StakeholderRole.values()[new Random().nextInt(StakeholderRole.values().length)].name();
 	}
 
 	public static StakeholderType getRandomStakeholderType() {
@@ -132,7 +134,7 @@ public class TestUtil {
 		decisionDTO.setDecisionType(getRandomDecisionType());
 		decisionDTO.setDecisionOutcome(DecisionOutcome.CANCELLATION);
 		decisionDTO.setDescription(RandomStringUtils.random(30, true, false));
-		decisionDTO.setDecidedBy(createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR)));
+		decisionDTO.setDecidedBy(createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name())));
 		decisionDTO.setDecidedAt(getRandomOffsetDateTime());
 		decisionDTO.setValidFrom(getRandomOffsetDateTime());
 		decisionDTO.setValidTo(getRandomOffsetDateTime());
@@ -153,7 +155,7 @@ public class TestUtil {
 			.withId(1L)
 			.withExtraParameters(createExtraParameters())
 			.withAddress(createAddressDTO(AddressCategory.VISITING_ADDRESS))
-			.withFacilityType(FacilityType.GARAGE)
+			.withFacilityType(FacilityType.GARAGE.name())
 			.withFacilityCollectionName("facilityCollectionName")
 			.withMainFacility(true)
 			.build();
@@ -161,7 +163,7 @@ public class TestUtil {
 
 	public static AttachmentDTO createAttachmentDTO(final AttachmentCategory category) {
 		final var attachmentDTO = new AttachmentDTO();
-		attachmentDTO.setCategory(category);
+		attachmentDTO.setCategory(category.toString());
 		attachmentDTO.setName(RandomStringUtils.random(10, true, false) + ".pdf");
 		attachmentDTO.setNote(RandomStringUtils.random(20, true, false));
 		attachmentDTO.setExtension(".pdf");
@@ -174,8 +176,8 @@ public class TestUtil {
 
 	public static AppealDTO createAppealDTO() {
 		final var appealDTO = new AppealDTO();
-		appealDTO.setAppealedBy(createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.APPLICANT)));
-		appealDTO.setJudicialAuthorisation(createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.DOCTOR)));
+		appealDTO.setAppealedBy(createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.APPLICANT.name())));
+		appealDTO.setJudicialAuthorisation(createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.DOCTOR.name())));
 		appealDTO.setAttachments(List.of(createAttachmentDTO(AttachmentCategory.POLICE_REPORT)));
 		appealDTO.setExtraParameters(createExtraParameters());
 
@@ -197,7 +199,7 @@ public class TestUtil {
 
 		facilityTypes.forEach(facilityType -> {
 			final FacilityDTO facilityDTO = new FacilityDTO();
-			facilityDTO.setFacilityType(facilityType);
+			facilityDTO.setFacilityType(facilityType.name());
 			facilityDTO.setMainFacility(oneMainFacility && facilityList.isEmpty());
 			facilityDTO.setDescription(RandomStringUtils.random(20, true, false));
 			facilityDTO.setFacilityCollectionName(RandomStringUtils.random(10, true, false));
@@ -223,7 +225,7 @@ public class TestUtil {
 		return extraParams;
 	}
 
-	public static StakeholderDTO createStakeholderDTO(final StakeholderType stakeholderType, final List<StakeholderRole> stakeholderRoles) {
+	public static StakeholderDTO createStakeholderDTO(final StakeholderType stakeholderType, final List<String> stakeholderRoles) {
 		if (stakeholderType.equals(StakeholderType.PERSON)) {
 			final var person = new StakeholderDTO();
 			person.setType(StakeholderType.PERSON);
@@ -349,7 +351,7 @@ public class TestUtil {
 	}
 
 	public static Note createNote(final Consumer<Note> modifier) {
-		var note = Note.builder()
+		final var note = Note.builder()
 			.withUpdatedBy("updatedBy")
 			.withCreatedBy("createdBy")
 			.withUpdated(getRandomOffsetDateTime())
@@ -527,4 +529,5 @@ public class TestUtil {
 			.withCaseType(CaseType.PARKING_PERMIT.name())
 			.build();
 	}
+
 }

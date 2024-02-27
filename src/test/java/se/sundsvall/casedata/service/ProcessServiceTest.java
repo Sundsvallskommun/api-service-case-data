@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service;
 
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,7 +10,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.casedata.api.model.enums.CaseType;
+
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
 
@@ -33,6 +35,18 @@ class ProcessServiceTest {
 
 	@InjectMocks
 	private ProcessService processService;
+
+	private static Stream<Arguments> mexTypesProvider() {
+		return CaseType.getValuesByAbbreviation("MEX").stream()
+			.map(Object::toString)
+			.map(Arguments::of);
+	}
+
+	private static Stream<Arguments> parkingPermitTypesProvider() {
+		return CaseType.getValuesByAbbreviation("PRH").stream()
+			.map(Object::toString)
+			.map(Arguments::of);
+	}
 
 	@ParameterizedTest
 	@MethodSource("parkingPermitTypesProvider")
@@ -104,15 +118,4 @@ class ProcessServiceTest {
 		verifyNoInteractions(parkingPermitIntegration, landAndExploitationIntegration);
 	}
 
-	private static Stream<Arguments> mexTypesProvider() {
-		return CaseType.getValuesByAbbreviation("MEX").stream()
-			.map(Object::toString)
-			.map(Arguments::of);
-	}
-
-	private static Stream<Arguments> parkingPermitTypesProvider() {
-		return CaseType.getValuesByAbbreviation("PRH").stream()
-			.map(Object::toString)
-			.map(Arguments::of);
-	}
 }

@@ -1,19 +1,18 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 import se.sundsvall.casedata.api.model.AttachmentDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.PatchDecisionDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
-import se.sundsvall.casedata.api.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
-
-import java.util.ArrayList;
-import java.util.Optional;
 
 public final class PatchMapper {
 
@@ -60,7 +59,7 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getOrganizationNumber()).ifPresent(stakeholder::setOrganizationNumber);
 		Optional.ofNullable(patch.getAuthorizedSignatory()).ifPresent(stakeholder::setAuthorizedSignatory);
 		Optional.ofNullable(patch.getAdAccount()).ifPresent(stakeholder::setAdAccount);
-		Optional.ofNullable(patch.getRoles()).ifPresent(roles -> stakeholder.setRoles(new ArrayList<>(patch.getRoles().stream().map(StakeholderRole::name).toList())));
+		Optional.ofNullable(patch.getRoles()).ifPresent(roles -> stakeholder.setRoles(patch.getRoles()));
 		Optional.ofNullable(patch.getAddresses()).ifPresent(s -> stakeholder.setAddresses(new ArrayList<>(patch.getAddresses().stream().map(EntityMapper::toAddress).toList())));
 		Optional.ofNullable(patch.getContactInformation()).ifPresent(s -> stakeholder.setContactInformation(new ArrayList<>(patch.getContactInformation().stream().map(EntityMapper::toContactInformation).toList())));
 		return stakeholder;
@@ -69,7 +68,7 @@ public final class PatchMapper {
 	public static Attachment patchAttachment(final Attachment attachment, final AttachmentDTO patch) {
 		//ExtraParameters are not patched, they are posted for whatever reason.
 		Optional.ofNullable(patch.getExtraParameters()).ifPresent(s -> attachment.getExtraParameters().putAll(patch.getExtraParameters()));
-		Optional.ofNullable(patch.getCategory()).ifPresent(category -> attachment.setCategory(category.name()));
+		Optional.ofNullable(patch.getCategory()).ifPresent(attachment::setCategory);
 		Optional.ofNullable(patch.getName()).ifPresent(attachment::setName);
 		Optional.ofNullable(patch.getNote()).ifPresent(attachment::setNote);
 		Optional.ofNullable(patch.getExtension()).ifPresent(attachment::setExtension);

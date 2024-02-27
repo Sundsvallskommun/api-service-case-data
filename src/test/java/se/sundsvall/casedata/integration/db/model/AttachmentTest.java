@@ -8,7 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
+
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 import java.time.OffsetDateTime;

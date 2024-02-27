@@ -1,5 +1,24 @@
 package se.sundsvall.casedata.apptest;
 
+import static java.util.Collections.emptyMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
+import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
+import static se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory.NOTIFICATION_WITHOUT_PERSONAL_NUMBER;
+import static se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory.PASSPORT_PHOTO;
+import static se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory.POLICE_REPORT;
+import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
+import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
+import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
+
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Random;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Assertions;
@@ -9,32 +28,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
-import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
-
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Random;
-
-import static java.util.Collections.emptyMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
-import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
-import static se.sundsvall.casedata.api.model.enums.AttachmentCategory.ANSUPA;
-import static se.sundsvall.casedata.api.model.enums.AttachmentCategory.PASSPORT_PHOTO;
-import static se.sundsvall.casedata.api.model.enums.AttachmentCategory.POLICE_REPORT;
-import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
-import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
-import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
 @WireMockAppTestSuite(files = "classpath:/AttachmentResourceIT", classes = Application.class)
 @Sql({
@@ -102,7 +103,7 @@ class AttachmentResourceIT extends CustomAbstractAppTest {
 
 	@Test
 	void test4_PutAttachmentNotFound() throws JsonProcessingException {
-		final var inputAttachmentDTO = createAttachmentDTO(ANSUPA);
+		final var inputAttachmentDTO = createAttachmentDTO(NOTIFICATION_WITHOUT_PERSONAL_NUMBER);
 		final var randomId = new Random().nextLong();
 
 		setupCall()
@@ -163,7 +164,7 @@ class AttachmentResourceIT extends CustomAbstractAppTest {
 
 		assertThat(result).hasSize(initialAttachments.size() + 1).element(result.size() - 1).satisfies(attachment -> {
 				assertThat(attachment.getId()).isNotNull();
-				assertThat(attachment.getCategory()).isEqualTo(dto.getCategory().name());
+				assertThat(attachment.getCategory()).isEqualTo(dto.getCategory());
 				assertThat(attachment.getExtension()).isEqualTo(dto.getExtension());
 				assertThat(attachment.getFile()).isEqualTo(dto.getFile());
 				assertThat(attachment.getMimeType()).isEqualTo(dto.getMimeType());
@@ -178,7 +179,7 @@ class AttachmentResourceIT extends CustomAbstractAppTest {
 	@Test
 	void test9_patchAttachmentNotFound() throws JsonProcessingException {
 
-		final var dto = AttachmentDTO.builder().build();
+		final var dto = AttachmentDTO.builder().withCategory(AttachmentCategory.NOTIFICATION.toString()).build();
 		setupCall()
 			.withHttpMethod(HttpMethod.PATCH)
 			.withServicePath("/attachments/1000")
@@ -211,8 +212,9 @@ class AttachmentResourceIT extends CustomAbstractAppTest {
 				AttachmentDTO::getNote,
 				AttachmentDTO::getExtraParameters)
 			.containsExactly(
-				tuple("ERRAND-NUMBER-2", PASSPORT_PHOTO, ".pdf", "FILE-2", "application/pdf", "test2.pdf", "NOTE-2", emptyMap()),
-				tuple("ERRAND-NUMBER-2", POLICE_REPORT, ".pdf", "FILE-3", "application/pdf", "test3.pdf", "NOTE-3", emptyMap()),
-				tuple("ERRAND-NUMBER-2", ANSUPA, ".pdf", "FILE-4", "application/pdf", "test4.pdf", "NOTE-4", emptyMap()));
+				tuple("ERRAND-NUMBER-2", PASSPORT_PHOTO.toString(), ".pdf", "FILE-2", "application/pdf", "test2.pdf", "NOTE-2", emptyMap()),
+				tuple("ERRAND-NUMBER-2", POLICE_REPORT.toString(), ".pdf", "FILE-3", "application/pdf", "test3.pdf", "NOTE-3", emptyMap()),
+				tuple("ERRAND-NUMBER-2", NOTIFICATION_WITHOUT_PERSONAL_NUMBER.toString(), ".pdf", "FILE-4", "application/pdf", "test4.pdf", "NOTE-4", emptyMap()));
 	}
+
 }
