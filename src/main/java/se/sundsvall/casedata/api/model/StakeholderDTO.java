@@ -63,7 +63,7 @@ public class StakeholderDTO extends BaseDTO {
 	private String adAccount;
 
 	@NotNull
-	@Schema(description = "An stakeholder can have one or more roles.")
+	@Schema(description = "An stakeholder can have one or more roles. Please note that INVOICE_RECIPENT is deprecated and should not be used. Use INVOICE_RECIPIENT instead.", enumAsRef = true)
 	@Builder.Default
 	private List<StakeholderRole> roles = new ArrayList<>();
 
