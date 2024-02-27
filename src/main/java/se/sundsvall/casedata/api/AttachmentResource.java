@@ -7,6 +7,7 @@ import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 import java.util.List;
 
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
@@ -68,9 +68,9 @@ class AttachmentResource {
 	@Operation(description = "Create attachment")
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
 	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
-	ResponseEntity<Void> postAttachment(final UriComponentsBuilder uriComponentsBuilder, @RequestBody @Valid final AttachmentDTO attachmentDTO) {
+	ResponseEntity<Void> postAttachment(@RequestBody @Valid final AttachmentDTO attachmentDTO) {
 		final var result = attachmentService.createAttachment(attachmentDTO);
-		return created(uriComponentsBuilder.path("/attachments/{id}").buildAndExpand(result.getId()).toUri())
+		return created(fromPath("/attachments/{id}").buildAndExpand(result.getId()).toUri())
 			.build();
 	}
 
