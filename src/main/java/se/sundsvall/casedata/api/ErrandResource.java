@@ -8,6 +8,7 @@ import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +29,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
@@ -99,13 +99,10 @@ class ErrandResource {
 			@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
 		})
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<Void> postErrands(
-		UriComponentsBuilder uriComponentsBuilder,
-		@RequestBody @Valid final ErrandDTO errandDTO) {
-
+	ResponseEntity<Void> postErrands(@RequestBody @Valid final ErrandDTO errandDTO) {
 		final ErrandDTO result = errandService.createErrand(errandDTO);
 		return created(
-			uriComponentsBuilder.path("/errands/{id}")
+			fromPath("/errands/{id}")
 				.buildAndExpand(result.getId())
 				.toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
@@ -134,15 +131,11 @@ class ErrandResource {
 		})
 	@PatchMapping(path = "/{id}/notes", consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<Void> patchErrandWithNote(
-		final UriComponentsBuilder uriComponentsBuilder,
 		@PathVariable final Long id,
 		@RequestBody @Valid final NoteDTO noteDTO) {
 
 		final var dto = errandService.addNoteToErrand(id, noteDTO);
-		return created(
-			uriComponentsBuilder.path("/notes/{id}")
-				.buildAndExpand(dto.getId())
-				.toUri())
+		return created(fromPath("/notes/{id}").buildAndExpand(dto.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
@@ -153,15 +146,11 @@ class ErrandResource {
 		})
 	@PatchMapping(path = "/{id}/decisions", consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<Void> patchErrandWithDecision(
-		final UriComponentsBuilder uriComponentsBuilder,
 		@PathVariable final Long id,
 		@RequestBody @Valid final DecisionDTO decisionDTO) {
 
 		final var dto = errandService.addDecisionToErrand(id, decisionDTO);
-		return created(
-			uriComponentsBuilder.path("/decisions/{id}")
-				.buildAndExpand(dto.getId())
-				.toUri())
+		return created(fromPath("/decisions/{id}").buildAndExpand(dto.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
@@ -171,15 +160,11 @@ class ErrandResource {
 		})
 	@PatchMapping(path = "/{id}/stakeholders", consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<Void> patchErrandWithStakeholder(
-		final UriComponentsBuilder uriComponentsBuilder,
 		@PathVariable final Long id,
 		@RequestBody @Valid final StakeholderDTO stakeholderDTO) {
 
 		final var dto = errandService.addStakeholderToErrand(id, stakeholderDTO);
-		return created(
-			uriComponentsBuilder.path("/stakeholders/{id}")
-				.buildAndExpand(dto.getId())
-				.toUri())
+		return created(fromPath("/stakeholders/{id}").buildAndExpand(dto.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
