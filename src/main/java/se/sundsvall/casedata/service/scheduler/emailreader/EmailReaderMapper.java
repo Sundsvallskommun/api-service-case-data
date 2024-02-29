@@ -50,7 +50,7 @@ public class EmailReaderMapper {
 			return null;
 		}
 		return Message.builder()
-			.withMessageID(UUID.randomUUID().toString())
+			.withMessageID(email.getId())
 			.withDirection(Direction.INBOUND)
 			.withFamilyID("")
 			.withExternalCaseID("")

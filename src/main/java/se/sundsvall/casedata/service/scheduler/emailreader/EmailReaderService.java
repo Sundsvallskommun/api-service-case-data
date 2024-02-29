@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service.scheduler.emailreader;
 
 import static se.sundsvall.casedata.service.scheduler.emailreader.ErrandNumberParser.parseSubject;
 
+import generated.se.sundsvall.emailreader.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -9,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
@@ -44,26 +46,29 @@ public class EmailReaderService {
 
 		try {
 			emailReaderClient.getEmail(emailReaderProperties.municipalityId(), emailReaderProperties.namespace())
-				.forEach(email -> {
-
-					try {
-						final var errandNumber = parseSubject(email.getSubject());
-
-						errandRepository.findByErrandNumber(errandNumber)
-							.ifPresent(errand -> {
-								messageRepository.save(emailReaderMapper.toMessage(email).withErrandNumber(errandNumber));
-								attachmentRepository.saveAll(emailReaderMapper.toAttachments(email).stream()
-									.map(attachment -> attachment.withErrandNumber(errandNumber))
-									.toList());
-							});
-
-						emailReaderClient.deleteEmail(email.getId());
-					} catch (final Exception e) {
-						LOG.error("Error when processing email with subject: {}", email.getSubject(), e);
-					}
-				});
+				.forEach(this::saveAndRemoteDelete);
 		} catch (final Exception e) {
 			LOG.error("Error when fetching emails from EmailReader", e);
+		}
+	}
+
+	@Transactional
+	public void saveAndRemoteDelete(Email email) {
+		try {
+			final var errandNumber = parseSubject(email.getSubject());
+
+			errandRepository.findByErrandNumber(errandNumber)
+				.filter(errand -> !messageRepository.existsById(email.getId()))
+				.ifPresent(errand -> {
+					messageRepository.save(emailReaderMapper.toMessage(email).withErrandNumber(errandNumber));
+					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email).stream()
+						.map(attachment -> attachment.withErrandNumber(errandNumber))
+						.toList());
+				});
+
+			emailReaderClient.deleteEmail(email.getId());
+		} catch (final Exception e) {
+			LOG.error("Error when processing email with subject: {}", email.getSubject(), e);
 		}
 	}
 }
