@@ -6,7 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.test.context.ActiveProfiles;
-import se.sundsvall.casedata.api.model.enums.StakeholderRole;
+
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.service.ErrandService;
@@ -36,7 +37,7 @@ class OptimisticLockingTest {
 	@Test
 	void patchErrandWithStakeholderOptimisticLockingFailureException() {
 		final var errand = createErrand();
-		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER));
+		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()));
 		when(errandRepositoryMock.findById(any(Long.class))).thenReturn(Optional.of(errand));
 		doThrow(OptimisticLockingFailureException.class).when(errandRepositoryMock).save(any());
 
@@ -50,7 +51,7 @@ class OptimisticLockingTest {
 	@Test
 	void patchErrandWithStakeholderOtherException() {
 		final var errand = createErrand();
-		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER));
+		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()));
 		when(errandRepositoryMock.findById(any(Long.class))).thenReturn(Optional.of(errand));
 		doThrow(RuntimeException.class).when(errandRepositoryMock).save(any());
 

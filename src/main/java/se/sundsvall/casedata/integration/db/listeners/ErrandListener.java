@@ -1,21 +1,23 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
-import jakarta.persistence.PostPersist;
-import jakarta.persistence.PostUpdate;
-import jakarta.persistence.PrePersist;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
-import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
-import se.sundsvall.casedata.api.model.enums.CaseType;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.Errand;
-
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.Optional;
+
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostUpdate;
+import jakarta.persistence.PrePersist;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
+import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.Errand;
 
 @Component
 public class ErrandListener {
@@ -78,12 +80,10 @@ public class ErrandListener {
 			nextSequenceNumber = Long.parseLong(latestErrand.get().getErrandNumber().substring(latestErrand.get().getErrandNumber().lastIndexOf(DELIMITER) + 1)) + 1;
 		}
 
-		final StringBuilder stringBuilder = new StringBuilder();
 		// prefix with the abbreviation
-		stringBuilder.append(abbreviation).append(DELIMITER);
-		stringBuilder.append(LocalDate.now().getYear()).append(DELIMITER);
-		stringBuilder.append(String.format("%06d", nextSequenceNumber));
-		return stringBuilder.toString();
+		return abbreviation + DELIMITER +
+			LocalDate.now().getYear() + DELIMITER +
+			String.format("%06d", nextSequenceNumber);
 	}
 
 }

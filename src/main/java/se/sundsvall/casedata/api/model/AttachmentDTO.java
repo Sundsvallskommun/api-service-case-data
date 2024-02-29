@@ -1,8 +1,10 @@
 package se.sundsvall.casedata.api.model;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Size;
+import java.util.HashMap;
+import java.util.Map;
+
+import se.sundsvall.casedata.api.model.validation.ValidAttachmentCategory;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +12,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 @ToString(callSuper = true)
@@ -23,19 +21,15 @@ import java.util.Map;
 @SuperBuilder(setterPrefix = "with")
 public class AttachmentDTO extends BaseDTO {
 
-	@Enumerated(EnumType.STRING)
-	private AttachmentCategory category;
+	@ValidAttachmentCategory
+	private String category;
 
-	@Size(max = 255)
 	private String name;
 
-	@Size(max = 1000)
 	private String note;
 
-	@Size(max = 255)
 	private String extension;
 
-	@Size(max = 255)
 	private String mimeType;
 
 	private String file;

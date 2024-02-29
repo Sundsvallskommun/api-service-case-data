@@ -3,37 +3,39 @@ package se.sundsvall.casedata.api.model.enums;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.casedata.api.model.enums.CaseType.ANMALAN_ANDRING_AVLOPPSANLAGGNING;
-import static se.sundsvall.casedata.api.model.enums.CaseType.ANMALAN_ANDRING_AVLOPPSANORDNING;
-import static se.sundsvall.casedata.api.model.enums.CaseType.ANMALAN_ATTEFALL;
-import static se.sundsvall.casedata.api.model.enums.CaseType.ANMALAN_HALSOSKYDDSVERKSAMHET;
-import static se.sundsvall.casedata.api.model.enums.CaseType.ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC;
-import static se.sundsvall.casedata.api.model.enums.CaseType.ANMALAN_INSTALLATION_VARMEPUMP;
-import static se.sundsvall.casedata.api.model.enums.CaseType.ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP;
-import static se.sundsvall.casedata.api.model.enums.CaseType.ANSOKAN_TILLSTAND_VARMEPUMP;
-import static se.sundsvall.casedata.api.model.enums.CaseType.LOST_PARKING_PERMIT;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_APPLICATION_FOR_ROAD_ALLOWANCE;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_APPLICATION_SQUARE_PLACE;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_BUY_SMALL_HOUSE_PLOT;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_EARLY_DIALOG_PLAN_NOTIFICATION;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_INVOICE;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_LAND_INSTRUCTION;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_LAND_RIGHT;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_LAND_SURVEYING_OFFICE;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_LEASE_REQUEST;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_OTHER;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_PROTECTIVE_HUNTING;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOUGE_PLANNING_NOTICE;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_REQUEST_FOR_PUBLIC_DOCUMENT;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_SELL_LAND_TO_THE_MUNICIPALITY;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_TERMINATION_OF_HUNTING_LEASE;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_TERMINATION_OF_LEASE;
-import static se.sundsvall.casedata.api.model.enums.CaseType.MEX_UNAUTHORIZED_RESIDENCE;
-import static se.sundsvall.casedata.api.model.enums.CaseType.NYBYGGNAD_ANSOKAN_OM_BYGGLOV;
-import static se.sundsvall.casedata.api.model.enums.CaseType.PARKING_PERMIT;
-import static se.sundsvall.casedata.api.model.enums.CaseType.PARKING_PERMIT_RENEWAL;
-import static se.sundsvall.casedata.api.model.enums.CaseType.REGISTRERING_AV_LIVSMEDEL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ANDRING_AVLOPPSANLAGGNING;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ANDRING_AVLOPPSANORDNING;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ATTEFALL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_HALSOSKYDDSVERKSAMHET;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_INSTALLATION_VARMEPUMP;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANSOKAN_TILLSTAND_VARMEPUMP;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.LOST_PARKING_PERMIT;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_APPLICATION_FOR_ROAD_ALLOWANCE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_APPLICATION_SQUARE_PLACE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_SMALL_HOUSE_PLOT;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_EARLY_DIALOG_PLAN_NOTIFICATION;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_INVOICE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_INSTRUCTION;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_RIGHT;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_SURVEYING_OFFICE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LEASE_REQUEST;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_OTHER;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_PROTECTIVE_HUNTING;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOUGE_PLANNING_NOTICE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_REQUEST_FOR_PUBLIC_DOCUMENT;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_SELL_LAND_TO_THE_MUNICIPALITY;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_TERMINATION_OF_HUNTING_LEASE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_TERMINATION_OF_LEASE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_UNAUTHORIZED_RESIDENCE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.NYBYGGNAD_ANSOKAN_OM_BYGGLOV;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.REGISTRERING_AV_LIVSMEDEL;
+
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 class CaseTypeTest {
 
@@ -78,6 +80,7 @@ class CaseTypeTest {
 		assertThat(ANMALAN_ATTEFALL).hasToString("ANMALAN_ATTEFALL");
 		assertThat(NYBYGGNAD_ANSOKAN_OM_BYGGLOV).hasToString("NYBYGGNAD_ANSOKAN_OM_BYGGLOV");
 	}
+
 	@Test
 	void enumToStringEcos() {
 		assertThat(ANMALAN_ANDRING_AVLOPPSANLAGGNING).hasToString("ANMALAN_ANDRING_AVLOPPSANLAGGNING");
@@ -173,4 +176,5 @@ class CaseTypeTest {
 	void getValuesByAbbreviation_unknown() {
 		assertThat(CaseType.getValuesByAbbreviation("UNKNOWN")).isEmpty();
 	}
+
 }

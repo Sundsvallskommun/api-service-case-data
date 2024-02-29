@@ -1,10 +1,21 @@
 package se.sundsvall.casedata.api.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
+import se.sundsvall.casedata.api.model.validation.ValidStakeholderRole;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import se.sundsvall.casedata.service.util.Constants;
+import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,15 +23,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import se.sundsvall.casedata.api.model.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-import se.sundsvall.casedata.service.util.Constants;
-import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Data
 @ToString(callSuper = true)
@@ -63,9 +65,9 @@ public class StakeholderDTO extends BaseDTO {
 	private String adAccount;
 
 	@NotNull
+	@ValidStakeholderRole
 	@Schema(description = "An stakeholder can have one or more roles.")
-	@Builder.Default
-	private List<StakeholderRole> roles = new ArrayList<>();
+	private List<String> roles;
 
 	@Valid
 	@Builder.Default

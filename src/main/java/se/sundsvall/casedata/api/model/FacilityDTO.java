@@ -1,8 +1,14 @@
 package se.sundsvall.casedata.api.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.HashMap;
+import java.util.Map;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
+
+import se.sundsvall.casedata.api.model.validation.ValidFacilityType;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +16,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import se.sundsvall.casedata.api.model.enums.FacilityType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 @ToString(callSuper = true)
@@ -36,7 +38,8 @@ public class FacilityDTO extends BaseDTO {
 
 	private boolean mainFacility;
 
-	private FacilityType facilityType;
+	@ValidFacilityType
+	private String facilityType;
 
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();

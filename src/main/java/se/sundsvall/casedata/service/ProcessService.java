@@ -1,24 +1,28 @@
 package se.sundsvall.casedata.service;
 
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import se.sundsvall.casedata.api.model.enums.CaseType;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
-import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
-
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
 import static se.sundsvall.casedata.service.util.Constants.MEX_CASE_TYPES;
 import static se.sundsvall.casedata.service.util.Constants.PARKING_PERMIT_CASE_TYPES;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
+import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
+
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+
 @Service
 public class ProcessService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessService.class);
+
 	private final ParkingPermitIntegration parkingPermitIntegration;
+
 	private final LandAndExploitationIntegration landAndExploitationIntegration;
 
 	public ProcessService(final ParkingPermitIntegration parkingPermitIntegration,
@@ -58,4 +62,5 @@ public class ProcessService {
 	private boolean isValidMexCase(final Errand errand) {
 		return MEX_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType())) && isNotEmpty(errand.getProcessId());
 	}
+
 }

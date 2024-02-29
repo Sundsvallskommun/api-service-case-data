@@ -1,8 +1,7 @@
-package se.sundsvall.casedata.api.model.enums;
+package se.sundsvall.casedata.api.model.validation.enums;
 
 
 public enum StakeholderRole {
-
 	// Kontrollansvarig
 	CONTROL_OFFICIAL,
 	// Sökande
@@ -13,6 +12,9 @@ public enum StakeholderRole {
 	PAYMENT_PERSON,
 	// "Fakturamottagare"
 	INVOICE_RECIPIENT,
+	// "Fakturamottagare" Remove when Open-E platform is ready
+	@Deprecated(since = "2024-02-27")
+	INVOICE_RECIPENT,
 	// "Verksamhetsutövare"
 	OPERATOR,
 	// "KPER"
@@ -48,9 +50,6 @@ public enum StakeholderRole {
 	//Ombud
 	DELEGATE,
 	// Nyttjanderättshavare
-	USUFRUCTUARY;
-
-	StakeholderRole() {
-	}
+	USUFRUCTUARY
 
 }

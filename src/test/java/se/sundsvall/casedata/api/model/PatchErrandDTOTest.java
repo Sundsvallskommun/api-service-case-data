@@ -3,8 +3,9 @@ package se.sundsvall.casedata.api.model;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
 import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.api.model.enums.CaseType;
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 import java.time.LocalDate;

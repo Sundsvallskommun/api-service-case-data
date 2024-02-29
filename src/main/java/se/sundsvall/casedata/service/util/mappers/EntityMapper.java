@@ -16,10 +16,6 @@ import se.sundsvall.casedata.api.model.LawDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
-import se.sundsvall.casedata.api.model.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.enums.CaseType;
-import se.sundsvall.casedata.api.model.enums.FacilityType;
-import se.sundsvall.casedata.api.model.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Address;
 import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
@@ -46,7 +42,7 @@ public final class EntityMapper {
 				.withUpdated(errand.getUpdated())
 				.withErrandNumber(errand.getErrandNumber())
 				.withExternalCaseId(errand.getExternalCaseId())
-				.withCaseType(CaseType.valueOf(errand.getCaseType()))
+				.withCaseType(errand.getCaseType())
 				.withChannel(errand.getChannel())
 				.withPriority(errand.getPriority())
 				.withDescription(errand.getDescription())
@@ -81,7 +77,7 @@ public final class EntityMapper {
 				.withUpdated(dto.getUpdated())
 				.withErrandNumber(dto.getErrandNumber())
 				.withExternalCaseId(dto.getExternalCaseId())
-				.withCaseType(toCaseTypeString(dto.getCaseType()))
+				.withCaseType(dto.getCaseType())
 				.withChannel(dto.getChannel())
 				.withPriority(dto.getPriority())
 				.withDescription(dto.getDescription())
@@ -132,7 +128,7 @@ public final class EntityMapper {
 				.withAdAccount(dto.getAdAccount())
 				.withAddresses(new ArrayList<>(dto.getAddresses().stream().map(EntityMapper::toAddress).toList()))
 				.withContactInformation(new ArrayList<>(dto.getContactInformation().stream().map(EntityMapper::toContactInformation).toList()))
-				.withRoles(new ArrayList<>(dto.getRoles().stream().map(StakeholderRole::name).toList()))
+				.withRoles(dto.getRoles())
 				.withExtraParameters(Optional.of(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -140,318 +136,303 @@ public final class EntityMapper {
 
 	public static StakeholderDTO toStakeholderDto(final Stakeholder stakeholder) {
 		return Optional.ofNullable(stakeholder).map(dto -> StakeholderDTO.builder()
-			.withId(stakeholder.getId())
-			.withVersion(stakeholder.getVersion())
-			.withCreated(stakeholder.getCreated())
-			.withUpdated(stakeholder.getUpdated())
-			.withType(stakeholder.getType())
-			.withFirstName(stakeholder.getFirstName())
-			.withLastName(stakeholder.getLastName())
-			.withPersonId(stakeholder.getPersonId())
-			.withOrganizationName(stakeholder.getOrganizationName())
-			.withOrganizationNumber(stakeholder.getOrganizationNumber())
-			.withAuthorizedSignatory(stakeholder.getAuthorizedSignatory())
-			.withAdAccount(stakeholder.getAdAccount())
-			.withAddresses(new ArrayList<>(stakeholder.getAddresses().stream().map(EntityMapper::toAddressDto).toList()))
-			.withContactInformation(new ArrayList<>(stakeholder.getContactInformation().stream().map(EntityMapper::toContactInformationDto).toList()))
-			.withRoles(new ArrayList<>(stakeholder.getRoles().stream().map(StakeholderRole::valueOf).toList()))
-			.withExtraParameters(Optional.of(stakeholder.getExtraParameters()).orElse(new LinkedHashMap<>()))
-			.build())
+				.withId(stakeholder.getId())
+				.withVersion(stakeholder.getVersion())
+				.withCreated(stakeholder.getCreated())
+				.withUpdated(stakeholder.getUpdated())
+				.withType(stakeholder.getType())
+				.withFirstName(stakeholder.getFirstName())
+				.withLastName(stakeholder.getLastName())
+				.withPersonId(stakeholder.getPersonId())
+				.withOrganizationName(stakeholder.getOrganizationName())
+				.withOrganizationNumber(stakeholder.getOrganizationNumber())
+				.withAuthorizedSignatory(stakeholder.getAuthorizedSignatory())
+				.withAdAccount(stakeholder.getAdAccount())
+				.withAddresses(new ArrayList<>(stakeholder.getAddresses().stream().map(EntityMapper::toAddressDto).toList()))
+				.withContactInformation(new ArrayList<>(stakeholder.getContactInformation().stream().map(EntityMapper::toContactInformationDto).toList()))
+				.withRoles(stakeholder.getRoles())
+				.withExtraParameters(Optional.of(stakeholder.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.build())
 			.orElse(null);
 	}
 
 	public static Attachment toAttachment(final AttachmentDTO dto) {
 		return Optional.ofNullable(dto).map(attachment -> Attachment.builder()
-			.withId(dto.getId())
-			.withVersion(dto.getVersion())
-			.withCreated(dto.getCreated())
-			.withUpdated(dto.getUpdated())
-			.withCategory(toCategoryString(dto.getCategory()))
-			.withName(dto.getName())
-			.withNote(dto.getNote())
-			.withExtension(dto.getExtension())
-			.withErrandNumber(dto.getErrandNumber())
-			.withMimeType(dto.getMimeType())
-			.withFile(dto.getFile())
-			.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
-			.build())
+				.withId(dto.getId())
+				.withVersion(dto.getVersion())
+				.withCreated(dto.getCreated())
+				.withUpdated(dto.getUpdated())
+				.withCategory(dto.getCategory())
+				.withName(dto.getName())
+				.withNote(dto.getNote())
+				.withExtension(dto.getExtension())
+				.withErrandNumber(dto.getErrandNumber())
+				.withMimeType(dto.getMimeType())
+				.withFile(dto.getFile())
+				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.build())
 			.orElse(null);
 	}
 
 	public static AttachmentDTO toAttachmentDto(final Attachment attachment) {
 		return Optional.ofNullable(attachment).map(dto -> AttachmentDTO.builder()
-			.withId(attachment.getId())
-			.withVersion(attachment.getVersion())
-			.withCreated(attachment.getCreated())
-			.withUpdated(attachment.getUpdated())
-			.withCategory(Optional.ofNullable(attachment.getCategory()).map(AttachmentCategory::valueOf).orElse(null))
-			.withName(attachment.getName())
-			.withNote(attachment.getNote())
-			.withExtension(attachment.getExtension())
-			.withMimeType(attachment.getMimeType())
-			.withErrandNumber(attachment.getErrandNumber())
-			.withFile(attachment.getFile())
-			.withExtraParameters(Optional.ofNullable(attachment.getExtraParameters()).orElse(new LinkedHashMap<>()))
-			.build())
+				.withId(attachment.getId())
+				.withVersion(attachment.getVersion())
+				.withCreated(attachment.getCreated())
+				.withUpdated(attachment.getUpdated())
+				.withCategory(dto.getCategory())
+				.withName(attachment.getName())
+				.withNote(attachment.getNote())
+				.withExtension(attachment.getExtension())
+				.withMimeType(attachment.getMimeType())
+				.withErrandNumber(attachment.getErrandNumber())
+				.withFile(attachment.getFile())
+				.withExtraParameters(Optional.ofNullable(attachment.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.build())
 			.orElse(null);
 	}
 
 	public static Decision toDecision(final DecisionDTO dto) {
 		return Optional.ofNullable(dto).map(decision -> Decision.builder()
-			.withId(dto.getId())
-			.withVersion(dto.getVersion())
-			.withCreated(dto.getCreated())
-			.withUpdated(dto.getUpdated())
-			.withDecisionType(dto.getDecisionType())
-			.withDecisionOutcome(dto.getDecisionOutcome())
-			.withDescription(dto.getDescription())
-			.withDecidedBy(toStakeholder((dto.getDecidedBy())))
-			.withDecidedAt(dto.getDecidedAt())
-			.withValidFrom(dto.getValidFrom())
-			.withValidTo(dto.getValidTo())
-			.withAppeal(toAppeal(dto.getAppeal()))
-			.withLaw(new ArrayList<>(dto.getLaw().stream().map(EntityMapper::toLaw).toList()))
-			.withAttachments(new ArrayList<>(dto.getAttachments().stream().map(EntityMapper::toAttachment).toList()))
-			.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
-			.build())
+				.withId(dto.getId())
+				.withVersion(dto.getVersion())
+				.withCreated(dto.getCreated())
+				.withUpdated(dto.getUpdated())
+				.withDecisionType(dto.getDecisionType())
+				.withDecisionOutcome(dto.getDecisionOutcome())
+				.withDescription(dto.getDescription())
+				.withDecidedBy(toStakeholder((dto.getDecidedBy())))
+				.withDecidedAt(dto.getDecidedAt())
+				.withValidFrom(dto.getValidFrom())
+				.withValidTo(dto.getValidTo())
+				.withAppeal(toAppeal(dto.getAppeal()))
+				.withLaw(new ArrayList<>(dto.getLaw().stream().map(EntityMapper::toLaw).toList()))
+				.withAttachments(new ArrayList<>(dto.getAttachments().stream().map(EntityMapper::toAttachment).toList()))
+				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.build())
 			.orElse(null);
 	}
 
 	public static DecisionDTO toDecisionDto(final Decision decision) {
 		return Optional.ofNullable(decision).map(dto -> DecisionDTO.builder()
-			.withId(decision.getId())
-			.withVersion(decision.getVersion())
-			.withCreated(decision.getCreated())
-			.withUpdated(decision.getUpdated())
-			.withDecisionType(decision.getDecisionType())
-			.withDecisionOutcome(decision.getDecisionOutcome())
-			.withDescription(decision.getDescription())
-			.withDecidedBy(toStakeholderDto(decision.getDecidedBy()))
-			.withDecidedAt(decision.getDecidedAt())
-			.withValidFrom(decision.getValidFrom())
-			.withValidTo(decision.getValidTo())
-			.withAppeal(toAppealDto(decision.getAppeal()))
-			.withLaw(new ArrayList<>(decision.getLaw().stream().map(EntityMapper::toLawDto).toList()))
-			.withAttachments(new ArrayList<>(decision.getAttachments().stream().map(EntityMapper::toAttachmentDto).toList()))
-			.withExtraParameters(Optional.ofNullable(decision.getExtraParameters()).orElse(new LinkedHashMap<>()))
-			.build())
+				.withId(decision.getId())
+				.withVersion(decision.getVersion())
+				.withCreated(decision.getCreated())
+				.withUpdated(decision.getUpdated())
+				.withDecisionType(decision.getDecisionType())
+				.withDecisionOutcome(decision.getDecisionOutcome())
+				.withDescription(decision.getDescription())
+				.withDecidedBy(toStakeholderDto(decision.getDecidedBy()))
+				.withDecidedAt(decision.getDecidedAt())
+				.withValidFrom(decision.getValidFrom())
+				.withValidTo(decision.getValidTo())
+				.withAppeal(toAppealDto(decision.getAppeal()))
+				.withLaw(new ArrayList<>(decision.getLaw().stream().map(EntityMapper::toLawDto).toList()))
+				.withAttachments(new ArrayList<>(decision.getAttachments().stream().map(EntityMapper::toAttachmentDto).toList()))
+				.withExtraParameters(Optional.ofNullable(decision.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.build())
 			.orElse(null);
 	}
 
 	public static NoteDTO toNoteDto(final Note note) {
 		return Optional.ofNullable(note).map(dto -> NoteDTO.builder()
-			.withId(note.getId())
-			.withVersion(note.getVersion())
-			.withCreated(note.getCreated())
-			.withUpdated(note.getUpdated())
-			.withTitle(note.getTitle())
-			.withText(note.getText())
-			.withNoteType(note.getNoteType())
-			.withCreatedBy(note.getCreatedBy())
-			.withUpdatedBy(note.getUpdatedBy())
-			.withNoteType(note.getNoteType())
-			.withExtraParameters(Optional.ofNullable(note.getExtraParameters()).orElse(new LinkedHashMap<>()))
-			.build())
+				.withId(note.getId())
+				.withVersion(note.getVersion())
+				.withCreated(note.getCreated())
+				.withUpdated(note.getUpdated())
+				.withTitle(note.getTitle())
+				.withText(note.getText())
+				.withNoteType(note.getNoteType())
+				.withCreatedBy(note.getCreatedBy())
+				.withUpdatedBy(note.getUpdatedBy())
+				.withNoteType(note.getNoteType())
+				.withExtraParameters(Optional.ofNullable(note.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.build())
 			.orElse(null);
 	}
 
 	public static Note toNote(final NoteDTO dto) {
 		return Optional.of(dto).map(note -> Note.builder()
-			.withId(dto.getId())
-			.withVersion(dto.getVersion())
-			.withCreated(dto.getCreated())
-			.withUpdated(dto.getUpdated())
-			.withTitle(dto.getTitle())
-			.withText(dto.getText())
-			.withNoteType(dto.getNoteType())
-			.withCreatedBy(dto.getCreatedBy())
-			.withUpdatedBy(dto.getUpdatedBy())
-			.withNoteType(dto.getNoteType())
-			.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
-			.build())
+				.withId(dto.getId())
+				.withVersion(dto.getVersion())
+				.withCreated(dto.getCreated())
+				.withUpdated(dto.getUpdated())
+				.withTitle(dto.getTitle())
+				.withText(dto.getText())
+				.withNoteType(dto.getNoteType())
+				.withCreatedBy(dto.getCreatedBy())
+				.withUpdatedBy(dto.getUpdatedBy())
+				.withNoteType(dto.getNoteType())
+				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.build())
 			.orElse(null);
 	}
 
 	static Appeal toAppeal(final AppealDTO dto) {
 		return Optional.ofNullable(dto).map(appeal -> Appeal.builder()
-			.withId(dto.getId())
-			.withVersion(dto.getVersion())
-			.withCreated(dto.getCreated())
-			.withUpdated(dto.getUpdated())
-			.withAppealedBy(toStakeholder(dto.getAppealedBy()))
-			.withJudicialAuthorisation(toStakeholder(dto.getJudicialAuthorisation()))
-			.withAttachments(new ArrayList<>(dto.getAttachments().stream().map(EntityMapper::toAttachment).toList()))
-			.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
-			.build())
+				.withId(dto.getId())
+				.withVersion(dto.getVersion())
+				.withCreated(dto.getCreated())
+				.withUpdated(dto.getUpdated())
+				.withAppealedBy(toStakeholder(dto.getAppealedBy()))
+				.withJudicialAuthorisation(toStakeholder(dto.getJudicialAuthorisation()))
+				.withAttachments(new ArrayList<>(dto.getAttachments().stream().map(EntityMapper::toAttachment).toList()))
+				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.build())
 			.orElse(null);
 	}
 
 	public static Status toStatus(final StatusDTO dto) {
 		return Optional.ofNullable(dto).map(status -> Status.builder()
-			.withStatusType(dto.getStatusType())
-			.withDescription(dto.getDescription())
-			.withDateTime(dto.getDateTime())
-			.build())
+				.withStatusType(dto.getStatusType())
+				.withDescription(dto.getDescription())
+				.withDateTime(dto.getDateTime())
+				.build())
 			.orElse(null);
 	}
 
 	static StatusDTO toStatusDto(final Status status) {
 		return Optional.ofNullable(status).map(dto -> StatusDTO.builder()
-			.withStatusType(status.getStatusType())
-			.withDescription(status.getDescription())
-			.withDateTime(status.getDateTime())
-			.build())
+				.withStatusType(status.getStatusType())
+				.withDescription(status.getDescription())
+				.withDateTime(status.getDateTime())
+				.build())
 			.orElse(null);
 	}
 
 	static Coordinates toCoordinates(final CoordinatesDTO dto) {
 		return Optional.ofNullable(dto).map(coordinates -> Coordinates.builder()
-			.withLatitude(dto.getLatitude())
-			.withLongitude(dto.getLongitude())
-			.build())
+				.withLatitude(dto.getLatitude())
+				.withLongitude(dto.getLongitude())
+				.build())
 			.orElse(null);
 	}
 
 	static CoordinatesDTO toCoordinatesDto(final Coordinates coordinates) {
 		return Optional.ofNullable(coordinates).map(dto -> CoordinatesDTO.builder()
-			.withLatitude(coordinates.getLatitude())
-			.withLongitude(coordinates.getLongitude())
-			.build())
+				.withLatitude(coordinates.getLatitude())
+				.withLongitude(coordinates.getLongitude())
+				.build())
 			.orElse(null);
 	}
 
 	static Address toAddress(final AddressDTO dto) {
 		return Optional.ofNullable(dto).map(address -> Address.builder()
-			.withAddressCategory(dto.getAddressCategory())
-			.withStreet(dto.getStreet())
-			.withHouseNumber(dto.getHouseNumber())
-			.withPostalCode(dto.getPostalCode())
-			.withCity(dto.getCity())
-			.withCountry(dto.getCountry())
-			.withCareOf(dto.getCareOf())
-			.withAttention(dto.getAttention())
-			.withPropertyDesignation(dto.getPropertyDesignation())
-			.withApartmentNumber(dto.getApartmentNumber())
-			.withIsZoningPlanArea(dto.getIsZoningPlanArea())
-			.withInvoiceMarking(dto.getInvoiceMarking())
-			.withLocation(toCoordinates(dto.getLocation()))
-			.build())
+				.withAddressCategory(dto.getAddressCategory())
+				.withStreet(dto.getStreet())
+				.withHouseNumber(dto.getHouseNumber())
+				.withPostalCode(dto.getPostalCode())
+				.withCity(dto.getCity())
+				.withCountry(dto.getCountry())
+				.withCareOf(dto.getCareOf())
+				.withAttention(dto.getAttention())
+				.withPropertyDesignation(dto.getPropertyDesignation())
+				.withApartmentNumber(dto.getApartmentNumber())
+				.withIsZoningPlanArea(dto.getIsZoningPlanArea())
+				.withInvoiceMarking(dto.getInvoiceMarking())
+				.withLocation(toCoordinates(dto.getLocation()))
+				.build())
 			.orElse(null);
 	}
 
 	static AddressDTO toAddressDto(final Address address) {
 		return Optional.ofNullable(address).map(dto -> AddressDTO.builder()
-			.withAddressCategory(address.getAddressCategory())
-			.withStreet(address.getStreet())
-			.withHouseNumber(address.getHouseNumber())
-			.withPostalCode(address.getPostalCode())
-			.withCity(address.getCity())
-			.withCountry(address.getCountry())
-			.withCareOf(address.getCareOf())
-			.withAttention(address.getAttention())
-			.withPropertyDesignation(address.getPropertyDesignation())
-			.withApartmentNumber(address.getApartmentNumber())
-			.withIsZoningPlanArea(address.getIsZoningPlanArea())
-			.withInvoiceMarking(address.getInvoiceMarking())
-			.withLocation(toCoordinatesDto(address.getLocation()))
-			.build())
+				.withAddressCategory(address.getAddressCategory())
+				.withStreet(address.getStreet())
+				.withHouseNumber(address.getHouseNumber())
+				.withPostalCode(address.getPostalCode())
+				.withCity(address.getCity())
+				.withCountry(address.getCountry())
+				.withCareOf(address.getCareOf())
+				.withAttention(address.getAttention())
+				.withPropertyDesignation(address.getPropertyDesignation())
+				.withApartmentNumber(address.getApartmentNumber())
+				.withIsZoningPlanArea(address.getIsZoningPlanArea())
+				.withInvoiceMarking(address.getInvoiceMarking())
+				.withLocation(toCoordinatesDto(address.getLocation()))
+				.build())
 			.orElse(null);
 	}
 
 	static Facility toFacility(final FacilityDTO dto) {
 		return Optional.ofNullable(dto).map(facility -> Facility.builder()
-			.withId(dto.getId())
-			.withVersion(dto.getVersion())
-			.withCreated(dto.getCreated())
-			.withUpdated(dto.getUpdated())
-			.withDescription(dto.getDescription())
-			.withAddress(toAddress(dto.getAddress()))
-			.withFacilityCollectionName(dto.getFacilityCollectionName())
-			.withMainFacility(dto.isMainFacility())
-			.withFacilityType(toFacilityTypeString(dto.getFacilityType()))
-			.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
-			.build())
+				.withId(dto.getId())
+				.withVersion(dto.getVersion())
+				.withCreated(dto.getCreated())
+				.withUpdated(dto.getUpdated())
+				.withDescription(dto.getDescription())
+				.withAddress(toAddress(dto.getAddress()))
+				.withFacilityCollectionName(dto.getFacilityCollectionName())
+				.withMainFacility(dto.isMainFacility())
+				.withFacilityType(dto.getFacilityType())
+				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.build())
 			.orElse(null);
 	}
 
 	static FacilityDTO toFacilityDto(final Facility facility) {
 		return Optional.ofNullable(facility).map(dto -> FacilityDTO.builder()
-			.withId(facility.getId())
-			.withVersion(facility.getVersion())
-			.withCreated(facility.getCreated())
-			.withUpdated(facility.getUpdated())
-			.withDescription(facility.getDescription())
-			.withAddress(toAddressDto(facility.getAddress()))
-			.withFacilityCollectionName(facility.getFacilityCollectionName())
-			.withMainFacility(facility.isMainFacility())
-			.withFacilityType(FacilityType.valueOf(facility.getFacilityType()))
-			.withExtraParameters(Optional.ofNullable(facility.getExtraParameters()).orElse(new LinkedHashMap<>()))
-			.build())
+				.withId(facility.getId())
+				.withVersion(facility.getVersion())
+				.withCreated(facility.getCreated())
+				.withUpdated(facility.getUpdated())
+				.withDescription(facility.getDescription())
+				.withAddress(toAddressDto(facility.getAddress()))
+				.withFacilityCollectionName(facility.getFacilityCollectionName())
+				.withMainFacility(facility.isMainFacility())
+				.withFacilityType(facility.getFacilityType())
+				.withExtraParameters(Optional.ofNullable(facility.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.build())
 			.orElse(null);
 	}
 
 	static ContactInformationDTO toContactInformationDto(final ContactInformation contactInformation) {
 		return Optional.ofNullable(contactInformation).map(dto -> ContactInformationDTO.builder()
-			.withContactType(dto.getContactType())
-			.withValue(dto.getValue()).build())
+				.withContactType(dto.getContactType())
+				.withValue(dto.getValue()).build())
 			.orElse(null);
 	}
 
 	static ContactInformation toContactInformation(final ContactInformationDTO dto) {
 		return Optional.ofNullable(dto).map(contactInformation -> ContactInformation.builder()
-			.withContactType(dto.getContactType())
-			.withValue(dto.getValue())
-			.build())
+				.withContactType(dto.getContactType())
+				.withValue(dto.getValue())
+				.build())
 			.orElse(null);
 	}
 
 	static Law toLaw(final LawDTO dto) {
 		return Optional.ofNullable(dto).map(law -> Law.builder()
-			.withArticle(dto.getArticle())
-			.withChapter(dto.getChapter())
-			.withHeading(dto.getHeading())
-			.withSfs(dto.getSfs())
-			.build())
+				.withArticle(dto.getArticle())
+				.withChapter(dto.getChapter())
+				.withHeading(dto.getHeading())
+				.withSfs(dto.getSfs())
+				.build())
 			.orElse(null);
 	}
 
 	static LawDTO toLawDto(final Law law) {
 		return Optional.ofNullable(law).map(dto -> LawDTO.builder()
-			.withArticle(law.getArticle())
-			.withChapter(law.getChapter())
-			.withHeading(law.getHeading())
-			.withSfs(law.getSfs())
-			.build())
+				.withArticle(law.getArticle())
+				.withChapter(law.getChapter())
+				.withHeading(law.getHeading())
+				.withSfs(law.getSfs())
+				.build())
 			.orElse(null);
 	}
 
 	static AppealDTO toAppealDto(final Appeal appeal) {
 		return Optional.ofNullable(appeal).map(dto -> AppealDTO.builder()
-			.withId(appeal.getId())
-			.withVersion(appeal.getVersion())
-			.withCreated(appeal.getCreated())
-			.withUpdated(appeal.getUpdated())
-			.withAppealedBy(toStakeholderDto(appeal.getAppealedBy()))
-			.withJudicialAuthorisation(toStakeholderDto(appeal.getJudicialAuthorisation()))
-			.withAttachments(new ArrayList<>(appeal.getAttachments().stream().map(EntityMapper::toAttachmentDto).toList()))
-			.withExtraParameters(Optional.ofNullable(appeal.getExtraParameters()).orElse(new LinkedHashMap<>()))
-			.build())
+				.withId(appeal.getId())
+				.withVersion(appeal.getVersion())
+				.withCreated(appeal.getCreated())
+				.withUpdated(appeal.getUpdated())
+				.withAppealedBy(toStakeholderDto(appeal.getAppealedBy()))
+				.withJudicialAuthorisation(toStakeholderDto(appeal.getJudicialAuthorisation()))
+				.withAttachments(new ArrayList<>(appeal.getAttachments().stream().map(EntityMapper::toAttachmentDto).toList()))
+				.withExtraParameters(Optional.ofNullable(appeal.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.build())
 			.orElse(null);
 	}
 
-	static String toCaseTypeString(final CaseType caseType) {
-		return Optional.ofNullable(caseType).map(CaseType::toString).orElse(null);
-	}
-
-	static String toCategoryString(final AttachmentCategory category) {
-		return Optional.ofNullable(category).map(AttachmentCategory::toString).orElse(null);
-	}
-
-	static String toFacilityTypeString(final FacilityType facilityType) {
-		return Optional.ofNullable(facilityType).map(FacilityType::toString).orElse(null);
-	}
-
-	public static String toRoleString(final StakeholderRole role) {
-		return Optional.ofNullable(role).map(StakeholderRole::name).orElse(null);
-	}
 }

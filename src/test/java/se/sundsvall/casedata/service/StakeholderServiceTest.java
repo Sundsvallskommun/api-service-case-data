@@ -1,28 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
-import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.api.model.StakeholderDTO;
-import se.sundsvall.casedata.api.model.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.StakeholderRepository;
-import se.sundsvall.casedata.integration.db.model.Stakeholder;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Stream;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,6 +13,30 @@ import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholder;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderDto;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.zalando.problem.Status;
+import org.zalando.problem.ThrowableProblem;
+
+import se.sundsvall.casedata.TestUtil;
+import se.sundsvall.casedata.api.model.StakeholderDTO;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.StakeholderRepository;
+import se.sundsvall.casedata.integration.db.model.Stakeholder;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
 class StakeholderServiceTest {
@@ -70,14 +71,14 @@ class StakeholderServiceTest {
 	@Test
 	void findStakeholdersByRole() {
 		final List<Stakeholder> stakeholderList = Stream.of(
-				TestUtil.createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER)),
-				TestUtil.createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.DRIVER, StakeholderRole.OPERATOR)))
+				TestUtil.createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name())),
+				TestUtil.createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.DRIVER.name(), StakeholderRole.OPERATOR.name())))
 			.map(EntityMapper::toStakeholder)
 			.toList();
 
 		doReturn(stakeholderList).when(stakeholderRepository).findByRoles(StakeholderRole.DRIVER.name());
 
-		final List<StakeholderDTO> resultList = stakeholderService.findStakeholdersByRole(StakeholderRole.DRIVER);
+		final List<StakeholderDTO> resultList = stakeholderService.findStakeholdersByRole(StakeholderRole.DRIVER.name());
 		Assertions.assertEquals(2, resultList.size());
 		verify(stakeholderRepository, times(1)).findByRoles(StakeholderRole.DRIVER.name());
 	}
@@ -88,7 +89,8 @@ class StakeholderServiceTest {
 
 		doReturn(stakeholderList).when(stakeholderRepository).findByRoles(StakeholderRole.DRIVER.name());
 
-		final ThrowableProblem problem = Assertions.assertThrows(ThrowableProblem.class, () -> stakeholderService.findStakeholdersByRole(StakeholderRole.DRIVER));
+		final var role = StakeholderRole.DRIVER.name();
+		final ThrowableProblem problem = Assertions.assertThrows(ThrowableProblem.class, () -> stakeholderService.findStakeholdersByRole(role));
 		Assertions.assertEquals(Status.NOT_FOUND, problem.getStatus());
 		verify(stakeholderRepository, times(1)).findByRoles(StakeholderRole.DRIVER.name());
 	}
@@ -96,7 +98,7 @@ class StakeholderServiceTest {
 	@Test
 	void testFindById() {
 		final Long id = new Random().nextLong();
-		final var stakeholder = toStakeholder(TestUtil.createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.APPLICANT)));
+		final var stakeholder = toStakeholder(TestUtil.createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.APPLICANT.name())));
 		Mockito.doReturn(Optional.of(stakeholder)).when(stakeholderRepository).findById(id);
 
 		final var result = stakeholderService.findById(id);
@@ -118,8 +120,8 @@ class StakeholderServiceTest {
 
 	@Test
 	void testPut() {
-		var stakeholder = createStakeholder();
-		var stakeholderDto = createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.APPLICANT));
+		final var stakeholder = createStakeholder();
+		final var stakeholderDto = createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.APPLICANT.name()));
 
 		when(stakeholderRepository.findById(any())).thenReturn(Optional.of(stakeholder));
 
@@ -146,4 +148,5 @@ class StakeholderServiceTest {
 		verify(stakeholderRepository, times(1)).save(entity);
 		verifyNoMoreInteractions(stakeholderRepository);
 	}
+
 }

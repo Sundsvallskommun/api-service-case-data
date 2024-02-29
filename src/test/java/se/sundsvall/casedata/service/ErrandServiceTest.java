@@ -1,38 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import com.turkraft.springfilter.converter.FilterSpecificationConverter;
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
-import se.sundsvall.casedata.api.model.PatchErrandDTO;
-import se.sundsvall.casedata.api.model.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.Stream;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -54,10 +21,45 @@ import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
 import static se.sundsvall.casedata.TestUtil.createStatusDTO;
 import static se.sundsvall.casedata.TestUtil.getRandomStakeholderRole;
 import static se.sundsvall.casedata.TestUtil.getRandomStakeholderType;
-import static se.sundsvall.casedata.api.model.enums.CaseType.ANMALAN_ATTEFALL;
-import static se.sundsvall.casedata.api.model.enums.CaseType.PARKING_PERMIT;
-import static se.sundsvall.casedata.api.model.enums.CaseType.PARKING_PERMIT_RENEWAL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ATTEFALL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
+
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.Stream;
+
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.zalando.problem.Status;
+import org.zalando.problem.ThrowableProblem;
+
+import se.sundsvall.casedata.api.model.PatchErrandDTO;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ErrandServiceTest {
@@ -83,7 +85,7 @@ class ErrandServiceTest {
 	@Test
 	void postWhenParkingPermit() {
 		final var inputErrandDTO = createErrandDTO();
-		inputErrandDTO.setCaseType(PARKING_PERMIT);
+		inputErrandDTO.setCaseType(PARKING_PERMIT.name());
 		final var inputErrand = toErrand(inputErrandDTO);
 		inputErrand.setId(new Random().nextLong(1, 1000));
 
@@ -103,7 +105,7 @@ class ErrandServiceTest {
 	@Test
 	void postWhenAnmalanAttefall() {
 		final var inputErrandDTO = createErrandDTO();
-		inputErrandDTO.setCaseType(ANMALAN_ATTEFALL);
+		inputErrandDTO.setCaseType(ANMALAN_ATTEFALL.name());
 		final var inputErrand = toErrand(inputErrandDTO);
 		inputErrand.setId(new Random().nextLong(1, 1000));
 
@@ -143,11 +145,11 @@ class ErrandServiceTest {
 	@Test
 	void addStakeholderToErrandTest() {
 		final var errand = createErrand();
-		final var newStakeholder = createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR));
+		final var newStakeholder = createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name()));
 		when(errandRepositoryMock.findById(errand.getId())).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-		var stakeholder = errandService.addStakeholderToErrand(errand.getId(), newStakeholder);
+		final var stakeholder = errandService.addStakeholderToErrand(errand.getId(), newStakeholder);
 
 		assertThat(stakeholder).isEqualTo(newStakeholder);
 		assertThat(errand.getStakeholders()).isNotEmpty().hasSize(2);
@@ -164,7 +166,7 @@ class ErrandServiceTest {
 		when(errandRepositoryMock.findById(errand.getId())).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-		var note = errandService.addNoteToErrand(errand.getId(), newNote);
+		final var note = errandService.addNoteToErrand(errand.getId(), newNote);
 
 		assertThat(note).isEqualTo(newNote);
 		assertThat(errand.getNotes()).isNotEmpty().hasSize(2);
@@ -197,7 +199,7 @@ class ErrandServiceTest {
 		when(errandRepositoryMock.findById(errand.getId())).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-		var decisionDTO = errandService.addDecisionToErrand(errand.getId(), newDecision);
+		final var decisionDTO = errandService.addDecisionToErrand(errand.getId(), newDecision);
 
 		assertThat(decisionDTO).isEqualTo(newDecision);
 		assertThat(errand.getDecisions()).isNotEmpty().hasSize(2);
