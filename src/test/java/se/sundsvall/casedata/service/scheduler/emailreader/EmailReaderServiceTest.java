@@ -80,16 +80,49 @@ class EmailReaderServiceTest {
 
 		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(Errand.builder().build()));
 		when(emailReaderMapperMock.toMessage(any())).thenReturn(messageMock);
+		when(messageRepositoryMock.existsById("someId")).thenReturn(false);
 
 		emailReaderService.getAndProcessEmails();
 
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
+		verify(errandRepositoryMock).findByErrandNumber("PRH-2022-01");
+		verify(messageRepositoryMock).existsById("someId");
 		verify(emailReaderMapperMock).toMessage(any());
 		verify(emailReaderMapperMock).toAttachments(any());
 		verify(messageRepositoryMock).save(any());
 		verify(attachmentRepositoryMock).saveAll(any());
-		verify(emailReaderClientMock).deleteEmail(any(String.class));
+		verify(emailReaderClientMock).deleteEmail("someId");
 		verifyNoMoreInteractions(emailReaderClientMock, messageRepositoryMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void getAndProcessEmailsSkipSave() {
+
+		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
+			.thenReturn(List.of(new Email()
+				.id("someId")
+				.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+				.recipients(List.of("someRecipient"))
+				.sender("someSender")
+				.message("someMessage")
+				.receivedAt(OffsetDateTime.now())
+				.attachments(List.of(new EmailAttachment()
+					.name("someName")
+					.content("someContent")
+					.contentType("someContentType")
+				))));
+
+		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(Errand.builder().build()));
+		when(messageRepositoryMock.existsById("someId")).thenReturn(true);
+
+		emailReaderService.getAndProcessEmails();
+
+		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
+		verify(errandRepositoryMock).findByErrandNumber("PRH-2022-01");
+		verify(messageRepositoryMock).existsById("someId");
+		verify(emailReaderClientMock).deleteEmail("someId");
+		verifyNoInteractions(emailReaderMapperMock,attachmentRepositoryMock);
+		verifyNoMoreInteractions(emailReaderClientMock, messageRepositoryMock);
 	}
 
 	@Test
@@ -112,7 +145,7 @@ class EmailReaderServiceTest {
 		emailReaderService.getAndProcessEmails();
 
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
-		verify(emailReaderClientMock).deleteEmail(any(String.class));
+		verify(emailReaderClientMock).deleteEmail("someId");
 		verifyNoMoreInteractions(emailReaderClientMock);
 		verifyNoInteractions(messageRepositoryMock, attachmentRepositoryMock);
 	}
