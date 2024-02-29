@@ -79,7 +79,7 @@ class EmailReaderMapperTest {
 	@Test
 	void toMessage() {
 		final var email = new Email()
-			.id("someId")
+			.id(UUID.randomUUID().toString())
 			.subject("someSubject")
 			.recipients(List.of("someRecipient"))
 			.sender("someSender")
@@ -99,12 +99,14 @@ class EmailReaderMapperTest {
 		assertThat(result)
 			.isNotNull()
 			.extracting(
+				"messageID",
 				"direction",
 				"subject",
 				"textmessage",
 				"messageType",
 				"email")
 			.containsExactlyInAnyOrder(
+				email.getId(),
 				INBOUND,
 				"someSubject",
 				"someMessage",
@@ -152,7 +154,7 @@ class EmailReaderMapperTest {
 	void toMessage_withNullAttachments() {
 
 		final var email = new Email()
-			.id("someId")
+			.id(UUID.randomUUID().toString())
 			.subject("someSubject")
 			.recipients(List.of("someRecipient"))
 			.sender("someSender")
@@ -164,12 +166,14 @@ class EmailReaderMapperTest {
 		assertThat(result)
 			.isNotNull()
 			.extracting(
+				"messageID",
 				"direction",
 				"subject",
 				"textmessage",
 				"messageType",
 				"email")
 			.containsExactlyInAnyOrder(
+				email.getId(),
 				INBOUND,
 				"someSubject",
 				"someMessage",
