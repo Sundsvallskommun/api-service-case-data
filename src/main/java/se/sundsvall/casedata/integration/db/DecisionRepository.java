@@ -6,7 +6,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import se.sundsvall.casedata.integration.db.model.Decision;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @JaversSpringDataAuditable
+@CircuitBreaker(name = "decisionRepository")
 public interface DecisionRepository extends JpaRepository<Decision, Long>, JpaSpecificationExecutor<Decision> {
 
 }
