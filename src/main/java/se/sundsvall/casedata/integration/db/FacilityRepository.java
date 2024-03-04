@@ -6,7 +6,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import se.sundsvall.casedata.integration.db.model.Facility;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @JaversSpringDataAuditable
+@CircuitBreaker(name = "facilityRepository")
 public interface FacilityRepository extends JpaRepository<Facility, Long>, JpaSpecificationExecutor<Facility> {
 
 }

@@ -11,7 +11,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import se.sundsvall.casedata.integration.db.model.Errand;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @JaversSpringDataAuditable
+@CircuitBreaker(name = "errandRepository")
 public interface ErrandRepository extends JpaRepository<Errand, Long>, JpaSpecificationExecutor<Errand> {
 
 	Page<Errand> findAllByIdIn(List<Long> id, Pageable pageable);
