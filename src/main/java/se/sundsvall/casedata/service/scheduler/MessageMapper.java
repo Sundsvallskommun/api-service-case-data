@@ -2,6 +2,8 @@ package se.sundsvall.casedata.service.scheduler;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -27,9 +29,9 @@ import generated.se.sundsvall.webmessagecollector.MessageDTO;
 @Component
 public class MessageMapper {
 
-	private BlobBuilder blobBuilder;
+	private final BlobBuilder blobBuilder;
 
-	public MessageMapper(BlobBuilder blobBuilder) {
+	public MessageMapper(final BlobBuilder blobBuilder) {
 		this.blobBuilder = blobBuilder;
 	}
 
@@ -47,8 +49,10 @@ public class MessageMapper {
 			.withEmail(dto.getEmail())
 			.withUserID(dto.getUserId())
 			.withUsername(dto.getUsername())
+			.withAttachments(toAttachmentEntities(dto.getAttachments(), dto.getId()))
 			.build();
 	}
+
 
 	public Message toMessageEntity(final MessageRequest request) {
 		final var entity = Message.builder()
@@ -138,6 +142,23 @@ public class MessageMapper {
 			.build();
 	}
 
+	private List<MessageAttachment> toAttachmentEntities(final List<generated.se.sundsvall.webmessagecollector.MessageAttachment> attachments, final Integer id) {
+		return attachments.stream()
+			.map(attachment -> toAttachmentEntity(attachment, id))
+			.toList();
+	}
+
+	private MessageAttachment toAttachmentEntity(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final Integer id) {
+
+		return MessageAttachment.builder()
+			.withAttachmentID(String.valueOf(attachment.getAttachmentId()))
+			.withMessageID(id.toString())
+			.withName(attachment.getName())
+			.withContentType(attachment.getMimeType())
+			.build();
+	}
+
+
 	public List<MessageAttachment> toAttachmentEntities(final List<MessageRequest.AttachmentRequest> attachmentRequests, final String messageID) {
 		return attachmentRequests.stream()
 			.map(attachmentRequest -> toAttachmentEntity(attachmentRequest, messageID))
@@ -154,7 +175,7 @@ public class MessageMapper {
 			.build();
 	}
 
-	private MessageAttachmentData toAttachmentDataEntity(MessageRequest.AttachmentRequest attachmentRequest) {
+	private MessageAttachmentData toAttachmentDataEntity(final MessageRequest.AttachmentRequest attachmentRequest) {
 		return MessageAttachmentData.builder()
 			.withFile(blobBuilder.createBlob(attachmentRequest.getContent()))
 			.build();
@@ -182,8 +203,22 @@ public class MessageMapper {
 				.withContent(new String(Base64.getEncoder().encode(attachment.getAttachmentData().getFile().getBinaryStream().readAllBytes()), UTF_8))
 				.withContentType(attachment.getContentType())
 				.build();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
 		}
 	}
+
+	public MessageAttachmentData toMessageAttachmentData(final InputStream result) {
+		try {
+			return MessageAttachmentData.builder()
+				.withFile(blobBuilder.createBlob(Base64.getEncoder().encodeToString(result.readAllBytes())))
+				.build();
+		} catch (final IOException e) {
+			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Failed to convert stream to base64 representation");
+
+		}
+
+
+	}
+
 }
