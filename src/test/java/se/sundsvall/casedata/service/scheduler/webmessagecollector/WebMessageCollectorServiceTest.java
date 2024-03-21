@@ -66,6 +66,25 @@ class WebMessageCollectorServiceTest {
 	@Captor
 	private ArgumentCaptor<MessageAttachment> messageAttachmentCaptor;
 
+	private static void assertSavedMessageHasCorrectValues(final Message message) {
+		assertThat(message.getDirection()).isEqualTo(INBOUND);
+		assertThat(message.getFamilyID()).isEqualTo("1");
+		assertThat(message.getExternalCaseID()).isEqualTo("1");
+		assertThat(message.getTextmessage()).isEqualTo("message");
+		assertThat(message.getMessageID()).isEqualTo("1");
+		assertThat(message.getSent()).isEqualTo("2021-01-01T00:00:00.000Z");
+		assertThat(message.getUsername()).isEqualTo("username");
+		assertThat(message.getFirstName()).isEqualTo("firstName");
+		assertThat(message.getLastName()).isEqualTo("lastName");
+		assertThat(message.getEmail()).isEqualTo("email");
+		assertThat(message.getMessageID()).isEqualTo("1");
+
+		assertThat(message.getAttachments()).hasSize(1);
+		assertThat(message.getAttachments().getFirst().getAttachmentID()).isEqualTo("1");
+		assertThat(message.getAttachments().getFirst().getContentType()).isEqualTo("mimeType");
+		assertThat(message.getAttachments().getFirst().getName()).isEqualTo("fileName");
+	}
+
 	@Test
 	void getAndProcessMessages() throws SQLException {
 
@@ -96,24 +115,7 @@ class WebMessageCollectorServiceTest {
 		verify(webMessageCollectorClientMock).getMessages(any(String.class));
 		verify(webMessageCollectorClientMock).deleteMessages(any());
 		verify(messageRepositoryMock).save(messageCaptor.capture());
-		assertThat(messageCaptor.getValue()).satisfies(message -> {
-			assertThat(message.getDirection()).isEqualTo(INBOUND);
-			assertThat(message.getFamilyID()).isEqualTo("1");
-			assertThat(message.getExternalCaseID()).isEqualTo("1");
-			assertThat(message.getTextmessage()).isEqualTo("message");
-			assertThat(message.getMessageID()).isEqualTo("1");
-			assertThat(message.getSent()).isEqualTo("2021-01-01T00:00:00.000Z");
-			assertThat(message.getUsername()).isEqualTo("username");
-			assertThat(message.getFirstName()).isEqualTo("firstName");
-			assertThat(message.getLastName()).isEqualTo("lastName");
-			assertThat(message.getEmail()).isEqualTo("email");
-			assertThat(message.getMessageID()).isEqualTo("1");
-
-			assertThat(message.getAttachments()).hasSize(1);
-			assertThat(message.getAttachments().getFirst().getAttachmentID()).isEqualTo("1");
-			assertThat(message.getAttachments().getFirst().getContentType()).isEqualTo("mimeType");
-			assertThat(message.getAttachments().getFirst().getName()).isEqualTo("fileName");
-		});
+		assertThat(messageCaptor.getValue()).satisfies(WebMessageCollectorServiceTest::assertSavedMessageHasCorrectValues);
 
 		verify(webMessageCollectorClientMock).getAttachment(1);
 		verify(messageMapperMock).toMessageEntity(errandNumber, messageDTOs.getFirst());
