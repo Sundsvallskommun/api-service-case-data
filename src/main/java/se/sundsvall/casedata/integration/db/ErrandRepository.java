@@ -21,7 +21,7 @@ public interface ErrandRepository extends JpaRepository<Errand, Long>, JpaSpecif
 
 	List<Errand> findAllByErrandNumberStartingWith(String caseTypeAbbreviation);
 
-	Errand findByExternalCaseId(String externalCaseId);
+	Optional<Errand> findByExternalCaseId(String externalCaseId);
 
 	Optional<Errand> findByErrandNumber(String errandNumber);
 

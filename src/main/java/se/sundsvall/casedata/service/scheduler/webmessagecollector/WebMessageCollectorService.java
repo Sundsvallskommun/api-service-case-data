@@ -1,34 +1,45 @@
-package se.sundsvall.casedata.service.scheduler;
-
-import static java.util.Objects.nonNull;
+package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import generated.se.sundsvall.webmessagecollector.MessageDTO;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
+import se.sundsvall.casedata.integration.db.model.Message;
+import se.sundsvall.casedata.integration.db.model.MessageAttachment;
 import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollectorClient;
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
+import se.sundsvall.casedata.service.scheduler.MessageMapper;
+
+import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Component
 @ConditionalOnProperty(prefix = "scheduler.message-collector", name = "enabled", havingValue = "true", matchIfMissing = true)
-public class MessageCollectorService {
+public class WebMessageCollectorService {
 
 	private final MessageRepository messageRepository;
+
 	private final WebMessageCollectorClient webMessageCollectorClient;
+
+	private final MessageAttachmentRepository messageAttachmentRepository;
+
 	private final ErrandRepository errandRepository;
+
 	private final MessageMapper messageMapper;
+
 	private final WebMessageCollectorProperties webMessageCollectorProperties;
 
-	public MessageCollectorService(final MessageRepository messageRepository, final WebMessageCollectorClient webMessageCollectorClient, final ErrandRepository errandRepository, final MessageMapper messageMapper,
+	public WebMessageCollectorService(final MessageRepository messageRepository, final WebMessageCollectorClient webMessageCollectorClient, final MessageAttachmentRepository messageAttachmentRepository, final ErrandRepository errandRepository, final MessageMapper messageMapper,
 		final WebMessageCollectorProperties webMessageCollectorProperties) {
 		this.messageRepository = messageRepository;
 		this.webMessageCollectorClient = webMessageCollectorClient;
+		this.messageAttachmentRepository = messageAttachmentRepository;
 		this.errandRepository = errandRepository;
 		this.messageMapper = messageMapper;
 		this.webMessageCollectorProperties = webMessageCollectorProperties;
@@ -40,16 +51,32 @@ public class MessageCollectorService {
 
 		final var handledIds = getMessages().stream()
 			.map(messageDTO -> {
-				final var result = errandRepository.findByExternalCaseId(messageDTO.getExternalCaseId());
-				if (nonNull(result)) {
-					final var errandNumber = result.getErrandNumber();
-					messageRepository.save(messageMapper.toMessageEntity(errandNumber, messageDTO));
-				}
+				processMessage(messageDTO).ifPresent(processedMessage -> {
+					for (final var messageAttachment : processedMessage.getAttachments()) {
+						processAttachment(messageAttachment);
+					}
+				});
 				return messageDTO.getId();
 			})
 			.toList();
+
 		deleteMessages(handledIds);
 	}
+
+	private Optional<Message> processMessage(final MessageDTO messageDTO) {
+		return errandRepository.findByExternalCaseId(messageDTO.getExternalCaseId()).map(result -> {
+			final var errandNumber = result.getErrandNumber();
+			final var message = messageMapper.toMessageEntity(errandNumber, messageDTO);
+			return messageRepository.save(message);
+		});
+	}
+
+	private void processAttachment(final MessageAttachment attachment) {
+		final var result = webMessageCollectorClient.getAttachment(Integer.parseInt(attachment.getAttachmentID()));
+		attachment.setAttachmentData(messageMapper.toMessageAttachmentData(result));
+		messageAttachmentRepository.save(attachment);
+	}
+
 
 	private List<MessageDTO> getMessages() {
 		return webMessageCollectorProperties.familyIds().stream()

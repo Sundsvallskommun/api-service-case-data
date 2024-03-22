@@ -233,6 +233,16 @@ class MessageMapperTest {
 		final var sent = "sent";
 		final var userId = "userId";
 		final var username = "username";
+
+		final var attachmentId = 12;
+		final var name = "name";
+		final var extension = "extension";
+		final var mimeType = "mimeType";
+		final var attachments = List.of(new generated.se.sundsvall.webmessagecollector.MessageAttachment()
+			.name(name)
+			.extension(extension)
+			.mimeType(mimeType)
+			.attachmentId(attachmentId));
 		final var dto = new MessageDTO()
 			.direction(direction)
 			.email(email)
@@ -245,11 +255,11 @@ class MessageMapperTest {
 			.messageId(messageId)
 			.sent(sent)
 			.userId(userId)
-			.username(username);
+			.username(username)
+			.attachments(attachments);
 
 		final var bean = messageMapper.toMessageEntity(errandNumber, dto);
 
-		assertThat(bean.getAttachments()).isNullOrEmpty();
 		assertThat(bean.getDirection()).isEqualTo(Direction.OUTBOUND);
 		assertThat(bean.getEmail()).isEqualTo(email);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
@@ -265,9 +275,15 @@ class MessageMapperTest {
 		assertThat(bean.getTextmessage()).isEqualTo(message);
 		assertThat(bean.getUserID()).isEqualTo(userId);
 		assertThat(bean.getUsername()).isEqualTo(username);
+		assertThat(bean.getAttachments()).isNotEmpty().hasSize(1);
+		assertThat(bean.getAttachments().getFirst().getAttachmentID()).isEqualTo(String.valueOf(attachmentId));
+		assertThat(bean.getAttachments().getFirst().getAttachmentData()).isNull();
+		assertThat(bean.getAttachments().getFirst().getContentType()).isEqualTo(mimeType);
+		assertThat(bean.getAttachments().getFirst().getName()).isEqualTo(name);
+
 	}
 
-	private boolean isValidUUID(String uuid) {
+	private boolean isValidUUID(final String uuid) {
 		return UUID_VALIDATOR.isValid(uuid);
 	}
 
@@ -331,4 +347,5 @@ class MessageMapperTest {
 			.withHeaders(headers)
 			.build();
 	}
+
 }
