@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
 
-import java.io.ByteArrayInputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -91,8 +90,8 @@ class WebMessageCollectorServiceTest {
 		final var messageDTOs = createMessages();
 		final var messages = createMessage();
 
-		final var stream = new ByteArrayInputStream(new byte[]{1, 23, 45});
-		final var blob = new SerialBlob(stream.readAllBytes());
+		final var bytes = new byte[]{1, 23, 45};
+		final var blob = new SerialBlob(bytes);
 		final var attachmentData = MessageAttachmentData.builder().withFile(blob).build();
 
 		when(webMessageCollectorClientMock.getMessages(any(String.class))).thenReturn(messageDTOs);
@@ -104,7 +103,7 @@ class WebMessageCollectorServiceTest {
 
 		when(messageMapperMock.toAttachmentEntity(any(generated.se.sundsvall.webmessagecollector.MessageAttachment.class), any(String.class))).thenReturn(createAttachment());
 
-		when(webMessageCollectorClientMock.getAttachment(anyInt())).thenReturn(stream);
+		when(webMessageCollectorClientMock.getAttachment(anyInt())).thenReturn(bytes);
 		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(attachmentData);
 
 		// Act

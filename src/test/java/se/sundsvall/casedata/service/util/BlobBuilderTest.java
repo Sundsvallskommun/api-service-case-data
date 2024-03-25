@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import se.sundsvall.casedata.Application;
 
-@SpringBootTest(classes = { Application.class }, webEnvironment = MOCK)
+@SpringBootTest(classes = {Application.class}, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class BlobBuilderTest {
 
@@ -33,4 +33,17 @@ class BlobBuilderTest {
 		// Assert
 		assertThat(blob.getBinaryStream().readAllBytes()).isEqualTo(fileContent.getBytes());
 	}
+
+	@Test
+	void createBlobWithBytes() throws IOException, SQLException {
+		// Arrange
+		final var fileContent = "text-content-of-file";
+
+		// Act
+		final var blob = blobBuilder.createBlob(fileContent.getBytes(UTF_8));
+
+		// Assert
+		assertThat(blob.getBinaryStream().readAllBytes()).isEqualTo(fileContent.getBytes());
+	}
+
 }
