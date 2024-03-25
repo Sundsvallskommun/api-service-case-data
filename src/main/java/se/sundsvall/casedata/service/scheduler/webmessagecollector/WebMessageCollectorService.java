@@ -11,7 +11,6 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.integration.db.model.Message;
-import se.sundsvall.casedata.integration.db.model.MessageAttachment;
 import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollectorClient;
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
@@ -52,8 +51,8 @@ public class WebMessageCollectorService {
 		final var handledIds = getMessages().stream()
 			.map(messageDTO -> {
 				processMessage(messageDTO).ifPresent(processedMessage -> {
-					for (final var messageAttachment : processedMessage.getAttachments()) {
-						processAttachment(messageAttachment);
+					for (final var messageAttachment : messageDTO.getAttachments()) {
+						processAttachment(messageAttachment, processedMessage.getMessageID());
 					}
 				});
 				return messageDTO.getId();
@@ -67,16 +66,20 @@ public class WebMessageCollectorService {
 		return errandRepository.findByExternalCaseId(messageDTO.getExternalCaseId()).map(result -> {
 			final var errandNumber = result.getErrandNumber();
 			final var message = messageMapper.toMessageEntity(errandNumber, messageDTO);
-			return messageRepository.save(message);
+			return messageRepository.saveAndFlush(message);
 		});
 	}
 
-	private void processAttachment(final MessageAttachment attachment) {
-		final var result = webMessageCollectorClient.getAttachment(Integer.parseInt(attachment.getAttachmentID()));
-		attachment.setAttachmentData(messageMapper.toMessageAttachmentData(result));
-		messageAttachmentRepository.save(attachment);
+	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId) {
+		final var attachmentId = attachment.getAttachmentId();
+		// Map the attachment
+		final var messageAttachment = messageMapper.toAttachmentEntity(attachment, messageId);
+		// Fetch the data
+		final var data = webMessageCollectorClient.getAttachment(attachmentId);
+		messageAttachment.setAttachmentData(messageMapper.toMessageAttachmentData(data));
+		// Save the attachment
+		messageAttachmentRepository.saveAndFlush(messageAttachment);
 	}
-
 
 	private List<MessageDTO> getMessages() {
 		return webMessageCollectorProperties.familyIds().stream()

@@ -2,8 +2,6 @@ package se.sundsvall.casedata.service.scheduler;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +47,6 @@ public class MessageMapper {
 			.withEmail(dto.getEmail())
 			.withUserID(dto.getUserId())
 			.withUsername(dto.getUsername())
-			.withAttachments(toAttachmentEntities(dto.getAttachments(), dto.getId()))
 			.build();
 	}
 
@@ -142,17 +139,11 @@ public class MessageMapper {
 			.build();
 	}
 
-	private List<MessageAttachment> toAttachmentEntities(final List<generated.se.sundsvall.webmessagecollector.MessageAttachment> attachments, final Integer id) {
-		return attachments.stream()
-			.map(attachment -> toAttachmentEntity(attachment, id))
-			.toList();
-	}
-
-	private MessageAttachment toAttachmentEntity(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final Integer id) {
+	public MessageAttachment toAttachmentEntity(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId) {
 
 		return MessageAttachment.builder()
 			.withAttachmentID(String.valueOf(attachment.getAttachmentId()))
-			.withMessageID(id.toString())
+			.withMessageID(messageId)
 			.withName(attachment.getName())
 			.withContentType(attachment.getMimeType())
 			.build();
@@ -208,17 +199,10 @@ public class MessageMapper {
 		}
 	}
 
-	public MessageAttachmentData toMessageAttachmentData(final InputStream result) {
-		try {
-			return MessageAttachmentData.builder()
-				.withFile(blobBuilder.createBlob(Base64.getEncoder().encodeToString(result.readAllBytes())))
-				.build();
-		} catch (final IOException e) {
-			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Failed to convert stream to base64 representation");
-
-		}
-
-
+	public MessageAttachmentData toMessageAttachmentData(final byte[] result) {
+		return MessageAttachmentData.builder()
+			.withFile(blobBuilder.createBlob(result))
+			.build();
 	}
 
 }

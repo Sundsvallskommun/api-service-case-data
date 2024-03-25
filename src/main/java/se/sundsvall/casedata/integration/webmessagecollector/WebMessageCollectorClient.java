@@ -2,7 +2,6 @@ package se.sundsvall.casedata.integration.webmessagecollector;
 
 import static se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorConfiguration.CLIENT_ID;
 
-import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -29,7 +28,7 @@ public interface WebMessageCollectorClient {
 	void deleteMessages(List<Integer> ids);
 
 	@GetMapping("/messages/attachments/{attachmentId}")
-	InputStream getAttachment(@PathVariable(name = "attachmentId") int attachmentId);
+	byte[] getAttachment(@PathVariable(name = "attachmentId") int attachmentId);
 
 	@DeleteMapping
 	void deleteAttachment(@PathVariable(name = "attachmentId") int attachmentId);
