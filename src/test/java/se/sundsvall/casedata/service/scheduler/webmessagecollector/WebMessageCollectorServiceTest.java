@@ -22,9 +22,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
+import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.Message;
 import se.sundsvall.casedata.integration.db.model.MessageAttachment;
@@ -37,6 +39,9 @@ import generated.se.sundsvall.webmessagecollector.MessageDTO;
 
 @ExtendWith(MockitoExtension.class)
 class WebMessageCollectorServiceTest {
+
+	@Mock
+	AttachmentRepository attachmentRepositoryMock;
 
 	@Mock
 	private WebMessageCollectorProperties webMessageCollectorProperties;
@@ -65,6 +70,9 @@ class WebMessageCollectorServiceTest {
 	@Captor
 	private ArgumentCaptor<MessageAttachment> messageAttachmentCaptor;
 
+	@Captor
+	private ArgumentCaptor<Attachment> attachmentCaptor;
+
 	private static void assertSavedMessageHasCorrectValues(final Message message) {
 		assertThat(message.getDirection()).isEqualTo(INBOUND);
 		assertThat(message.getFamilyID()).isEqualTo("1");
@@ -88,7 +96,7 @@ class WebMessageCollectorServiceTest {
 		final var externalCaseId = "someExternalCaseId";
 		final var errandNumber = "someErrandNumber";
 		final var messageDTOs = createMessages();
-		final var messages = createMessage();
+		final var message = createMessage();
 
 		final var bytes = new byte[]{1, 23, 45};
 		final var blob = new SerialBlob(bytes);
@@ -98,13 +106,15 @@ class WebMessageCollectorServiceTest {
 
 		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(Errand.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).build()));
 		when(webMessageCollectorProperties.familyIds()).thenReturn(List.of("123"));
-		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst())).thenReturn(createMessage());
-		when(messageRepositoryMock.saveAndFlush(any(Message.class))).thenReturn(messages);
+		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst())).thenReturn(message);
+		when(messageRepositoryMock.saveAndFlush(any(Message.class))).thenReturn(message);
 
 		when(messageMapperMock.toAttachmentEntity(any(generated.se.sundsvall.webmessagecollector.MessageAttachment.class), any(String.class))).thenReturn(createAttachment());
 
 		when(webMessageCollectorClientMock.getAttachment(anyInt())).thenReturn(bytes);
 		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(attachmentData);
+
+		when(messageMapperMock.toAttachment(any(MessageAttachment.class))).thenReturn(Attachment.builder().withName("fileName").build());
 
 		// Act
 		webMessageCollectorService.getAndProcessMessages();
@@ -125,6 +135,10 @@ class WebMessageCollectorServiceTest {
 			assertThat(attachment.getName()).isEqualTo("fileName");
 			assertThat(attachment.getAttachmentData().getFile()).isEqualTo(blob);
 		});
+
+		verify(attachmentRepositoryMock).saveAndFlush(attachmentCaptor.capture());
+		assertThat(attachmentCaptor.getValue().getErrandNumber()).isEqualTo(errandNumber);
+		assertThat(attachmentCaptor.getValue().getName()).isEqualTo("fileName");
 	}
 
 	@Test
@@ -143,6 +157,7 @@ class WebMessageCollectorServiceTest {
 
 	private Message createMessage() {
 		return Message.builder()
+			.withErrandNumber("someErrandNumber")
 			.withDirection(INBOUND)
 			.withFamilyID("1")
 			.withExternalCaseID("1")

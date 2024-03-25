@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
@@ -22,6 +23,7 @@ import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 @ConditionalOnProperty(prefix = "scheduler.message-collector", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class WebMessageCollectorService {
 
+
 	private final MessageRepository messageRepository;
 
 	private final WebMessageCollectorClient webMessageCollectorClient;
@@ -30,16 +32,19 @@ public class WebMessageCollectorService {
 
 	private final ErrandRepository errandRepository;
 
+	private final AttachmentRepository attachmentRepository;
+
 	private final MessageMapper messageMapper;
 
 	private final WebMessageCollectorProperties webMessageCollectorProperties;
 
-	public WebMessageCollectorService(final MessageRepository messageRepository, final WebMessageCollectorClient webMessageCollectorClient, final MessageAttachmentRepository messageAttachmentRepository, final ErrandRepository errandRepository, final MessageMapper messageMapper,
+	public WebMessageCollectorService(final MessageRepository messageRepository, final WebMessageCollectorClient webMessageCollectorClient, final MessageAttachmentRepository messageAttachmentRepository, final ErrandRepository errandRepository, final AttachmentRepository attachmentRepository, final MessageMapper messageMapper,
 		final WebMessageCollectorProperties webMessageCollectorProperties) {
 		this.messageRepository = messageRepository;
 		this.webMessageCollectorClient = webMessageCollectorClient;
 		this.messageAttachmentRepository = messageAttachmentRepository;
 		this.errandRepository = errandRepository;
+		this.attachmentRepository = attachmentRepository;
 		this.messageMapper = messageMapper;
 		this.webMessageCollectorProperties = webMessageCollectorProperties;
 	}
@@ -52,7 +57,7 @@ public class WebMessageCollectorService {
 			.map(messageDTO -> {
 				processMessage(messageDTO).ifPresent(processedMessage -> {
 					for (final var messageAttachment : messageDTO.getAttachments()) {
-						processAttachment(messageAttachment, processedMessage.getMessageID());
+						processAttachment(messageAttachment, processedMessage.getMessageID(), processedMessage.getErrandNumber());
 					}
 				});
 				return messageDTO.getId();
@@ -70,7 +75,7 @@ public class WebMessageCollectorService {
 		});
 	}
 
-	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId) {
+	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId, final String errandNumber) {
 		final var attachmentId = attachment.getAttachmentId();
 		// Map the attachment
 		final var messageAttachment = messageMapper.toAttachmentEntity(attachment, messageId);
@@ -79,6 +84,7 @@ public class WebMessageCollectorService {
 		messageAttachment.setAttachmentData(messageMapper.toMessageAttachmentData(data));
 		// Save the attachment
 		messageAttachmentRepository.saveAndFlush(messageAttachment);
+		attachmentRepository.saveAndFlush(messageMapper.toAttachment(messageAttachment).withErrandNumber(errandNumber));
 	}
 
 	private List<MessageDTO> getMessages() {
