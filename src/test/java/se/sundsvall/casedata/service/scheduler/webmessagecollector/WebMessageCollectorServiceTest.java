@@ -79,10 +79,7 @@ class WebMessageCollectorServiceTest {
 		assertThat(message.getEmail()).isEqualTo("email");
 		assertThat(message.getMessageID()).isEqualTo("1");
 
-		assertThat(message.getAttachments()).hasSize(1);
-		assertThat(message.getAttachments().getFirst().getAttachmentID()).isEqualTo("1");
-		assertThat(message.getAttachments().getFirst().getContentType()).isEqualTo("mimeType");
-		assertThat(message.getAttachments().getFirst().getName()).isEqualTo("fileName");
+		assertThat(message.getAttachments()).isNull();
 	}
 
 	@Test
@@ -102,8 +99,10 @@ class WebMessageCollectorServiceTest {
 
 		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(Errand.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).build()));
 		when(webMessageCollectorProperties.familyIds()).thenReturn(List.of("123"));
-		when(messageMapperMock.toMessageEntity(any(), any())).thenReturn(createMessage());
-		when(messageRepositoryMock.save(any(Message.class))).thenReturn(messages);
+		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst())).thenReturn(createMessage());
+		when(messageRepositoryMock.saveAndFlush(any(Message.class))).thenReturn(messages);
+
+		when(messageMapperMock.toAttachmentEntity(any(generated.se.sundsvall.webmessagecollector.MessageAttachment.class), any(String.class))).thenReturn(createAttachment());
 
 		when(webMessageCollectorClientMock.getAttachment(anyInt())).thenReturn(stream);
 		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(attachmentData);
@@ -114,13 +113,13 @@ class WebMessageCollectorServiceTest {
 		// Assert
 		verify(webMessageCollectorClientMock).getMessages(any(String.class));
 		verify(webMessageCollectorClientMock).deleteMessages(any());
-		verify(messageRepositoryMock).save(messageCaptor.capture());
+		verify(messageRepositoryMock).saveAndFlush(messageCaptor.capture());
 		assertThat(messageCaptor.getValue()).satisfies(WebMessageCollectorServiceTest::assertSavedMessageHasCorrectValues);
 
 		verify(webMessageCollectorClientMock).getAttachment(1);
 		verify(messageMapperMock).toMessageEntity(errandNumber, messageDTOs.getFirst());
 
-		verify(messageAttachmentRepositoryMock).save(messageAttachmentCaptor.capture());
+		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachmentCaptor.capture());
 		assertThat(messageAttachmentCaptor.getValue()).satisfies(attachment -> {
 			assertThat(attachment.getAttachmentID()).isEqualTo("1");
 			assertThat(attachment.getContentType()).isEqualTo("mimeType");
@@ -138,7 +137,7 @@ class WebMessageCollectorServiceTest {
 
 		verify(webMessageCollectorClientMock).getMessages(any(String.class));
 		verify(webMessageCollectorClientMock).deleteMessages(any());
-		verify(messageRepositoryMock, never()).save(any());
+		verify(messageRepositoryMock, never()).saveAndFlush(any());
 		verify(messageMapperMock, never()).toMessageEntity(any(), any());
 	}
 
@@ -156,12 +155,14 @@ class WebMessageCollectorServiceTest {
 			.withLastName("lastName")
 			.withEmail("email")
 			.withMessageID("1")
-			.withAttachments(List.of(MessageAttachment
-				.builder()
-				.withAttachmentID("1")
-				.withContentType("mimeType")
-				.withName("fileName")
-				.build()))
+			.build();
+	}
+
+	private MessageAttachment createAttachment() {
+		return MessageAttachment.builder()
+			.withAttachmentID("1")
+			.withName("fileName")
+			.withContentType("mimeType")
 			.build();
 	}
 

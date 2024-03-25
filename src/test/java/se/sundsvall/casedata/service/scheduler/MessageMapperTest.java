@@ -219,6 +219,29 @@ class MessageMapperTest {
 	}
 
 	@Test
+	void toAttachmentEntity() {
+		final var messageID = "messageID";
+		final var contentType = "contentType";
+		final var name = "name";
+		final var attachmentID = "12";
+		final var messageAttachment = new generated.se.sundsvall.webmessagecollector.MessageAttachment()
+			.name(name)
+			.extension(contentType)
+			.mimeType(contentType)
+			.attachmentId(Integer.valueOf(attachmentID));
+
+		// Act
+		final var bean = messageMapper.toAttachmentEntity(messageAttachment, messageID);
+
+		// Assert
+		assertThat(bean.getAttachmentData()).isNull();
+		assertThat(bean.getAttachmentID()).isEqualTo(attachmentID);
+		assertThat(bean.getContentType()).isEqualTo(contentType);
+		assertThat(bean.getMessageID()).isEqualTo(messageID);
+		assertThat(bean.getName()).isEqualTo(name);
+	}
+
+	@Test
 	void testToMessageEntity() {
 		final var errandNumber = "errandNumber";
 		final var direction = DirectionEnum.OUTBOUND;
@@ -275,11 +298,7 @@ class MessageMapperTest {
 		assertThat(bean.getTextmessage()).isEqualTo(message);
 		assertThat(bean.getUserID()).isEqualTo(userId);
 		assertThat(bean.getUsername()).isEqualTo(username);
-		assertThat(bean.getAttachments()).isNotEmpty().hasSize(1);
-		assertThat(bean.getAttachments().getFirst().getAttachmentID()).isEqualTo(String.valueOf(attachmentId));
-		assertThat(bean.getAttachments().getFirst().getAttachmentData()).isNull();
-		assertThat(bean.getAttachments().getFirst().getContentType()).isEqualTo(mimeType);
-		assertThat(bean.getAttachments().getFirst().getName()).isEqualTo(name);
+		assertThat(bean.getAttachments()).isNull();
 
 	}
 

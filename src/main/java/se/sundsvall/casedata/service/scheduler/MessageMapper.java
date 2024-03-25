@@ -49,7 +49,6 @@ public class MessageMapper {
 			.withEmail(dto.getEmail())
 			.withUserID(dto.getUserId())
 			.withUsername(dto.getUsername())
-			.withAttachments(toAttachmentEntities(dto.getAttachments(), dto.getId()))
 			.build();
 	}
 
@@ -142,17 +141,11 @@ public class MessageMapper {
 			.build();
 	}
 
-	private List<MessageAttachment> toAttachmentEntities(final List<generated.se.sundsvall.webmessagecollector.MessageAttachment> attachments, final Integer id) {
-		return attachments.stream()
-			.map(attachment -> toAttachmentEntity(attachment, id))
-			.toList();
-	}
-
-	private MessageAttachment toAttachmentEntity(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final Integer id) {
+	public MessageAttachment toAttachmentEntity(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId) {
 
 		return MessageAttachment.builder()
 			.withAttachmentID(String.valueOf(attachment.getAttachmentId()))
-			.withMessageID(id.toString())
+			.withMessageID(messageId)
 			.withName(attachment.getName())
 			.withContentType(attachment.getMimeType())
 			.build();
