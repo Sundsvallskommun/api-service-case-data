@@ -15,6 +15,7 @@ import se.sundsvall.casedata.api.model.EmailHeaderDTO;
 import se.sundsvall.casedata.api.model.MessageAttachmentDTO;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
+import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.EmailHeader;
 import se.sundsvall.casedata.integration.db.model.Message;
 import se.sundsvall.casedata.integration.db.model.MessageAttachment;
@@ -147,6 +148,17 @@ public class MessageMapper {
 			.withName(attachment.getName())
 			.withContentType(attachment.getMimeType())
 			.build();
+	}
+
+	public Attachment toAttachment(final MessageAttachment attachment) {
+		try {
+			return Attachment.builder()
+				.withFile(Base64.getEncoder().encodeToString(attachment.getAttachmentData().getFile().getBinaryStream().readAllBytes()))
+				.withName(attachment.getName())
+				.build();
+		} catch (final Exception e) {
+			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
+		}
 	}
 
 

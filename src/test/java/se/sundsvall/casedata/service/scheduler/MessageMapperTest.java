@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.scheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -299,6 +300,44 @@ class MessageMapperTest {
 		assertThat(bean.getUserID()).isEqualTo(userId);
 		assertThat(bean.getUsername()).isEqualTo(username);
 		assertThat(bean.getAttachments()).isNull();
+
+	}
+
+	@Test
+	void toAttachment() {
+		// Arrange
+		final var attachment = MessageAttachment.builder()
+			.withAttachmentData(MessageAttachmentData.builder()
+				.withFile(new MariaDbBlob("content".getBytes()))
+				.build())
+			.withAttachmentID("attachmentID")
+			.withContentType("contentType")
+			.withName("name")
+			.build();
+
+		// Act
+		final var result = messageMapper.toAttachment(attachment);
+
+		// Assert
+		assertThat(result.getFile()).isEqualTo(Base64.getEncoder().encodeToString("content".getBytes()));
+		assertThat(result.getName()).isEqualTo("name");
+
+	}
+
+	@Test
+	void toAttachmentWhenAttachmentIsNull() {
+		// Arrange
+		final var attachment = MessageAttachment.builder()
+			.withAttachmentData(null)
+			.withAttachmentID("attachmentID")
+			.withContentType("contentType")
+			.withName("name")
+			.build();
+
+		// Act
+		assertThatThrownBy(() -> messageMapper.toAttachment(attachment))
+			.isInstanceOf(ThrowableProblem.class)
+			.hasMessage("Internal Server Error: Failed to convert binary stream to base64 representation");
 
 	}
 
