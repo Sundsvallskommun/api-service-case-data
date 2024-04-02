@@ -38,3 +38,6 @@ build/
 .env
 application-default.properties
 application-default.yml
+
+# OSX
+.DS_Store
