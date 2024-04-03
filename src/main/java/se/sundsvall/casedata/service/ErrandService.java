@@ -80,10 +80,9 @@ public class ErrandService {
 	}
 
 	public ErrandDTO findById(final Long id) {
-		final var errand = toErrandDto(errandRepository.findById(id)
+		return toErrandDto(errandRepository.findById(id)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
 				MessageFormat.format(ERRAND_WAS_NOT_FOUND, id))));
-		return errand;
 	}
 
 	public Errand getErrand(final Long errandId) {
