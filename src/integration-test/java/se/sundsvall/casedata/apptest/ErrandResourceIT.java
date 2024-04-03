@@ -15,6 +15,7 @@ import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.TestUtil.createExtraParameters;
+import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
 import static se.sundsvall.casedata.TestUtil.createNoteDTO;
 import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
 import static se.sundsvall.casedata.TestUtil.createStatusDTO;
@@ -159,6 +160,7 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 		inputPatchErrandDTO.setDiaryNumber("A new patched diary number");
 		inputPatchErrandDTO.setApplicationReceived(getRandomOffsetDateTime());
 		inputPatchErrandDTO.setExtraParameters(createExtraParameters());
+		inputPatchErrandDTO.setFacilities(List.of(createFacilityDTO()));
 
 		// Patch the object
 		webTestClient.patch().uri("/errands/{id}", id)

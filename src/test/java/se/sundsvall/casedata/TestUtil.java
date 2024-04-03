@@ -152,7 +152,6 @@ public class TestUtil {
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
 			.withVersion(1)
-			.withId(1L)
 			.withExtraParameters(createExtraParameters())
 			.withAddress(createAddressDTO(AddressCategory.VISITING_ADDRESS))
 			.withFacilityType(FacilityType.GARAGE.name())
@@ -331,6 +330,7 @@ public class TestUtil {
 			.withEndDate(LocalDate.now())
 			.withApplicationReceived(getRandomOffsetDateTime())
 			.withExtraParameters(createExtraParameters())
+			.withFacilities(new ArrayList<>(List.of(createFacilityDTO())))
 			.build();
 	}
 

@@ -1,47 +1,47 @@
 openapi: 3.0.1
 info:
   title: ms-case-data
-  contact: {}
+  contact: { }
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "6.0"
+  version: "6.1"
 servers:
-- url: http://localhost:8080
-  description: Generated server url
+  - url: http://localhost:51856
+    description: Generated server url
 tags:
-- name: MessageAttachments
-  description: MessageAttachment operations
-- name: Notes
-  description: Note operations
-- name: Messages
-  description: Message operations
-- name: History
-  description: History operations
-- name: Decisions
-  description: Decision operations
-- name: Stakeholders
-  description: Stakeholder operations
-- name: Errands
-  description: Errand operations
-- name: Parking permit
-  description: Parking permit operations
-- name: Attachments
-  description: Attachment operations
+  - name: MessageAttachments
+    description: MessageAttachment operations
+  - name: Notes
+    description: Note operations
+  - name: Messages
+    description: Message operations
+  - name: History
+    description: History operations
+  - name: Decisions
+    description: Decision operations
+  - name: Stakeholders
+    description: Stakeholder operations
+  - name: Errands
+    description: Errand operations
+  - name: Parking permit
+    description: Parking permit operations
+  - name: Attachments
+    description: Attachment operations
 paths:
   /stakeholders/{stakeholderId}:
     put:
       tags:
-      - Stakeholders
+        - Stakeholders
       description: Replace stakeholder.
       operationId: putStakeholder
       parameters:
-      - name: stakeholderId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: stakeholderId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -49,6 +49,14 @@ paths:
               $ref: '#/components/schemas/StakeholderDTO'
         required: true
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -61,28 +69,20 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
     patch:
       tags:
-      - Stakeholders
+        - Stakeholders
       description: Update stakeholder.
       operationId: patchStakeholder
       parameters:
-      - name: stakeholderId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: stakeholderId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -90,6 +90,14 @@ paths:
               $ref: '#/components/schemas/StakeholderDTO'
         required: true
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -102,63 +110,55 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
   /messages/{messageID}/viewed/{isViewed}:
     put:
       tags:
-      - Messages
+        - Messages
       description: Set viewed status for message.
       operationId: updateViewedStatus
       parameters:
-      - name: messageID
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: isViewed
-        in: path
-        required: true
-        schema:
-          type: boolean
+        - name: messageID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: isViewed
+          in: path
+          required: true
+          schema:
+            type: boolean
       responses:
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
         "400":
           description: Bad request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
         "204":
           description: No content - Successful operation
   /errands/{id}/statuses:
     put:
       tags:
-      - Errands
+        - Errands
       description: Add/replace status on errand.
       operationId: putStatusOnErrand
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -168,6 +168,14 @@ paths:
                 $ref: '#/components/schemas/StatusDTO'
         required: true
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -180,28 +188,20 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
     patch:
       tags:
-      - Errands
+        - Errands
       description: Add status to errand.
       operationId: patchErrandWithStatus
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -209,6 +209,14 @@ paths:
               $ref: '#/components/schemas/StatusDTO'
         required: true
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -221,29 +229,21 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
   /errands/{id}/stakeholders:
     put:
       tags:
-      - Errands
+        - Errands
       description: Replace stakeholders on errand.
       operationId: putStakeholdersOnErrand
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -253,6 +253,14 @@ paths:
                 $ref: '#/components/schemas/StakeholderDTO'
         required: true
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -265,28 +273,20 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
     patch:
       tags:
-      - Errands
+        - Errands
       description: Create and add stakeholder to errand.
       operationId: patchErrandWithStakeholder
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -302,6 +302,14 @@ paths:
               style: simple
               schema:
                 type: string
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -314,27 +322,19 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /decisions/{decisionId}:
     put:
       tags:
-      - Decisions
+        - Decisions
       description: Replace decision.
       operationId: putDecision
       parameters:
-      - name: decisionId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: decisionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -344,6 +344,14 @@ paths:
       responses:
         "204":
           description: No content - Successful operation
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -356,26 +364,18 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
     patch:
       tags:
-      - Decisions
+        - Decisions
       description: Update decision.
       operationId: patchDecision
       parameters:
-      - name: decisionId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: decisionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -385,6 +385,14 @@ paths:
       responses:
         "204":
           description: No content - Successful operation
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -397,27 +405,19 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /attachments/{attachmentId}:
     put:
       tags:
-      - Attachments
+        - Attachments
       description: Replace attachment.
       operationId: putAttachmentOnErrand
       parameters:
-      - name: attachmentId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: attachmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -425,6 +425,14 @@ paths:
               $ref: '#/components/schemas/AttachmentDTO'
         required: true
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -437,28 +445,28 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
     delete:
       tags:
-      - Attachments
+        - Attachments
       operationId: deleteAttachment
       parameters:
-      - name: attachmentId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: attachmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -471,27 +479,19 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
     patch:
       tags:
-      - Attachments
+        - Attachments
       operationId: patchAttachment
       parameters:
-      - name: attachmentId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: attachmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -499,6 +499,14 @@ paths:
               $ref: '#/components/schemas/AttachmentDTO'
         required: true
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -511,20 +519,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
   /messages:
     post:
       tags:
-      - Messages
+        - Messages
       description: Save a message.
       operationId: patchErrandWithMessage
       requestBody:
@@ -534,70 +534,78 @@ paths:
               $ref: '#/components/schemas/MessageRequest'
         required: true
       responses:
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
         "400":
           description: Bad request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
         "204":
           description: No content - Successful operation
   /errands:
     get:
       tags:
-      - Errands
+        - Errands
       description: Get errands with or without query. The query is very flexible and
         allows you as a client to control a lot yourself.
       operationId: getErrands
       parameters:
-      - name: filter
-        in: query
-        description: "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)"
-        required: true
-        schema:
-          type: string
-        example: caseType:'PARKING_PERMIT' and stakeholders.firstName~'*mar*' and
-          applicationReceived>'2022-09-08T12:18:03.747+02:00'
-      - name: extraParameterDTO
-        in: query
-        description: "extraParameters on errand. Use like this: extraParameters[artefact.permit.number]=12345&extraParameters[disability.aid]=Rullstol"
-        required: false
-        schema:
-          $ref: '#/components/schemas/ExtraParameterDTO'
-      - name: page
-        in: query
-        description: Zero-based page index (0..N)
-        required: false
-        schema:
-          minimum: 0
-          type: integer
-          default: 0
-      - name: size
-        in: query
-        description: The size of the page to be returned
-        required: false
-        schema:
-          minimum: 1
-          type: integer
-          default: 20
-      - name: sort
-        in: query
-        description: "Sorting criteria in the format: property,(asc|desc). Default\
-          \ sort order is ascending. Multiple sort criteria are supported."
-        required: false
-        schema:
-          type: array
-          items:
+        - name: filter
+          in: query
+          description: "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)"
+          required: true
+          schema:
             type: string
+          example: caseType:'PARKING_PERMIT' and stakeholders.firstName~'*mar*' and
+            applicationReceived>'2022-09-08T12:18:03.747+02:00'
+        - name: extraParameterDTO
+          in: query
+          description: "extraParameters on errand. Use like this: extraParameters[artefact.permit.number]=12345&extraParameters[disability.aid]=Rullstol"
+          required: false
+          schema:
+            $ref: '#/components/schemas/ExtraParameterDTO'
+        - name: page
+          in: query
+          description: Zero-based page index (0..N)
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          description: The size of the page to be returned
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+            default: 20
+        - name: sort
+          in: query
+          description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -610,14 +618,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "200":
           description: OK - Successful operation
           content:
@@ -629,7 +629,7 @@ paths:
                 $ref: '#/components/schemas/PageErrandDTO'
     post:
       tags:
-      - Errands
+        - Errands
       description: "Create errand (without attachments). Add attachments to errand\
         \ with PATCH /errands/{id}/attachments afterwards."
       operationId: postErrands
@@ -647,6 +647,14 @@ paths:
               style: simple
               schema:
                 type: string
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -659,18 +667,10 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /attachments:
     post:
       tags:
-      - Attachments
+        - Attachments
       description: Create attachment
       operationId: postAttachment
       requestBody:
@@ -680,50 +680,58 @@ paths:
               $ref: '#/components/schemas/AttachmentDTO'
         required: true
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
         "201":
           description: Created - Successful operation
           headers:
             Location:
               description: Location of the created resource.
               style: simple
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /notes/{noteId}:
     delete:
       tags:
-      - Notes
+        - Notes
       description: Delete a note by note id
       operationId: deleteNoteById
       parameters:
-      - name: noteId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "204":
           description: No content - Successful operation
         "403":
           description: Forbidden
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -736,26 +744,18 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
     patch:
       tags:
-      - Notes
+        - Notes
       description: Update note
       operationId: patchNoteOnErrand
       parameters:
-      - name: noteId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -765,6 +765,14 @@ paths:
       responses:
         "204":
           description: No content - Successful operation
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -777,28 +785,28 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /errands/{id}:
     get:
       tags:
-      - Errands
+        - Errands
       description: Get errand by ID.
       operationId: getErrandById
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -811,14 +819,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "200":
           description: OK - Successful operation
           content:
@@ -830,16 +830,16 @@ paths:
                 $ref: '#/components/schemas/ErrandDTO'
     patch:
       tags:
-      - Errands
+        - Errands
       description: Update errand.
       operationId: patchErrand
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -847,6 +847,14 @@ paths:
               $ref: '#/components/schemas/PatchErrandDTO'
         required: true
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -859,29 +867,21 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
   /errands/{id}/notes:
     patch:
       tags:
-      - Errands
+        - Errands
       description: Create and add note to errand.
       operationId: patchErrandWithNote
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -897,6 +897,14 @@ paths:
               style: simple
               schema:
                 type: string
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -909,28 +917,28 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /errands/{id}/decisions:
     get:
       tags:
-      - Errands
+        - Errands
       description: Get decisions on errand.
       operationId: getDecision
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -943,14 +951,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "200":
           description: OK - Successful operation
           content:
@@ -966,16 +966,16 @@ paths:
                   $ref: '#/components/schemas/DecisionDTO'
     patch:
       tags:
-      - Errands
+        - Errands
       description: Create and add decision to errand.
       operationId: patchErrandWithDecision
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -991,6 +991,14 @@ paths:
               style: simple
               schema:
                 type: string
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1003,26 +1011,26 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /stakeholders:
     get:
       tags:
-      - Stakeholders
+        - Stakeholders
       operationId: getStakeholders
       parameters:
-      - name: stakeholderRole
-        in: query
-        required: false
-        schema:
-          type: string
+        - name: stakeholderRole
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1035,14 +1043,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "200":
           description: OK - Successful operation
           content:
@@ -1059,17 +1059,25 @@ paths:
   /stakeholders/{id}:
     get:
       tags:
-      - Stakeholders
+        - Stakeholders
       description: Get stakeholder by ID.
       operationId: getStakeholders_1
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1082,14 +1090,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "200":
           description: OK - Successful operation
           content:
@@ -1102,16 +1102,16 @@ paths:
   /stakeholders/{id}/history:
     get:
       tags:
-      - History
+        - History
       description: Get stakeholder history.
       operationId: getStakeholderHistory
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -1121,6 +1121,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1133,28 +1141,28 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /parking-permits:
     get:
       tags:
-      - Parking permit
+        - Parking permit
       description: Get all issued parking permits.
       operationId: getAllParkingPermits
       parameters:
-      - name: personId
-        in: query
-        description: personId of the applicant
-        required: false
-        schema:
-          type: string
+        - name: personId
+          in: query
+          description: personId of the applicant
+          required: false
+          schema:
+            type: string
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1167,14 +1175,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "200":
           description: OK - Successful operation
           content:
@@ -1191,16 +1191,16 @@ paths:
   /notes/{id}:
     get:
       tags:
-      - Notes
+        - Notes
       description: Get note by id
       operationId: getNoteById
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -1211,6 +1211,14 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/NoteDTO'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1223,27 +1231,19 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /notes/{id}/history:
     get:
       tags:
-      - History
+        - History
       description: Get note history.
       operationId: getNoteHistory
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -1253,6 +1253,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1265,32 +1273,24 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /notes/errand/{errandId}:
     get:
       tags:
-      - Notes
+        - Notes
       description: "Get notes for a specific errand, possible to filter by note type"
       operationId: getNotesByErrandId
       parameters:
-      - name: errandId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: noteType
-        in: query
-        required: false
-        schema:
-          $ref: '#/components/schemas/NoteType'
+        - name: errandId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: noteType
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/NoteType'
       responses:
         "200":
           description: OK - Successful operation
@@ -1305,6 +1305,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/NoteDTO'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1317,41 +1325,33 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+  /messages/{errandNumber}:
+    get:
+      tags:
+        - Messages
+      description: Get all messages for an errand.
+      operationId: getMessagesOnErrand
+      parameters:
+        - name: errandNumber
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
         "400":
           description: Bad request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
-  /messages/{errandNumber}:
-    get:
-      tags:
-      - Messages
-      description: Get all messages for an errand.
-      operationId: getMessagesOnErrand
-      parameters:
-      - name: errandNumber
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "200":
           description: OK - Successful operation
           content:
@@ -1368,31 +1368,31 @@ paths:
   /messageattachments/{attachmentID}:
     get:
       tags:
-      - MessageAttachments
+        - MessageAttachments
       description: "Get a messageAttachment. This resource has been marked as deprecated.\
         \ Use /{attchmentID}/streamed instead."
       operationId: getMessageAttachment
       parameters:
-      - name: attachmentID
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: attachmentID
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "200":
           description: OK - Successful operation
           content:
@@ -1406,53 +1406,53 @@ paths:
   /messageattachments/{attachmentID}/streamed:
     get:
       tags:
-      - MessageAttachments
+        - MessageAttachments
       summary: Get a streamed messageAttachment.
       description: Fetches the message attachment that matches the provided id in
         a streamed manner
       operationId: getMessageAttachmentStreamed
       parameters:
-      - name: attachmentID
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: attachmentID
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
         "404":
           description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "200":
           description: OK - Successful operation
   /facilities/{id}/history:
     get:
       tags:
-      - History
+        - History
       description: Get facility history.
       operationId: getFacilityHistory
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -1462,6 +1462,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1474,27 +1482,19 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /errands/{id}/history:
     get:
       tags:
-      - History
+        - History
       description: Get errand history.
       operationId: getErrandHistory
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -1504,6 +1504,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1516,28 +1524,28 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /decisions/{id}:
     get:
       tags:
-      - Decisions
+        - Decisions
       description: Get decision by ID.
       operationId: getDecisionById
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1559,27 +1567,19 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/DecisionDTO'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /decisions/{id}/history:
     get:
       tags:
-      - History
+        - History
       description: Get decision history.
       operationId: getDecisionHistory
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -1589,6 +1589,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1601,28 +1609,28 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /attachments/{id}:
     get:
       tags:
-      - Attachments
+        - Attachments
       description: Get attachment by ID.
       operationId: getAttachments
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1635,14 +1643,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "200":
           description: OK - Successful operation
           content:
@@ -1655,16 +1655,16 @@ paths:
   /attachments/{id}/history:
     get:
       tags:
-      - History
+        - History
       description: Get attachment history.
       operationId: getAttachmentHistory
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -1674,6 +1674,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1686,27 +1694,27 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
   /attachments/errand/{errand_number}:
     get:
       tags:
-      - Attachments
+        - Attachments
       description: Get attachment by errandnumber.
       operationId: getAttachmentsByErrandNumber
       parameters:
-      - name: errand_number
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: errand_number
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1719,14 +1727,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "200":
           description: OK - Successful operation
           content:
@@ -1743,7 +1743,7 @@ paths:
   /api-docs:
     get:
       tags:
-      - API
+        - API
       summary: OpenAPI
       operationId: getApiDocs
       responses:
@@ -1759,23 +1759,31 @@ paths:
   /errands/{id}/stakeholders/{stakeholderId}:
     delete:
       tags:
-      - Errands
+        - Errands
       description: Delete stakeholder on errand.
       operationId: deleteStakeholder
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: stakeholderId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: stakeholderId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1788,36 +1796,36 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
   /errands/{id}/notes/{noteId}:
     delete:
       tags:
-      - Errands
+        - Errands
       description: Delete note on errand.
       operationId: deleteNote
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: noteId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1830,36 +1838,36 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
   /errands/{id}/decisions/{decisionId}:
     delete:
       tags:
-      - Errands
+        - Errands
       description: Delete decision on errand.
       operationId: deleteDecision
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: decisionId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: decisionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
         "404":
           description: Not found
           content:
@@ -1872,14 +1880,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/Problem'
-                - $ref: '#/components/schemas/ConstraintViolationProblem'
         "204":
           description: No content - Successful operation
 components:
@@ -1890,9 +1890,9 @@ components:
         addressCategory:
           type: string
           enum:
-          - POSTAL_ADDRESS
-          - INVOICE_ADDRESS
-          - VISITING_ADDRESS
+            - POSTAL_ADDRESS
+            - INVOICE_ADDRESS
+            - VISITING_ADDRESS
         street:
           maxLength: 255
           minLength: 0
@@ -1956,9 +1956,9 @@ components:
         contactType:
           type: string
           enum:
-          - CELLPHONE
-          - PHONE
-          - EMAIL
+            - CELLPHONE
+            - PHONE
+            - EMAIL
         value:
           maxLength: 255
           minLength: 0
@@ -1978,8 +1978,8 @@ components:
           example: 17.306616
     StakeholderDTO:
       required:
-      - roles
-      - type
+        - roles
+        - type
       type: object
       properties:
         id:
@@ -2001,8 +2001,8 @@ components:
         type:
           type: string
           enum:
-          - PERSON
-          - ORGANIZATION
+            - PERSON
+            - ORGANIZATION
         firstName:
           maxLength: 255
           minLength: 0
@@ -2071,20 +2071,20 @@ components:
           type: object
           additionalProperties:
             type: object
-        status:
-          $ref: '#/components/schemas/StatusType'
-        detail:
-          type: string
         title:
           type: string
+        detail:
+          type: string
+        status:
+          $ref: '#/components/schemas/StatusType'
     StatusType:
       type: object
       properties:
+        reasonPhrase:
+          type: string
         statusCode:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -2206,12 +2206,12 @@ components:
           type: object
           additionalProperties:
             type: object
-        status:
-          $ref: '#/components/schemas/StatusType'
-        detail:
-          type: string
         title:
           type: string
+        detail:
+          type: string
+        status:
+          $ref: '#/components/schemas/StatusType'
         suppressed:
           type: array
           items:
@@ -2358,16 +2358,16 @@ components:
         decisionType:
           type: string
           enum:
-          - RECOMMENDED
-          - PROPOSED
-          - FINAL
+            - RECOMMENDED
+            - PROPOSED
+            - FINAL
         decisionOutcome:
           type: string
           enum:
-          - APPROVAL
-          - REJECTION
-          - DISMISSAL
-          - CANCELLATION
+            - APPROVAL
+            - REJECTION
+            - DISMISSAL
+            - CANCELLATION
         description:
           maxLength: 100000
           minLength: 0
@@ -2420,11 +2420,11 @@ components:
       type: string
       description: Message classification
       enum:
-      - INFORMATION
-      - COMPLETION_REQUEST
-      - OBTAIN_OPINION
-      - INTERNAL_COMMUNICATION
-      - OTHER
+        - INFORMATION
+        - COMPLETION_REQUEST
+        - OBTAIN_OPINION
+        - INTERNAL_COMMUNICATION
+        - OTHER
     EmailHeaderDTO:
       type: object
       properties:
@@ -2444,13 +2444,13 @@ components:
       description: An email header
       example: MESSAGE_ID
       enum:
-      - IN_REPLY_TO
-      - REFERENCES
-      - MESSAGE_ID
+        - IN_REPLY_TO
+        - REFERENCES
+        - MESSAGE_ID
     MessageAttachment:
       required:
-      - content
-      - name
+        - content
+        - name
       type: object
       properties:
         content:
@@ -2483,8 +2483,8 @@ components:
             of case-data/e-service.
           example: INBOUND
           enum:
-          - INBOUND
-          - OUTBOUND
+            - INBOUND
+            - OUTBOUND
         familyID:
           type: string
           description: The E-service ID that the message was created in
@@ -2522,8 +2522,8 @@ components:
           description: The message was delivered by
           example: EMAIL
           enum:
-          - SMS
-          - EMAIL
+            - SMS
+            - EMAIL
         mobileNumber:
           type: string
           description: The mobile number of the recipient
@@ -2585,18 +2585,18 @@ components:
           nullable: true
           example: EMAIL
           enum:
-          - ESERVICE
-          - EMAIL
-          - WEB_UI
-          - MOBILE
-          - SYSTEM
+            - ESERVICE
+            - EMAIL
+            - WEB_UI
+            - MOBILE
+            - SYSTEM
         priority:
           type: string
           default: MEDIUM
           enum:
-          - HIGH
-          - MEDIUM
-          - LOW
+            - HIGH
+            - MEDIUM
+            - LOW
         description:
           maxLength: 255
           minLength: 0
@@ -2786,8 +2786,8 @@ components:
       description: The type of note
       example: INTERNAL
       enum:
-      - INTERNAL
-      - PUBLIC
+        - INTERNAL
+        - PUBLIC
     PatchErrandDTO:
       type: object
       properties:
@@ -2801,44 +2801,44 @@ components:
           type: string
           example: PARKING_PERMIT
           enum:
-          - NYBYGGNAD_ANSOKAN_OM_BYGGLOV
-          - ANMALAN_ATTEFALL
-          - REGISTRERING_AV_LIVSMEDEL
-          - ANMALAN_INSTALLATION_VARMEPUMP
-          - ANSOKAN_TILLSTAND_VARMEPUMP
-          - ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP
-          - ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC
-          - ANMALAN_ANDRING_AVLOPPSANLAGGNING
-          - ANMALAN_ANDRING_AVLOPPSANORDNING
-          - ANMALAN_HALSOSKYDDSVERKSAMHET
-          - PARKING_PERMIT
-          - PARKING_PERMIT_RENEWAL
-          - LOST_PARKING_PERMIT
-          - MEX_LEASE_REQUEST
-          - MEX_BUY_LAND_FROM_THE_MUNICIPALITY
-          - MEX_SELL_LAND_TO_THE_MUNICIPALITY
-          - MEX_APPLICATION_SQUARE_PLACE
-          - MEX_BUY_SMALL_HOUSE_PLOT
-          - MEX_APPLICATION_FOR_ROAD_ALLOWANCE
-          - MEX_UNAUTHORIZED_RESIDENCE
-          - MEX_LAND_RIGHT
-          - MEX_EARLY_DIALOG_PLAN_NOTIFICATION
-          - MEX_PROTECTIVE_HUNTING
-          - MEX_LAND_INSTRUCTION
-          - MEX_OTHER
-          - MEX_LAND_SURVEYING_OFFICE
-          - MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOUGE_PLANNING_NOTICE
-          - MEX_INVOICE
-          - MEX_REQUEST_FOR_PUBLIC_DOCUMENT
-          - MEX_TERMINATION_OF_LEASE
-          - MEX_TERMINATION_OF_HUNTING_LEASE
+            - NYBYGGNAD_ANSOKAN_OM_BYGGLOV
+            - ANMALAN_ATTEFALL
+            - REGISTRERING_AV_LIVSMEDEL
+            - ANMALAN_INSTALLATION_VARMEPUMP
+            - ANSOKAN_TILLSTAND_VARMEPUMP
+            - ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP
+            - ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC
+            - ANMALAN_ANDRING_AVLOPPSANLAGGNING
+            - ANMALAN_ANDRING_AVLOPPSANORDNING
+            - ANMALAN_HALSOSKYDDSVERKSAMHET
+            - PARKING_PERMIT
+            - PARKING_PERMIT_RENEWAL
+            - LOST_PARKING_PERMIT
+            - MEX_LEASE_REQUEST
+            - MEX_BUY_LAND_FROM_THE_MUNICIPALITY
+            - MEX_SELL_LAND_TO_THE_MUNICIPALITY
+            - MEX_APPLICATION_SQUARE_PLACE
+            - MEX_BUY_SMALL_HOUSE_PLOT
+            - MEX_APPLICATION_FOR_ROAD_ALLOWANCE
+            - MEX_UNAUTHORIZED_RESIDENCE
+            - MEX_LAND_RIGHT
+            - MEX_EARLY_DIALOG_PLAN_NOTIFICATION
+            - MEX_PROTECTIVE_HUNTING
+            - MEX_LAND_INSTRUCTION
+            - MEX_OTHER
+            - MEX_LAND_SURVEYING_OFFICE
+            - MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOUGE_PLANNING_NOTICE
+            - MEX_INVOICE
+            - MEX_REQUEST_FOR_PUBLIC_DOCUMENT
+            - MEX_TERMINATION_OF_LEASE
+            - MEX_TERMINATION_OF_HUNTING_LEASE
         priority:
           type: string
           example: MEDIUM
           enum:
-          - HIGH
-          - MEDIUM
-          - LOW
+            - HIGH
+            - MEDIUM
+            - LOW
         description:
           maxLength: 255
           minLength: 0
@@ -2864,6 +2864,11 @@ components:
           maxLength: 255
           minLength: 0
           type: string
+        facilities:
+          type: array
+          description: The facilities in the case
+          items:
+            $ref: '#/components/schemas/FacilityDTO'
         startDate:
           type: string
           description: Start date for the business.
@@ -2888,16 +2893,16 @@ components:
         decisionType:
           type: string
           enum:
-          - RECOMMENDED
-          - PROPOSED
-          - FINAL
+            - RECOMMENDED
+            - PROPOSED
+            - FINAL
         decisionOutcome:
           type: string
           enum:
-          - APPROVAL
-          - REJECTION
-          - DISMISSAL
-          - CANCELLATION
+            - APPROVAL
+            - REJECTION
+            - DISMISSAL
+            - CANCELLATION
         description:
           maxLength: 1000
           minLength: 0
@@ -3025,8 +3030,8 @@ components:
           $ref: '#/components/schemas/DecisionDTO'
     AttachmentResponse:
       required:
-      - attachmentID
-      - name
+        - attachmentID
+        - name
       type: object
       properties:
         attachmentID:
@@ -3059,8 +3064,8 @@ components:
             of case-data/e-service.
           example: INBOUND
           enum:
-          - INBOUND
-          - OUTBOUND
+            - INBOUND
+            - OUTBOUND
         familyID:
           type: string
           description: The E-service ID that the message was created in
@@ -3098,8 +3103,8 @@ components:
           description: The message was delivered by
           example: EMAIL
           enum:
-          - SMS
-          - EMAIL
+            - SMS
+            - EMAIL
         mobileNumber:
           type: string
           description: The mobile number of the recipient
@@ -3130,9 +3135,9 @@ components:
             $ref: '#/components/schemas/EmailHeaderDTO'
     MessageAttachmentDTO:
       required:
-      - attachmentID
-      - content
-      - name
+        - attachmentID
+        - content
+        - name
       type: object
       properties:
         attachmentID:
@@ -3161,12 +3166,16 @@ components:
     PageErrandDTO:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
         size:
           type: integer
           format: int32
@@ -3181,10 +3190,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SortObject'
-        first:
-          type: boolean
-        last:
-          type: boolean
         numberOfElements:
           type: integer
           format: int32
@@ -3208,9 +3213,9 @@ components:
         pageSize:
           type: integer
           format: int32
-        unpaged:
-          type: boolean
         paged:
+          type: boolean
+        unpaged:
           type: boolean
     SortObject:
       type: object
@@ -3225,4 +3230,4 @@ components:
           type: string
         ignoreCase:
           type: boolean
-  securitySchemes: {}
+  securitySchemes: { }
