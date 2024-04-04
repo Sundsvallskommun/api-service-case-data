@@ -47,6 +47,7 @@ class PatchMapperTest {
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
 			assertThat(e.getApplicationReceived()).isEqualTo(patch.getApplicationReceived());
 			assertThat(e.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
+			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(EntityMapper::toFacility).toList());
 		});
 	}
 
