@@ -7,19 +7,28 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 
+import lombok.Setter;
+
+@Setter
 public class ValidFacilityTypeConstraintValidator implements ConstraintValidator<ValidFacilityType, String> {
+
+	private boolean nullable;
 
 	@Override
 	public void initialize(final ValidFacilityType constraintAnnotation) {
+		this.nullable = constraintAnnotation.nullable();
 		ConstraintValidator.super.initialize(constraintAnnotation);
 	}
 
 	@Override
 	public boolean isValid(final String value, final ConstraintValidatorContext context) {
+		if (value == null) {
+			return nullable;
+		}
 
-		if (value == null || value.isEmpty()) {
+		if (value.isBlank()) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate("Facility type cannot be null or empty. Valid types are: " + Arrays.toString(FacilityType.values()))
+			context.buildConstraintViolationWithTemplate("Facility type cannot be blank. Valid types are: " + Arrays.toString(FacilityType.values()))
 				.addConstraintViolation();
 			return false;
 		}
