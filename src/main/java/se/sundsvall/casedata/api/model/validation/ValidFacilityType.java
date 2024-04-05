@@ -27,6 +27,8 @@ public @interface ValidFacilityType {
 
 	String message() default "Invalid facility type";
 
+	boolean nullable() default true;
+
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};

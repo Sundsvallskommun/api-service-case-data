@@ -6,12 +6,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
+import static se.sundsvall.casedata.TestUtil.createErrandDTO;
+import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
 
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,6 +26,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.DecisionDTO;
+import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 import se.sundsvall.casedata.service.ErrandService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -86,6 +93,31 @@ class ErrandResourceTest {
 		assertThat(response).hasSize(1);
 		verify(errandServiceMock).findDecisionsOnErrand(errandId);
 		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@ParameterizedTest
+	@EnumSource(FacilityType.class)
+	void postErrandWithFacilityType(final FacilityType facilityType) {
+		final var body = createErrandDTO();
+		body.setId(123L);
+		final var facility = createFacilityDTO();
+		facility.setFacilityType(facilityType.name());
+		final var facilities = List.of(facility);
+		body.setFacilities(facilities);
+
+		when(errandServiceMock.createErrand(body)).thenReturn(body);
+
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path("/errands").build())
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isCreated()
+			.expectHeader().contentType(ALL_VALUE)
+			.expectHeader().location("/errands/" + body.getId());
+
+		verify(errandServiceMock).createErrand(body);
+
 	}
 
 }

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 
@@ -42,12 +43,13 @@ class ValidFacilityTypeConstraintValidatorTest {
 		assertThat(validator.isValid(invalidFacilityType, context)).isFalse();
 	}
 
-	@Test
-	void isValid_withNullFacilityType() {
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	void isValid_Nullable(final Boolean nullable) {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
-
-		assertThat(validator.isValid(null, context)).isFalse();
+		validator.setNullable(nullable);
+		assertThat(validator.isValid(null, context)).isEqualTo(nullable);
 	}
 
 	@Test
