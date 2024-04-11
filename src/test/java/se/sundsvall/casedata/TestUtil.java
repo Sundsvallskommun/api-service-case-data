@@ -22,7 +22,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import se.sundsvall.casedata.api.model.AddressDTO;
-import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
 import se.sundsvall.casedata.api.model.ContactInformationDTO;
 import se.sundsvall.casedata.api.model.CoordinatesDTO;
@@ -41,7 +40,6 @@ import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Address;
-import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.ContactInformation;
 import se.sundsvall.casedata.integration.db.model.Coordinates;
@@ -138,7 +136,6 @@ public class TestUtil {
 		decisionDTO.setDecidedAt(getRandomOffsetDateTime());
 		decisionDTO.setValidFrom(getRandomOffsetDateTime());
 		decisionDTO.setValidTo(getRandomOffsetDateTime());
-		decisionDTO.setAppeal(createAppealDTO());
 		decisionDTO.setLaw(new ArrayList<>(List.of(createLawDTO())));
 		decisionDTO.setAttachments(new ArrayList<>(List.of(createAttachmentDTO(AttachmentCategory.POLICE_REPORT))));
 		decisionDTO.setExtraParameters(createExtraParameters());
@@ -171,16 +168,6 @@ public class TestUtil {
 		attachmentDTO.setExtraParameters(createExtraParameters());
 
 		return attachmentDTO;
-	}
-
-	public static AppealDTO createAppealDTO() {
-		final var appealDTO = new AppealDTO();
-		appealDTO.setAppealedBy(createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.APPLICANT.name())));
-		appealDTO.setJudicialAuthorisation(createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.DOCTOR.name())));
-		appealDTO.setAttachments(List.of(createAttachmentDTO(AttachmentCategory.POLICE_REPORT)));
-		appealDTO.setExtraParameters(createExtraParameters());
-
-		return appealDTO;
 	}
 
 	public static LawDTO createLawDTO() {
@@ -455,7 +442,6 @@ public class TestUtil {
 			.withUpdated(getRandomOffsetDateTime())
 			.withId(1L)
 			.withVersion(1)
-			.withAppeal(createAppeal())
 			.withDecidedAt(getRandomOffsetDateTime())
 			.withDecisionOutcome(DecisionOutcome.APPROVAL)
 			.withLaw(new ArrayList<>(List.of(createLaw())))
@@ -469,14 +455,6 @@ public class TestUtil {
 			.withChapter("chapter")
 			.withHeading("heading")
 			.withSfs("sfs")
-			.build();
-	}
-
-	public static Appeal createAppeal() {
-		return Appeal.builder()
-			.withAppealedBy(createStakeholder())
-			.withAttachments(new ArrayList<>(List.of(createAttachment())))
-			.withJudicialAuthorisation(createStakeholder())
 			.build();
 	}
 

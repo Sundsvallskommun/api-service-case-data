@@ -3,8 +3,6 @@ package se.sundsvall.casedata.service.util.mappers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.createAddress;
 import static se.sundsvall.casedata.TestUtil.createAddressDTO;
-import static se.sundsvall.casedata.TestUtil.createAppeal;
-import static se.sundsvall.casedata.TestUtil.createAppealDTO;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
 import static se.sundsvall.casedata.TestUtil.createContactInformation;
@@ -250,34 +248,6 @@ class EntityMapperTest {
 			assertThat(a.getUpdated()).isEqualTo(attachment.getUpdated());
 			assertThat(a.getId()).isEqualTo(attachment.getId());
 			assertThat(a.getVersion()).isEqualTo(attachment.getVersion());
-		});
-	}
-
-	@Test
-	void toAppealTest() {
-		final var appeal = createAppealDTO();
-		final var appealDto = EntityMapper.toAppeal(appeal);
-
-		assertThat(appealDto).satisfies(a -> {
-			assertThat(a.getCreated()).isEqualTo(appeal.getCreated());
-			assertThat(a.getUpdated()).isEqualTo(appeal.getUpdated());
-			assertThat(a.getId()).isEqualTo(appeal.getId());
-			assertThat(a.getVersion()).isEqualTo(appeal.getVersion());
-			assertThat(a.getExtraParameters()).isEqualTo(appeal.getExtraParameters());
-		});
-	}
-
-	@Test
-	void toAppealDtoTest() {
-		final var appeal = createAppeal();
-		final var appealDto = EntityMapper.toAppealDto(appeal);
-
-		assertThat(appealDto).satisfies(a -> {
-			assertThat(a.getCreated()).isEqualTo(appeal.getCreated());
-			assertThat(a.getUpdated()).isEqualTo(appeal.getUpdated());
-			assertThat(a.getId()).isEqualTo(appeal.getId());
-			assertThat(a.getVersion()).isEqualTo(appeal.getVersion());
-			assertThat(a.getExtraParameters()).isEqualTo(appeal.getExtraParameters());
 		});
 	}
 

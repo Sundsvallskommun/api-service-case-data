@@ -88,10 +88,6 @@ public class Decision extends BaseEntity {
 	@Column(name = "valid_to")
 	private OffsetDateTime validTo;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "appeal_id", foreignKey = @ForeignKey(name = "FK_decision_appeal_id"))
-	private Appeal appeal;
-
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "decision_id", foreignKey = @ForeignKey(name = "FK_decision_id"))
 	@Builder.Default
@@ -110,12 +106,12 @@ public class Decision extends BaseEntity {
 		if (this == o) return true;
 		if (!(o instanceof final Decision decision)) return false;
 		if (!super.equals(o)) return false;
-		return decisionType == decision.decisionType && decisionOutcome == decision.decisionOutcome && Objects.equals(description, decision.description) && Objects.equals(law, decision.law) && Objects.equals(decidedBy, decision.decidedBy) && Objects.equals(decidedAt, decision.decidedAt) && Objects.equals(validFrom, decision.validFrom) && Objects.equals(validTo, decision.validTo) && Objects.equals(appeal, decision.appeal) && Objects.equals(attachments, decision.attachments) && Objects.equals(extraParameters, decision.extraParameters);
+		return decisionType == decision.decisionType && decisionOutcome == decision.decisionOutcome && Objects.equals(description, decision.description) && Objects.equals(law, decision.law) && Objects.equals(decidedBy, decision.decidedBy) && Objects.equals(decidedAt, decision.decidedAt) && Objects.equals(validFrom, decision.validFrom) && Objects.equals(validTo, decision.validTo) && Objects.equals(attachments, decision.attachments) && Objects.equals(extraParameters, decision.extraParameters);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), decisionType, decisionOutcome, description, law, decidedBy, decidedAt, validFrom, validTo, appeal, attachments, extraParameters);
+		return Objects.hash(super.hashCode(), decisionType, decisionOutcome, description, law, decidedBy, decidedAt, validFrom, validTo, attachments, extraParameters);
 	}
 
 	@Override
@@ -132,7 +128,6 @@ public class Decision extends BaseEntity {
 			", decidedAt=" + decidedAt +
 			", validFrom=" + validFrom +
 			", validTo=" + validTo +
-			", appeal=" + appeal +
 			", attachments=" + attachments +
 			", extraParameters=" + extraParameters +
 			"} " + super.toString();

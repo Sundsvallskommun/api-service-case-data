@@ -1,7 +1,5 @@
 set foreign_key_checks = 0;
 
-truncate table appeal;
-truncate table appeal_extra_parameters;
 truncate table attachment;
 truncate table attachment_extra_parameters;
 truncate table decision;

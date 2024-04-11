@@ -58,7 +58,6 @@ public final class PutMapper {
 			oldDecision.setValidFrom(newDecision.getValidFrom());
 			oldDecision.setValidTo(newDecision.getValidTo());
 			oldDecision.setDecidedBy(EntityMapper.toStakeholder(newDecision.getDecidedBy()));
-			oldDecision.setAppeal(EntityMapper.toAppeal(newDecision.getAppeal()));
 			oldDecision.setLaw(new ArrayList<>(newDecision.getLaw().stream().map(EntityMapper::toLaw).toList()));
 			oldDecision.getAttachments().clear();
 			newDecision.getAttachments().forEach(attachment -> oldDecision.getAttachments().add(EntityMapper.toAttachment(attachment)));
