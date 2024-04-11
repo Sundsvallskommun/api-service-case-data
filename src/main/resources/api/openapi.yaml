@@ -2268,37 +2268,6 @@ components:
         dateTime:
           type: string
           format: date-time
-    AppealDTO:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          readOnly: true
-        version:
-          type: integer
-          format: int32
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        updated:
-          type: string
-          format: date-time
-          readOnly: true
-        appealedBy:
-          $ref: '#/components/schemas/StakeholderDTO'
-        judicialAuthorisation:
-          $ref: '#/components/schemas/StakeholderDTO'
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/AttachmentDTO'
-        extraParameters:
-          type: object
-          additionalProperties:
-            type: string
     AttachmentDTO:
       type: object
       properties:
@@ -2387,8 +2356,6 @@ components:
         validTo:
           type: string
           format: date-time
-        appeal:
-          $ref: '#/components/schemas/AppealDTO'
         attachments:
           type: array
           items:
