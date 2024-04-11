@@ -51,8 +51,6 @@ public class DecisionDTO extends BaseDTO {
 	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)
 	private OffsetDateTime validTo;
 
-	private AppealDTO appeal;
-
 	@Builder.Default
 	private List<AttachmentDTO> attachments = new ArrayList<>();
 

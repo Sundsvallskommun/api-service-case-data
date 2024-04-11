@@ -104,7 +104,6 @@ public enum AttachmentCategory {
 	OFFICIAL_MEMO("TJÄ"), // Tjänsteskrivelse
 	RESPONSE("UNDER"), // Underrättelsesvar
 	CASE_SHEET("ÄRB"), // Ärendeblad
-	APPEAL("ÖVER"), // Överklagandeskrivelse
 	ADDRESS_SHEET("ADRESS"), // Adressblad
 	NOTIFICATION_WITHOUT_PERSONAL_NUMBER("ANSUPA"), // Anmälan utan personnummer
 	ADVERTISEMENT("ANNO"), // Annons
@@ -148,7 +147,6 @@ public enum AttachmentCategory {
 	REVIEW_SHEET("GRAN"), // Granskningsblad
 	REVIEW_SHEET_2("GBLAD"), // Granskningsblad
 	ELEVATOR_CERTIFICATE("HISSINT"), // Hissintyg
-	HOW_TO_APPEAL("HUR"), // Hur man överklagar
 	ILLUSTRATION_PERSPECTIVE("ARK"), // Illustration/ perspektiv
 	INTERNAL_INVOICE_DOCUMENT("INTFAK"), // Intern fakturaunderlag
 	CERTIFICATE("INTY"), // Intyg
