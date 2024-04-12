@@ -107,9 +107,7 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
 					<excludes>
-						<exclude>**/util/Constants*</exclude>
 						<exclude>**/generated/**</exclude>
-						<exclude>**/db/model/Q*</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

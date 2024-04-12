@@ -120,6 +120,11 @@ public class Errand extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
 	@JsonManagedReference
 	@Builder.Default
+	private List<Appeal> appeals = new ArrayList<>();
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
+	@JsonManagedReference
+	@Builder.Default
 	private List<Note> notes = new ArrayList<>();
 
 	// WSO2-client
