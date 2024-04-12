@@ -9,17 +9,18 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
-import se.sundsvall.casedata.integration.db.model.enums.TrailStatus;
+import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
 import java.time.OffsetDateTime;
-import java.util.Objects;
 
 import static org.hibernate.Length.LONG;
 
@@ -29,6 +30,8 @@ import static org.hibernate.Length.LONG;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(setterPrefix = "with")
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Appeal extends BaseEntity {
 
 	@ManyToOne
@@ -52,43 +55,11 @@ public class Appeal extends BaseEntity {
 	private AppealStatus status = AppealStatus.NEW;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "trail_status")
-	private TrailStatus trailStatus = TrailStatus.NOT_CONDUCTED;
+	@Column(name = "timeliness_review")
+	private TimelinessReview timelinessReview = TimelinessReview.NOT_CONDUCTED;
 
 	@ManyToOne
 	@JoinColumn(name = "decision_id", foreignKey = @ForeignKey(name = "FK_appeal_decision_id"))
 	private Decision decision;
 
-	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
-			return true;
-		}
-		if (object == null || getClass() != object.getClass()) {
-			return false;
-		}
-		if (!super.equals(object)) {
-			return false;
-		}
-		Appeal appeal = (Appeal) object;
-		return Objects.equals(errand, appeal.errand) && Objects.equals(description, appeal.description) && Objects.equals(registeredAt, appeal.registeredAt) && Objects.equals(appealConcernCommunicatedAt, appeal.appealConcernCommunicatedAt) && status == appeal.status && trailStatus == appeal.trailStatus && Objects.equals(decision, appeal.decision);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), errand, description, registeredAt, appealConcernCommunicatedAt, status, trailStatus, decision);
-	}
-
-	@Override
-	public String toString() {
-		return "Appeal{" +
-			"errand=" + errand +
-			", description='" + description + '\'' +
-			", registeredAt=" + registeredAt +
-			", appealConcernCommunicatedAt=" + appealConcernCommunicatedAt +
-			", status=" + status +
-			", trailStatus=" + trailStatus +
-			", decision=" + decision +
-			"} " + super.toString();
-	}
 }
