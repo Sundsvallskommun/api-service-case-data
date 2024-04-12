@@ -9,8 +9,8 @@
         registered_at datetime(6),
         updated datetime(6),
         description text,
-        status enum ('NEW','REJECTED','SENT_TO_COURT','COMPLETED'),
-        timeliness_review enum ('NOT_CONDUCTED','NOT_RELEVANT','APPROVED','REJECTED'),
+        status varchar(255),
+        timeliness_review varchar(255),
         primary key (id)
     ) engine=InnoDB;
 
