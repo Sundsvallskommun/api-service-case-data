@@ -1,4 +1,19 @@
 
+    create table appeal (
+        version integer,
+        appeal_concern_communicated_at datetime(6),
+        created datetime(6),
+        decision_id bigint,
+        errand_id bigint,
+        id bigint not null auto_increment,
+        registered_at datetime(6),
+        updated datetime(6),
+        description text,
+        status enum ('NEW','REJECTED','SENT_FOR_TRIAL','COMPLETED'),
+        trail_status enum ('NOT_CONDUCTED','NOT_RELEVANT','APPROVED','REJECTED'),
+        primary key (id)
+    ) engine=InnoDB;
+
     create table attachment (
         version integer,
         created datetime(6),
@@ -272,6 +287,16 @@
 
     alter table if exists message_attachment 
        add constraint UK_message_attachment_data_id unique (message_attachment_data_id);
+
+    alter table if exists appeal 
+       add constraint FK_appeal_decision_id 
+       foreign key (decision_id) 
+       references decision (id);
+
+    alter table if exists appeal 
+       add constraint FK_appeal_errand_id 
+       foreign key (errand_id) 
+       references errand (id);
 
     alter table if exists attachment 
        add constraint FK_decision_id 
