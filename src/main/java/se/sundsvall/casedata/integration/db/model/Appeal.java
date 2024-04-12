@@ -51,11 +51,11 @@ public class Appeal extends BaseEntity {
 	private OffsetDateTime appealConcernCommunicatedAt;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "status")
+	@Column(name = "status", columnDefinition = "varchar(255)")
 	private AppealStatus status = AppealStatus.NEW;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "timeliness_review")
+	@Column(name = "timeliness_review", columnDefinition = "varchar(255)")
 	private TimelinessReview timelinessReview = TimelinessReview.NOT_CONDUCTED;
 
 	@ManyToOne
