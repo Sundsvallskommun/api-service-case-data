@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
@@ -37,8 +38,6 @@ import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
-
-import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 public class ErrandService {
@@ -69,14 +68,12 @@ public class ErrandService {
 	// GET operations
 	//////////////////////////////
 
-
 	public List<DecisionDTO> findDecisionsOnErrand(final Long id) {
 		final List<Decision> decisionList = getErrand(id).getDecisions();
-		if (decisionList == null || decisionList.isEmpty()) {
+		if ((decisionList == null) || decisionList.isEmpty()) {
 			throw Problem.valueOf(NOT_FOUND, MessageFormat.format(DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID, id));
-		} else {
-			return decisionList.stream().map(EntityMapper::toDecisionDto).toList();
 		}
+		return decisionList.stream().map(EntityMapper::toDecisionDto).toList();
 	}
 
 	public ErrandDTO findById(final Long id) {
@@ -89,6 +86,14 @@ public class ErrandService {
 		return errandRepository.findById(errandId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
 				MessageFormat.format(ERRAND_WAS_NOT_FOUND, errandId)));
+	}
+
+	public void deleteById(final Long errandId) {
+		if (!errandRepository.existsById(errandId)) {
+			throw Problem.valueOf(NOT_FOUND, MessageFormat.format(ERRAND_WAS_NOT_FOUND, errandId));
+		}
+
+		errandRepository.deleteById(errandId);
 	}
 
 	/**
@@ -133,7 +138,7 @@ public class ErrandService {
 		final var errand = toErrand(errandDTO);
 		final var resultErrand = errandRepository.save(errand);
 
-		//Will not start a process if it's not a parking permit or mex errand
+		// Will not start a process if it's not a parking permit or mex errand
 		startProcess(resultErrand);
 
 		return toErrandDto(resultErrand);

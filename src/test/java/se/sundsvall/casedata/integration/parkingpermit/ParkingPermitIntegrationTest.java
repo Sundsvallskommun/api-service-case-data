@@ -32,7 +32,7 @@ class ParkingPermitIntegrationTest {
 		final var response = new StartProcessResponse();
 		when(parkingPermitClient.startProcess(errand.getId())).thenReturn(response);
 
-		var result = parkingPermitIntegration.startProcess(errand);
+		final var result = parkingPermitIntegration.startProcess(errand);
 
 		assertThat(result).isEqualTo(response);
 		verify(parkingPermitClient).startProcess(errand.getId());
@@ -42,6 +42,7 @@ class ParkingPermitIntegrationTest {
 	void startProcess_whenThrowsTest() {
 		final var errand = createErrand();
 		when(parkingPermitClient.startProcess(errand.getId())).thenThrow(new AbstractThrowableProblem() {
+			private static final long serialVersionUID = 1L;
 		});
 
 		assertThatThrownBy(() -> parkingPermitIntegration.startProcess(errand))
@@ -64,6 +65,7 @@ class ParkingPermitIntegrationTest {
 	void updateProcess_whenThrowsTest() {
 		final var errand = createErrand();
 		when(parkingPermitClient.updateProcess(errand.getProcessId())).thenThrow(new AbstractThrowableProblem() {
+			private static final long serialVersionUID = 1L;
 		});
 
 		assertThatThrownBy(() -> parkingPermitIntegration.updateProcess(errand))

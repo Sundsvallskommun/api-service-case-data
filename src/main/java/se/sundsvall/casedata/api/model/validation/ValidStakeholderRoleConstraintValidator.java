@@ -5,7 +5,6 @@ import java.util.List;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 
 public class ValidStakeholderRoleConstraintValidator implements ConstraintValidator<ValidStakeholderRole, List<String>> {
@@ -17,9 +16,9 @@ public class ValidStakeholderRoleConstraintValidator implements ConstraintValida
 
 	@Override
 	public boolean isValid(final List<String> value, final ConstraintValidatorContext context) {
-		if (value == null || value.isEmpty()) {
+		if ((value == null) || value.isEmpty()) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate("Stakeholder role cannot be null or empty. Valid roles are: " + Arrays.toString(Arrays.stream(StakeholderRole.values()).filter(role -> !role.equals(StakeholderRole.INVOICE_RECIPENT)).toArray()))
+			context.buildConstraintViolationWithTemplate("Stakeholder role cannot be null or empty. Valid roles are: " + Arrays.toString(Arrays.stream(StakeholderRole.values()).filter(role -> !StakeholderRole.INVOICE_RECIPENT.equals(role)).toArray()))
 				.addConstraintViolation();
 			return false;
 		}
@@ -27,10 +26,9 @@ public class ValidStakeholderRoleConstraintValidator implements ConstraintValida
 		final boolean isValid = value.stream().allMatch(role -> Arrays.stream(StakeholderRole.values()).anyMatch(stakeholderRole -> stakeholderRole.name().equals(role)));
 		if (!isValid) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate("Invalid stakeholder role. Valid roles are: " + Arrays.toString(Arrays.stream(StakeholderRole.values()).filter(role -> !role.equals(StakeholderRole.INVOICE_RECIPENT)).toArray()))
+			context.buildConstraintViolationWithTemplate("Invalid stakeholder role. Valid roles are: " + Arrays.toString(Arrays.stream(StakeholderRole.values()).filter(role -> !StakeholderRole.INVOICE_RECIPENT.equals(role)).toArray()))
 				.addConstraintViolation();
 		}
 		return isValid;
 	}
-
 }

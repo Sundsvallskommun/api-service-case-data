@@ -42,7 +42,21 @@ class ErrandResourceTest {
 	private WebTestClient webTestClient;
 
 	@Test
-	void deleteDecisionTest() {
+	void deleteErrand() {
+		final var errandId = 123L;
+
+		webTestClient.delete()
+			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}")
+				.build(Map.of("errandId", errandId)))
+			.exchange()
+			.expectStatus().isNoContent();
+
+		verify(errandServiceMock).deleteById(errandId);
+		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@Test
+	void deleteDecision() {
 		final var errandId = 123L;
 		final var decisionId = 456L;
 
@@ -59,7 +73,7 @@ class ErrandResourceTest {
 	}
 
 	@Test
-	void deleteNoteTest() {
+	void deleteNote() {
 		final var errandId = 123L;
 		final var noteId = 456L;
 
@@ -76,12 +90,12 @@ class ErrandResourceTest {
 	}
 
 	@Test
-	void getDecisionTest() {
+	void getDecision() {
 		final var errandId = 123L;
 		final var decisionDto = createDecisionDTO();
 		when(errandServiceMock.findDecisionsOnErrand(errandId)).thenReturn(List.of(decisionDto));
 
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/decisions")
 				.build(Map.of("errandId", errandId)))
 			.exchange()
@@ -119,5 +133,4 @@ class ErrandResourceTest {
 		verify(errandServiceMock).createErrand(body);
 
 	}
-
 }

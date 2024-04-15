@@ -28,7 +28,7 @@ class EmailHeaderTest {
 	}
 
 	@Test
-	void testFields() {
+	void testBuilderMethods() {
 		final var id = 1L;
 		final var header = Header.MESSAGE_ID;
 		final var values = List.of("value1", "value2", "value3");
@@ -48,5 +48,4 @@ class EmailHeaderTest {
 	void noDirtOnEmptyBean() {
 		assertThat(EmailHeader.builder().build()).hasAllNullFieldsOrProperties();
 	}
-
 }

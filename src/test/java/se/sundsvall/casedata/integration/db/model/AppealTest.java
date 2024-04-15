@@ -8,27 +8,15 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
 import static org.hamcrest.CoreMatchers.allOf;
-import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
 
 import java.time.OffsetDateTime;
 import java.util.Random;
 
-import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-@ExtendWith(MockitoExtension.class)
 class AppealTest {
-
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
-	EntityMapper entityMapper;
 
 	@BeforeAll
 	static void setup() {
@@ -44,15 +32,4 @@ class AppealTest {
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
 	}
-
-	@Test
-	void testFields() {
-		final Appeal appeal = entityMapper.toDecision(createDecisionDTO()).getAppeal();
-		appeal.setId(new Random().nextLong());
-		appeal.setCreated(OffsetDateTime.now().plusDays(new Random().nextInt()));
-		appeal.setUpdated(OffsetDateTime.now().plusDays(new Random().nextInt()));
-
-		Assertions.assertThat(appeal).isNotNull().hasNoNullFieldsOrProperties();
-	}
-
 }

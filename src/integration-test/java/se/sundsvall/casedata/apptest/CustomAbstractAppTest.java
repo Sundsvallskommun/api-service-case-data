@@ -6,7 +6,7 @@ import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 
 import se.sundsvall.dept44.test.AbstractAppTest;
 
-public class CustomAbstractAppTest extends AbstractAppTest {
+class CustomAbstractAppTest extends AbstractAppTest {
 
 	@Override
 	public boolean verifyAllStubs() {
@@ -17,5 +17,4 @@ public class CustomAbstractAppTest extends AbstractAppTest {
 		}
 		return true;
 	}
-
 }

@@ -24,8 +24,11 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(
 	files = "classpath:/DecisionIT/",
-	classes = Application.class
-)
+	classes = Application.class)
+@Sql({
+	"/db/script/truncate.sql",
+	"/db/script/decisionIT-testdata.sql"
+})
 class DecisionIT extends CustomAbstractAppTest {
 
 	private static final Long DECISION_ID = 1L;
@@ -42,10 +45,6 @@ class DecisionIT extends CustomAbstractAppTest {
 	private ErrandRepository errandRepository;
 
 	@Test
-	@Sql({
-		"/db/script/truncate.sql",
-		"/db/script/decisionIT-testdata.sql"
-	})
 	void test1_getDecisionById() {
 		setupCall()
 			.withServicePath(PATH + "/" + DECISION_ID)
@@ -56,10 +55,6 @@ class DecisionIT extends CustomAbstractAppTest {
 	}
 
 	@Test
-	@Sql({
-		"/db/script/truncate.sql",
-		"/db/script/decisionIT-testdata.sql"
-	})
 	void test2_patchDecision() {
 		setupCall()
 			.withServicePath(PATH + "/" + DECISION_ID)
@@ -82,10 +77,6 @@ class DecisionIT extends CustomAbstractAppTest {
 	}
 
 	@Test
-	@Sql({
-		"/db/script/truncate.sql",
-		"/db/script/decisionIT-testdata.sql"
-	})
 	void test3_putDecision() {
 		setupCall()
 			.withServicePath(PATH + "/" + DECISION_ID)

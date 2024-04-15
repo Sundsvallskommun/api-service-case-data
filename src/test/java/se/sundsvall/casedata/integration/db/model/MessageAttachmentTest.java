@@ -24,7 +24,7 @@ class MessageAttachmentTest {
 	}
 
 	@Test
-	void testFields() {
+	void testBuilderMethods() {
 		final var attachmentData = MessageAttachmentData.builder().build();
 		final var attachmentID = "attachmentID";
 		final var contentType = "contentType";

@@ -6,12 +6,13 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_
 
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -43,5 +44,4 @@ class RollbackIT extends CustomAbstractAppTest {
 		// Verify that no errand was persisted
 		Assertions.assertEquals(listBefore.size(), listAfter.size());
 	}
-
 }

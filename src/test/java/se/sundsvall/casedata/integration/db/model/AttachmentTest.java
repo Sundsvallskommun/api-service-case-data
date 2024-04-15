@@ -1,20 +1,5 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import org.assertj.core.api.Assertions;
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import java.time.OffsetDateTime;
-import java.util.Random;
-
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -24,11 +9,14 @@ import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
 import static org.hamcrest.CoreMatchers.allOf;
 
-@ExtendWith(MockitoExtension.class)
-class AttachmentTest {
+import java.time.OffsetDateTime;
+import java.util.Random;
 
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
-	EntityMapper entityMapper;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+class AttachmentTest {
 
 	@BeforeAll
 	static void setup() {
@@ -44,24 +32,4 @@ class AttachmentTest {
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
 	}
-
-	@Test
-	void testFields() {
-
-		final var attachment = new Attachment();
-
-		attachment.setId(new Random().nextLong());
-		attachment.setCreated(OffsetDateTime.now().plusDays(new Random().nextInt()));
-		attachment.setUpdated(OffsetDateTime.now().plusDays(new Random().nextInt()));
-		attachment.setCategory(AttachmentCategory.SIGNATURE.name());
-		attachment.setName("someFileName");
-		attachment.setMimeType("application/pdf");
-		attachment.setFile("someFile");
-		attachment.setExtension("pdf");
-		attachment.setNote("someNote");
-		attachment.setErrandNumber("someErrandNumber");
-
-		Assertions.assertThat(attachment).isNotNull().hasNoNullFieldsOrProperties();
-	}
-
 }

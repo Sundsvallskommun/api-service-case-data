@@ -34,6 +34,7 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import com.turkraft.springfilter.boot.Filter;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -74,6 +75,23 @@ class ErrandResource {
 		return ok(errandService.findById(id));
 	}
 
+	@Operation(description = "Update errand.")
+	@PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> patchErrand(@PathVariable final Long id, @RequestBody @Valid final PatchErrandDTO patchErrandDTO) {
+		errandService.updateErrand(id, patchErrandDTO);
+		return noContent().build();
+	}
+
+	@Hidden // Should be a hidden operation in the API.
+	@Operation(description = "Delete errand by ID.")
+	@DeleteMapping(path = "/{id}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> deleteErrandById(@PathVariable final Long id) {
+		errandService.deleteById(id);
+		return noContent().build();
+	}
+
 	@GetMapping(produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	@Operation(description = "Get errands with or without query. The query is very flexible and allows you as a client to control a lot yourself.")
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
@@ -107,14 +125,6 @@ class ErrandResource {
 				.toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
-	}
-
-	@Operation(description = "Update errand.")
-	@PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> patchErrand(@PathVariable final Long id, @RequestBody @Valid final PatchErrandDTO patchErrandDTO) {
-		errandService.updateErrand(id, patchErrandDTO);
-		return noContent().build();
 	}
 
 	@Operation(description = "Add status to errand.")
