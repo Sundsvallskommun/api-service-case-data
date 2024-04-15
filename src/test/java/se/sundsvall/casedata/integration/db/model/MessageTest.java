@@ -31,7 +31,7 @@ class MessageTest {
 	}
 
 	@Test
-	void testFields() {
+	void testBuilderMethods() {
 		final var attachments = List.of(MessageAttachment.builder().build());
 		final var direction = Direction.OUTBOUND;
 		final var email = "email";
@@ -104,5 +104,4 @@ class MessageTest {
 		assertThat(Message.builder().build()).hasAllNullFieldsOrPropertiesExcept("viewed");
 		assertThat(new Message()).hasAllNullFieldsOrPropertiesExcept("viewed");
 	}
-
 }

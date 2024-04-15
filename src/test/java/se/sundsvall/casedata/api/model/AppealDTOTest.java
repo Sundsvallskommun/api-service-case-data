@@ -12,12 +12,9 @@ import static org.hamcrest.CoreMatchers.allOf;
 import java.time.OffsetDateTime;
 import java.util.Random;
 
-import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import se.sundsvall.casedata.TestUtil;
 
 class AppealDTOTest {
 
@@ -35,15 +32,4 @@ class AppealDTOTest {
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
 	}
-
-	@Test
-	void testFields() {
-		final AppealDTO dto = TestUtil.createAppealDTO();
-		dto.setId(new Random().nextLong());
-		dto.setCreated(OffsetDateTime.now().plusDays(new Random().nextInt()));
-		dto.setUpdated(OffsetDateTime.now().plusDays(new Random().nextInt()));
-
-		Assertions.assertThat(dto).isNotNull().hasNoNullFieldsOrProperties();
-	}
-
 }

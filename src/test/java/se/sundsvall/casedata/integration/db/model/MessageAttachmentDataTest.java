@@ -27,7 +27,7 @@ class MessageAttachmentDataTest {
 	}
 
 	@Test
-	void testFields() throws Exception {
+	void testBuilderMethods() throws Exception {
 		final var content = "content";
 		final var file = new MariaDbBlob(content.getBytes());
 		final var id = new Random().nextInt();

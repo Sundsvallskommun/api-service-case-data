@@ -8,10 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
@@ -35,7 +37,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -49,17 +50,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ErrandServiceTest {
@@ -138,8 +139,41 @@ class ErrandServiceTest {
 		final var id = errand.getId();
 		final var problem = assertThrows(ThrowableProblem.class, () -> errandService.findById(id));
 
-		assertEquals(Status.NOT_FOUND, problem.getStatus());
+		assertEquals(NOT_FOUND, problem.getStatus());
 		verify(errandRepositoryMock, times(1)).findById(errand.getId());
+	}
+
+	@Test
+	void deleteById() {
+
+		// Arrange
+		final var id = 1L;
+		when(errandRepositoryMock.existsById(id)).thenReturn(true);
+
+		// Act
+		errandService.deleteById(id);
+
+		// Assert
+		verify(errandRepositoryMock).existsById(id);
+		verify(errandRepositoryMock).deleteById(id);
+	}
+
+	@Test
+	void deleteByIdNotFound() {
+
+		// Arrange
+		final var id = 1L;
+		when(errandRepositoryMock.existsById(id)).thenReturn(false);
+
+		// Act
+		final var exception = assertThrows(ThrowableProblem.class, () -> errandService.deleteById(id));
+
+		// Assert
+		assertThat(exception.getMessage()).isEqualTo("Not Found: Errand with id: 1 was not found");
+		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
+
+		verify(errandRepositoryMock).existsById(id);
+		verify(errandRepositoryMock, never()).deleteById(id);
 	}
 
 	@Test
@@ -235,7 +269,6 @@ class ErrandServiceTest {
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
 	}
-
 
 	@Test
 	void deleteStakeholderOnErrand() {

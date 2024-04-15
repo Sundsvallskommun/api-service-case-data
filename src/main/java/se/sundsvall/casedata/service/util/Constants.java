@@ -6,6 +6,8 @@ import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 public final class Constants {
 
+	private Constants() {}
+
 	public static final String PROCESS_ENGINE_PROBLEM_DETAIL = "Unexpected response from ProcessEngine API.";
 
 	public static final String ORGNR_PATTERN_REGEX = "^((18|19|20|21)\\d{6}|\\d{6})-(\\d{4})$";
@@ -27,8 +29,4 @@ public final class Constants {
 	public static final List<CaseType> PARKING_PERMIT_CASE_TYPES = CaseType.getValuesByAbbreviation("PRH");
 
 	public static final List<CaseType> MEX_CASE_TYPES = CaseType.getValuesByAbbreviation("MEX");
-
-	private Constants() {
-	}
-
 }

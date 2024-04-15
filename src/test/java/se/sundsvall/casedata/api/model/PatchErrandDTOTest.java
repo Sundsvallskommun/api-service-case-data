@@ -42,7 +42,7 @@ class PatchErrandDTOTest {
 	}
 
 	@Test
-	void builder() {
+	void builderMethods() {
 		// Arrange
 		final var externalCaseId = UUID.randomUUID().toString();
 		final var caseType = CaseType.PARKING_PERMIT;
@@ -99,5 +99,4 @@ class PatchErrandDTOTest {
 		assertThat(new PatchErrandDTO()).hasAllNullFieldsOrPropertiesExcept("extraParameters")
 			.satisfies(dto -> assertThat(dto.getExtraParameters()).isEmpty());
 	}
-
 }

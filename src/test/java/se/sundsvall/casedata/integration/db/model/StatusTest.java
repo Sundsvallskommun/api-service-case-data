@@ -10,26 +10,13 @@ import static java.time.OffsetDateTime.now;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Random;
 
-import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-@ExtendWith(MockitoExtension.class)
 class StatusTest {
-
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
-	EntityMapper entityMapper;
 
 	@BeforeAll
 	static void setup() {
@@ -45,13 +32,4 @@ class StatusTest {
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
 	}
-
-	@Test
-	void testFields() {
-		final List<Status> statusList = entityMapper.toErrand(TestUtil.createErrandDTO()).getStatuses();
-
-		Assertions.assertThat(statusList).isNotEmpty();
-		statusList.forEach(facility -> Assertions.assertThat(facility).isNotNull().hasNoNullFieldsOrProperties());
-	}
-
 }

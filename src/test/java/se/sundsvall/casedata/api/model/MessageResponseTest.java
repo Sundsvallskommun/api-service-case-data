@@ -134,5 +134,4 @@ class MessageResponseTest {
 		assertThat(AttachmentResponse.builder().build()).hasAllNullFieldsOrProperties();
 		assertThat(new AttachmentResponse()).hasAllNullFieldsOrProperties();
 	}
-
 }
