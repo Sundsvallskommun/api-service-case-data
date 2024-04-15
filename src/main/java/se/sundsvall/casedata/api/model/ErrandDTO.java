@@ -102,6 +102,10 @@ public class ErrandDTO extends BaseDTO {
 
 	@Valid
 	@Builder.Default
+	private List<AppealDTO> appeals = new ArrayList<>();
+
+	@Valid
+	@Builder.Default
 	private List<NoteDTO> notes = new ArrayList<>();
 
 	@Schema(description = "Messages connected to this errand. Get message information from Message-API.", accessMode = Schema.AccessMode.READ_ONLY)

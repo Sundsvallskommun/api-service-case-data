@@ -81,7 +81,8 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 		"createdBy",
 		"updatedBy",
 		"note.*\\.createdBy",
-		"note.*\\.updatedBy"
+		"note.*\\.updatedBy",
+		"appeals" // TODO: Remove when service layer is implemented
 	};
 
 	@Autowired
