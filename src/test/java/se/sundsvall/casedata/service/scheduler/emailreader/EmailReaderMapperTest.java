@@ -78,8 +78,9 @@ class EmailReaderMapperTest {
 
 	@Test
 	void toMessage() {
+		final var messageID = UUID.randomUUID().toString();
 		final var email = new Email()
-			.id(UUID.randomUUID().toString())
+			.id(messageID)
 			.subject("someSubject")
 			.recipients(List.of("someRecipient"))
 			.sender("someSender")
@@ -139,7 +140,7 @@ class EmailReaderMapperTest {
 				assertThat(attachment.getAttachmentID()).isNotNull()
 					.satisfies(id -> assertThat(isValidUUID(id)).isTrue());
 				assertThat(attachment.getName()).isEqualTo("someName");
-
+				assertThat(attachment.getMessageID()).isEqualTo(messageID);
 				assertThat(attachment.getAttachmentData().getFile().getBinaryStream().readAllBytes()).isEqualTo("someContent".getBytes());
 				assertThat(attachment.getContentType()).isEqualTo("someContentType");
 			});
@@ -198,4 +199,5 @@ class EmailReaderMapperTest {
 			return false;
 		}
 	}
+
 }

@@ -59,7 +59,7 @@ public class EmailReaderMapper {
 			.withSent(email.getReceivedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
 			.withMessageType(MessageType.EMAIL)
 			.withEmail(email.getSender())
-			.withAttachments(toMessageAttachments(email.getAttachments()))
+			.withAttachments(toMessageAttachments(email))
 			.withHeaders(toEmailHeaders(email.getHeaders()))
 			.build();
 	}
@@ -73,12 +73,13 @@ public class EmailReaderMapper {
 			.toList();
 	}
 
-	private List<MessageAttachment> toMessageAttachments(final List<EmailAttachment> attachments) {
+	private List<MessageAttachment> toMessageAttachments(final Email email) {
 
-		return Optional.ofNullable(attachments).orElse(Collections.emptyList()).stream()
+		return Optional.ofNullable(email.getAttachments()).orElse(Collections.emptyList()).stream()
 			.map(attachment -> MessageAttachment.builder()
 				.withAttachmentID(UUID.randomUUID().toString())
 				.withName(attachment.getName())
+				.withMessageID(email.getId())
 				.withAttachmentData(toMessageAttachmentData(attachment))
 				.withContentType(attachment.getContentType())
 				.build())
