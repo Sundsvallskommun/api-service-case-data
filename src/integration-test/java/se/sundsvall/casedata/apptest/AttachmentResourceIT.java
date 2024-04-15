@@ -19,8 +19,6 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Random;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
@@ -163,17 +164,16 @@ class AttachmentResourceIT extends CustomAbstractAppTest {
 		final var result = attachmentRepository.findAll();
 
 		assertThat(result).hasSize(initialAttachments.size() + 1).element(result.size() - 1).satisfies(attachment -> {
-				assertThat(attachment.getId()).isNotNull();
-				assertThat(attachment.getCategory()).isEqualTo(dto.getCategory());
-				assertThat(attachment.getExtension()).isEqualTo(dto.getExtension());
-				assertThat(attachment.getFile()).isEqualTo(dto.getFile());
-				assertThat(attachment.getMimeType()).isEqualTo(dto.getMimeType());
-				assertThat(attachment.getName()).isEqualTo(dto.getName());
-				assertThat(attachment.getNote()).isEqualTo(dto.getNote());
-				assertThat(attachment.getErrandNumber()).isEqualTo(dto.getErrandNumber());
-				assertThat(attachment.getExtraParameters()).isEqualTo(dto.getExtraParameters());
-			}
-		);
+			assertThat(attachment.getId()).isNotNull();
+			assertThat(attachment.getCategory()).isEqualTo(dto.getCategory());
+			assertThat(attachment.getExtension()).isEqualTo(dto.getExtension());
+			assertThat(attachment.getFile()).isEqualTo(dto.getFile());
+			assertThat(attachment.getMimeType()).isEqualTo(dto.getMimeType());
+			assertThat(attachment.getName()).isEqualTo(dto.getName());
+			assertThat(attachment.getNote()).isEqualTo(dto.getNote());
+			assertThat(attachment.getErrandNumber()).isEqualTo(dto.getErrandNumber());
+			assertThat(attachment.getExtraParameters()).isEqualTo(dto.getExtraParameters());
+		});
 	}
 
 	@Test
@@ -216,5 +216,4 @@ class AttachmentResourceIT extends CustomAbstractAppTest {
 				tuple("ERRAND-NUMBER-2", POLICE_REPORT.toString(), ".pdf", "FILE-3", "application/pdf", "test3.pdf", "NOTE-3", emptyMap()),
 				tuple("ERRAND-NUMBER-2", NOTIFICATION_WITHOUT_PERSONAL_NUMBER.toString(), ".pdf", "FILE-4", "application/pdf", "test4.pdf", "NOTE-4", emptyMap()));
 	}
-
 }

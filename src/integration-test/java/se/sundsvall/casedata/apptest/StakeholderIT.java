@@ -107,5 +107,4 @@ class StakeholderIT extends CustomAbstractAppTest {
 			assertThat(stakeholder.getAdAccount()).isEqualTo("Organization-AD");
 		});
 	}
-
 }

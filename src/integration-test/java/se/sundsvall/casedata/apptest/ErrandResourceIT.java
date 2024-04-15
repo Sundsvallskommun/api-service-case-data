@@ -808,5 +808,4 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 		assertNotNull(location);
 		return location.toString().substring(location.toString().lastIndexOf("/") + 1);
 	}
-
 }
