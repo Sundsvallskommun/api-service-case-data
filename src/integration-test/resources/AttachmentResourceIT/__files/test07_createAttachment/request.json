@@ -1,0 +1,14 @@
+{
+  "category": "SIGNATURE",
+  "errandNumber": "1234567890",
+  "extension": ".pdf",
+  "extraParameters": {
+    "property1": "value1",
+    "property2": "value2",
+    "property3": "value3"
+  },
+  "file": "dGVzdDA3",
+  "mimeType": "application/pdf",
+  "name": "myfile07.pdf",
+  "note": "This is a note for test07"
+}
