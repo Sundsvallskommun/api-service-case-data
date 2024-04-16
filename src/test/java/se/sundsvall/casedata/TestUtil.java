@@ -22,6 +22,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import se.sundsvall.casedata.api.model.AddressDTO;
+import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
 import se.sundsvall.casedata.api.model.ContactInformationDTO;
 import se.sundsvall.casedata.api.model.CoordinatesDTO;
@@ -51,6 +52,7 @@ import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.Status;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
+import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.ContactType;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
@@ -58,6 +60,7 @@ import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitClient;
 
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
@@ -88,6 +91,7 @@ public class TestUtil {
 		errandDTO.setFacilities(createFacilities(true, new ArrayList<>(List.of(FacilityType.GARAGE))));
 		errandDTO.setStatuses(new ArrayList<>(List.of(createStatusDTO())));
 		errandDTO.setDecisions(new ArrayList<>(List.of(createDecisionDTO())));
+		errandDTO.setAppeals(new ArrayList<>(List.of(createAppealDTO())));
 		errandDTO.setNotes(new ArrayList<>(List.of(createNoteDTO(), createNoteDTO(), createNoteDTO())));
 		errandDTO.setStakeholders(new ArrayList<>(List.of(
 			createStakeholderDTO(StakeholderType.PERSON, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole()))),
@@ -141,6 +145,18 @@ public class TestUtil {
 		decisionDTO.setExtraParameters(createExtraParameters());
 
 		return decisionDTO;
+	}
+
+	public static AppealDTO createAppealDTO() {
+		final var appealDTO = new AppealDTO();
+		appealDTO.setDescription("Appeal description");
+		appealDTO.setRegisteredAt(getRandomOffsetDateTime());
+		appealDTO.setAppealConcernCommunicatedAt(getRandomOffsetDateTime());
+		appealDTO.setStatus(AppealStatus.COMPLETED.toString());
+		appealDTO.setTimelinessReview(TimelinessReview.NOT_RELEVANT.toString());
+		appealDTO.setDecisionId(123L);
+
+		return appealDTO;
 	}
 
 	public static FacilityDTO createFacilityDTO() {

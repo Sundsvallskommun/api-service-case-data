@@ -5,7 +5,7 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "6.1"
+  version: "7.0"
 servers:
   - url: http://localhost:51856
     description: Generated server url
@@ -2515,6 +2515,54 @@ components:
           description: List of email headers on the message
           items:
             $ref: '#/components/schemas/EmailHeaderDTO'
+    AppealDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        version:
+          type: integer
+          format: int32
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        description:
+          maxLength: 100000
+          minLength: 0
+          type: string
+        registeredAt:
+          type: string
+          description: "The date when this appeal was first registered (timestamp\
+            \ from e-service, mail or letter)"
+          format: date-time
+        appealConcernCommunicatedAt:
+          type: string
+          description: The date when the decision or corresponding that this appeal
+            concerns was sent out
+          format: date-time
+        status:
+          type: string
+          description: "Current status for this appeal. Values [NEW, REJECTED, SENT_TO_COURT,\
+            \ COMPLETED]"
+          default: NEW
+        timelinessReview:
+          type: string
+          description: "Status of whether measures have been taken within statutory\
+            \ time limits. Values: [NOT_CONDUCTED, NOT_RELEVANT, APPROVED, REJECTED]"
+          default: NOT_CONDUCTED
+        decisionId:
+          type: integer
+          description: Id for decision that is appealed
+          format: int64
+          nullable: true
     ErrandDTO:
       type: object
       properties:
@@ -2624,6 +2672,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DecisionDTO'
+        appeals:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppealDTO'
         notes:
           type: array
           items:
