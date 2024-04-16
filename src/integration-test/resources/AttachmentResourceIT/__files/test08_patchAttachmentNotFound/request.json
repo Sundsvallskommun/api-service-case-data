@@ -1,0 +1,13 @@
+{
+  "category": "ANSUPA",
+  "extension": ".pdf",
+  "extraParameters": {
+    "property1": "value1",
+    "property2": "value2",
+    "property3": "value3"
+  },
+  "file": "dGVzdDA4",
+  "mimeType": "application/pdf",
+  "name": "myfile08.pdf",
+  "note": "This is a note for test08"
+}
