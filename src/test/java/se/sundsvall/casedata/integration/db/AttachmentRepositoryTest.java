@@ -54,8 +54,8 @@ class AttachmentRepositoryTest {
 		final var result = attachmentRepository.findAllByErrandNumber(errandNumber);
 
 		// Assert
-		assertThat(result).isNotNull();
 		assertThat(result)
+			.isNotNull()
 			.extracting(Attachment::getId, Attachment::getErrandNumber, Attachment::getCategory, Attachment::getExtension, Attachment::getName, Attachment::getNote)
 			.containsExactly(
 				tuple(2L, "ERRAND-NUMBER-2", "PASSPORT_PHOTO", ".pdf", "test2.pdf", "NOTE-2"),
@@ -161,7 +161,7 @@ class AttachmentRepositoryTest {
 		assertThat(result.getExtension()).isEqualTo(extension);
 		assertThat(result.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(result.getFile()).isEqualTo(file);
-		assertThat(result.getId()).isGreaterThan(0);
+		assertThat(result.getId()).isPositive();
 		assertThat(result.getMimeType()).isEqualTo(mimeType);
 		assertThat(result.getName()).isEqualTo(name);
 		assertThat(result.getNote()).isEqualTo(note);

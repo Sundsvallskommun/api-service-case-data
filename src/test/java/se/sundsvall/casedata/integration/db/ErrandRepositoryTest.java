@@ -61,8 +61,8 @@ class ErrandRepositoryTest {
 		final var result = errandRepository.findAllByIdIn(idList, pageRequest);
 
 		// Assert
-		assertThat(result).isNotNull();
 		assertThat(result)
+			.isNotNull()
 			.extracting(Errand::getId, Errand::getErrandNumber, Errand::getCaseTitleAddition, Errand::getCaseType)
 			.containsExactly(
 				tuple(3L, "PRH-2022-000029", "Nytt parkeringstillstånd", "PARKING_PERMIT"),
@@ -93,8 +93,8 @@ class ErrandRepositoryTest {
 		final var result = errandRepository.findAllByErrandNumberStartingWith(caseTypeAbbreviation);
 
 		// Assert
-		assertThat(result).isNotNull();
 		assertThat(result)
+			.isNotNull()
 			.extracting(Errand::getId, Errand::getErrandNumber, Errand::getCaseTitleAddition, Errand::getCaseType)
 			.containsExactly(tuple(3L, "PRH-2022-000029", "Nytt parkeringstillstånd", "PARKING_PERMIT"));
 	}
