@@ -1,7 +1,38 @@
 package se.sundsvall.casedata.service;
 
+import io.github.resilience4j.retry.annotation.Retry;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.zalando.problem.Problem;
+import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.casedata.api.model.AppealDTO;
+import se.sundsvall.casedata.api.model.DecisionDTO;
+import se.sundsvall.casedata.api.model.ErrandDTO;
+import se.sundsvall.casedata.api.model.NoteDTO;
+import se.sundsvall.casedata.api.model.PatchErrandDTO;
+import se.sundsvall.casedata.api.model.StakeholderDTO;
+import se.sundsvall.casedata.api.model.StatusDTO;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.Appeal;
+import se.sundsvall.casedata.integration.db.model.Decision;
+import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.Note;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import se.sundsvall.casedata.service.util.mappers.PatchMapper;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import static java.util.Objects.isNull;
 import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAppeal;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAppealDto;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecision;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecisionDto;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
@@ -12,34 +43,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakehol
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderDto;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.zalando.problem.Problem;
-import org.zalando.problem.ThrowableProblem;
-
-import se.sundsvall.casedata.api.model.DecisionDTO;
-import se.sundsvall.casedata.api.model.ErrandDTO;
-import se.sundsvall.casedata.api.model.NoteDTO;
-import se.sundsvall.casedata.api.model.PatchErrandDTO;
-import se.sundsvall.casedata.api.model.StakeholderDTO;
-import se.sundsvall.casedata.api.model.StatusDTO;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.Decision;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.Note;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-import se.sundsvall.casedata.service.util.mappers.PatchMapper;
-
-import io.github.resilience4j.retry.annotation.Retry;
-
 @Service
 public class ErrandService {
 
@@ -48,6 +51,8 @@ public class ErrandService {
 	private static final String DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID = "Decision was not found on errand with id: {0}";
 
 	private static final String DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Decision with id: {0} was not found on errand with id: {1}";
+
+	private static final String APPEAL_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Appeal with id: {0} was not found on errand with id: {1}";
 
 	private static final String NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Note with id: {0} was not found on errand with id: {1}";
 
@@ -177,6 +182,17 @@ public class ErrandService {
 		errandRepository.save(errand);
 		processService.updateProcess(errand);
 	}
+
+	@Retry(name = "OptimisticLocking")
+	public void deleteAppealOnErrand(final Long errandId, final Long appealId) {
+		final Errand errand = getErrand(errandId);
+		final Appeal appealToRemove = errand.getAppeals().stream()
+			.filter(appeal -> appeal.getId().equals(appealId))
+			.findAny()
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(APPEAL_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, appealId, errandId)));
+		errand.getAppeals().remove(appealToRemove);
+		errandRepository.save(errand);
+	}
 	//////////////////////////////
 	// PATCH operations
 	//////////////////////////////
@@ -230,6 +246,25 @@ public class ErrandService {
 		processService.updateProcess(updatedErrand);
 		return toDecisionDto(decision);
 	}
+
+	@Retry(name = "OptimisticLocking")
+	public AppealDTO addAppealToErrand(final Long id, final AppealDTO appealDTO) {
+		final var oldErrand = getErrand(id);
+		final var appeal = toAppeal(appealDTO);
+		appeal.setErrand(oldErrand);
+
+		final var decision = oldErrand.getDecisions().stream()
+			.filter(decision1 -> decision1.getId().equals(appealDTO.getDecisionId()))
+			.findFirst()
+			.orElse(null);
+
+		Optional.ofNullable(decision).ifPresent(appeal::setDecision);
+		oldErrand.getAppeals().add(appeal);
+
+		errandRepository.save(oldErrand);
+		return toAppealDto(appeal);
+	}
+
 
 	//////////////////////////////
 	// PUT operations

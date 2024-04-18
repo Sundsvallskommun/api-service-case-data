@@ -1,18 +1,22 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 import se.sundsvall.casedata.api.model.AttachmentDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
+import se.sundsvall.casedata.api.model.PatchAppealDTO;
 import se.sundsvall.casedata.api.model.PatchDecisionDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
+import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
+import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
+import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
+
+import java.util.ArrayList;
+import java.util.Optional;
 
 public final class PatchMapper {
 
@@ -47,6 +51,13 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getValidFrom()).ifPresent(decision::setValidFrom);
 		Optional.ofNullable(patch.getValidTo()).ifPresent(decision::setValidTo);
 		return decision;
+	}
+
+	public static Appeal patchAppeal(final Appeal appeal, final PatchAppealDTO patch) {
+		Optional.ofNullable(patch.getDescription()).ifPresent(appeal::setDescription);
+		Optional.ofNullable(patch.getStatus()).ifPresent(status -> appeal.setStatus(AppealStatus.valueOf(patch.getStatus())));
+		Optional.ofNullable(patch.getTimelinessReview()).ifPresent(timeLinesReview -> appeal.setTimelinessReview(TimelinessReview.valueOf(patch.getTimelinessReview())));
+		return appeal;
 	}
 
 	public static Stakeholder patchStakeholder(final Stakeholder stakeholder, final StakeholderDTO patch) {
