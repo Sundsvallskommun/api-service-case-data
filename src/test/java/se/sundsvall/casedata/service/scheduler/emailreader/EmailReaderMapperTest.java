@@ -2,8 +2,8 @@ package se.sundsvall.casedata.service.scheduler.emailreader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static se.sundsvall.casedata.api.model.validation.enums.MessageType.EMAIL;
 import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
-import static se.sundsvall.casedata.integration.db.model.enums.MessageType.EMAIL;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;

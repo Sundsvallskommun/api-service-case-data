@@ -23,13 +23,13 @@ import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.MessageRequest.AttachmentRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.api.model.MessageResponse.AttachmentResponse;
+import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.model.EmailHeader;
 import se.sundsvall.casedata.integration.db.model.Message;
 import se.sundsvall.casedata.integration.db.model.MessageAttachment;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentData;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
-import se.sundsvall.casedata.integration.db.model.enums.MessageType;
 import se.sundsvall.dept44.common.validators.annotation.impl.ValidUuidConstraintValidator;
 
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
