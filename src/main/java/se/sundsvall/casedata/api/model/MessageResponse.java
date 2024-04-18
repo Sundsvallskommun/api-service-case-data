@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotBlank;
 
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
-import se.sundsvall.casedata.integration.db.model.enums.MessageType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -67,7 +66,7 @@ public class MessageResponse {
 	private String lastName;
 
 	@Schema(description = "The message was delivered by", example = "EMAIL")
-	private MessageType messageType;
+	private String messageType;
 
 	@Schema(description = "The mobile number of the recipient", example = "+46701234567")
 	private String mobileNumber;
@@ -117,6 +116,7 @@ public class MessageResponse {
 
 		@Schema(description = "The attachment content type", example = "text/plain")
 		private String contentType;
+
 	}
 
 }

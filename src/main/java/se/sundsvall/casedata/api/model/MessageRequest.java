@@ -6,9 +6,9 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
 
+import se.sundsvall.casedata.api.model.validation.ValidMessageType;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
-import se.sundsvall.casedata.integration.db.model.enums.MessageType;
 import se.sundsvall.dept44.common.validators.annotation.ValidBase64;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -57,8 +57,9 @@ public class MessageRequest {
 	@Schema(description = "The last name of the user that sent the message", example = "Anka")
 	private String lastName;
 
+	@ValidMessageType
 	@Schema(description = "The message was delivered by", example = "EMAIL")
-	private MessageType messageType;
+	private String messageType;
 
 	@Schema(description = "The mobile number of the recipient", example = "+46701234567")
 	private String mobileNumber;

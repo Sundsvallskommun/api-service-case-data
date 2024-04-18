@@ -65,7 +65,7 @@ class MessageTest {
 			.withFirstName(firstName)
 			.withLastName(lastName)
 			.withMessageID(messageID)
-			.withMessageType(messageType)
+			.withMessageType(messageType.name())
 			.withMobileNumber(mobileNumber)
 			.withSent(sent)
 			.withSubject(subject)
@@ -87,7 +87,7 @@ class MessageTest {
 		assertThat(bean.getFirstName()).isEqualTo(firstName);
 		assertThat(bean.getLastName()).isEqualTo(lastName);
 		assertThat(bean.getMessageID()).isEqualTo(messageID);
-		assertThat(bean.getMessageType()).isEqualTo(messageType);
+		assertThat(bean.getMessageType()).isEqualTo(messageType.name());
 		assertThat(bean.getMobileNumber()).isEqualTo(mobileNumber);
 		assertThat(bean.getSent()).isEqualTo(sent);
 		assertThat(bean.getSubject()).isEqualTo(subject);
@@ -104,4 +104,5 @@ class MessageTest {
 		assertThat(Message.builder().build()).hasAllNullFieldsOrPropertiesExcept("viewed");
 		assertThat(new Message()).hasAllNullFieldsOrPropertiesExcept("viewed");
 	}
+
 }

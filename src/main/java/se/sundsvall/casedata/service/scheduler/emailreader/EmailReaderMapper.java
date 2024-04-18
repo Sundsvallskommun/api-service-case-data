@@ -57,7 +57,7 @@ public class EmailReaderMapper {
 			.withSubject(email.getSubject())
 			.withTextmessage(email.getMessage())
 			.withSent(email.getReceivedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-			.withMessageType(MessageType.EMAIL)
+			.withMessageType(MessageType.EMAIL.name())
 			.withEmail(email.getSender())
 			.withAttachments(toMessageAttachments(email))
 			.withHeaders(toEmailHeaders(email.getHeaders()))

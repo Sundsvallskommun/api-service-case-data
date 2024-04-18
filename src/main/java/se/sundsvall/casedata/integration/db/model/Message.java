@@ -16,7 +16,6 @@ import org.hibernate.Length;
 
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
-import se.sundsvall.casedata.integration.db.model.enums.MessageType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -64,8 +63,7 @@ public class Message {
 
 	private String lastName;
 
-	@Enumerated(EnumType.STRING)
-	private MessageType messageType;
+	private String messageType;
 
 	private String mobileNumber;
 

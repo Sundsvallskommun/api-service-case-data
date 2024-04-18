@@ -172,6 +172,7 @@
         familyid varchar(255),
         first_name varchar(255),
         last_name varchar(255),
+        message_type varchar(255),
         messageid varchar(255) not null,
         mobile_number varchar(255),
         sent varchar(255),
@@ -181,7 +182,6 @@
         classification enum ('INFORMATION','COMPLETION_REQUEST','OBTAIN_OPINION','INTERNAL_COMMUNICATION','OTHER'),
         direction enum ('INBOUND','OUTBOUND'),
         message longtext,
-        message_type enum ('SMS','EMAIL'),
         primary key (messageid)
     ) engine=InnoDB;
 

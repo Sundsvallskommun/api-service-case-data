@@ -111,7 +111,7 @@ class EmailReaderMapperTest {
 				INBOUND,
 				"someSubject",
 				"someMessage",
-				EMAIL,
+				EMAIL.name(),
 				"someSender");
 
 		assertThat(result.getHeaders()).hasSize(3).containsExactlyInAnyOrder(
@@ -178,7 +178,7 @@ class EmailReaderMapperTest {
 				INBOUND,
 				"someSubject",
 				"someMessage",
-				EMAIL,
+				EMAIL.name(),
 				"someSender");
 
 		assertThat(result.getSent())

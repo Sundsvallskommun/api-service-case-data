@@ -395,7 +395,7 @@ class MessageMapperTest {
 			.withLastName(lastName)
 			.withTextmessage(textmessage)
 			.withMessageID(messageID)
-			.withMessageType(messageType)
+			.withMessageType(messageType.name())
 			.withMobileNumber(mobileNumber)
 			.withSent(sent)
 			.withSubject(subject)
