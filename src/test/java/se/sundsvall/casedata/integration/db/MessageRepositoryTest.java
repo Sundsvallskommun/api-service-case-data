@@ -14,10 +14,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
+import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
 import se.sundsvall.casedata.integration.db.model.Message;
-import se.sundsvall.casedata.integration.db.model.enums.MessageType;
+
 
 /**
  * MessageAttachmentRepository tests.
@@ -25,7 +26,7 @@ import se.sundsvall.casedata.integration.db.model.enums.MessageType;
  * @see /src/test/resources/db/testdata-junit.sql for data setup.
  */
 @DataJpaTest
-@Import(value = { JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class })
+@Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
 @Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
@@ -137,7 +138,7 @@ class MessageRepositoryTest {
 		final var viewed = true;
 
 		final var entity = Message.builder()
-			.withDirection(INBOUND)
+			.withDirection(direction)
 			.withEmail(email)
 			.withErrandNumber(errandNumber)
 			.withExternalCaseID(externalCaseId)
@@ -145,7 +146,7 @@ class MessageRepositoryTest {
 			.withFirstName(firstName)
 			.withLastName(lastName)
 			.withMessageID(messageId)
-			.withMessageType(messageType)
+			.withMessageType(messageType.name())
 			.withMobileNumber(mobileNumber)
 			.withSubject(subject)
 			.withTextmessage(textMessage)
@@ -168,7 +169,7 @@ class MessageRepositoryTest {
 		assertThat(result.getFirstName()).isEqualTo(firstName);
 		assertThat(result.getLastName()).isEqualTo(lastName);
 		assertThat(result.getMessageID()).isEqualTo(messageId);
-		assertThat(result.getMessageType()).isEqualTo(messageType);
+		assertThat(result.getMessageType()).isEqualTo(messageType.name());
 		assertThat(result.getMobileNumber()).isEqualTo(mobileNumber);
 		assertThat(result.getSubject()).isEqualTo(subject);
 		assertThat(result.getTextmessage()).isEqualTo(textMessage);
@@ -176,4 +177,5 @@ class MessageRepositoryTest {
 		assertThat(result.getUsername()).isEqualTo(username);
 		assertThat(result.isViewed()).isTrue();
 	}
+
 }
