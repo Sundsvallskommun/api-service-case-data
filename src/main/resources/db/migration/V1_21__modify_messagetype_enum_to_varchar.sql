@@ -1,4 +1,7 @@
 START TRANSACTION;
+alter table message
+    add column message_type_tmp varchar(255);
+
 update message
 set message_type_tmp = message_type;
 
