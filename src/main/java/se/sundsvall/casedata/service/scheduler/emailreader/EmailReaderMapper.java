@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
+import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.EmailHeader;
 import se.sundsvall.casedata.integration.db.model.Message;
@@ -16,7 +17,6 @@ import se.sundsvall.casedata.integration.db.model.MessageAttachment;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentData;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
-import se.sundsvall.casedata.integration.db.model.enums.MessageType;
 import se.sundsvall.casedata.service.util.BlobBuilder;
 
 import generated.se.sundsvall.emailreader.Email;
@@ -57,7 +57,7 @@ public class EmailReaderMapper {
 			.withSubject(email.getSubject())
 			.withTextmessage(email.getMessage())
 			.withSent(email.getReceivedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-			.withMessageType(MessageType.EMAIL)
+			.withMessageType(MessageType.EMAIL.name())
 			.withEmail(email.getSender())
 			.withAttachments(toMessageAttachments(email))
 			.withHeaders(toEmailHeaders(email.getHeaders()))

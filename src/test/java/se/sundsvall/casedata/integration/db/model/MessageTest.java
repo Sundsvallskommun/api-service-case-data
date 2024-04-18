@@ -13,10 +13,10 @@ import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
+import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
-import se.sundsvall.casedata.integration.db.model.enums.MessageType;
 
 class MessageTest {
 
@@ -65,7 +65,7 @@ class MessageTest {
 			.withFirstName(firstName)
 			.withLastName(lastName)
 			.withMessageID(messageID)
-			.withMessageType(messageType)
+			.withMessageType(messageType.name())
 			.withMobileNumber(mobileNumber)
 			.withSent(sent)
 			.withSubject(subject)
@@ -87,7 +87,7 @@ class MessageTest {
 		assertThat(bean.getFirstName()).isEqualTo(firstName);
 		assertThat(bean.getLastName()).isEqualTo(lastName);
 		assertThat(bean.getMessageID()).isEqualTo(messageID);
-		assertThat(bean.getMessageType()).isEqualTo(messageType);
+		assertThat(bean.getMessageType()).isEqualTo(messageType.name());
 		assertThat(bean.getMobileNumber()).isEqualTo(mobileNumber);
 		assertThat(bean.getSent()).isEqualTo(sent);
 		assertThat(bean.getSubject()).isEqualTo(subject);
@@ -104,4 +104,5 @@ class MessageTest {
 		assertThat(Message.builder().build()).hasAllNullFieldsOrPropertiesExcept("viewed");
 		assertThat(new Message()).hasAllNullFieldsOrPropertiesExcept("viewed");
 	}
+
 }

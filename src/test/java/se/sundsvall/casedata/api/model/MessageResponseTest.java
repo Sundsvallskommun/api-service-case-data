@@ -14,10 +14,10 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
 import se.sundsvall.casedata.api.model.MessageResponse.AttachmentResponse;
+import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
-import se.sundsvall.casedata.integration.db.model.enums.MessageType;
 
 class MessageResponseTest {
 
@@ -75,7 +75,7 @@ class MessageResponseTest {
 			.withLastName(lastName)
 			.withMessage(message)
 			.withMessageID(messageID)
-			.withMessageType(messageType)
+			.withMessageType(messageType.name())
 			.withMobileNumber(mobileNumber)
 			.withSent(sent)
 			.withSubject(subject)
@@ -97,7 +97,7 @@ class MessageResponseTest {
 		assertThat(bean.getLastName()).isEqualTo(lastName);
 		assertThat(bean.getMessage()).isEqualTo(message);
 		assertThat(bean.getMessageID()).isEqualTo(messageID);
-		assertThat(bean.getMessageType()).isEqualTo(messageType);
+		assertThat(bean.getMessageType()).isEqualTo(messageType.name());
 		assertThat(bean.getMobileNumber()).isEqualTo(mobileNumber);
 		assertThat(bean.getSent()).isEqualTo(sent);
 		assertThat(bean.getSubject()).isEqualTo(subject);
@@ -134,4 +134,5 @@ class MessageResponseTest {
 		assertThat(AttachmentResponse.builder().build()).hasAllNullFieldsOrProperties();
 		assertThat(new AttachmentResponse()).hasAllNullFieldsOrProperties();
 	}
+
 }
