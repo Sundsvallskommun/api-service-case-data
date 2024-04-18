@@ -1,15 +1,17 @@
 openapi: 3.0.1
 info:
   title: ms-case-data
-  contact: { }
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "7.0"
+  version: '7.0'
 servers:
-  - url: http://localhost:57430
+  - url: http://localhost:8080
     description: Generated server url
 tags:
+  - name: Appeals
+    description: Appeals operations
   - name: MessageAttachments
     description: MessageAttachment operations
   - name: Notes
@@ -49,12 +51,32 @@ paths:
               $ref: '#/components/schemas/StakeholderDTO'
         required: true
       responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -71,6 +93,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
     patch:
       tags:
         - Stakeholders
@@ -90,12 +114,32 @@ paths:
               $ref: '#/components/schemas/StakeholderDTO'
         required: true
       responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -112,6 +156,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /messages/{messageID}/viewed/{isViewed}:
     put:
       tags:
@@ -136,6 +182,17 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "204":
           description: No content - Successful operation
         "400":
@@ -168,12 +225,32 @@ paths:
                 $ref: '#/components/schemas/StatusDTO'
         required: true
       responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -190,6 +267,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
     patch:
       tags:
         - Errands
@@ -209,12 +288,32 @@ paths:
               $ref: '#/components/schemas/StatusDTO'
         required: true
       responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -231,6 +330,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /errands/{id}/stakeholders:
     put:
       tags:
@@ -253,12 +354,32 @@ paths:
                 $ref: '#/components/schemas/StakeholderDTO'
         required: true
       responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -275,6 +396,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
     patch:
       tags:
         - Errands
@@ -302,12 +425,8 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -322,6 +441,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /decisions/{decisionId}:
     put:
       tags:
@@ -344,12 +487,8 @@ paths:
       responses:
         "204":
           description: No content - Successful operation
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -364,6 +503,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
     patch:
       tags:
         - Decisions
@@ -385,12 +548,8 @@ paths:
       responses:
         "204":
           description: No content - Successful operation
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -405,6 +564,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /attachments/{attachmentId}:
     put:
       tags:
@@ -425,12 +608,32 @@ paths:
               $ref: '#/components/schemas/AttachmentDTO'
         required: true
       responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -447,6 +650,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
     delete:
       tags:
         - Attachments
@@ -459,12 +664,32 @@ paths:
             type: integer
             format: int64
       responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -481,6 +706,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
     patch:
       tags:
         - Attachments
@@ -499,20 +726,14 @@ paths:
               $ref: '#/components/schemas/AttachmentDTO'
         required: true
       responses:
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -521,6 +742,148 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /appeals/{appealId}:
+    get:
+      tags:
+        - Appeals
+      description: Get appeal by ID.
+      operationId: getAppealById
+      parameters:
+        - name: appealId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "200":
+          description: OK - Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppealDTO'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AppealDTO'
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    put:
+      tags:
+        - Appeals
+      description: Replace appeal.
+      operationId: putAppeal
+      parameters:
+        - name: appealId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppealDTO'
+        required: true
+      responses:
+        "204":
+          description: No content - Successful operation
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    patch:
+      tags:
+        - Appeals
+      description: Update appeal.
+      operationId: patchAppeal
+      parameters:
+        - name: appealId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchAppealDTO'
+        required: true
+      responses:
+        "204":
+          description: No content - Successful operation
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "204":
+          description: No content - Successful operation
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /messages:
     post:
       tags:
@@ -540,6 +903,17 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "204":
           description: No content - Successful operation
         "400":
@@ -598,12 +972,8 @@ paths:
             items:
               type: string
       responses:
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -618,6 +988,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "200":
           description: OK - Successful operation
           content:
@@ -647,12 +1041,8 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -667,6 +1057,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /attachments:
     post:
       tags:
@@ -680,6 +1094,7 @@ paths:
               $ref: '#/components/schemas/AttachmentDTO'
         required: true
       responses:
+<<<<<<< HEAD
         "201":
           description: Created - Successful operation
           headers:
@@ -692,6 +1107,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "500":
           description: Internal Server error
           content:
@@ -706,6 +1123,21 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+<<<<<<< HEAD
+=======
+        "201":
+          description: Created - Successful operation
+          headers:
+            Location:
+              description: Location of the created resource.
+              style: simple
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /notes/{noteId}:
     delete:
       tags:
@@ -724,12 +1156,8 @@ paths:
           description: No content - Successful operation
         "403":
           description: Forbidden
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -744,6 +1172,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
     patch:
       tags:
         - Notes
@@ -765,12 +1217,8 @@ paths:
       responses:
         "204":
           description: No content - Successful operation
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -785,6 +1233,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /errands/{id}:
     get:
       tags:
@@ -799,12 +1271,8 @@ paths:
             type: integer
             format: int64
       responses:
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -819,6 +1287,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "200":
           description: OK - Successful operation
           content:
@@ -847,12 +1339,32 @@ paths:
               $ref: '#/components/schemas/PatchErrandDTO'
         required: true
       responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -869,6 +1381,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /errands/{id}/notes:
     patch:
       tags:
@@ -897,12 +1411,8 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -917,6 +1427,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /errands/{id}/decisions:
     get:
       tags:
@@ -931,12 +1465,8 @@ paths:
             type: integer
             format: int64
       responses:
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -951,6 +1481,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "200":
           description: OK - Successful operation
           content:
@@ -991,12 +1545,8 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -1011,6 +1561,64 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /errands/{id}/appeals:
+    patch:
+      tags:
+        - Errands
+      description: Create and add appeal to errand.
+      operationId: patchErrandWithAppeal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppealDTO'
+        required: true
+      responses:
+        "201":
+          description: Created - Successful operation
+          headers:
+            Location:
+              description: Location of the created resource.
+              style: simple
+              schema:
+                type: string
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /stakeholders:
     get:
       tags:
@@ -1023,12 +1631,8 @@ paths:
           schema:
             type: string
       responses:
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -1043,6 +1647,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "200":
           description: OK - Successful operation
           content:
@@ -1070,12 +1698,8 @@ paths:
             type: integer
             format: int64
       responses:
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -1090,6 +1714,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "200":
           description: OK - Successful operation
           content:
@@ -1133,34 +1781,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-  /parking-permits:
-    get:
-      tags:
-        - Parking permit
-      description: Get all issued parking permits.
-      operationId: getAllParkingPermits
-      parameters:
-        - name: personId
-          in: query
-          description: personId of the applicant
-          required: false
-          schema:
-            type: string
-      responses:
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
         "500":
           description: Internal Server error
           content:
@@ -1175,6 +1795,69 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+  /parking-permits:
+    get:
+      tags:
+        - Parking permit
+      description: Get all issued parking permits.
+      operationId: getAllParkingPermits
+      parameters:
+        - name: personId
+          in: query
+          description: personId of the applicant
+          required: false
+          schema:
+            type: string
+      responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "200":
           description: OK - Successful operation
           content:
@@ -1211,12 +1894,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/NoteDTO'
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -1231,6 +1910,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /notes/{id}/history:
     get:
       tags:
@@ -1265,6 +1968,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
         "400":
           description: Bad request
           content:
@@ -1273,6 +1982,15 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /notes/errand/{errandId}:
     get:
       tags:
@@ -1305,12 +2023,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/NoteDTO'
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
@@ -1325,6 +2039,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /messages/{errandNumber}:
     get:
       tags:
@@ -1432,14 +2170,31 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
         "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+=======
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "200":
           description: OK - Successful operation
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
   /facilities/{id}/history:
     get:
       tags:
@@ -1474,6 +2229,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
         "400":
           description: Bad request
           content:
@@ -1482,6 +2243,15 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /errands/{id}/history:
     get:
       tags:
@@ -1516,6 +2286,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
         "400":
           description: Bad request
           content:
@@ -1524,6 +2300,15 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /decisions/{id}:
     get:
       tags:
@@ -1538,18 +2323,32 @@ paths:
             type: integer
             format: int64
       responses:
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "200":
           description: OK - Successful operation
           content:
@@ -1559,6 +2358,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/DecisionDTO'
+<<<<<<< HEAD
         "400":
           description: Bad request
           content:
@@ -1567,6 +2367,14 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /decisions/{id}/history:
     get:
       tags:
@@ -1601,34 +2409,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-  /attachments/{id}:
-    get:
-      tags:
-        - Attachments
-      description: Get attachment by ID.
-      operationId: getAttachments
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
         "500":
           description: Internal Server error
           content:
@@ -1643,6 +2423,69 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+  /attachments/{id}:
+    get:
+      tags:
+        - Attachments
+      description: Get attachment by ID.
+      operationId: getAttachments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "200":
           description: OK - Successful operation
           content:
@@ -1686,33 +2529,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryDTO'
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-  /attachments/errand/{errand_number}:
-    get:
-      tags:
-        - Attachments
-      description: Get attachment by errandnumber.
-      operationId: getAttachmentsByErrandNumber
-      parameters:
-        - name: errand_number
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
         "500":
           description: Internal Server error
           content:
@@ -1727,6 +2543,68 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+  /attachments/errand/{errand_number}:
+    get:
+      tags:
+        - Attachments
+      description: Get attachment by errandnumber.
+      operationId: getAttachmentsByErrandNumber
+      parameters:
+        - name: errand_number
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "200":
           description: OK - Successful operation
           content:
@@ -1776,12 +2654,32 @@ paths:
             type: integer
             format: int64
       responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -1798,6 +2696,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /errands/{id}/notes/{noteId}:
     delete:
       tags:
@@ -1818,12 +2718,32 @@ paths:
             type: integer
             format: int64
       responses:
+<<<<<<< HEAD
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -1840,6 +2760,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
   /errands/{id}/decisions/{decisionId}:
     delete:
       tags:
@@ -1860,20 +2782,14 @@ paths:
             type: integer
             format: int64
       responses:
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -1882,6 +2798,68 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/Problem'
                   - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /errands/{id}/appeals/{appealId}:
+    delete:
+      tags:
+        - Errands
+      description: Delete appeal on errand.
+      operationId: deleteAppeal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: appealId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: No content - Successful operation
+<<<<<<< HEAD
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+>>>>>>> afbd896 (UF-7817: Added mapping in service layer and added appeal resources)
 components:
   schemas:
     AddressDTO:
@@ -2071,20 +3049,20 @@ components:
           type: object
           additionalProperties:
             type: object
-        title:
-          type: string
-        detail:
-          type: string
         status:
           $ref: '#/components/schemas/StatusType'
+        detail:
+          type: string
+        title:
+          type: string
     StatusType:
       type: object
       properties:
-        reasonPhrase:
-          type: string
         statusCode:
           type: integer
           format: int32
+        reasonPhrase:
+          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -2206,12 +3184,12 @@ components:
           type: object
           additionalProperties:
             type: object
-        title:
-          type: string
-        detail:
-          type: string
         status:
           $ref: '#/components/schemas/StatusType'
+        detail:
+          type: string
+        title:
+          type: string
         suppressed:
           type: array
           items:
@@ -2383,6 +3361,54 @@ components:
           maxLength: 255
           minLength: 0
           type: string
+    AppealDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        version:
+          type: integer
+          format: int32
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        description:
+          maxLength: 100000
+          minLength: 0
+          type: string
+        registeredAt:
+          type: string
+          description: "The date when this appeal was first registered (timestamp\
+            \ from e-service, mail or letter)"
+          format: date-time
+        appealConcernCommunicatedAt:
+          type: string
+          description: The date when the decision or corresponding that this appeal
+            concerns was sent out
+          format: date-time
+        status:
+          type: string
+          description: "Current status for this appeal. Values [NEW, REJECTED, SENT_TO_COURT,\
+            \ COMPLETED]"
+          default: NEW
+        timelinessReview:
+          type: string
+          description: "Status of whether measures have been taken within statutory\
+            \ time limits. Values: [NOT_CONDUCTED, NOT_RELEVANT, APPROVED, REJECTED]"
+          default: NOT_CONDUCTED
+        decisionId:
+          type: integer
+          description: Id for decision that is appealed
+          format: int64
+          nullable: true
     Classification:
       type: string
       description: Message classification
@@ -2512,54 +3538,6 @@ components:
           description: List of email headers on the message
           items:
             $ref: '#/components/schemas/EmailHeaderDTO'
-    AppealDTO:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          readOnly: true
-        version:
-          type: integer
-          format: int32
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        updated:
-          type: string
-          format: date-time
-          readOnly: true
-        description:
-          maxLength: 100000
-          minLength: 0
-          type: string
-        registeredAt:
-          type: string
-          description: "The date when this appeal was first registered (timestamp\
-            \ from e-service, mail or letter)"
-          format: date-time
-        appealConcernCommunicatedAt:
-          type: string
-          description: The date when the decision or corresponding that this appeal
-            concerns was sent out
-          format: date-time
-        status:
-          type: string
-          description: "Current status for this appeal. Values [NEW, REJECTED, SENT_TO_COURT,\
-            \ COMPLETED]"
-          default: NEW
-        timelinessReview:
-          type: string
-          description: "Status of whether measures have been taken within statutory\
-            \ time limits. Values: [NOT_CONDUCTED, NOT_RELEVANT, APPROVED, REJECTED]"
-          default: NOT_CONDUCTED
-        decisionId:
-          type: integer
-          description: Id for decision that is appealed
-          format: int64
-          nullable: true
     ErrandDTO:
       type: object
       properties:
@@ -2936,6 +3914,39 @@ components:
           type: object
           additionalProperties:
             type: string
+    PatchAppealDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        version:
+          type: integer
+          format: int32
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        description:
+          maxLength: 100000
+          minLength: 0
+          type: string
+        status:
+          type: string
+          description: "Current status for this appeal. Values [NEW, REJECTED, SENT_TO_COURT,\
+            \ COMPLETED]"
+          default: NEW
+        timelinessReview:
+          type: string
+          description: "Status of whether measures have been taken within statutory\
+            \ time limits. Values: [NOT_CONDUCTED, NOT_RELEVANT, APPROVED, REJECTED]"
+          default: NOT_CONDUCTED
     CommitMetadata:
       type: object
       properties:
@@ -3179,16 +4190,12 @@ components:
     PageErrandDTO:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -3203,6 +4210,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SortObject'
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
@@ -3243,4 +4254,4 @@ components:
           type: string
         ignoreCase:
           type: boolean
-  securitySchemes: { }
+  securitySchemes: {}

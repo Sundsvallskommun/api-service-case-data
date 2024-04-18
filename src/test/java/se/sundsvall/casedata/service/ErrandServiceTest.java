@@ -14,6 +14,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.TestUtil.createAppealDTO;
 import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
@@ -58,6 +59,7 @@ import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
@@ -244,6 +246,23 @@ class ErrandServiceTest {
 	}
 
 	@Test
+	void addAppealToErrandTest() {
+		final var errand = createErrand();
+		errand.getDecisions().add(Decision.builder().withId(123L).build());
+		final var newAppeal = createAppealDTO();
+		when(errandRepositoryMock.findById(errand.getId())).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+		final var appealDTO = errandService.addAppealToErrand(errand.getId(), newAppeal);
+
+		assertThat(appealDTO).isEqualTo(newAppeal);
+		assertThat(errand.getDecisions()).isNotEmpty().hasSize(2);
+
+		verify(errandRepositoryMock).findById(errand.getId());
+		verify(errandRepositoryMock).save(errand);
+	}
+
+	@Test
 	void updateErrandTest() {
 		final var errand = createErrand();
 		final var patch = createPatchErrandDto();
@@ -419,6 +438,30 @@ class ErrandServiceTest {
 		assertFalse(persistedErrand.getNotes().contains(note));
 		verify(processServiceMock).updateProcess(errand);
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
+	}
+
+	@Test
+	void deleteAppealOnErrand() {
+		final var errand = toErrand(createErrandDTO());
+		final int sizeBeforeDelete = errand.getAppeals().size();
+		// Set ID on every decision
+		errand.getDecisions().forEach(d -> d.setId(new Random().nextLong()));
+
+		final var errandId = new Random().nextLong(1, 1000);
+		final var appeal = errand.getAppeals().getFirst();
+		appeal.setId(new Random().nextLong());
+
+		when(errandRepositoryMock.findById(errandId)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.save(any())).thenReturn(errand);
+
+		errandService.deleteAppealOnErrand(errandId, appeal.getId());
+
+		verify(errandRepositoryMock).save(errandCaptor.capture());
+		final Errand persistedErrand = errandCaptor.getValue();
+		final int sizeAfterDelete = persistedErrand.getAppeals().size();
+
+		assertTrue(sizeAfterDelete < sizeBeforeDelete);
+		assertFalse(persistedErrand.getAppeals().contains(appeal));
 	}
 
 	private Errand mockErrandFindById() {

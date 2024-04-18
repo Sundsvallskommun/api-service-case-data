@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static se.sundsvall.casedata.TestUtil.createAppealDTO;
 import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
@@ -133,4 +134,26 @@ class ErrandResourceTest {
 		verify(errandServiceMock).createErrand(body);
 
 	}
+
+	@Test
+	void patchErrandWithAppeal() {
+		final var errandId = 123L;
+		final var appealId = 456L;
+		final var body = createAppealDTO();
+		body.setId(appealId);
+
+		when(errandServiceMock.addAppealToErrand(errandId, body)).thenReturn(body);
+
+		webTestClient.patch()
+			.uri(uriBuilder -> uriBuilder.path("/errands/{errandId}/appeals").build(errandId))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isCreated()
+			.expectHeader().contentType(ALL_VALUE)
+			.expectHeader().location("/appeals/" + appealId);
+
+		verify(errandServiceMock).addAppealToErrand(errandId, body);
+	}
+
 }

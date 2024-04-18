@@ -3,6 +3,7 @@ package se.sundsvall.casedata.integration.db.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ForeignKey;
@@ -17,6 +18,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
+import se.sundsvall.casedata.integration.db.listeners.AppealListener;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
@@ -25,6 +27,7 @@ import java.time.OffsetDateTime;
 import static org.hibernate.Length.LONG;
 
 @Entity(name = "appeal")
+@EntityListeners(AppealListener.class)
 @Getter
 @Setter
 @NoArgsConstructor

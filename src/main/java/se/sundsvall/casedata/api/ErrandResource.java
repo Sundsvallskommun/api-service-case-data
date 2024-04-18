@@ -43,6 +43,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.ExtraParameterDTO;
@@ -165,6 +166,21 @@ class ErrandResource {
 			.build();
 	}
 
+	@Operation(description = "Create and add appeal to errand.",
+		responses = {
+			@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
+		})
+	@PatchMapping(path = "/{id}/appeals", consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	ResponseEntity<Void> patchErrandWithAppeal(
+		@PathVariable final Long id,
+		@RequestBody @Valid final AppealDTO appealDTO) {
+
+		final var dto = errandService.addAppealToErrand(id, appealDTO);
+		return created(fromPath("/appeals/{id}").buildAndExpand(dto.getId()).toUri())
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
+	}
+
 	@Operation(description = "Create and add stakeholder to errand.",
 		responses = { @ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
 		})
@@ -208,6 +224,14 @@ class ErrandResource {
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> deleteDecision(@PathVariable final Long id, @PathVariable final Long decisionId) {
 		errandService.deleteDecisionOnErrand(id, decisionId);
+		return noContent().build();
+	}
+
+	@Operation(description = "Delete appeal on errand.")
+	@DeleteMapping(path = "/{id}/appeals/{appealId}", produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> deleteAppeal(@PathVariable final Long id, @PathVariable final Long appealId) {
+		errandService.deleteAppealOnErrand(id, appealId);
 		return noContent().build();
 	}
 
