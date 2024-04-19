@@ -36,7 +36,11 @@ import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
+import se.sundsvall.casedata.integration.db.AppealRepository;
+import se.sundsvall.casedata.integration.db.DecisionRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.NoteRepository;
+import se.sundsvall.casedata.integration.db.StakeholderRepository;
 import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.Errand;
@@ -63,11 +67,24 @@ public class ErrandService {
 
 	private final ErrandRepository errandRepository;
 
+	private final AppealRepository appealRepository;
+
+	private final NoteRepository noteRepository;
+
+	private final StakeholderRepository stakeholderRepository;
+
+	private final DecisionRepository decisionRepository;
+
 	private final ProcessService processService;
 
-	public ErrandService(final ErrandRepository errandRepository,
-		final ProcessService processService) {
+	public ErrandService(final ErrandRepository errandRepository, final AppealRepository appealRepository,
+		final NoteRepository noteRepository, final StakeholderRepository stakeholderRepository,
+		final DecisionRepository decisionRepository, final ProcessService processService) {
 		this.errandRepository = errandRepository;
+		this.appealRepository = appealRepository;
+		this.noteRepository = noteRepository;
+		this.decisionRepository = decisionRepository;
+		this.stakeholderRepository = stakeholderRepository;
 		this.processService = processService;
 	}
 
@@ -161,8 +178,7 @@ public class ErrandService {
 		final var stakeholderToRemove = errand.getStakeholders().stream()
 			.filter(stakeholder -> stakeholder.getId().equals(stakeholderId))
 			.findFirst().orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, stakeholderId, errandId)));
-		errand.getStakeholders().remove(stakeholderToRemove);
-		errandRepository.save(errand);
+		stakeholderRepository.delete(stakeholderToRemove);
 		processService.updateProcess(errand);
 	}
 
@@ -173,8 +189,7 @@ public class ErrandService {
 			.filter(decision -> decision.getId().equals(decisionId))
 			.findAny()
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, decisionId, errandId)));
-		errand.getDecisions().remove(decisionToRemove);
-		errandRepository.save(errand);
+		decisionRepository.delete(decisionToRemove);
 		processService.updateProcess(errand);
 	}
 
@@ -185,8 +200,7 @@ public class ErrandService {
 			.filter(note -> note.getId().equals(noteId))
 			.findAny()
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, noteId, errandId)));
-		errand.getNotes().remove(noteToRemove);
-		errandRepository.save(errand);
+		noteRepository.delete(noteToRemove);
 		processService.updateProcess(errand);
 	}
 
@@ -197,8 +211,8 @@ public class ErrandService {
 			.filter(appeal -> appeal.getId().equals(appealId))
 			.findAny()
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(APPEAL_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, appealId, errandId)));
-		errand.getAppeals().remove(appealToRemove);
-		errandRepository.save(errand);
+		appealRepository.delete(appealToRemove);
+		processService.updateProcess(errand);
 	}
 	//////////////////////////////
 	// PATCH operations
