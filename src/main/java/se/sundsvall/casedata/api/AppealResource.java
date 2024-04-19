@@ -30,7 +30,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @Validated
 @RequestMapping("/appeals")
-@Tag(name = "Appeals", description = "Appeals operations")
+@Tag(name = "Appeals", description = "Appeal operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = { Problem.class, ConstraintViolationProblem.class })))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
@@ -44,14 +44,14 @@ class AppealResource {
 
 	@Operation(description = "Get appeal by ID.")
 	@GetMapping(path = "/{appealId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	@ApiResponse(responseCode = "200", description = "OK - Successful operation")
+	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<AppealDTO> getAppealById(@PathVariable final Long appealId) {
 		return ok(appealService.findById(appealId));
 	}
 
 	@Operation(description = "Update appeal.")
 	@PatchMapping(path = "/{appealId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation")
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchAppeal(@PathVariable final Long appealId, @RequestBody @Valid final PatchAppealDTO patchAppealDTO) {
 		appealService.updateAppeal(appealId, patchAppealDTO);
 		return noContent().build();
@@ -59,7 +59,7 @@ class AppealResource {
 
 	@Operation(description = "Replace appeal.")
 	@PutMapping(path = "/{appealId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation")
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putAppeal(@PathVariable final Long appealId, @RequestBody @Valid final AppealDTO appealDTO) {
 		appealService.replaceAppeal(appealId, appealDTO);
 		return noContent().build();

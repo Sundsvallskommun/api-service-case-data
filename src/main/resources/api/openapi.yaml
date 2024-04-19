@@ -11,7 +11,7 @@ servers:
     description: Generated server url
 tags:
   - name: Appeals
-    description: Appeals operations
+    description: Appeal operations
   - name: MessageAttachments
     description: MessageAttachment operations
   - name: Notes

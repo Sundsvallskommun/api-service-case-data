@@ -36,7 +36,7 @@ import static se.sundsvall.casedata.TestUtil.createErrand;
 class AppealServiceTest {
 
 	@InjectMocks
-	AppealService appealService;
+	private AppealService appealService;
 
 	@Mock
 	private AppealRepository appealRepositoryMock;
