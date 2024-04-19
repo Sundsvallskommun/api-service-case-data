@@ -1,18 +1,14 @@
 package se.sundsvall.casedata.api;
 
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.HttpHeaders.LOCATION;
-import static org.springframework.http.MediaType.ALL_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
-import static org.springframework.http.ResponseEntity.created;
-import static org.springframework.http.ResponseEntity.noContent;
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.web.util.UriComponentsBuilder.fromPath;
-
-import java.util.List;
-import java.util.Optional;
-
+import com.turkraft.springfilter.boot.Filter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,17 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-
-import com.turkraft.springfilter.boot.Filter;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.ExtraParameterDTO;
@@ -51,6 +37,19 @@ import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.service.ErrandService;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpHeaders.LOCATION;
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
+import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.noContent;
+import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @RestController
 @Validated
@@ -155,6 +154,21 @@ class ErrandResource {
 			.build();
 	}
 
+	@Operation(description = "Create and add appeal to errand.",
+		responses = {
+			@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
+		})
+	@PatchMapping(path = "/{id}/appeals", consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	ResponseEntity<Void> patchErrandWithAppeal(
+		@PathVariable final Long id,
+		@RequestBody @Valid final AppealDTO appealDTO) {
+
+		final var dto = errandService.addAppealToErrand(id, appealDTO);
+		return created(fromPath("/appeals/{id}").buildAndExpand(dto.getId()).toUri())
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
+	}
+
 	@Operation(description = "Create and add stakeholder to errand.",
 		responses = { @ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
 		})
@@ -198,6 +212,14 @@ class ErrandResource {
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> deleteDecision(@PathVariable final Long id, @PathVariable final Long decisionId) {
 		errandService.deleteDecisionOnErrand(id, decisionId);
+		return noContent().build();
+	}
+
+	@Operation(description = "Delete appeal on errand.")
+	@DeleteMapping(path = "/{id}/appeals/{appealId}", produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> deleteAppeal(@PathVariable final Long id, @PathVariable final Long appealId) {
+		errandService.deleteAppealOnErrand(id, appealId);
 		return noContent().build();
 	}
 

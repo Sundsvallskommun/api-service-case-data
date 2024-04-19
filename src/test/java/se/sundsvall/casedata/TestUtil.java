@@ -1,26 +1,11 @@
 package se.sundsvall.casedata;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.function.Consumer;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import org.apache.commons.lang3.RandomStringUtils;
-
 import se.sundsvall.casedata.api.model.AddressDTO;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
@@ -41,6 +26,7 @@ import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Address;
+import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.ContactInformation;
 import se.sundsvall.casedata.integration.db.model.Coordinates;
@@ -63,7 +49,20 @@ import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitClient;
 
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.function.Consumer;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 public class TestUtil {
 
@@ -465,6 +464,21 @@ public class TestUtil {
 			.build();
 	}
 
+	public static Appeal createAppeal() {
+		return Appeal.builder()
+			.withCreated(getRandomOffsetDateTime())
+			.withUpdated(getRandomOffsetDateTime())
+			.withId(1L)
+			.withVersion(1)
+			.withRegisteredAt(getRandomOffsetDateTime())
+			.withAppealConcernCommunicatedAt(getRandomOffsetDateTime())
+			.withStatus(AppealStatus.NEW)
+			.withDescription("description")
+			.withTimelinessReview(TimelinessReview.NOT_RELEVANT)
+			.withDecision(createDecision())
+			.build();
+	}
+
 	public static Law createLaw() {
 		return Law.builder()
 			.withArticle("article")
@@ -498,6 +512,7 @@ public class TestUtil {
 			.withFacilities(new ArrayList<>(List.of(createFacility())))
 			.withStakeholders(new ArrayList<>(List.of(createStakeholder())))
 			.withDecisions(new ArrayList<>(List.of(createDecision())))
+			.withAppeals(new ArrayList<>(List.of(createAppeal())))
 			.withExtraParameters(createExtraParameters())
 			.withErrandNumber("errandNumber")
 			.withExternalCaseId("externalCaseId")
