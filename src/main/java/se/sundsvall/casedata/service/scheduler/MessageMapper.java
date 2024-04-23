@@ -15,6 +15,7 @@ import se.sundsvall.casedata.api.model.EmailHeaderDTO;
 import se.sundsvall.casedata.api.model.MessageAttachmentDTO;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
+import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.EmailHeader;
 import se.sundsvall.casedata.integration.db.model.Message;
@@ -48,6 +49,7 @@ public class MessageMapper {
 			.withEmail(dto.getEmail())
 			.withUserID(dto.getUserId())
 			.withUsername(dto.getUsername())
+			.withMessageType(MessageType.WEBMESSAGE.name())
 			.build();
 	}
 

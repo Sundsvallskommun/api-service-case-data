@@ -292,7 +292,7 @@ class MessageMapperTest {
 		assertThat(bean.getFirstName()).isEqualTo(firstName);
 		assertThat(bean.getLastName()).isEqualTo(lastName);
 		assertThat(bean.getMessageID()).satisfies(s -> assertThat(isValidUUID(s)).isTrue());
-		assertThat(bean.getMessageType()).isNull();
+		assertThat(bean.getMessageType()).isEqualTo(MessageType.WEBMESSAGE.name());
 		assertThat(bean.getMobileNumber()).isNull();
 		assertThat(bean.getSent()).isEqualTo(sent);
 		assertThat(bean.getSubject()).isNull();
