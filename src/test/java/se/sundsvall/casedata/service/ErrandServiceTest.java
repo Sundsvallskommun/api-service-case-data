@@ -403,7 +403,7 @@ class ErrandServiceTest {
 	void deleteDecisionOnErrand() {
 		final var errand = toErrand(createErrandDTO());
 		errand.setCaseType(PARKING_PERMIT_RENEWAL.name());
-		errand.getDecisions().size();
+
 		// Set ID on every decision
 		errand.getDecisions().forEach(d -> d.setId(new Random().nextLong()));
 
