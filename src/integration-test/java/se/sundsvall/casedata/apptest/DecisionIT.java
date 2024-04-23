@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.apptest;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.PUT;
@@ -8,18 +7,13 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
-import static se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome.DISMISSAL;
-import static se.sundsvall.casedata.integration.db.model.enums.DecisionType.FINAL;
 import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.integration.db.DecisionRepository;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(
@@ -36,26 +30,20 @@ class DecisionIT extends CustomAbstractAppTest {
 
 	private static final String PATH = "/decisions";
 	private static final String REQUEST_FILE = "request.json";
-	private static final String EXPECTED_FILE = "expected.json";
-
-	@Autowired
-	private DecisionRepository decisionRepository;
-
-	@Autowired
-	private ErrandRepository errandRepository;
+	private static final String RESPONSE_FILE = "response.json";
 
 	@Test
-	void test1_getDecisionById() {
+	void test01_getDecisionById() {
 		setupCall()
 			.withServicePath(PATH + "/" + DECISION_ID)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(EXPECTED_FILE)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test2_patchDecision() {
+	void test02_patchDecision() {
 		setupCall()
 			.withServicePath(PATH + "/" + DECISION_ID)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
@@ -66,18 +54,16 @@ class DecisionIT extends CustomAbstractAppTest {
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
-		final var updatedDecision = decisionRepository.findById(DECISION_ID).orElseThrow();
-		assertThat(updatedDecision).satisfies(decision1 -> {
-			assertThat(decision1.getDescription()).isEqualTo("new description");
-			assertThat(decision1.getDecisionType()).isEqualTo(FINAL);
-			assertThat(decision1.getDecisionOutcome()).isEqualTo(DISMISSAL);
-		});
-		final var updatedErrand = errandRepository.findById(ERRAND_ID).orElseThrow();
-		assertThat(updatedErrand.getUpdatedByClient()).isEqualTo("WSO2_MS_caseManagement");
+		setupCall()
+			.withServicePath("/errands/" + ERRAND_ID)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test3_putDecision() {
+	void test03_putDecision() {
 		setupCall()
 			.withServicePath(PATH + "/" + DECISION_ID)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
@@ -88,13 +74,11 @@ class DecisionIT extends CustomAbstractAppTest {
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
-		final var replacedDecision = decisionRepository.findById(DECISION_ID).orElseThrow();
-		assertThat(replacedDecision).satisfies(decision1 -> {
-			assertThat(decision1.getDescription()).isEqualTo("This is a put description");
-			assertThat(decision1.getDecisionType()).isEqualTo(FINAL);
-			assertThat(decision1.getDecisionOutcome()).isEqualTo(DISMISSAL);
-		});
-		final var updatedErrand = errandRepository.findById(ERRAND_ID).orElseThrow();
-		assertThat(updatedErrand.getUpdatedByClient()).isEqualTo("WSO2_MS_caseManagement");
+		setupCall()
+			.withServicePath("/errands/" + ERRAND_ID)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
 	}
 }
