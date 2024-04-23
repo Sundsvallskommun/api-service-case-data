@@ -1,6 +1,14 @@
 package se.sundsvall.casedata.integration.db.model;
 
+import static org.hibernate.Length.LONG;
+
+import java.time.OffsetDateTime;
+
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -10,21 +18,16 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
 import se.sundsvall.casedata.integration.db.listeners.AppealListener;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
-
-import java.time.OffsetDateTime;
-
-import static org.hibernate.Length.LONG;
 
 @Entity(name = "appeal")
 @EntityListeners(AppealListener.class)
@@ -55,10 +58,12 @@ public class Appeal extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", columnDefinition = "varchar(255)")
+	@Builder.Default
 	private AppealStatus status = AppealStatus.NEW;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "timeliness_review", columnDefinition = "varchar(255)")
+	@Builder.Default
 	private TimelinessReview timelinessReview = TimelinessReview.NOT_CONDUCTED;
 
 	@ManyToOne

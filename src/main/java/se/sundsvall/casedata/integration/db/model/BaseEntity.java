@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.integration.db.model;
 
 import java.time.OffsetDateTime;
-import java.util.Objects;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.TimeZoneStorage;
@@ -15,8 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Version;
-
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +27,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(setterPrefix = "with")
+@EqualsAndHashCode
 public abstract class BaseEntity {
 
 	@Id
@@ -62,17 +62,4 @@ public abstract class BaseEntity {
 			", updated=" + updated +
 			'}';
 	}
-
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof final BaseEntity that)) return false;
-		return version == that.version && Objects.equals(id, that.id) && Objects.equals(created, that.created) && Objects.equals(updated, that.updated);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, version, created, updated);
-	}
-
 }

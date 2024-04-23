@@ -3,6 +3,7 @@ package se.sundsvall.casedata.api.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -24,10 +25,11 @@ public class PatchAppealDTO extends BaseDTO {
 
 	@Schema(description = "Current status for this appeal. Values [NEW, REJECTED, SENT_TO_COURT, COMPLETED]", defaultValue = "NEW")
 	@ValidAppealStatus
+	@Builder.Default
 	private String status = "NEW";
 
 	@Schema(description = "Status of whether measures have been taken within statutory time limits. Values: [NOT_CONDUCTED, NOT_RELEVANT, APPROVED, REJECTED]", defaultValue = "NOT_CONDUCTED")
 	@ValidTimelinessReviewValue
+	@Builder.Default
 	private String timelinessReview = "NOT_CONDUCTED";
-
 }
