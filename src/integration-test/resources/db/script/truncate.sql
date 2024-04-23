@@ -1,7 +1,5 @@
 set foreign_key_checks = 0;
 
-truncate table appeal;
-truncate table appeal_extra_parameters;
 truncate table attachment;
 truncate table attachment_extra_parameters;
 truncate table decision;
@@ -29,5 +27,6 @@ truncate table stakeholder_addresses;
 truncate table stakeholder_contact_information;
 truncate table stakeholder_extra_parameters;
 truncate table stakeholder_roles;
+truncate table appeal;
 
 set foreign_key_checks = 1;

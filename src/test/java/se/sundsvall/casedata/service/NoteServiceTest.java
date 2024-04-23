@@ -2,7 +2,6 @@ package se.sundsvall.casedata.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -11,15 +10,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.FORBIDDEN;
+import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.TestUtil.createExtraParameters;
 import static se.sundsvall.casedata.TestUtil.createNote;
 import static se.sundsvall.casedata.TestUtil.createNoteDTO;
-import static se.sundsvall.casedata.service.NoteService.ERRAND_NOT_FOUND_PROBLEM;
-import static se.sundsvall.casedata.service.NoteService.NOTE_CANNOT_BE_DELETED_PROBLEM;
-import static se.sundsvall.casedata.service.NoteService.NOTE_NOT_FOUND_PROBLEM;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteDto;
@@ -30,7 +28,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,8 +39,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -93,16 +91,17 @@ class NoteServiceTest {
 		Mockito.verify(noteRepository).save(noteCaptor.capture());
 		final Note persistedNote = noteCaptor.getValue();
 
-		assertEquals(patch.getTitle(), persistedNote.getTitle());
-		assertEquals(patch.getText(), persistedNote.getText());
-		assertEquals(patch.getCreatedBy(), persistedNote.getCreatedBy());
-		assertEquals(patch.getUpdatedBy(), persistedNote.getUpdatedBy());
+		assertThat(persistedNote.getTitle()).isEqualTo(patch.getTitle());
+		assertThat(persistedNote.getText()).isEqualTo(patch.getText());
+		assertThat(persistedNote.getCreatedBy()).isEqualTo(patch.getCreatedBy());
+		assertThat(persistedNote.getUpdatedBy()).isEqualTo(patch.getUpdatedBy());
 
 		// ExtraParameters should contain all objects
 		final Map<String, Object> extraParams = new HashMap<>();
 		extraParams.putAll(patch.getExtraParameters());
 		extraParams.putAll(note.getExtraParameters());
-		assertEquals(extraParams, persistedNote.getExtraParameters());
+
+		assertThat(persistedNote.getExtraParameters()).isEqualTo(extraParams);
 	}
 
 	@Test
@@ -110,7 +109,7 @@ class NoteServiceTest {
 		final NoteDTO noteDTO = new NoteDTO();
 		final var problem = assertThrows(ThrowableProblem.class, () -> noteService.updateNote(1L, noteDTO));
 
-		assertEquals(Status.NOT_FOUND, problem.getStatus());
+		assertThat(problem.getStatus()).isEqualTo(NOT_FOUND);
 	}
 
 	@Test
@@ -162,7 +161,7 @@ class NoteServiceTest {
 		errand.setNotes(list);
 		when(errandRepository.findById(any(Long.class))).thenReturn(Optional.of(errand));
 
-		var result = noteService.getNotesByErrandIdAndNoteType(errand.getId(), Optional.of(NoteType.PUBLIC));
+		final var result = noteService.getNotesByErrandIdAndNoteType(errand.getId(), Optional.of(NoteType.PUBLIC));
 
 		assertThat(result).isNotEmpty().hasSize(1);
 	}
@@ -174,7 +173,7 @@ class NoteServiceTest {
 		errand.setNotes(list);
 		when(errandRepository.findById(any(Long.class))).thenReturn(Optional.of(errand));
 
-		var result = noteService.getNotesByErrandIdAndNoteType(errand.getId(), Optional.empty());
+		final var result = noteService.getNotesByErrandIdAndNoteType(errand.getId(), Optional.empty());
 
 		assertThat(result).isNotEmpty().hasSize(2);
 	}
@@ -186,8 +185,8 @@ class NoteServiceTest {
 
 		assertThatThrownBy(() -> noteService.getNotesByErrandIdAndNoteType(3213L, noteType))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", ERRAND_NOT_FOUND_PROBLEM.getStatus())
-			.hasFieldOrPropertyWithValue("detail", ERRAND_NOT_FOUND_PROBLEM.getDetail());
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
+			.hasFieldOrPropertyWithValue("detail", "Errand was not found");
 	}
 
 	@ParameterizedTest
@@ -199,7 +198,7 @@ class NoteServiceTest {
 		final var noteType = Optional.of(enumValue);
 		when(errandRepository.findById(3213L)).thenReturn(Optional.of(errand));
 
-		var result = noteService.getNotesByErrandIdAndNoteType(3213L, noteType);
+		final var result = noteService.getNotesByErrandIdAndNoteType(3213L, noteType);
 
 		assertThat(result).isNotEmpty().hasSize(1).allSatisfy(n -> assertThat(n.getNoteType()).isEqualTo(enumValue));
 		verify(errandRepository).findById(3213L);
@@ -213,8 +212,8 @@ class NoteServiceTest {
 
 		assertThatThrownBy(() -> noteService.deleteNoteById(5L))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", NOTE_CANNOT_BE_DELETED_PROBLEM.getStatus())
-			.hasFieldOrPropertyWithValue("detail", NOTE_CANNOT_BE_DELETED_PROBLEM.getDetail());
+			.hasFieldOrPropertyWithValue("status", FORBIDDEN)
+			.hasFieldOrPropertyWithValue("detail", "Public notes can not be deleted");
 
 		verify(noteRepository, times(1)).findById(any(Long.class));
 		verify(noteRepository, never()).delete(any(Note.class));
@@ -238,8 +237,8 @@ class NoteServiceTest {
 
 		assertThatThrownBy(() -> noteService.deleteNoteById(123L))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", NOTE_NOT_FOUND_PROBLEM.getStatus())
-			.hasFieldOrPropertyWithValue("detail", NOTE_NOT_FOUND_PROBLEM.getDetail());
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
+			.hasFieldOrPropertyWithValue("detail", "Note was not found");
 
 		verify(noteRepository).findById(123L);
 		verify(noteRepository, never()).delete(any(Note.class));

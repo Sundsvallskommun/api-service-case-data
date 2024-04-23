@@ -81,7 +81,8 @@ class ErrandResourceIT extends CustomAbstractAppTest {
 		"createdBy",
 		"updatedBy",
 		"note.*\\.createdBy",
-		"note.*\\.updatedBy"
+		"note.*\\.updatedBy",
+		"appeal.*\\.decisionId"
 	};
 
 	@Autowired

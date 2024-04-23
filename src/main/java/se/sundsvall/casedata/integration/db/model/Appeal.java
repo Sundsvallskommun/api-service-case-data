@@ -1,79 +1,73 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import static org.hibernate.Length.LONG;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
+import java.time.OffsetDateTime;
+
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapKeyColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import se.sundsvall.casedata.integration.db.listeners.AppealListener;
+import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
+import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
 @Entity(name = "appeal")
+@EntityListeners(AppealListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(setterPrefix = "with")
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Appeal extends BaseEntity {
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "appealed_by_id", foreignKey = @ForeignKey(name = "FK_appeal_appealed_by_id"))
-	private Stakeholder appealedBy;
+	@ManyToOne
+	@JoinColumn(name = "errand_id", foreignKey = @ForeignKey(name = "FK_appeal_errand_id"))
+	@JsonBackReference
+	private Errand errand;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "judicial_authorisation_id", foreignKey = @ForeignKey(name = "FK_appeal_judicial_authorisation_id"))
-	private Stakeholder judicialAuthorisation;
+	@Column(name = "description", length = LONG)
+	private String description;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "appeal_id", foreignKey = @ForeignKey(name = "FK_appeal_id"))
+	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)
+	@Column(name = "registered_at")
+	private OffsetDateTime registeredAt;
+
+	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)
+	@Column(name = "appeal_concern_communicated_at")
+	private OffsetDateTime appealConcernCommunicatedAt;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status", columnDefinition = "varchar(255)")
 	@Builder.Default
-	private List<Attachment> attachments = new ArrayList<>();
+	private AppealStatus status = AppealStatus.NEW;
 
-	@ElementCollection
-	@CollectionTable(name = "appeal_extra_parameters",
-		joinColumns = @JoinColumn(name = "appeal_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_appeal_extra_parameters_appeal_id")))
-	@MapKeyColumn(name = "extra_parameter_key")
-	@Column(name = "extra_parameter_value")
+	@Enumerated(EnumType.STRING)
+	@Column(name = "timeliness_review", columnDefinition = "varchar(255)")
 	@Builder.Default
-	private Map<String, String> extraParameters = new HashMap<>();
+	private TimelinessReview timelinessReview = TimelinessReview.NOT_CONDUCTED;
 
-	@Override
-	public String toString() {
-		return "Appeal{" +
-			"appealedBy=" + appealedBy +
-			", judicialAuthorisation=" + judicialAuthorisation +
-			", attachments=" + attachments +
-			", extraParameters=" + extraParameters +
-			"} " + super.toString();
-	}
-
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof final Appeal appeal)) return false;
-		if (!super.equals(o)) return false;
-		return Objects.equals(appealedBy, appeal.appealedBy) && Objects.equals(judicialAuthorisation, appeal.judicialAuthorisation) && Objects.equals(attachments, appeal.attachments) && Objects.equals(extraParameters, appeal.extraParameters);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), appealedBy, judicialAuthorisation, attachments, extraParameters);
-	}
+	@ManyToOne
+	@JoinColumn(name = "decision_id", foreignKey = @ForeignKey(name = "FK_appeal_decision_id"))
+	private Decision decision;
 
 }

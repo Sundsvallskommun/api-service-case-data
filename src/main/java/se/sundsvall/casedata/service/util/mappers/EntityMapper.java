@@ -1,9 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Optional;
-
 import se.sundsvall.casedata.api.model.AddressDTO;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
@@ -28,6 +24,12 @@ import se.sundsvall.casedata.integration.db.model.Law;
 import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.Status;
+import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
+import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Optional;
 
 public final class EntityMapper {
 
@@ -63,6 +65,7 @@ public final class EntityMapper {
 				.withStakeholders(new ArrayList<>(errand.getStakeholders().stream().map(EntityMapper::toStakeholderDto).toList()))
 				.withFacilities(new ArrayList<>(errand.getFacilities().stream().map(EntityMapper::toFacilityDto).toList()))
 				.withDecisions(new ArrayList<>(errand.getDecisions().stream().map(EntityMapper::toDecisionDto).toList()))
+				.withAppeals(new ArrayList<>(errand.getAppeals().stream().map(EntityMapper::toAppealDto).toList()))
 				.withExtraParameters(Optional.of(errand.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -99,6 +102,7 @@ public final class EntityMapper {
 				.withFacilities(new ArrayList<>(dto.getFacilities().stream().map(EntityMapper::toFacility).toList()))
 				.withDecisions(new ArrayList<>(dto.getDecisions().stream().map(EntityMapper::toDecision).toList()))
 				.withNotes(new ArrayList<>(dto.getNotes().stream().map(EntityMapper::toNote).toList()))
+				.withAppeals(new ArrayList<>(dto.getAppeals().stream().map(EntityMapper::toAppeal).toList()))
 				.build());
 
 		errand.ifPresent(errand1 -> {
@@ -106,6 +110,7 @@ public final class EntityMapper {
 			errand1.getFacilities().forEach(facility -> facility.setErrand(errand1));
 			errand1.getDecisions().forEach(decision -> decision.setErrand(errand1));
 			errand1.getNotes().forEach(note -> note.setErrand(errand1));
+			errand1.getAppeals().forEach(appeal -> appeal.setErrand(errand1));
 		});
 
 		return errand.orElse(null);
@@ -205,7 +210,6 @@ public final class EntityMapper {
 				.withDecidedAt(dto.getDecidedAt())
 				.withValidFrom(dto.getValidFrom())
 				.withValidTo(dto.getValidTo())
-				.withAppeal(toAppeal(dto.getAppeal()))
 				.withLaw(new ArrayList<>(dto.getLaw().stream().map(EntityMapper::toLaw).toList()))
 				.withAttachments(new ArrayList<>(dto.getAttachments().stream().map(EntityMapper::toAttachment).toList()))
 				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
@@ -226,7 +230,6 @@ public final class EntityMapper {
 				.withDecidedAt(decision.getDecidedAt())
 				.withValidFrom(decision.getValidFrom())
 				.withValidTo(decision.getValidTo())
-				.withAppeal(toAppealDto(decision.getAppeal()))
 				.withLaw(new ArrayList<>(decision.getLaw().stream().map(EntityMapper::toLawDto).toList()))
 				.withAttachments(new ArrayList<>(decision.getAttachments().stream().map(EntityMapper::toAttachmentDto).toList()))
 				.withExtraParameters(Optional.ofNullable(decision.getExtraParameters()).orElse(new LinkedHashMap<>()))
@@ -268,16 +271,33 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	static Appeal toAppeal(final AppealDTO dto) {
+	public static Appeal toAppeal(final AppealDTO dto) {
 		return Optional.ofNullable(dto).map(appeal -> Appeal.builder()
 				.withId(dto.getId())
 				.withVersion(dto.getVersion())
 				.withCreated(dto.getCreated())
 				.withUpdated(dto.getUpdated())
-				.withAppealedBy(toStakeholder(dto.getAppealedBy()))
-				.withJudicialAuthorisation(toStakeholder(dto.getJudicialAuthorisation()))
-				.withAttachments(new ArrayList<>(dto.getAttachments().stream().map(EntityMapper::toAttachment).toList()))
-				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.withDescription(dto.getDescription())
+				.withRegisteredAt(dto.getRegisteredAt())
+				.withStatus(AppealStatus.valueOf(dto.getStatus()))
+				.withAppealConcernCommunicatedAt(dto.getAppealConcernCommunicatedAt())
+				.withTimelinessReview(TimelinessReview.valueOf(dto.getTimelinessReview()))
+				.build())
+			.orElse(null);
+	}
+
+	public static AppealDTO toAppealDto(final Appeal appeal) {
+		return Optional.ofNullable(appeal).map(dto -> AppealDTO.builder()
+				.withId(appeal.getId())
+				.withVersion(appeal.getVersion())
+				.withCreated(appeal.getCreated())
+				.withUpdated(appeal.getUpdated())
+				.withDescription(appeal.getDescription())
+				.withRegisteredAt(appeal.getRegisteredAt())
+				.withStatus(appeal.getStatus().name())
+				.withAppealConcernCommunicatedAt(appeal.getAppealConcernCommunicatedAt())
+				.withTimelinessReview(Optional.ofNullable(appeal.getTimelinessReview()).map(TimelinessReview::name).orElse(null))
+				.withDecisionId(Optional.ofNullable(appeal.getDecision()).map(Decision::getId).orElse(null))
 				.build())
 			.orElse(null);
 	}
@@ -420,19 +440,4 @@ public final class EntityMapper {
 				.build())
 			.orElse(null);
 	}
-
-	static AppealDTO toAppealDto(final Appeal appeal) {
-		return Optional.ofNullable(appeal).map(dto -> AppealDTO.builder()
-				.withId(appeal.getId())
-				.withVersion(appeal.getVersion())
-				.withCreated(appeal.getCreated())
-				.withUpdated(appeal.getUpdated())
-				.withAppealedBy(toStakeholderDto(appeal.getAppealedBy()))
-				.withJudicialAuthorisation(toStakeholderDto(appeal.getJudicialAuthorisation()))
-				.withAttachments(new ArrayList<>(appeal.getAttachments().stream().map(EntityMapper::toAttachmentDto).toList()))
-				.withExtraParameters(Optional.ofNullable(appeal.getExtraParameters()).orElse(new LinkedHashMap<>()))
-				.build())
-			.orElse(null);
-	}
-
 }

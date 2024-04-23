@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-case-data</artifactId>
-	<version>6.2</version>
+	<version>7.0</version>
 	<name>api-service-case-data</name>
 	<description>api-service-case-data</description>
 	<properties>
@@ -107,9 +107,7 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
 					<excludes>
-						<exclude>**/util/Constants*</exclude>
 						<exclude>**/generated/**</exclude>
-						<exclude>**/db/model/Q*</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

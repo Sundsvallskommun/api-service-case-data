@@ -1,24 +1,21 @@
 
     create table appeal (
         version integer,
-        appealed_by_id bigint,
+        appeal_concern_communicated_at datetime(6),
         created datetime(6),
+        decision_id bigint,
+        errand_id bigint,
         id bigint not null auto_increment,
-        judicial_authorisation_id bigint,
+        registered_at datetime(6),
         updated datetime(6),
+        description text,
+        status varchar(255),
+        timeliness_review varchar(255),
         primary key (id)
-    ) engine=InnoDB;
-
-    create table appeal_extra_parameters (
-        appeal_id bigint not null,
-        extra_parameter_key varchar(255) not null,
-        extra_parameter_value varchar(255),
-        primary key (appeal_id, extra_parameter_key)
     ) engine=InnoDB;
 
     create table attachment (
         version integer,
-        appeal_id bigint,
         created datetime(6),
         decision_id bigint,
         id bigint not null auto_increment,
@@ -42,7 +39,6 @@
 
     create table decision (
         version integer,
-        appeal_id bigint,
         created datetime(6),
         decided_at datetime(6),
         decided_by_id bigint,
@@ -280,17 +276,8 @@
         primary key (role_order, stakeholder_id)
     ) engine=InnoDB;
 
-    alter table if exists appeal 
-       add constraint UK_j1f39p5lklbquuaex6i6alj0w unique (appealed_by_id);
-
-    alter table if exists appeal 
-       add constraint UK_6582vskv87a7hta3lhlp6m4tk unique (judicial_authorisation_id);
-
     create index attachment_errand_number_idx 
        on attachment (errand_number);
-
-    alter table if exists decision 
-       add constraint UK_q14peo9ygf2x8pm8lh99h9l0o unique (appeal_id);
 
     alter table if exists decision 
        add constraint UK_j00sxiyx1fhmcdofxuugumdon unique (decided_by_id);
@@ -302,39 +289,24 @@
        add constraint UK_message_attachment_data_id unique (message_attachment_data_id);
 
     alter table if exists appeal 
-       add constraint FK_appeal_appealed_by_id 
-       foreign key (appealed_by_id) 
-       references stakeholder (id);
+       add constraint FK_appeal_decision_id 
+       foreign key (decision_id) 
+       references decision (id);
 
     alter table if exists appeal 
-       add constraint FK_appeal_judicial_authorisation_id 
-       foreign key (judicial_authorisation_id) 
-       references stakeholder (id);
-
-    alter table if exists appeal_extra_parameters 
-       add constraint FK_appeal_extra_parameters_appeal_id 
-       foreign key (appeal_id) 
-       references appeal (id);
+       add constraint FK_appeal_errand_id 
+       foreign key (errand_id) 
+       references errand (id);
 
     alter table if exists attachment 
        add constraint FK_decision_id 
        foreign key (decision_id) 
        references decision (id);
 
-    alter table if exists attachment 
-       add constraint FK_appeal_id 
-       foreign key (appeal_id) 
-       references appeal (id);
-
     alter table if exists attachment_extra_parameters 
        add constraint FK_attachment_extra_parameters_attachment_id 
        foreign key (attachment_id) 
        references attachment (id);
-
-    alter table if exists decision 
-       add constraint FK_decision_appeal_id 
-       foreign key (appeal_id) 
-       references appeal (id);
 
     alter table if exists decision 
        add constraint FK_decision_decided_by_id 

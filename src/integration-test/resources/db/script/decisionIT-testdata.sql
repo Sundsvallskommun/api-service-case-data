@@ -15,13 +15,12 @@ INSERT INTO stakeholder
 (id, created, updated, version, ad_account, authorized_signatory, first_name, last_name,
  organization_name, organization_number, person_id, `type`, errand_id)
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 0, 'AD-1', NULL, 'FIRST-NAME-1',
-        'LAST-NAME-1', NULL, NULL, 'd7af5f83-166a-468b-ab86-da8ca30ea97c', 'PERSON', 1);
+        'LAST-NAME-1', NULL, NULL, 'd7af5f83-166a-468b-ab86-da8ca30ea97c', 'PERSON', 1),
+       (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 0, 'AD-1', NULL, 'FIRST-NAME-1',
+                'LAST-NAME-1', NULL, NULL, 'd7af5f83-166a-468b-ab86-da8ca30ea97c', 'PERSON', NULL);
 
-INSERT INTO appeal(version, appealed_by_id, created, id, judicial_authorisation_id, updated)
-VALUES (1, 1, '2024-01-01 12:00:00.000', 555, 1, '2024-01-01 12:00:00.000');
-
-INSERT INTO decision(version, appeal_id, created, decided_at, decided_by_id, errand_id, id, updated,
+INSERT INTO decision(version, created, decided_at, decided_by_id, errand_id, id, updated,
                      valid_from, valid_to, description, decision_outcome, decision_type)
-VALUES (1, 555, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', 1, 1, 1,
+VALUES (1, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', 2, 1, 1,
         '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', '2025-01-01 12:00:00.000',
         'Some description', 'APPROVAL', 'RECOMMENDED');
