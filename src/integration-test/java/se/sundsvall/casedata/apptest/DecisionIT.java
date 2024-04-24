@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.casedata.Application;
+import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(
@@ -23,7 +24,7 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 	"/db/script/truncate.sql",
 	"/db/script/decisionIT-testdata.sql"
 })
-class DecisionIT extends CustomAbstractAppTest {
+class DecisionIT extends AbstractAppTest {
 
 	private static final Long DECISION_ID = 1L;
 	private static final Long ERRAND_ID = 1L;

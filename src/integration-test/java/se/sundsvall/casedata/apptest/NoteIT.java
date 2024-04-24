@@ -2,6 +2,8 @@ package se.sundsvall.casedata.apptest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createNoteDTO;
 import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
@@ -14,12 +16,13 @@ import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADE
 import java.text.MessageFormat;
 import java.util.Comparator;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.ErrandDTO;
@@ -41,14 +44,14 @@ class NoteIT extends CustomAbstractAppTest {
 		"created",
 		"updated",
 		"createdBy",
-		"updatedBy"};
+		"updatedBy" };
 
 	@Test
 	void test1_getNote() throws JsonProcessingException, ClassNotFoundException {
 		final var result = setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath("/notes/1")
-			.withExpectedResponseStatus(HttpStatus.OK)
+			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse()
 			.andReturnBody(NoteDTO.class);
 
@@ -60,7 +63,7 @@ class NoteIT extends CustomAbstractAppTest {
 		final var errandBeforePatch = setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath("/errands/1")
-			.withExpectedResponseStatus(HttpStatus.OK)
+			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse()
 			.andReturnBody(ErrandDTO.class);
 
@@ -77,7 +80,7 @@ class NoteIT extends CustomAbstractAppTest {
 		final var errandAfterPatch = setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath("/errands/1")
-			.withExpectedResponseStatus(HttpStatus.OK)
+			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse()
 			.andReturnBody(ErrandDTO.class);
 
@@ -108,7 +111,7 @@ class NoteIT extends CustomAbstractAppTest {
 		setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath("/errands/1")
-			.withExpectedResponseStatus(HttpStatus.OK)
+			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse()
 			.andReturnBody(ErrandDTO.class);
 
@@ -124,7 +127,7 @@ class NoteIT extends CustomAbstractAppTest {
 		final ErrandDTO resultErrand = setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath("/errands/1")
-			.withExpectedResponseStatus(HttpStatus.OK)
+			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse()
 			.andReturnBody(ErrandDTO.class);
 
@@ -149,7 +152,7 @@ class NoteIT extends CustomAbstractAppTest {
 		final var errandDTO = setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath("/errands/1")
-			.withExpectedResponseStatus(HttpStatus.OK)
+			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse()
 			.andReturnBody(ErrandDTO.class);
 
@@ -167,7 +170,7 @@ class NoteIT extends CustomAbstractAppTest {
 		final var resultErrandBeforePatch = setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath(MessageFormat.format("/errands/{0}", errandDTO.getId()))
-			.withExpectedResponseStatus(HttpStatus.OK)
+			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse()
 			.andReturnBody(ErrandDTO.class);
 
@@ -183,7 +186,7 @@ class NoteIT extends CustomAbstractAppTest {
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, null)
 			.withHeader(AD_USER_HEADER_KEY, null)
 			.withRequest(OBJECT_MAPPER.writeValueAsString(patch))
-			.withExpectedResponseStatus(HttpStatus.NO_CONTENT)
+			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 
 		assertErrandWasUpdatedAfterChange(resultErrandBeforePatch, UNKNOWN, UNKNOWN);
@@ -191,13 +194,13 @@ class NoteIT extends CustomAbstractAppTest {
 		final var resultErrand = setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath(MessageFormat.format("/errands/{0}", errandDTO.getId()))
-			.withExpectedResponseStatus(HttpStatus.OK)
+			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse()
 			.andReturnBody(ErrandDTO.class);
 
 		// Verify the errand contains this note
 		assertThat(resultErrand.getNotes())
-			.usingRecursiveFieldByFieldElementComparatorIgnoringFields(ArrayUtils.addAll(new String[]{"updatedBy", "text"}, EXCLUDE_FIELDS))
+			.usingRecursiveFieldByFieldElementComparatorIgnoringFields(ArrayUtils.addAll(new String[] { "updatedBy", "text" }, EXCLUDE_FIELDS))
 			.contains(resultNoteBeforePatch);
 	}
 
@@ -205,7 +208,7 @@ class NoteIT extends CustomAbstractAppTest {
 		final var errandAfter = setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath(MessageFormat.format("/errands/{0}", errandDTO.getId()))
-			.withExpectedResponseStatus(HttpStatus.OK)
+			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse()
 			.andReturnBody(ErrandDTO.class);
 		assertThat(errandAfter.getUpdated()).isAfter(errandDTO.getUpdated());
