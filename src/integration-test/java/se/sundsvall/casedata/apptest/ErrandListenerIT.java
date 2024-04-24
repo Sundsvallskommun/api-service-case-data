@@ -1,10 +1,14 @@
 package se.sundsvall.casedata.apptest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.HttpMethod.PATCH;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
@@ -16,14 +20,14 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.ErrandDTO;
@@ -48,10 +52,10 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 	@Test
 	void test1_persistErrandUnknown() throws JsonProcessingException {
 		setupCall()
-			.withHttpMethod(HttpMethod.POST)
+			.withHttpMethod(POST)
 			.withServicePath("/errands")
 			.withRequest(OBJECT_MAPPER.writeValueAsString(createErrandDTO()))
-			.withExpectedResponseStatus(HttpStatus.CREATED)
+			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
 
 		final Errand errand = errandRepository.findAll().stream().max(Comparator.comparing(Errand::getCreated)).orElseThrow();
@@ -67,10 +71,10 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 	@Test
 	void test2_updateErrand() throws JsonProcessingException {
 		setupCall()
-			.withHttpMethod(HttpMethod.POST)
+			.withHttpMethod(POST)
 			.withServicePath("/errands")
 			.withRequest(OBJECT_MAPPER.writeValueAsString(createErrandDTO()))
-			.withExpectedResponseStatus(HttpStatus.CREATED)
+			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
 
 		final Errand errandBeforePatch = errandRepository.findAll().stream().max(Comparator.comparing(Errand::getCreated)).orElseThrow();
@@ -79,12 +83,12 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 		patchErrandDTO.setDiaryNumber("Patch");
 
 		setupCall()
-			.withHttpMethod(HttpMethod.PATCH)
+			.withHttpMethod(PATCH)
 			.withServicePath(MessageFormat.format("/errands/{0}", errandBeforePatch.getId()))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(Constants.AD_USER_HEADER_KEY, "PatchUser")
 			.withRequest(OBJECT_MAPPER.writeValueAsString(patchErrandDTO))
-			.withExpectedResponseStatus(HttpStatus.NO_CONTENT)
+			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 
 		final Errand errandAfterPatch = errandRepository.findAll().stream().max(Comparator.comparing(Errand::getCreated)).orElseThrow();
@@ -99,10 +103,10 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 		final ErrandDTO errandDTO1 = createErrandDTO();
 		errandDTO1.setCaseType(CaseType.PARKING_PERMIT.name());
 		setupCall()
-			.withHttpMethod(HttpMethod.POST)
+			.withHttpMethod(POST)
 			.withServicePath("/errands")
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO1))
-			.withExpectedResponseStatus(HttpStatus.CREATED)
+			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
 
 		final ErrandDTO errandDTO2 = createErrandDTO();
@@ -111,16 +115,16 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 			.withHttpMethod(HttpMethod.POST)
 			.withServicePath("/errands")
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO2))
-			.withExpectedResponseStatus(HttpStatus.CREATED)
+			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
 
 		final ErrandDTO errandDTO3 = createErrandDTO();
 		errandDTO3.setCaseType(CaseType.PARKING_PERMIT_RENEWAL.name());
 		setupCall()
-			.withHttpMethod(HttpMethod.POST)
+			.withHttpMethod(POST)
 			.withServicePath("/errands")
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO3))
-			.withExpectedResponseStatus(HttpStatus.CREATED)
+			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
 
 		final List<Errand> resultList = errandRepository.findAll();
@@ -138,14 +142,13 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 		errandDTO1.setCaseType(caseType.name());
 
 		setupCall()
-			.withHttpMethod(HttpMethod.POST)
+			.withHttpMethod(POST)
 			.withServicePath("/errands")
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO1))
-			.withExpectedResponseStatus(HttpStatus.CREATED)
+			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
 
 		final List<Errand> resultList = errandRepository.findAll();
-		resultList.forEach(errand -> assertFalse(errand.getErrandNumber() == null || errand.getErrandNumber().isBlank()));
+		resultList.forEach(errand -> assertThat(errand.getErrandNumber()).isNotBlank());
 	}
-
 }

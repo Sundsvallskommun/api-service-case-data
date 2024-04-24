@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.apptest;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
@@ -8,10 +9,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.casedata.Application;
+import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/MessageAttachmentIT/", classes = Application.class)
@@ -19,14 +20,14 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 	"/db/scripts/truncate.sql",
 	"/db/scripts/testdata-it.sql"
 })
-class MessageAttachmentIT extends CustomAbstractAppTest {
+class MessageAttachmentIT extends AbstractAppTest {
 
 	@Test
 	void test01_getMessageAttachmentNotFound() {
 		setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath("/messageattachments/666")
-			.withExpectedResponseStatus(HttpStatus.NOT_FOUND)
+			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponse("response.json")
 			.sendRequestAndVerifyResponse();
 	}
@@ -36,7 +37,7 @@ class MessageAttachmentIT extends CustomAbstractAppTest {
 		setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath("/messageattachments/05b29c30-4512-46c0-9d82-d0f11cb04bae")
-			.withExpectedResponseStatus(HttpStatus.OK)
+			.withExpectedResponseStatus(OK)
 			.withExpectedResponse("response.json")
 			.sendRequestAndVerifyResponse();
 	}
@@ -46,7 +47,7 @@ class MessageAttachmentIT extends CustomAbstractAppTest {
 		setupCall()
 			.withHttpMethod(HttpMethod.GET)
 			.withServicePath("/messageattachments/666/streamed")
-			.withExpectedResponseStatus(HttpStatus.NOT_FOUND)
+			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponse("response.json")
 			.sendRequestAndVerifyResponse();
 	}

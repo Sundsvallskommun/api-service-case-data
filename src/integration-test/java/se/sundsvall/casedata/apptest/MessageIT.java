@@ -13,21 +13,20 @@ import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.MessageRepository;
+import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(
 	files = "classpath:/MessageIT/",
-	classes = Application.class
-)
+	classes = Application.class)
 @Sql({
 	"/db/script/truncate.sql",
 	"/db/script/messageIT-testdata.sql"
 })
-class MessageIT extends CustomAbstractAppTest {
+class MessageIT extends AbstractAppTest {
 
 	private static final String MESSAGE_ID = "a8883fb9-60b4-4f38-9f48-642070ff49ee";
 	private static final String ERRAND_NUMBER = "ERRAND-NUMBER-1";
-
 	private static final String PATH = "/messages";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
@@ -36,7 +35,7 @@ class MessageIT extends CustomAbstractAppTest {
 	private MessageRepository messageRepository;
 
 	@Test
-	void test1_getMessageOnErrand() {
+	void test01_getMessageOnErrand() {
 		setupCall()
 			.withHttpMethod(GET)
 			.withServicePath(PATH + "/" + ERRAND_NUMBER)
@@ -46,8 +45,7 @@ class MessageIT extends CustomAbstractAppTest {
 	}
 
 	@Test
-	void test2_patchErrandWithMessage() {
-		var requestMessageId = "a1883fb9-60b4-4f38-9f48-642070ff49ee";
+	void test02_patchErrandWithMessage() {
 		setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(POST)
@@ -56,25 +54,24 @@ class MessageIT extends CustomAbstractAppTest {
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
-		var patchedMessage = messageRepository.findById(requestMessageId).orElseThrow();
-		assertThat(patchedMessage).satisfies(message -> {
-			assertThat(message.getErrandNumber()).isEqualTo("ERRAND-NUMBER-2");
-			assertThat(message.getMessageID()).isEqualTo(requestMessageId);
-			assertThat(message.isViewed()).isFalse();
-			assertThat(message.getFamilyID()).isEqualTo("123");
-		});
+		setupCall()
+			.withHttpMethod(GET)
+			.withServicePath(PATH + "/" + ERRAND_NUMBER)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test3_updateViewedStatus() {
-		var viewed = false;
+	void test03_updateViewedStatus() {
+		final var viewed = false;
 		setupCall()
 			.withServicePath(PATH + "/" + MESSAGE_ID + "/viewed/" + viewed)
 			.withHttpMethod(PUT)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
-		var updatedMessage = messageRepository.findById(MESSAGE_ID).orElseThrow();
-		assertThat(updatedMessage.isViewed()).isFalse();
+
+		assertThat(messageRepository.findById(MESSAGE_ID).orElseThrow().isViewed()).isFalse();
 	}
 }

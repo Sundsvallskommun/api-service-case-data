@@ -27,13 +27,12 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 class AppealIT extends AbstractAppTest {
 
 	private static final Long APPEAL_ID = 1L;
-
 	private static final String PATH = "/appeals";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
 
 	@Test
-	void test1_getAppealById() {
+	void test01_getAppealById() {
 		setupCall()
 			.withServicePath(PATH + "/" + APPEAL_ID)
 			.withHttpMethod(GET)
@@ -43,7 +42,7 @@ class AppealIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test2_patchAppeal() {
+	void test02_patchAppeal() {
 		setupCall()
 			.withServicePath(PATH + "/" + APPEAL_ID)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
@@ -63,7 +62,7 @@ class AppealIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test3_putAppeal() {
+	void test03_putAppeal() {
 		setupCall()
 			.withServicePath(PATH + "/" + APPEAL_ID)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
