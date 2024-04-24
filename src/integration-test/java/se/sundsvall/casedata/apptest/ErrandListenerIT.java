@@ -1,7 +1,7 @@
 package se.sundsvall.casedata.apptest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -149,7 +149,6 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		final List<Errand> resultList = errandRepository.findAll();
-		resultList.forEach(errand -> assertFalse((errand.getErrandNumber() == null) || errand.getErrandNumber().isBlank()));
+		resultList.forEach(errand -> assertThat(errand.getErrandNumber()).isNotBlank());
 	}
-
 }
