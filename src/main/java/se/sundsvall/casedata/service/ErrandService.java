@@ -32,6 +32,7 @@ import io.github.resilience4j.retry.annotation.Retry;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
+import se.sundsvall.casedata.api.model.FacilityDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
@@ -52,29 +53,18 @@ import se.sundsvall.casedata.service.util.mappers.PatchMapper;
 public class ErrandService {
 
 	private static final String ERRAND_WAS_NOT_FOUND = "Errand with id: {0} was not found";
-
 	private static final String DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID = "Decision was not found on errand with id: {0}";
-
 	private static final String DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Decision with id: {0} was not found on errand with id: {1}";
-
 	private static final String APPEAL_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Appeal with id: {0} was not found on errand with id: {1}";
-
 	private static final String NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Note with id: {0} was not found on errand with id: {1}";
-
 	private static final String STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Stakeholder with id: {0} was not found on errand with id: {1}";
-
 	private static final ThrowableProblem ERRAND_NOT_FOUND_PROBLEM = Problem.valueOf(NOT_FOUND, ERRAND_WAS_NOT_FOUND);
 
 	private final ErrandRepository errandRepository;
-
 	private final AppealRepository appealRepository;
-
 	private final NoteRepository noteRepository;
-
 	private final StakeholderRepository stakeholderRepository;
-
 	private final DecisionRepository decisionRepository;
-
 	private final ProcessService processService;
 
 	public ErrandService(final ErrandRepository errandRepository, final AppealRepository appealRepository,
@@ -85,6 +75,7 @@ public class ErrandService {
 		this.noteRepository = noteRepository;
 		this.decisionRepository = decisionRepository;
 		this.stakeholderRepository = stakeholderRepository;
+
 		this.processService = processService;
 	}
 
@@ -98,6 +89,18 @@ public class ErrandService {
 			throw Problem.valueOf(NOT_FOUND, MessageFormat.format(DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID, id));
 		}
 		return decisionList.stream().map(EntityMapper::toDecisionDto).toList();
+	}
+
+	public List<FacilityDTO> findFacilitiesOnErrand(final Long id) {
+
+		// TODO: Implement this
+		return List.of(new FacilityDTO());
+	}
+
+	public FacilityDTO findFacilityOnErrand(final Long id, Long facilityId) {
+
+		// TODO: Implement this
+		return new FacilityDTO();
 	}
 
 	public ErrandDTO findById(final Long id) {
@@ -168,6 +171,12 @@ public class ErrandService {
 		return toErrandDto(resultErrand);
 	}
 
+	@Retry(name = "OptimisticLocking")
+	public FacilityDTO createFacility(final Long id, final FacilityDTO facilityDTO) {
+		// TODO: Implement this
+		return new FacilityDTO();
+	}
+
 	//////////////////////////////
 	// DELETE operations
 	//////////////////////////////
@@ -214,6 +223,12 @@ public class ErrandService {
 		appealRepository.delete(appealToRemove);
 		processService.updateProcess(errand);
 	}
+
+	@Retry(name = "OptimisticLocking")
+	public void deleteFacilityOnErrand(final Long errandId, final Long facilityId) {
+		// TODO: Implement this.
+	}
+
 	//////////////////////////////
 	// PATCH operations
 	//////////////////////////////
@@ -286,6 +301,12 @@ public class ErrandService {
 		return toAppealDto(appeal);
 	}
 
+	@Retry(name = "OptimisticLocking")
+	public FacilityDTO updateFacilityOnErrand(final Long id, Long facilityId, final FacilityDTO facilityDTO) {
+		// TODO: Implement this.
+		return new FacilityDTO();
+	}
+
 	//////////////////////////////
 	// PUT operations
 	//////////////////////////////
@@ -318,5 +339,4 @@ public class ErrandService {
 			throw e;
 		}
 	}
-
 }

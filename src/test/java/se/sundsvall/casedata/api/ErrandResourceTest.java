@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -27,6 +26,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.DecisionDTO;
+import se.sundsvall.casedata.api.model.FacilityDTO;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 import se.sundsvall.casedata.service.ErrandService;
 
@@ -61,8 +61,6 @@ class ErrandResourceTest {
 		final var errandId = 123L;
 		final var decisionId = 456L;
 
-		doNothing().when(errandServiceMock).deleteDecisionOnErrand(errandId, decisionId);
-
 		webTestClient.delete()
 			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/decisions/{decisionId}")
 				.build(Map.of("errandId", errandId, "decisionId", decisionId)))
@@ -78,8 +76,6 @@ class ErrandResourceTest {
 		final var errandId = 123L;
 		final var noteId = 456L;
 
-		doNothing().when(errandServiceMock).deleteNoteOnErrand(errandId, noteId);
-
 		webTestClient.delete()
 			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/notes/{noteId}")
 				.build(Map.of("errandId", errandId, "noteId", noteId)))
@@ -91,9 +87,25 @@ class ErrandResourceTest {
 	}
 
 	@Test
+	void deleteFacility() {
+		final var errandId = 123L;
+		final var facilityId = 456L;
+
+		webTestClient.delete()
+			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities/{facilityId}")
+				.build(Map.of("errandId", errandId, "facilityId", facilityId)))
+			.exchange()
+			.expectStatus().isNoContent();
+
+		verify(errandServiceMock).deleteFacilityOnErrand(errandId, facilityId);
+		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@Test
 	void getDecision() {
 		final var errandId = 123L;
 		final var decisionDto = createDecisionDTO();
+
 		when(errandServiceMock.findDecisionsOnErrand(errandId)).thenReturn(List.of(decisionDto));
 
 		final var response = webTestClient.get()
@@ -107,6 +119,49 @@ class ErrandResourceTest {
 
 		assertThat(response).hasSize(1);
 		verify(errandServiceMock).findDecisionsOnErrand(errandId);
+		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@Test
+	void getFacilities() {
+		final var errandId = 123L;
+		final var facilityDto = createFacilityDTO();
+
+		when(errandServiceMock.findFacilitiesOnErrand(errandId)).thenReturn(List.of(facilityDto));
+
+		final var response = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities")
+				.build(Map.of("errandId", errandId)))
+			.exchange()
+			.expectStatus().isOk()
+			.expectBodyList(FacilityDTO.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).hasSize(1);
+		verify(errandServiceMock).findFacilitiesOnErrand(errandId);
+		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@Test
+	void getFacilitity() {
+		final var errandId = 123L;
+		final var facilityId = 456L;
+		final var facilityDto = createFacilityDTO();
+
+		when(errandServiceMock.findFacilityOnErrand(errandId, facilityId)).thenReturn(facilityDto);
+
+		final var response = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities/{facilityId}")
+				.build(Map.of("errandId", errandId, "facilityId", facilityId)))
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody(FacilityDTO.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isNotNull();
+		verify(errandServiceMock).findFacilityOnErrand(errandId, facilityId);
 		verifyNoMoreInteractions(errandServiceMock);
 	}
 
@@ -132,7 +187,46 @@ class ErrandResourceTest {
 			.expectHeader().location("/errands/" + body.getId());
 
 		verify(errandServiceMock).createErrand(body);
+	}
 
+	@Test
+	void postErrandFacility() {
+		final var errandId = 123L;
+		final var facilityDTO = createFacilityDTO();
+		facilityDTO.setId(456L);
+
+		when(errandServiceMock.createFacility(errandId, facilityDTO)).thenReturn(facilityDTO);
+
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities")
+				.build(Map.of("errandId", errandId)))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(facilityDTO)
+			.exchange()
+			.expectStatus().isCreated()
+			.expectHeader().contentType(ALL_VALUE)
+			.expectHeader().location("/errands/" + errandId + "/facilities/" + facilityDTO.getId());
+
+		verify(errandServiceMock).createFacility(errandId, facilityDTO);
+	}
+
+	@Test
+	void patchErrandFacility() {
+		final var errandId = 123L;
+		final var facilityId = 456L;
+		final var facilityDTO = createFacilityDTO();
+
+		when(errandServiceMock.updateFacilityOnErrand(errandId, facilityId, facilityDTO)).thenReturn(facilityDTO);
+
+		webTestClient.patch()
+			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities/{facilityId}")
+				.build(Map.of("errandId", errandId, "facilityId", facilityId)))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(facilityDTO)
+			.exchange()
+			.expectStatus().isNoContent();
+
+		verify(errandServiceMock).updateFacilityOnErrand(errandId, facilityId, facilityDTO);
 	}
 
 	@Test
@@ -155,5 +249,4 @@ class ErrandResourceTest {
 
 		verify(errandServiceMock).addAppealToErrand(errandId, body);
 	}
-
 }
