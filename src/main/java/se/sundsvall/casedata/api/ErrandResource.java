@@ -47,6 +47,7 @@ import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.ExtraParameterDTO;
+import se.sundsvall.casedata.api.model.FacilityDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
@@ -67,6 +68,25 @@ class ErrandResource {
 
 	ErrandResource(final ErrandService errandService) {
 		this.errandService = errandService;
+	}
+
+	/***
+	 * Errand operations
+	 */
+
+	@Operation(description = "Create errand (without attachments). Add attachments to errand with PATCH /errands/{id}/attachments afterwards.",
+		responses = {
+			@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
+		})
+	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	ResponseEntity<Void> postErrands(@RequestBody @Valid final ErrandDTO errandDTO) {
+		final ErrandDTO result = errandService.createErrand(errandDTO);
+		return created(
+			fromPath("/errands/{id}")
+				.buildAndExpand(result.getId())
+				.toUri())
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
 	}
 
 	@Operation(description = "Get errand by ID.")
@@ -106,50 +126,9 @@ class ErrandResource {
 		return ok(errandService.findAll(filter, extraParameterDTO.orElse(new ExtraParameterDTO()).getExtraParameters(), pageable));
 	}
 
-	@Operation(description = "Get decisions on errand.")
-	@GetMapping(path = "/{id}/decisions", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<List<DecisionDTO>> getDecision(@PathVariable final Long id) {
-		return ok(errandService.findDecisionsOnErrand(id));
-	}
-
-	@Operation(description = "Create errand (without attachments). Add attachments to errand with PATCH /errands/{id}/attachments afterwards.",
-		responses = {
-			@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
-		})
-	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<Void> postErrands(@RequestBody @Valid final ErrandDTO errandDTO) {
-		final ErrandDTO result = errandService.createErrand(errandDTO);
-		return created(
-			fromPath("/errands/{id}")
-				.buildAndExpand(result.getId())
-				.toUri())
-			.header(CONTENT_TYPE, ALL_VALUE)
-			.build();
-	}
-
-	@Operation(description = "Add status to errand.")
-	@PatchMapping(path = "/{id}/statuses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> patchErrandWithStatus(@PathVariable final Long id, @RequestBody @Valid final StatusDTO statusDTO) {
-		errandService.addStatusToErrand(id, statusDTO);
-		return noContent().build();
-	}
-
-	@Operation(description = "Create and add note to errand.",
-		responses = {
-			@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
-		})
-	@PatchMapping(path = "/{id}/notes", consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<Void> patchErrandWithNote(
-		@PathVariable final Long id,
-		@RequestBody @Valid final NoteDTO noteDTO) {
-
-		final var dto = errandService.addNoteToErrand(id, noteDTO);
-		return created(fromPath("/notes/{id}").buildAndExpand(dto.getId()).toUri())
-			.header(CONTENT_TYPE, ALL_VALUE)
-			.build();
-	}
+	/***
+	 * Errand decision operations
+	 */
 
 	@Operation(description = "Create and add decision to errand.",
 		responses = {
@@ -166,6 +145,119 @@ class ErrandResource {
 			.build();
 	}
 
+	@Operation(description = "Get decisions on errand.")
+	@GetMapping(path = "/{id}/decisions", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<List<DecisionDTO>> getDecision(@PathVariable final Long id) {
+		return ok(errandService.findDecisionsOnErrand(id));
+	}
+
+	@Operation(description = "Delete decision on errand.")
+	@DeleteMapping(path = "/{id}/decisions/{decisionId}", produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> deleteDecision(@PathVariable final Long id, @PathVariable final Long decisionId) {
+		errandService.deleteDecisionOnErrand(id, decisionId);
+		return noContent().build();
+	}
+
+	/***
+	 * Errand facilities operations
+	 */
+
+	@Operation(description = "Create errand facility.")
+	@PostMapping(path = "/{id}/facilities", consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
+	ResponseEntity<Void> postErrandFacility(@PathVariable final Long id, @RequestBody @Valid final FacilityDTO facilityDTO) {
+		final FacilityDTO result = errandService.createFacility(id, facilityDTO);
+		return created(
+			fromPath("/errands/{id}/facilities/{facilityId}")
+				.buildAndExpand(id, result.getId())
+				.toUri())
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
+	}
+
+	@Operation(description = "Get all facilities on errand.")
+	@GetMapping(path = "/{id}/facilities", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<List<FacilityDTO>> getFacilities(@PathVariable final Long id) {
+		return ok(errandService.findFacilitiesOnErrand(id));
+	}
+
+	@Operation(description = "Get a specific facility on errand.")
+	@GetMapping(path = "/{id}/facilities/{facilityId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<FacilityDTO> getFacility(@PathVariable final Long id, @PathVariable final Long facilityId) {
+		return ok(errandService.findFacilityOnErrand(id, facilityId));
+	}
+
+	@Operation(description = "Update errand facility")
+	@PatchMapping(path = "/{id}/facilities/{facilityId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> patchErrandFacility(@PathVariable final Long id, @PathVariable final Long facilityId, @RequestBody @Valid final FacilityDTO facilityDTO) {
+		errandService.updateFacilityOnErrand(id, facilityId, facilityDTO);
+		return noContent().build();
+	}
+
+	@Operation(description = "Delete facility on errand.")
+	@DeleteMapping(path = "/{id}/facilities/{facilityId}", produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> deleteFacility(@PathVariable final Long id, @PathVariable Long facilityId) {
+		errandService.deleteFacilityOnErrand(id, facilityId);
+		return noContent().build();
+	}
+
+	/***
+	 * Errand status operations
+	 */
+
+	@Operation(description = "Add status to errand.")
+	@PatchMapping(path = "/{id}/statuses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> patchErrandWithStatus(@PathVariable final Long id, @RequestBody @Valid final StatusDTO statusDTO) {
+		errandService.addStatusToErrand(id, statusDTO);
+		return noContent().build();
+	}
+
+	@Operation(description = "Add/replace status on errand.")
+	@PutMapping(path = "/{id}/statuses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> putStatusOnErrand(@PathVariable final Long id, @RequestBody @Valid final List<StatusDTO> statusDTOList) {
+		errandService.replaceStatusesOnErrand(id, statusDTOList);
+		return noContent().build();
+	}
+
+	/***
+	 * Errand note operations
+	 */
+
+	@Operation(description = "Create and add note to errand.",
+		responses = {
+			@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
+		})
+	@PatchMapping(path = "/{id}/notes", consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	ResponseEntity<Void> patchErrandWithNote(
+		@PathVariable final Long id,
+		@RequestBody @Valid final NoteDTO noteDTO) {
+
+		final var dto = errandService.addNoteToErrand(id, noteDTO);
+		return created(fromPath("/notes/{id}").buildAndExpand(dto.getId()).toUri())
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
+	}
+
+	@Operation(description = "Delete note on errand.")
+	@DeleteMapping(path = "/{id}/notes/{noteId}", produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> deleteNote(@PathVariable final Long id, @PathVariable final Long noteId) {
+		errandService.deleteNoteOnErrand(id, noteId);
+		return noContent().build();
+	}
+
+	/***
+	 * Errand appeal operations
+	 */
+
 	@Operation(description = "Create and add appeal to errand.",
 		responses = {
 			@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
@@ -181,6 +273,18 @@ class ErrandResource {
 			.build();
 	}
 
+	@Operation(description = "Delete appeal on errand.")
+	@DeleteMapping(path = "/{id}/appeals/{appealId}", produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> deleteAppeal(@PathVariable final Long id, @PathVariable final Long appealId) {
+		errandService.deleteAppealOnErrand(id, appealId);
+		return noContent().build();
+	}
+
+	/***
+	 * Errand stakeholder operations
+	 */
+
 	@Operation(description = "Create and add stakeholder to errand.",
 		responses = { @ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
 		})
@@ -193,14 +297,6 @@ class ErrandResource {
 		return created(fromPath("/stakeholders/{id}").buildAndExpand(dto.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
-	}
-
-	@Operation(description = "Add/replace status on errand.")
-	@PutMapping(path = "/{id}/statuses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> putStatusOnErrand(@PathVariable final Long id, @RequestBody @Valid final List<StatusDTO> statusDTOList) {
-		errandService.replaceStatusesOnErrand(id, statusDTOList);
-		return noContent().build();
 	}
 
 	@Operation(description = "Replace stakeholders on errand.")
@@ -216,30 +312,6 @@ class ErrandResource {
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> deleteStakeholder(@PathVariable final Long id, @PathVariable final Long stakeholderId) {
 		errandService.deleteStakeholderOnErrand(id, stakeholderId);
-		return noContent().build();
-	}
-
-	@Operation(description = "Delete decision on errand.")
-	@DeleteMapping(path = "/{id}/decisions/{decisionId}", produces = { APPLICATION_PROBLEM_JSON_VALUE })
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> deleteDecision(@PathVariable final Long id, @PathVariable final Long decisionId) {
-		errandService.deleteDecisionOnErrand(id, decisionId);
-		return noContent().build();
-	}
-
-	@Operation(description = "Delete appeal on errand.")
-	@DeleteMapping(path = "/{id}/appeals/{appealId}", produces = { APPLICATION_PROBLEM_JSON_VALUE })
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> deleteAppeal(@PathVariable final Long id, @PathVariable final Long appealId) {
-		errandService.deleteAppealOnErrand(id, appealId);
-		return noContent().build();
-	}
-
-	@Operation(description = "Delete note on errand.")
-	@DeleteMapping(path = "/{id}/notes/{noteId}", produces = { APPLICATION_PROBLEM_JSON_VALUE })
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> deleteNote(@PathVariable final Long id, @PathVariable final Long noteId) {
-		errandService.deleteNoteOnErrand(id, noteId);
 		return noContent().build();
 	}
 }
