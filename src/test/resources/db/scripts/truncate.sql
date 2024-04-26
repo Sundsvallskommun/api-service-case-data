@@ -10,7 +10,7 @@ TRUNCATE table errand_extra_parameters;
 TRUNCATE table errand_statuses;
 --TRUNCATE table errand_message_ids;
 
---TRUNCATE table facility;
+TRUNCATE table facility;
 
 TRUNCATE table note;
 TRUNCATE table note_extra_parameters;
