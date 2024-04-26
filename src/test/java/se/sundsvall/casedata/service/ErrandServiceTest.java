@@ -424,7 +424,7 @@ class ErrandServiceTest {
 		// Assert
 		verify(errandRepositoryMock, times(1)).findAllByIdIn(idListCapture.capture(), any(Pageable.class));
 
-		assertThat(idListCapture.getValue().size()).isEqualTo(1);
+		assertThat(idListCapture.getValue()).hasSize(1);
 		assertThat(idListCapture.getValue().getFirst()).isEqualTo(errandDTO.getId());
 	}
 
