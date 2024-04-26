@@ -45,3 +45,7 @@ INSERT INTO message_attachment (message_attachment_data_id, attachmentid, conten
 
 INSERT INTO message (viewed, email, errand_number, external_caseid, familyid, first_name, last_name, message, messageId, sent, subject, userid, username, direction, message_type) VALUES
 (1, 'test.testorsson@noreply.com', 'PRE-1970-000123', '123456', '123', 'Test', 'Testorsson', 'Some message', '02485d15-fa8b-488a-a907-fa4de5d6e5c9', '2023-10-02 15:13:45.363', 'Some subject', 'aba01cal', 'Abacus Calculator', 'INBOUND', 'EMAIL');
+
+INSERT INTO facility (id, created,updated,version,address_category,apartment_number,attention,care_of,city,country,house_number,invoice_marking,is_zoning_plan_area,latitude,longitude,postal_code,property_designation,street,description,facility_collection_name,main_facility,errand_id,facility_type) VALUES
+(1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'SUNDSVALL 666:1',NULL,NULL,NULL,1,1,NULL);
+
