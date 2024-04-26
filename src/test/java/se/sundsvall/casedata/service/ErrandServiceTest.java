@@ -16,6 +16,8 @@ import static se.sundsvall.casedata.TestUtil.createAppealDTO;
 import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
+import static se.sundsvall.casedata.TestUtil.createFacility;
+import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
 import static se.sundsvall.casedata.TestUtil.createNoteDTO;
 import static se.sundsvall.casedata.TestUtil.createPatchErrandDto;
 import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
@@ -26,6 +28,8 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityDto;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -56,11 +60,8 @@ import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.AppealRepository;
-import se.sundsvall.casedata.integration.db.DecisionRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.NoteRepository;
-import se.sundsvall.casedata.integration.db.StakeholderRepository;
+import se.sundsvall.casedata.integration.db.FacilityRepository;
 import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.Errand;
@@ -71,7 +72,7 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 class ErrandServiceTest {
 
 	@InjectMocks
-	ErrandService errandService;
+	private ErrandService errandService;
 
 	@Spy
 	private FilterSpecificationConverter filterSpecificationConverterSpy;
@@ -80,16 +81,7 @@ class ErrandServiceTest {
 	private ErrandRepository errandRepositoryMock;
 
 	@Mock
-	private AppealRepository appealRepositoryMock;
-
-	@Mock
-	private NoteRepository noteRepositoryMock;
-
-	@Mock
-	private StakeholderRepository stakeholderRepositoryMock;
-
-	@Mock
-	private DecisionRepository decisionRepositoryMock;
+	private FacilityRepository facilityRepositoryMock;
 
 	@Mock
 	private ProcessService processServiceMock;
@@ -322,7 +314,7 @@ class ErrandServiceTest {
 		errandService.deleteStakeholderOnErrand(errandId, stakeholder.getId());
 
 		verify(processServiceMock).updateProcess(errand);
-		verify(stakeholderRepositoryMock).delete(stakeholder);
+		verify(errandRepositoryMock).save(errand);
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
 	}
 
@@ -414,7 +406,7 @@ class ErrandServiceTest {
 
 		errandService.deleteDecisionOnErrand(errandId, decision.getId());
 
-		verify(decisionRepositoryMock).delete(decision);
+		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
 	}
@@ -435,7 +427,7 @@ class ErrandServiceTest {
 		// Act
 		errandService.deleteNoteOnErrand(errandId, note.getId());
 
-		verify(noteRepositoryMock).delete(note);
+		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
 	}
@@ -454,7 +446,7 @@ class ErrandServiceTest {
 
 		errandService.deleteAppealOnErrand(errandId, appeal.getId());
 
-		verify(appealRepositoryMock).delete(appeal);
+		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
 	}
 
@@ -481,4 +473,110 @@ class ErrandServiceTest {
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
 	}
 
+	@Test
+	void findFacilitiesOnErrand() {
+
+		// Arrange
+		final var errand = mockErrandFindById();
+
+		// Act
+		final var result = errandService.findFacilitiesOnErrand(errand.getId());
+
+		// Assert
+		assertThat(errand.getFacilities().stream().map(EntityMapper::toFacilityDto).toList()).isEqualTo(result);
+		verify(errandRepositoryMock).findById(errand.getId());
+		verifyNoMoreInteractions(errandRepositoryMock, facilityRepositoryMock);
+	}
+
+	@Test
+	void findFacilityOnErrand() {
+
+		// Arrange
+		final var errandId = 123L;
+		final var facilityId = 456L;
+		final var facility = createFacility();
+		when(facilityRepositoryMock.findByIdAndErrandId(facilityId, errandId)).thenReturn(Optional.of(facility));
+
+		// Act
+		final var result = errandService.findFacilityOnErrand(errandId, facilityId);
+
+		// Assert
+		assertThat(result).isEqualTo(toFacilityDto(facility));
+		verify(facilityRepositoryMock).findByIdAndErrandId(facilityId, errandId);
+		verifyNoMoreInteractions(errandRepositoryMock, facilityRepositoryMock);
+	}
+
+	@Test
+	void createFacilty() {
+
+		// Arrange
+		final var errand = createErrand();
+		final var errandId = errand.getId();
+		final var facilityDto = createFacilityDTO();
+		final var facility = toFacility(facilityDto);
+
+		when(errandRepositoryMock.findById(errandId)).thenReturn(Optional.of(errand));
+		when(facilityRepositoryMock.save(any())).thenReturn(facility);
+
+		// Act
+		final var result = errandService.createFacility(errandId, facilityDto);
+
+		// Assert
+		assertThat(result).isEqualTo(facilityDto);
+		verify(processServiceMock).updateProcess(errand);
+		verify(errandRepositoryMock).findById(errandId);
+		verify(facilityRepositoryMock).save(facility);
+		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
+	}
+
+	@Test
+	void deleteFacilityOnErrand() {
+
+		// Arrange
+		final var errand = createErrand();
+		final var errandId = errand.getId();
+		final var facility = createFacility();
+		final var facilityId = facility.getId();
+
+		when(errandRepositoryMock.findById(errandId)).thenReturn(Optional.of(errand));
+
+		// Act
+		errandService.deleteFacilityOnErrand(errandId, facilityId);
+
+		// Assert
+		verify(errandRepositoryMock).findById(errandId);
+		verify(errandRepositoryMock).save(errand);
+		verify(processServiceMock).updateProcess(errand);
+	}
+
+	@Test
+	void updateFacilityOnErrand() {
+
+		// Arrange
+		final var errand = createErrand();
+		final var errandId = errand.getId();
+		final var facility = createFacility();
+		final var facilityId = facility.getId();
+		final var patch = createFacilityDTO();
+
+		when(errandRepositoryMock.findById(errand.getId())).thenReturn(Optional.of(errand));
+		when(facilityRepositoryMock.findByIdAndErrandId(facilityId, errandId)).thenReturn(Optional.of(facility));
+		when(facilityRepositoryMock.save(facility)).thenReturn(facility);
+
+		// Act
+		final var result = errandService.updateFacilityOnErrand(errandId, facilityId, patch);
+
+		assertThat(result).isNotNull().satisfies(f -> {
+			assertThat(f.getAddress()).isEqualTo(patch.getAddress());
+			assertThat(f.getDescription()).isEqualTo(patch.getDescription());
+			assertThat(f.getFacilityCollectionName()).isEqualTo(patch.getFacilityCollectionName());
+			assertThat(f.getFacilityType()).isEqualTo(patch.getFacilityType());
+			assertThat(f.isMainFacility()).isEqualTo(patch.isMainFacility());
+			assertThat(f.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
+		});
+
+		verify(facilityRepositoryMock).findByIdAndErrandId(facilityId, errandId);
+		verify(facilityRepositoryMock).save(facility);
+		verify(processServiceMock).updateProcess(errand);
+	}
 }

@@ -5,15 +5,19 @@ import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
 import static se.sundsvall.casedata.TestUtil.createDecision;
 import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createFacility;
+import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
 import static se.sundsvall.casedata.TestUtil.createNote;
 import static se.sundsvall.casedata.TestUtil.createNoteDTO;
 import static se.sundsvall.casedata.TestUtil.createPatchDecisionDto;
 import static se.sundsvall.casedata.TestUtil.createPatchErrandDto;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddress;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchAttachment;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecision;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchErrand;
+import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacility;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNote;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
 
@@ -144,4 +148,20 @@ class PatchMapperTest {
 		});
 	}
 
+	@Test
+	void patchFacilityTest() {
+		final var facility = createFacility();
+		final var patch = createFacilityDTO();
+
+		final var patchedFacility = patchFacility(facility, patch);
+
+		assertThat(patchedFacility).isNotNull().satisfies(f -> {
+			assertThat(f.getAddress()).isEqualTo(toAddress(patch.getAddress()));
+			assertThat(f.getDescription()).isEqualTo(patch.getDescription());
+			assertThat(f.getFacilityCollectionName()).isEqualTo(patch.getFacilityCollectionName());
+			assertThat(f.getFacilityType()).isEqualTo(patch.getFacilityType());
+			assertThat(f.isMainFacility()).isEqualTo(patch.isMainFacility());
+			assertThat(f.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
+		});
+	}
 }
