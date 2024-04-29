@@ -9,6 +9,7 @@ import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -36,8 +37,27 @@ class ErrandResourceFailureTest {
 	@Autowired
 	private WebTestClient webTestClient;
 
+	@Test
+	void postErrandWithExtraParameterTooLong() {
+		final var body = createErrandDTO();
+		final String longExtraParameter = String.join("", Collections.nCopies(9000, "a")); // This creates a string longer than 8192 characters
+		body.getExtraParameters().put("longParameter", longExtraParameter);
+
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path("/errands").build())
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		verifyNoInteractions(errandServiceMock);
+	}
+
 	@ParameterizedTest
-	@ValueSource(strings = { "", " ", "invalid" })
+	@ValueSource(strings = {"", " ", "invalid"})
 	void postErrandWithInvalidFacilityType(final String facilityType) {
 		final var body = createErrandDTO();
 		final var facility = createFacilityDTO();
@@ -59,7 +79,7 @@ class ErrandResourceFailureTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "", " ", "invalid" })
+	@ValueSource(strings = {"", " ", "invalid"})
 	void postFacilityWithInvalidFacilityType(final String facilityType) {
 
 		final var errandId = 123L;
@@ -127,4 +147,5 @@ class ErrandResourceFailureTest {
 			.anyMatch(violation -> ("Invalid timeliness review value. Valid values are: " + Arrays.toString(TimelinessReview.values())).equals(violation.getMessage()));
 		verifyNoInteractions(errandServiceMock);
 	}
+
 }

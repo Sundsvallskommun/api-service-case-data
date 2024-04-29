@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 
+import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 
@@ -55,6 +56,7 @@ public class DecisionDTO extends BaseDTO {
 	private List<AttachmentDTO> attachments = new ArrayList<>();
 
 	@Builder.Default
+	@ValidMapValueSize(max = 8192)
 	private Map<String, String> extraParameters = new HashMap<>();
 
 }

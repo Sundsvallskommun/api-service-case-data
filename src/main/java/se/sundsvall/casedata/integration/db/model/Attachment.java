@@ -1,5 +1,11 @@
 package se.sundsvall.casedata.integration.db.model;
 
+import static org.hibernate.Length.LONG32;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -10,6 +16,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,12 +24,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.With;
 import lombok.experimental.SuperBuilder;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import static org.hibernate.Length.LONG32;
 
 @Entity
 @Table(name = "attachment", indexes = {@Index(name = "attachment_errand_number_idx", columnList = "errand_number")})
@@ -59,7 +60,7 @@ public class Attachment extends BaseEntity {
 	@CollectionTable(name = "attachment_extra_parameters",
 		joinColumns = @JoinColumn(name = "attachment_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_attachment_extra_parameters_attachment_id")))
 	@MapKeyColumn(name = "extra_parameter_key")
-	@Column(name = "extra_parameter_value")
+	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
 
@@ -69,7 +70,7 @@ public class Attachment extends BaseEntity {
 		if (o == null || getClass() != o.getClass()) return false;
 		if (!super.equals(o)) return false;
 		final Attachment that = (Attachment) o;
-		return Objects.equals(category,that.category) && Objects.equals(name, that.name) && Objects.equals(note, that.note) && Objects.equals(extension, that.extension) && Objects.equals(mimeType, that.mimeType) && Objects.equals(file, that.file) && Objects.equals(errandNumber, that.errandNumber) && Objects.equals(extraParameters, that.extraParameters);
+		return Objects.equals(category, that.category) && Objects.equals(name, that.name) && Objects.equals(note, that.note) && Objects.equals(extension, that.extension) && Objects.equals(mimeType, that.mimeType) && Objects.equals(file, that.file) && Objects.equals(errandNumber, that.errandNumber) && Objects.equals(extraParameters, that.extraParameters);
 	}
 
 	@Override

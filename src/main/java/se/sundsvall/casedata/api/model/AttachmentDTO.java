@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import se.sundsvall.casedata.api.model.validation.ValidAttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,6 +38,7 @@ public class AttachmentDTO extends BaseDTO {
 	private String errandNumber;
 
 	@Builder.Default
+	@ValidMapValueSize(max = 8192)
 	private Map<String, String> extraParameters = new HashMap<>();
 
 }

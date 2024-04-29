@@ -97,7 +97,7 @@ public class Decision extends BaseEntity {
 	@CollectionTable(name = "decision_extra_parameters",
 		joinColumns = @JoinColumn(name = "decision_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_decision_extra_parameters_decision_id")))
 	@MapKeyColumn(name = "extra_parameter_key")
-	@Column(name = "extra_parameter_value")
+	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
 

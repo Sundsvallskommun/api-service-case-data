@@ -32,8 +32,8 @@
 
     create table attachment_extra_parameters (
         attachment_id bigint not null,
+        extra_parameter_value varchar(8192),
         extra_parameter_key varchar(255) not null,
-        extra_parameter_value varchar(255),
         primary key (attachment_id, extra_parameter_key)
     ) engine=InnoDB;
 
@@ -55,8 +55,8 @@
 
     create table decision_extra_parameters (
         decision_id bigint not null,
+        extra_parameter_value varchar(8192),
         extra_parameter_key varchar(255) not null,
-        extra_parameter_value varchar(255),
         primary key (decision_id, extra_parameter_key)
     ) engine=InnoDB;
 
@@ -94,10 +94,10 @@
         updated datetime(6),
         created_by varchar(36),
         updated_by varchar(36),
+        description varchar(8192),
         case_title_addition varchar(255),
         case_type varchar(255),
         created_by_client varchar(255),
-        description varchar(255),
         diary_number varchar(255),
         errand_number varchar(255) not null,
         external_case_id varchar(255),
@@ -112,8 +112,8 @@
 
     create table errand_extra_parameters (
         errand_id bigint not null,
+        extra_parameter_value varchar(8192),
         extra_parameter_key varchar(255) not null,
-        extra_parameter_value varchar(255),
         primary key (errand_id, extra_parameter_key)
     ) engine=InnoDB;
 
@@ -155,8 +155,8 @@
 
     create table facility_extra_parameters (
         facility_id bigint not null,
+        extra_parameter_value varchar(8192),
         extra_parameter_key varchar(255) not null,
-        extra_parameter_value varchar(255),
         primary key (facility_id, extra_parameter_key)
     ) engine=InnoDB;
 
@@ -212,8 +212,8 @@
 
     create table note_extra_parameters (
         note_id bigint not null,
+        extra_parameter_value varchar(8192),
         extra_parameter_key varchar(255) not null,
-        extra_parameter_value varchar(255),
         primary key (note_id, extra_parameter_key)
     ) engine=InnoDB;
 
@@ -264,8 +264,8 @@
 
     create table stakeholder_extra_parameters (
         stakeholder_id bigint not null,
+        extra_parameter_value varchar(8192),
         extra_parameter_key varchar(255) not null,
-        extra_parameter_value varchar(255),
         primary key (stakeholder_id, extra_parameter_key)
     ) engine=InnoDB;
 
