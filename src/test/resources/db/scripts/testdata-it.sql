@@ -1,40 +1,32 @@
-INSERT INTO errand
-(id, created, updated, version, application_received, case_title_addition, case_type, created_by, created_by_client, description, diary_number, end_date, errand_number, external_case_id, municipality_id, phase, priority, process_id, start_date, updated_by, updated_by_client, channel) VALUES
+INSERT INTO errand (id, created, updated, version, application_received, case_title_addition, case_type, created_by, created_by_client, description, diary_number, end_date, errand_number, external_case_id, municipality_id, phase, priority, process_id, start_date, updated_by, updated_by_client, channel) VALUES
 (1,'2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL, 'ERRAND-NUMBER-1', '', '2281', 'Aktualisering', 'MEDIUM', '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL),
 (2,'2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL, 'ERRAND-NUMBER-2', '', '2281', 'Aktualisering', 'MEDIUM', '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL);
 
-INSERT INTO errand_extra_parameters
-(errand_id, extra_parameter_value, extra_parameter_key)
+INSERT INTO errand_extra_parameters (errand_id, extra_parameter_value, extra_parameter_key)
 VALUES(1, 'test', 'test-value');
 
-INSERT INTO errand_statuses
-(errand_id, date_time, description, status_type, status_order)
+INSERT INTO errand_statuses (errand_id, date_time, description, status_type, status_order)
 VALUES(1, '2022-12-02 15:13:45.363', 'Beslut verkställt', 'Beslut verkställt', 0);
 
-INSERT INTO attachment
-(id, created, updated, version, category, extension, file, mime_type, name, note, errand_id, decision_id, errand_number) VALUES
+INSERT INTO attachment (id, created, updated, version, category, extension, file, mime_type, name, note, errand_id, decision_id, errand_number) VALUES
 (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'MEDICAL_CONFIRMATION', '.pdf', 'FILE-1', 'application/pdf', 'test1.pdf', 'NOTE-1', 1, NULL, 'ERRAND-NUMBER-1'),
 (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'PASSPORT_PHOTO', '.pdf', 'FILE-2', 'application/pdf', 'test2.pdf', 'NOTE-2', 2, NULL, 'ERRAND-NUMBER-2'),
 (3, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'POLICE_REPORT', '.pdf', 'FILE-3', 'application/pdf', 'test3.pdf', 'NOTE-3', 2, NULL, 'ERRAND-NUMBER-2'),
 (4, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'ANSUPA', '.pdf', 'FILE-4', 'application/pdf', 'test4.pdf', 'NOTE-4', 2, NULL, 'ERRAND-NUMBER-2');
 
-INSERT INTO stakeholder
-(id, created, updated, version, ad_account, authorized_signatory, first_name, last_name, organization_name, organization_number, person_id, `type`, errand_id) VALUES
+INSERT INTO stakeholder (id, created, updated, version, ad_account, authorized_signatory, first_name, last_name, organization_name, organization_number, person_id, `type`, errand_id) VALUES
 (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 0, 'AD-1', NULL, 'FIRST-NAME-1', 'LAST-NAME-1', NULL, NULL, 'd7af5f83-166a-468b-ab86-da8ca30ea97c', 'PERSON', 1);
 
 
-INSERT INTO stakeholder_contact_information
-(stakeholder_id, contact_type, value, contact_information_order) VALUES
+INSERT INTO stakeholder_contact_information (stakeholder_id, contact_type, value, contact_information_order) VALUES
 (1, 'PHONE', '0701112223', 0),
 (1, 'EMAIL', 'a.b@test.se', 1);
 
-INSERT INTO stakeholder_roles
-(stakeholder_id, roles, role_order) VALUES
+INSERT INTO stakeholder_roles (stakeholder_id, roles, role_order) VALUES
 (1, 'APPLICANT', 0),
 (1, 'ADMINISTRATOR', 1);
 
-INSERT INTO note
-(id, created, updated, version, created_by, `text`, title, updated_by, errand_id)
+INSERT INTO note (id, created, updated, version, created_by, `text`, title, updated_by, errand_id)
 VALUES (1, '2023-10-02 15:13:45.363', '2023-10-02 15:13:45.363', 1, 'UNKNOWN', 'TEXT', 'TITLE-1', 'testUser', 1);
 
 INSERT INTO message_attachment_data (id, file) VALUES
@@ -45,3 +37,7 @@ INSERT INTO message_attachment (message_attachment_data_id, attachmentid, conten
 
 INSERT INTO message (viewed, email, errand_number, external_caseid, familyid, first_name, last_name, message, messageId, sent, subject, userid, username, direction, message_type) VALUES
 (1, 'test.testorsson@noreply.com', 'PRE-1970-000123', '123456', '123', 'Test', 'Testorsson', 'Some message', '02485d15-fa8b-488a-a907-fa4de5d6e5c9', '2023-10-02 15:13:45.363', 'Some subject', 'aba01cal', 'Abacus Calculator', 'INBOUND', 'EMAIL');
+
+INSERT INTO facility (id,created,updated,version,address_category,apartment_number,attention,care_of,city,country,house_number,invoice_marking,is_zoning_plan_area,latitude,longitude,postal_code,property_designation,street,description,facility_collection_name,main_facility,errand_id,facility_type) VALUES
+(1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'SUNDSVALL 666:1',NULL,NULL,NULL,1,1,NULL);
+
