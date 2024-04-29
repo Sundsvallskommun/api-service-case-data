@@ -48,6 +48,7 @@ class FacilityRepositoryTest {
 		final var result = facilityRepository.findById(id).orElseThrow();
 
 		// Assert
+		assertThat(result.getId()).isEqualTo(id);
 		assertThat(result.getUpdated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:15:01.563+01:00", ISO_DATE_TIME));
 		assertThat(result.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
 	}
@@ -60,6 +61,36 @@ class FacilityRepositoryTest {
 
 		// Act
 		final var result = facilityRepository.findById(id);
+
+		// Assert
+		assertThat(result).isNotNull().isEmpty();
+	}
+
+	@Test
+	void findByIdAndErrandId() {
+
+		// Arrange
+		final var id = 1L;
+		final var errandId = 1L;
+
+		// Act
+		final var result = facilityRepository.findByIdAndErrandId(id, errandId).orElseThrow();
+
+		// Assert
+		assertThat(result.getId()).isEqualTo(id);
+		assertThat(result.getUpdated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:15:01.563+01:00", ISO_DATE_TIME));
+		assertThat(result.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
+	}
+
+	@Test
+	void findByIdAndErrandIdNothingFound() {
+
+		// Arrange
+		final var id = 666L;
+		final var errandId = 666L;
+
+		// Act
+		final var result = facilityRepository.findByIdAndErrandId(id, errandId);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
