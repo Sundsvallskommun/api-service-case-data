@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 import se.sundsvall.casedata.api.model.validation.ValidStakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.service.util.Constants;
@@ -78,6 +79,7 @@ public class StakeholderDTO extends BaseDTO {
 	private List<ContactInformationDTO> contactInformation = new ArrayList<>();
 
 	@Builder.Default
+	@ValidMapValueSize(max = 8192)
 	private Map<String, String> extraParameters = new HashMap<>();
 
 }

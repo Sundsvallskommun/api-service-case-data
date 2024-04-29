@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 
+import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
@@ -72,6 +73,7 @@ public class PatchErrandDTO {
 	private OffsetDateTime applicationReceived;
 
 	@Builder.Default
+	@ValidMapValueSize(max = 8192)
 	private Map<String, String> extraParameters = new HashMap<>();
 
 }

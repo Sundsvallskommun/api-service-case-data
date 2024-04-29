@@ -1,6 +1,11 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -14,20 +19,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OrderColumn;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import se.sundsvall.casedata.integration.db.listeners.StakeholderListener;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import se.sundsvall.casedata.integration.db.listeners.StakeholderListener;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 @Entity(name = "stakeholder")
 @EntityListeners(StakeholderListener.class)
@@ -93,7 +96,7 @@ public class Stakeholder extends BaseEntity {
 	@CollectionTable(name = "stakeholder_extra_parameters",
 		joinColumns = @JoinColumn(name = "stakeholder_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_stakeholder_extra_parameters_stakeholder_id")))
 	@MapKeyColumn(name = "extra_parameter_key")
-	@Column(name = "extra_parameter_value")
+	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
 

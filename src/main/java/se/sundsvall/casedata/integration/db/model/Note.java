@@ -66,7 +66,7 @@ public class Note extends BaseEntity {
 	@CollectionTable(name = "note_extra_parameters",
 		joinColumns = @JoinColumn(name = "note_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_note_extra_parameters_note_id")))
 	@MapKeyColumn(name = "extra_parameter_key")
-	@Column(name = "extra_parameter_value")
+	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
 

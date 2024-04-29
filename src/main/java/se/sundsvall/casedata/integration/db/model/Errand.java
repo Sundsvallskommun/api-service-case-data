@@ -7,12 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-import org.javers.core.metamodel.annotation.DiffIgnore;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -28,6 +22,16 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import org.javers.core.metamodel.annotation.DiffIgnore;
+
+import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,12 +41,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
-import se.sundsvall.casedata.integration.db.model.enums.Channel;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 @Entity(name = "errand")
-@Table(uniqueConstraints = { @UniqueConstraint(name = "UK_errand_errand_number", columnNames = { "errand_number" }) })
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UK_errand_errand_number", columnNames = {"errand_number"})})
 @EntityListeners(ErrandListener.class)
 @Getter
 @Setter
@@ -70,7 +71,7 @@ public class Errand extends BaseEntity {
 	@Column(name = "priority")
 	private Priority priority;
 
-	@Column(name = "description")
+	@Column(name = "description", length = 8192)
 	private String description;
 
 	@Column(name = "case_title_addition")
@@ -155,7 +156,7 @@ public class Errand extends BaseEntity {
 	@CollectionTable(name = "errand_extra_parameters",
 		joinColumns = @JoinColumn(name = "errand_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_errand_extra_parameters_errand_id")))
 	@MapKeyColumn(name = "extra_parameter_key")
-	@Column(name = "extra_parameter_value")
+	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
 

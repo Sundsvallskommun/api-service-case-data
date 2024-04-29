@@ -15,6 +15,7 @@ import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
+import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
@@ -53,7 +54,7 @@ public class ErrandDTO extends BaseDTO {
 	private Priority priority = Priority.MEDIUM;
 
 	@Schema(example = "Some description of the case.")
-	@Size(max = 255)
+	@Size(max = 8192)
 	private String description;
 
 	@Schema(description = "Additions to the case title. Right now only applicable to cases of CaseType: NYBYGGNAD_ANSOKAN_OM_BYGGLOV.", example = "Eldstad/rökkanal, Skylt")
@@ -125,6 +126,7 @@ public class ErrandDTO extends BaseDTO {
 	private String updatedBy;
 
 	@Builder.Default
+	@ValidMapValueSize(max = 8192)
 	private Map<String, String> extraParameters = new HashMap<>();
 
 }
