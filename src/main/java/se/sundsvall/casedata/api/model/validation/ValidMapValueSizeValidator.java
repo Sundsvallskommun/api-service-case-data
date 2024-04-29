@@ -5,6 +5,9 @@ import java.util.Map;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import lombok.Setter;
+
+@Setter
 public class ValidMapValueSizeValidator implements ConstraintValidator<ValidMapValueSize, Map<String, String>> {
 
 	private int max;
