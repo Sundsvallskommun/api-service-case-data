@@ -1,18 +1,15 @@
 package se.sundsvall.casedata.api;
 
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.HttpHeaders.LOCATION;
-import static org.springframework.http.MediaType.ALL_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
-import static org.springframework.http.ResponseEntity.created;
-import static org.springframework.http.ResponseEntity.noContent;
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.web.util.UriComponentsBuilder.fromPath;
-
-import java.util.List;
-import java.util.Optional;
-
+import com.turkraft.springfilter.boot.Filter;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,18 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-
-import com.turkraft.springfilter.boot.Filter;
-
-import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
@@ -54,6 +39,19 @@ import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.api.model.StatusDTO;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.service.ErrandService;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpHeaders.LOCATION;
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
+import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.noContent;
+import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @RestController
 @Validated
@@ -196,6 +194,14 @@ class ErrandResource {
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchErrandFacility(@PathVariable final Long id, @PathVariable final Long facilityId, @RequestBody @Valid final FacilityDTO facilityDTO) {
 		errandService.updateFacilityOnErrand(id, facilityId, facilityDTO);
+		return noContent().build();
+	}
+
+	@Operation(description = "Add/replace facility on errand.")
+	@PutMapping(path = "/{id}/facilities", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	ResponseEntity<Void> putFacilitiesOnErrand(@PathVariable final Long id, @RequestBody @Valid final List<FacilityDTO> facilityDTOs) {
+		//TODO Add call to service layer when implemented
 		return noContent().build();
 	}
 
