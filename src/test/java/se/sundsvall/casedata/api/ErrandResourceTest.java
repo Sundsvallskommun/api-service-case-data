@@ -1,5 +1,22 @@
 package se.sundsvall.casedata.api;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.DecisionDTO;
+import se.sundsvall.casedata.api.model.FacilityDTO;
+import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
+import se.sundsvall.casedata.service.ErrandService;
+
+import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -11,24 +28,6 @@ import static se.sundsvall.casedata.TestUtil.createAppealDTO;
 import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
-
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
-import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.DecisionDTO;
-import se.sundsvall.casedata.api.model.FacilityDTO;
-import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
-import se.sundsvall.casedata.service.ErrandService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -227,6 +226,31 @@ class ErrandResourceTest {
 			.expectStatus().isNoContent();
 
 		verify(errandServiceMock).updateFacilityOnErrand(errandId, facilityId, facilityDTO);
+	}
+
+	@Test
+	void putErrandFacilities() {
+		final var errandId = 123L;
+		final var facilityId_1 = 456L;
+		final var facilityDTO_1 = createFacilityDTO();
+		facilityDTO_1.setId(facilityId_1);
+		final var facilityId_2 = 789L;
+		final var facilityDTO_2 = createFacilityDTO();
+		facilityDTO_2.setId(facilityId_2);
+
+		final var facilityDTOs = List.of(facilityDTO_1, facilityDTO_2);
+
+		//TODO Add mocking when service layer is implemented
+
+		webTestClient.put()
+			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities")
+				.build(Map.of("errandId", errandId)))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(facilityDTOs)
+			.exchange()
+			.expectStatus().isNoContent();
+
+		//TODO Add verify when service layer is implemented
 	}
 
 	@Test

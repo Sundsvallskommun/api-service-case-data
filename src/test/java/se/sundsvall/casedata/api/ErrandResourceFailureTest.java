@@ -1,17 +1,5 @@
 package se.sundsvall.casedata.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static se.sundsvall.casedata.TestUtil.createAppealDTO;
-import static se.sundsvall.casedata.TestUtil.createErrandDTO;
-import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -21,11 +9,22 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 import se.sundsvall.casedata.service.ErrandService;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static se.sundsvall.casedata.TestUtil.createAppealDTO;
+import static se.sundsvall.casedata.TestUtil.createErrandDTO;
+import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -97,6 +96,30 @@ class ErrandResourceFailureTest {
 			.getResponseBody();
 
 		verifyNoInteractions(errandServiceMock);
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"", " ", "invalid"})
+	void putFacilityWithInvalidFacilityType(final String facilityType) {
+
+		final var errandId = 123L;
+		final var facilityId = 456L;
+		final var facility = createFacilityDTO();
+		facility.setId(facilityId);
+		facility.setFacilityType(facilityType);
+		final var facilities = List.of(facility);
+
+		webTestClient.put()
+			.uri(uriBuilder -> uriBuilder.path("/errands/{errandId}/facilities").build(errandId))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(facilities)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		//TODO verify no interactions when implemented in service layer
 	}
 
 	@Test
