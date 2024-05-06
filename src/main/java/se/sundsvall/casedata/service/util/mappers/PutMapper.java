@@ -3,11 +3,13 @@ package se.sundsvall.casedata.service.util.mappers;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
+import se.sundsvall.casedata.api.model.FacilityDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.Decision;
+import se.sundsvall.casedata.integration.db.model.Facility;
 import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
@@ -90,4 +92,15 @@ public final class PutMapper {
 		return oldNote;
 	}
 
+	public static Facility putFacility(final Facility oldFacility, final FacilityDTO dto) {
+		Optional.of(dto).ifPresent(newFacility -> {
+			oldFacility.setFacilityType(dto.getFacilityType());
+			oldFacility.setMainFacility(dto.isMainFacility());
+			oldFacility.setDescription(dto.getDescription());
+			oldFacility.setAddress(EntityMapper.toAddress(dto.getAddress()));
+			oldFacility.setFacilityCollectionName(dto.getFacilityCollectionName());
+			oldFacility.setExtraParameters(dto.getExtraParameters());
+		});
+		return oldFacility;
+	}
 }

@@ -1,5 +1,36 @@
 package se.sundsvall.casedata.service;
 
+import io.github.resilience4j.retry.annotation.Retry;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.zalando.problem.Problem;
+import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.casedata.api.model.AppealDTO;
+import se.sundsvall.casedata.api.model.DecisionDTO;
+import se.sundsvall.casedata.api.model.ErrandDTO;
+import se.sundsvall.casedata.api.model.FacilityDTO;
+import se.sundsvall.casedata.api.model.NoteDTO;
+import se.sundsvall.casedata.api.model.PatchErrandDTO;
+import se.sundsvall.casedata.api.model.StakeholderDTO;
+import se.sundsvall.casedata.api.model.StatusDTO;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.FacilityRepository;
+import se.sundsvall.casedata.integration.db.model.Decision;
+import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.Facility;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import se.sundsvall.casedata.service.util.mappers.PatchMapper;
+import se.sundsvall.casedata.service.util.mappers.PutMapper;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import static java.util.Objects.isNull;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAppeal;
@@ -16,36 +47,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakehol
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderDto;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacility;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.zalando.problem.Problem;
-import org.zalando.problem.ThrowableProblem;
-
-import io.github.resilience4j.retry.annotation.Retry;
-import se.sundsvall.casedata.api.model.AppealDTO;
-import se.sundsvall.casedata.api.model.DecisionDTO;
-import se.sundsvall.casedata.api.model.ErrandDTO;
-import se.sundsvall.casedata.api.model.FacilityDTO;
-import se.sundsvall.casedata.api.model.NoteDTO;
-import se.sundsvall.casedata.api.model.PatchErrandDTO;
-import se.sundsvall.casedata.api.model.StakeholderDTO;
-import se.sundsvall.casedata.api.model.StatusDTO;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.Decision;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-import se.sundsvall.casedata.service.util.mappers.PatchMapper;
 
 @Service
 public class ErrandService {
@@ -331,6 +332,26 @@ public class ErrandService {
 	public void replaceStatusesOnErrand(final Long id, final List<StatusDTO> dtos) {
 		final var oldErrand = getErrand(id);
 		oldErrand.setStatuses(new ArrayList<>(dtos.stream().map(EntityMapper::toStatus).toList()));
+		final var updatedErrand = errandRepository.save(oldErrand);
+		processService.updateProcess(updatedErrand);
+	}
+
+	@Retry(name = "OptimisticLocking")
+	public void replaceFacilitiesOnErrand(final Long id, final List<FacilityDTO> dtos) {
+		final var oldErrand = getErrand(id);
+		final var facilitiesToChange = oldErrand.getFacilities().stream().filter(facility -> dtos.stream().map(FacilityDTO::getId).toList().contains(facility.getId())).toList();
+		final var newFacilities = dtos.stream().filter(dto -> !facilitiesToChange.stream().map(Facility::getId).toList().contains(dto.getId())).map(EntityMapper::toFacility).toList();
+
+		oldErrand.getFacilities().removeAll(facilitiesToChange);
+
+		oldErrand.getFacilities().addAll(dtos.stream().filter(dto -> facilitiesToChange.stream().map(Facility::getId).toList().contains(dto.getId()))
+			.map(dto -> PutMapper.putFacility(facilitiesToChange.stream().filter(facility -> facility.getId().equals(dto.getId()))
+				.findFirst().get(), dto)).toList());
+		oldErrand.getFacilities().addAll(newFacilities.stream().map(facility -> {
+			facility.setErrand(oldErrand);
+			return facility;
+		}).toList());
+
 		final var updatedErrand = errandRepository.save(oldErrand);
 		processService.updateProcess(updatedErrand);
 	}

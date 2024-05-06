@@ -1,5 +1,41 @@
 package se.sundsvall.casedata.service;
 
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.casedata.api.model.PatchErrandDTO;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.FacilityRepository;
+import se.sundsvall.casedata.integration.db.model.Address;
+import se.sundsvall.casedata.integration.db.model.Appeal;
+import se.sundsvall.casedata.integration.db.model.Decision;
+import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.Stream;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,43 +65,6 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityDto;
-
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.zalando.problem.ThrowableProblem;
-
-import com.turkraft.springfilter.converter.FilterSpecificationConverter;
-
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
-import se.sundsvall.casedata.api.model.PatchErrandDTO;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.Appeal;
-import se.sundsvall.casedata.integration.db.model.Decision;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
 class ErrandServiceTest {
@@ -381,6 +380,47 @@ class ErrandServiceTest {
 		});
 
 		verify(errandRepositoryMock).findById(123L);
+		verify(errandRepositoryMock).save(any());
+		verify(processServiceMock).updateProcess(errand);
+	}
+
+	@Test
+	void replaceFacilitiesOnErrandTest() {
+
+		// Arrange
+		final var errandId = 123L;
+		final var facilityId_1 = 456L;
+		final var facilityId_2 = 789L;
+		final var errand = createErrand(); // Errand with one facility
+		errand.getFacilities().getFirst().setId(facilityId_1);
+
+		final var facilityDTO_1 = createFacilityDTO();
+		facilityDTO_1.setId(facilityId_1);
+		final var facilityDTO_2 = createFacilityDTO();
+		facilityDTO_2.setId(facilityId_2);
+
+		final var facilities = List.of(facilityDTO_1, facilityDTO_2, createFacilityDTO());
+
+		when(errandRepositoryMock.findById(any(Long.class))).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+		// Act
+		errandService.replaceFacilitiesOnErrand(errandId, facilities);
+
+		// Assert
+		assertThat(errand.getFacilities()).isNotEmpty().hasSize(3).allSatisfy(facility -> {
+			assertThat(facility.getFacilityType()).isInstanceOf(String.class).isNotNull();
+			assertThat(facility.isMainFacility()).isInstanceOf(Boolean.class).isNotNull();
+			assertThat(facility.getDescription()).isInstanceOf(String.class).isNotBlank();
+			assertThat(facility.getAddress()).isInstanceOf(Address.class).isNotNull();
+			assertThat(facility.getExtraParameters()).isInstanceOf(HashMap.class).isNotNull();
+			assertThat(facility.getFacilityCollectionName()).isInstanceOf(String.class).isNotBlank();
+			assertThat(facility.getVersion()).isInstanceOf(Integer.class).isNotNull();
+			assertThat(facility.getCreated()).isInstanceOf(OffsetDateTime.class).isNotNull();
+			assertThat(facility.getUpdated()).isInstanceOf(OffsetDateTime.class).isNotNull();
+		});
+
+		verify(errandRepositoryMock).findById(errandId);
 		verify(errandRepositoryMock).save(any());
 		verify(processServiceMock).updateProcess(errand);
 	}

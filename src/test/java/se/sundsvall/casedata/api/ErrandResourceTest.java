@@ -240,8 +240,6 @@ class ErrandResourceTest {
 
 		final var facilityDTOs = List.of(facilityDTO_1, facilityDTO_2);
 
-		//TODO Add mocking when service layer is implemented
-
 		webTestClient.put()
 			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities")
 				.build(Map.of("errandId", errandId)))
@@ -250,7 +248,7 @@ class ErrandResourceTest {
 			.exchange()
 			.expectStatus().isNoContent();
 
-		//TODO Add verify when service layer is implemented
+		verify(errandServiceMock).replaceFacilitiesOnErrand(errandId, facilityDTOs);
 	}
 
 	@Test
