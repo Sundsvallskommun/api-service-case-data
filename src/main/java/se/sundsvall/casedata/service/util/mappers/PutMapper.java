@@ -93,13 +93,13 @@ public final class PutMapper {
 	}
 
 	public static Facility putFacility(final Facility oldFacility, final FacilityDTO dto) {
-		Optional.of(dto).ifPresent(newFacility -> {
-			oldFacility.setFacilityType(dto.getFacilityType());
-			oldFacility.setMainFacility(dto.isMainFacility());
-			oldFacility.setDescription(dto.getDescription());
-			oldFacility.setAddress(EntityMapper.toAddress(dto.getAddress()));
-			oldFacility.setFacilityCollectionName(dto.getFacilityCollectionName());
-			oldFacility.setExtraParameters(dto.getExtraParameters());
+		Optional.of(dto).ifPresent(facility -> {
+			oldFacility.setFacilityType(facility.getFacilityType());
+			oldFacility.setMainFacility(facility.isMainFacility());
+			oldFacility.setDescription(facility.getDescription());
+			oldFacility.setAddress(EntityMapper.toAddress(facility.getAddress()));
+			oldFacility.setFacilityCollectionName(facility.getFacilityCollectionName());
+			oldFacility.setExtraParameters(facility.getExtraParameters());
 		});
 		return oldFacility;
 	}
