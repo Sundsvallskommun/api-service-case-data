@@ -119,7 +119,7 @@ class ErrandResourceFailureTest {
 			.returnResult()
 			.getResponseBody();
 
-		//TODO verify no interactions when implemented in service layer
+		verifyNoInteractions(errandServiceMock);
 	}
 
 	@Test

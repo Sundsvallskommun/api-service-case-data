@@ -201,7 +201,7 @@ class ErrandResource {
 	@PutMapping(path = "/{id}/facilities", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putFacilitiesOnErrand(@PathVariable final Long id, @RequestBody @Valid final List<FacilityDTO> facilityDTOs) {
-		//TODO Add call to service layer when implemented
+		errandService.replaceFacilitiesOnErrand(id, facilityDTOs);
 		return noContent().build();
 	}
 
