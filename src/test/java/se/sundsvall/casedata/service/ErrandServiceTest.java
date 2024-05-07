@@ -392,6 +392,8 @@ class ErrandServiceTest {
 		final var facilityId_1 = 456L;
 		final var facilityId_2 = 789L;
 		final var errand = createErrand(); // Errand with one facility
+		errand.getFacilities().add(createFacility()); // Add another facility to the errand. This will be removed
+
 		errand.getFacilities().getFirst().setId(facilityId_1);
 
 		final var facilityDTO_1 = createFacilityDTO();

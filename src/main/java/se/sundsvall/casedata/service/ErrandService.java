@@ -342,7 +342,7 @@ public class ErrandService {
 		final var facilitiesToChange = oldErrand.getFacilities().stream().filter(facility -> dtos.stream().map(FacilityDTO::getId).toList().contains(facility.getId())).toList();
 		final var newFacilities = dtos.stream().filter(dto -> !facilitiesToChange.stream().map(Facility::getId).toList().contains(dto.getId())).map(EntityMapper::toFacility).toList();
 
-		oldErrand.getFacilities().removeAll(facilitiesToChange);
+		oldErrand.getFacilities().clear();
 
 		oldErrand.getFacilities().addAll(dtos.stream().filter(dto -> facilitiesToChange.stream().map(Facility::getId).toList().contains(dto.getId()))
 			.map(dto -> PutMapper.putFacility(facilitiesToChange.stream().filter(facility -> facility.getId().equals(dto.getId()))
