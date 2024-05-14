@@ -1,25 +1,23 @@
 package se.sundsvall.casedata.api.filter;
 
-import static java.util.Objects.isNull;
-import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
-import static se.sundsvall.casedata.service.util.Constants.UNKNOWN;
-import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
-
-import java.io.IOException;
-import java.util.Base64;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import lombok.Getter;
+import java.io.IOException;
+import java.util.Base64;
+
+import static java.util.Objects.isNull;
+import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
+import static se.sundsvall.casedata.service.util.Constants.UNKNOWN;
+import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
 @Component
 public class IncomingRequestFilter extends OncePerRequestFilter {
@@ -35,7 +33,7 @@ public class IncomingRequestFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(@NotNull final HttpServletRequest request, @NotNull final HttpServletResponse response, final FilterChain filterChain) throws IOException, ServletException {
 		// Extract sub from x-jwt-assertion header
-		extractSubsciber(request);
+		extractSubscriber(request);
 		// Extract AD-user from ad-user header
 		extractAdUser(request);
 
@@ -52,7 +50,7 @@ public class IncomingRequestFilter extends OncePerRequestFilter {
 		}
 	}
 
-	private void extractSubsciber(final HttpServletRequest request) throws JsonProcessingException {
+	private void extractSubscriber(final HttpServletRequest request) throws JsonProcessingException {
 		final var jwtHeader = request.getHeader(X_JWT_ASSERTION_HEADER_KEY);
 
 		if (isNull(jwtHeader) || jwtHeader.isBlank()) {
