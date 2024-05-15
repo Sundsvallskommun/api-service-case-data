@@ -19,8 +19,10 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.FacilityRepository;
 import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.Facility;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
+import se.sundsvall.casedata.service.util.mappers.PutMapper;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -327,20 +329,29 @@ public class ErrandService {
 	//////////////////////////////
 
 	@Retry(name = "OptimisticLocking")
-	public void replaceFacilitiesOnErrand(final Long id, final List<FacilityDTO> dtos) {
+	public void replaceStatusesOnErrand(final Long id, final List<StatusDTO> dtos) {
 		final var oldErrand = getErrand(id);
-		oldErrand.getFacilities().clear();
-		oldErrand.getFacilities().addAll(dtos.stream().map(EntityMapper::toFacility).toList());
-		oldErrand.getFacilities().forEach(facility -> facility.setErrand(oldErrand));
+		oldErrand.setStatuses(new ArrayList<>(dtos.stream().map(EntityMapper::toStatus).toList()));
 		final var updatedErrand = errandRepository.save(oldErrand);
 		processService.updateProcess(updatedErrand);
 	}
 
-
 	@Retry(name = "OptimisticLocking")
-	public void replaceStatusesOnErrand(final Long id, final List<StatusDTO> dtos) {
+	public void replaceFacilitiesOnErrand(final Long id, final List<FacilityDTO> dtos) {
 		final var oldErrand = getErrand(id);
-		oldErrand.setStatuses(new ArrayList<>(dtos.stream().map(EntityMapper::toStatus).toList()));
+		final var facilitiesToChange = oldErrand.getFacilities().stream().filter(facility -> dtos.stream().map(FacilityDTO::getId).toList().contains(facility.getId())).toList();
+		final var newFacilities = dtos.stream().filter(dto -> !facilitiesToChange.stream().map(Facility::getId).toList().contains(dto.getId())).map(EntityMapper::toFacility).toList();
+
+		oldErrand.getFacilities().clear();
+
+		oldErrand.getFacilities().addAll(dtos.stream().filter(dto -> facilitiesToChange.stream().map(Facility::getId).toList().contains(dto.getId()))
+			.map(dto -> PutMapper.putFacility(facilitiesToChange.stream().filter(facility -> facility.getId().equals(dto.getId()))
+				.findFirst().get(), dto)).toList());
+		oldErrand.getFacilities().addAll(newFacilities.stream().map(facility -> {
+			facility.setErrand(oldErrand);
+			return facility;
+		}).toList());
+
 		final var updatedErrand = errandRepository.save(oldErrand);
 		processService.updateProcess(updatedErrand);
 	}

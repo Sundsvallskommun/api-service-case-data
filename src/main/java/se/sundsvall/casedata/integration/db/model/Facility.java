@@ -33,7 +33,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class Facility extends BaseEntity {
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "errand_id", foreignKey = @ForeignKey(name = "FK_facility_errand_id"))
 	@JsonBackReference
 	private Errand errand;
