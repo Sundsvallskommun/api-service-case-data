@@ -359,7 +359,9 @@ public class ErrandService {
 	@Retry(name = "OptimisticLocking")
 	public void replaceStakeholdersOnErrand(final Long id, final List<StakeholderDTO> dtos) {
 		final var oldErrand = getErrand(id);
-		oldErrand.setStakeholders(new ArrayList<>(dtos.stream().map(EntityMapper::toStakeholder).toList()));
+		oldErrand.getStakeholders().clear();
+		oldErrand.getStakeholders().addAll(dtos.stream().map(EntityMapper::toStakeholder).toList());
+		oldErrand.getStakeholders().forEach(stakeholder -> stakeholder.setErrand(oldErrand));
 		final var updatedErrand = errandRepository.save(oldErrand);
 		processService.updateProcess(updatedErrand);
 	}
