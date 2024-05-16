@@ -1,0 +1,33 @@
+{
+	"id": 2,
+	"version": 3,
+	"created": "2022-12-02T15:13:45.363+01:00",
+	"updated": "${json-unit.any-string}",
+	"errandNumber": "ERRAND-NUMBER-2",
+	"externalCaseId": "externalCaseId",
+	"caseType": "ANMALAN_ATTEFALL",
+	"priority": "LOW",
+	"description": "Changed description",
+	"caseTitleAddition": "Changed case title addition",
+	"diaryNumber": "DIARY-456",
+	"phase": "IN_PROGRESS",
+	"statuses": [],
+	"municipalityId": "MunicipalityId",
+	"startDate": "2024-05-01",
+	"endDate": "2024-05-09",
+	"applicationReceived": "2024-01-23T10:04:04.317+01:00",
+	"processId": "896a44d8-724b-11ed-a840-0242ac110002",
+	"stakeholders": [],
+	"facilities": [],
+	"decisions": [],
+	"appeals": [],
+	"notes": [],
+	"messageIds": [],
+	"createdByClient": "WSO2_test",
+	"updatedByClient": "WSO2_MS_caseManagement",
+	"createdBy": "UNKNOWN",
+	"updatedBy": "PatchUser",
+	"extraParameters": {
+		"testChanged": "testChanged"
+	}
+}

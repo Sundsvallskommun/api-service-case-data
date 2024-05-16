@@ -5,10 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.HttpHeaders.LOCATION;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
@@ -29,6 +32,7 @@ import org.springframework.http.HttpMethod;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
@@ -36,119 +40,112 @@ import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.service.util.Constants;
+import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/ErrandListenerIT", classes = Application.class)
-class ErrandListenerIT extends CustomAbstractAppTest {
+@Sql({
+	"/db/scripts/truncate.sql",
+	"/db/scripts/testdata-it.sql"
+})
+class ErrandListenerIT extends AbstractAppTest {
 
-	@Autowired
-	private ErrandRepository errandRepository;
-
-	@BeforeEach
-	void beforeEach() {
-		errandRepository.deleteAll();
-	}
+	private static final Long ERRAND_ID = 3L;
+	private static final Long PATCH_ERRAND_ID = 2L;
+	private static final String PATH = "/errands/";
+	private static final String REQUEST_FILE = "request.json";
+	private static final String EXPECTED_FILE = "expected.json";
 
 	@Test
-	void test1_persistErrandUnknown() throws JsonProcessingException {
+	void test01_persistErrandUnknown() {
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath("/errands")
-			.withRequest(OBJECT_MAPPER.writeValueAsString(createErrandDTO()))
+			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
+			.withExpectedResponseHeader(LOCATION, List.of(PATH + ERRAND_ID))
+			.sendRequest();
+
+		setupCall()
+			.withServicePath(PATH + ERRAND_ID)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
-
-		final Errand errand = errandRepository.findAll().stream().max(Comparator.comparing(Errand::getCreated)).orElseThrow();
-
-		assertEquals(UNKNOWN, errand.getCreatedByClient());
-		assertEquals(UNKNOWN, errand.getCreatedBy());
-		assertNotNull(errand.getErrandNumber());
-		// The errand gets an update directly because we update with processId
-		assertEquals(UNKNOWN, errand.getUpdatedByClient());
-		assertEquals(UNKNOWN, errand.getUpdatedBy());
 	}
 
 	@Test
-	void test2_updateErrand() throws JsonProcessingException {
-		setupCall()
-			.withHttpMethod(POST)
-			.withServicePath("/errands")
-			.withRequest(OBJECT_MAPPER.writeValueAsString(createErrandDTO()))
-			.withExpectedResponseStatus(CREATED)
-			.sendRequestAndVerifyResponse();
-
-		final Errand errandBeforePatch = errandRepository.findAll().stream().max(Comparator.comparing(Errand::getCreated)).orElseThrow();
-
-		final PatchErrandDTO patchErrandDTO = new PatchErrandDTO();
-		patchErrandDTO.setDiaryNumber("Patch");
+	void test02_updateErrand() {
 
 		setupCall()
 			.withHttpMethod(PATCH)
-			.withServicePath(MessageFormat.format("/errands/{0}", errandBeforePatch.getId()))
+			.withServicePath(MessageFormat.format("/errands/{0}", PATCH_ERRAND_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(Constants.AD_USER_HEADER_KEY, "PatchUser")
-			.withRequest(OBJECT_MAPPER.writeValueAsString(patchErrandDTO))
+			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
+			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
-		final Errand errandAfterPatch = errandRepository.findAll().stream().max(Comparator.comparing(Errand::getCreated)).orElseThrow();
-
-		assertNotEquals(errandBeforePatch.getUpdatedByClient(), errandAfterPatch.getUpdatedByClient());
-		assertNotEquals(errandBeforePatch.getUpdatedBy(), errandAfterPatch.getUpdatedBy());
+		setupCall()
+			.withServicePath(PATH + "/" + PATCH_ERRAND_ID)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test3_generateErrandNumberForSameAbbreviation() throws JsonProcessingException {
+	void test03_generateErrandNumberForParkingPermit() {
 
-		final ErrandDTO errandDTO1 = createErrandDTO();
-		errandDTO1.setCaseType(CaseType.PARKING_PERMIT.name());
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath("/errands")
-			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO1))
+			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
-		final ErrandDTO errandDTO2 = createErrandDTO();
-		errandDTO2.setCaseType(CaseType.LOST_PARKING_PERMIT.name());
 		setupCall()
-			.withHttpMethod(HttpMethod.POST)
-			.withServicePath("/errands")
-			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO2))
-			.withExpectedResponseStatus(CREATED)
+			.withServicePath(PATH + ERRAND_ID)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
-
-		final ErrandDTO errandDTO3 = createErrandDTO();
-		errandDTO3.setCaseType(CaseType.PARKING_PERMIT_RENEWAL.name());
-		setupCall()
-			.withHttpMethod(POST)
-			.withServicePath("/errands")
-			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO3))
-			.withExpectedResponseStatus(CREATED)
-			.sendRequestAndVerifyResponse();
-
-		final List<Errand> resultList = errandRepository.findAll();
-
-		for (int i = 0; i < resultList.size(); i++) {
-			assertEquals(MessageFormat.format("{0}-{1}-{2}", CaseType.PARKING_PERMIT.getAbbreviation(), String.valueOf(LocalDate.now().getYear()), String.format("%06d", i + 1)), resultList.get(i).getErrandNumber());
-		}
-		resultList.forEach(errand -> assertTrue(errand.getErrandNumber().startsWith(CaseType.PARKING_PERMIT.getAbbreviation())));
 	}
 
-	@ParameterizedTest
-	@EnumSource(CaseType.class)
-	void test4_generateErrandNumberForDifferentAbbreviation(final CaseType caseType) throws JsonProcessingException {
-		final ErrandDTO errandDTO1 = createErrandDTO();
-		errandDTO1.setCaseType(caseType.name());
+	@Test
+	void test04_generateErrandNumberForLostParkingPermit() {
 
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath("/errands")
-			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO1))
+			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
-		final List<Errand> resultList = errandRepository.findAll();
-		resultList.forEach(errand -> assertThat(errand.getErrandNumber()).isNotBlank());
+		setupCall()
+			.withServicePath(PATH + ERRAND_ID)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test05_generateErrandNumberForParkingPermitRenewal() throws JsonProcessingException {
+
+		setupCall()
+			.withHttpMethod(POST)
+			.withServicePath("/errands")
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(CREATED)
+			.sendRequest();
+
+		setupCall()
+			.withServicePath(PATH + ERRAND_ID)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
 	}
 }

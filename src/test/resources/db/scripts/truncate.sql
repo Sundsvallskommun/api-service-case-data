@@ -3,7 +3,11 @@ SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE table attachment;
 TRUNCATE table attachment_extra_parameters;
 
---TRUNCATE table decision;
+TRUNCATE table appeal;
+
+TRUNCATE table decision;
+TRUNCATE table decision_extra_parameters;
+TRUNCATE table decision_laws;
 
 TRUNCATE table errand;
 TRUNCATE table errand_extra_parameters;

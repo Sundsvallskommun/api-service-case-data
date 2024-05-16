@@ -1,0 +1,30 @@
+{
+	"externalCaseId": "externalCaseId",
+	"caseType": "ANMALAN_ATTEFALL",
+	"priority": "LOW",
+	"description": "Changed description",
+	"caseTitleAddition": "Changed case title addition",
+	"diaryNumber": "DIARY-456",
+	"phase": "IN_PROGRESS",
+	"municipalityId": "MunicipalityId",
+	"startDate": "2024-05-01",
+	"endDate": "2024-05-09",
+	"applicationReceived": "2024-01-23T11:04:04.317+02:00",
+	"facilities": [
+		{
+			"version": 0,
+			"description": "Changed test facility",
+			"address": {
+				"addressCategory": "INVOICE_ADDRESS",
+				"propertyDesignation": "Changed Test 84:652"
+			},
+			"facilityCollectionName": "Changed Test facility collection",
+			"mainFacility": false,
+			"facilityType": "FACILITY_TYPE_1",
+			"extraParameters": {}
+		}
+	],
+	"extraParameters": {
+		"testChanged": "testChanged"
+	}
+}
