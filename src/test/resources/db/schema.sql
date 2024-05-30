@@ -48,8 +48,8 @@
         valid_from datetime(6),
         valid_to datetime(6),
         description text,
-        decision_outcome enum ('APPROVAL','REJECTION','DISMISSAL','CANCELLATION'),
-        decision_type enum ('RECOMMENDED','PROPOSED','FINAL'),
+        decision_outcome enum ('APPROVAL','CANCELLATION','DISMISSAL','REJECTION'),
+        decision_type enum ('FINAL','PROPOSED','RECOMMENDED'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -73,7 +73,7 @@
     create table email_header (
         id bigint not null auto_increment,
         message_id varchar(255),
-        header enum ('IN_REPLY_TO','REFERENCES','MESSAGE_ID'),
+        header enum ('IN_REPLY_TO','MESSAGE_ID','REFERENCES'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -105,8 +105,8 @@
         phase varchar(255),
         process_id varchar(255),
         updated_by_client varchar(255),
-        channel enum ('ESERVICE','EMAIL','WEB_UI','MOBILE','SYSTEM'),
-        priority enum ('HIGH','MEDIUM','LOW'),
+        channel enum ('EMAIL','ESERVICE','MOBILE','SYSTEM','WEB_UI'),
+        priority enum ('HIGH','LOW','MEDIUM'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -149,7 +149,7 @@
         postal_code varchar(255),
         property_designation varchar(255),
         street varchar(255),
-        address_category enum ('POSTAL_ADDRESS','INVOICE_ADDRESS','VISITING_ADDRESS'),
+        address_category enum ('INVOICE_ADDRESS','POSTAL_ADDRESS','VISITING_ADDRESS'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -175,7 +175,7 @@
         subject varchar(255),
         userid varchar(255),
         username varchar(255),
-        classification enum ('INFORMATION','COMPLETION_REQUEST','OBTAIN_OPINION','INTERNAL_COMMUNICATION','OTHER'),
+        classification enum ('COMPLETION_REQUEST','INFORMATION','INTERNAL_COMMUNICATION','OBTAIN_OPINION','OTHER'),
         direction enum ('INBOUND','OUTBOUND'),
         message longtext,
         primary key (messageid)
@@ -230,7 +230,7 @@
         organization_name varchar(255),
         organization_number varchar(255),
         person_id varchar(255),
-        type enum ('PERSON','ORGANIZATION'),
+        type enum ('ORGANIZATION','PERSON'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -250,7 +250,7 @@
         postal_code varchar(255),
         property_designation varchar(255),
         street varchar(255),
-        address_category enum ('POSTAL_ADDRESS','INVOICE_ADDRESS','VISITING_ADDRESS'),
+        address_category enum ('INVOICE_ADDRESS','POSTAL_ADDRESS','VISITING_ADDRESS'),
         primary key (address_order, stakeholder_id)
     ) engine=InnoDB;
 
@@ -258,7 +258,7 @@
         contact_information_order integer not null,
         stakeholder_id bigint not null,
         value varchar(255),
-        contact_type enum ('CELLPHONE','PHONE','EMAIL'),
+        contact_type enum ('CELLPHONE','EMAIL','PHONE'),
         primary key (contact_information_order, stakeholder_id)
     ) engine=InnoDB;
 
@@ -280,7 +280,7 @@
        on attachment (errand_number);
 
     alter table if exists decision 
-       add constraint UK_j00sxiyx1fhmcdofxuugumdon unique (decided_by_id);
+       add constraint UKj00sxiyx1fhmcdofxuugumdon unique (decided_by_id);
 
     alter table if exists errand 
        add constraint UK_errand_errand_number unique (errand_number);
