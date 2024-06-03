@@ -77,7 +77,6 @@ integration:
     base-url: ${config.web-message-collector.base-url}
     connectTimeout: 5
     readTimeout: 20
-    family-ids: [ "123" ]
   email-reader:
     base-url: ${config.email-reader.base-url}
     connectTimeout: 5

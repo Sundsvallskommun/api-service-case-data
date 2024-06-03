@@ -1,5 +1,7 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
+import static java.util.Collections.emptyMap;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -88,9 +90,14 @@ public class WebMessageCollectorService {
 	}
 
 	private List<MessageDTO> getMessages() {
-		return webMessageCollectorProperties.familyIds().stream()
-			.flatMap(familyId -> webMessageCollectorClient.getMessages(familyId).stream()).toList();
 
+		return Optional.ofNullable(webMessageCollectorProperties.familyIds())
+			.orElse(emptyMap())
+			.entrySet().stream()
+			.flatMap(entry -> entry.getValue().stream()
+				.flatMap(familyId -> webMessageCollectorClient.getMessages(familyId, entry.getKey())
+					.stream()))
+			.toList();
 	}
 
 	private void deleteMessages(final List<Integer> ids) {
