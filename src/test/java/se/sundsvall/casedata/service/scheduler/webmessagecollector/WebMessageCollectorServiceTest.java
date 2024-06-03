@@ -10,6 +10,7 @@ import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -93,6 +94,8 @@ class WebMessageCollectorServiceTest {
 	void getAndProcessMessages() throws SQLException {
 
 		// Arrange
+		final var familyId = "123";
+		final var instance = "instance";
 		final var externalCaseId = "someExternalCaseId";
 		final var errandNumber = "someErrandNumber";
 		final var messageDTOs = createMessages();
@@ -102,10 +105,10 @@ class WebMessageCollectorServiceTest {
 		final var blob = new SerialBlob(bytes);
 		final var attachmentData = MessageAttachmentData.builder().withFile(blob).build();
 
-		when(webMessageCollectorClientMock.getMessages(any(String.class))).thenReturn(messageDTOs);
+		when(webMessageCollectorClientMock.getMessages(familyId, instance)).thenReturn(messageDTOs);
 
 		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(Errand.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).build()));
-		when(webMessageCollectorProperties.familyIds()).thenReturn(List.of("123"));
+		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(instance, List.of(familyId)));
 		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst())).thenReturn(message);
 		when(messageRepositoryMock.saveAndFlush(any(Message.class))).thenReturn(message);
 
@@ -120,7 +123,7 @@ class WebMessageCollectorServiceTest {
 		webMessageCollectorService.getAndProcessMessages();
 
 		// Assert
-		verify(webMessageCollectorClientMock).getMessages(any(String.class));
+		verify(webMessageCollectorClientMock).getMessages(familyId, instance);
 		verify(webMessageCollectorClientMock).deleteMessages(any());
 		verify(messageRepositoryMock).saveAndFlush(messageCaptor.capture());
 		assertThat(messageCaptor.getValue()).satisfies(WebMessageCollectorServiceTest::assertSavedMessageHasCorrectValues);
@@ -143,12 +146,18 @@ class WebMessageCollectorServiceTest {
 
 	@Test
 	void getAndProcessMessagesWhenNonMatchingErrandExists() {
-		when(webMessageCollectorClientMock.getMessages(any(String.class))).thenReturn(createMessages());
-		when(webMessageCollectorProperties.familyIds()).thenReturn(List.of("123"));
 
+		// Arrange
+		final var familyId = "123";
+		final var instance = "instance";
+		when(webMessageCollectorClientMock.getMessages(familyId, instance)).thenReturn(createMessages());
+		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(instance, List.of(familyId)));
+
+		// Act
 		webMessageCollectorService.getAndProcessMessages();
 
-		verify(webMessageCollectorClientMock).getMessages(any(String.class));
+		// Assert
+		verify(webMessageCollectorClientMock).getMessages(familyId, instance);
 		verify(webMessageCollectorClientMock).deleteMessages(any());
 		verify(messageRepositoryMock, never()).saveAndFlush(any());
 		verify(messageMapperMock, never()).toMessageEntity(any(), any());

@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ class WebMessageCollectorPropertiesTest {
 	void testProperties() {
 		assertThat(properties.connectTimeout()).isEqualTo(5);
 		assertThat(properties.readTimeout()).isEqualTo(20);
-		assertThat(properties.familyIds()).isEqualTo(List.of("123"));
+		assertThat(properties.familyIds()).isEqualTo(Map.of("internal", List.of("123")));
 	}
 
 }
