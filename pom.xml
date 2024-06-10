@@ -20,7 +20,7 @@
 		</generated-sources-path>
 		<generated-sources-java-path>src/main/java</generated-sources-java-path>
 		<!-- Dependencies -->
-		<javers.version>7.4.4</javers.version>
+		<javers.version>7.4.5</javers.version>
 		<spring-filter.version>3.1.7</spring-filter.version>
 		<shedlock.version>5.13.0</shedlock.version>
 		<!-- Jenkins pipeline -->
