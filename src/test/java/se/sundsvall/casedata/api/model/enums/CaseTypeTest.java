@@ -17,6 +17,7 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_APPL
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_SMALL_HOUSE_PLOT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_EARLY_DIALOG_PLAN_NOTIFICATION;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_FORWARDED_FROM_CONTACTSUNDSVALL;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_INVOICE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_INSTRUCTION;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_RIGHT;
@@ -72,7 +73,8 @@ class CaseTypeTest {
 			MEX_INVOICE,
 			MEX_REQUEST_FOR_PUBLIC_DOCUMENT,
 			MEX_TERMINATION_OF_LEASE,
-			MEX_TERMINATION_OF_HUNTING_LEASE);
+			MEX_TERMINATION_OF_HUNTING_LEASE,
+			MEX_FORWARDED_FROM_CONTACTSUNDSVALL);
 	}
 
 	@Test
@@ -120,6 +122,7 @@ class CaseTypeTest {
 		assertThat(MEX_REQUEST_FOR_PUBLIC_DOCUMENT).hasToString("MEX_REQUEST_FOR_PUBLIC_DOCUMENT");
 		assertThat(MEX_TERMINATION_OF_LEASE).hasToString("MEX_TERMINATION_OF_LEASE");
 		assertThat(MEX_TERMINATION_OF_HUNTING_LEASE).hasToString("MEX_TERMINATION_OF_HUNTING_LEASE");
+		assertThat(MEX_FORWARDED_FROM_CONTACTSUNDSVALL).hasToString("MEX_FORWARDED_FROM_CONTACTSUNDSVALL");
 	}
 
 
@@ -159,7 +162,8 @@ class CaseTypeTest {
 			MEX_INVOICE,
 			MEX_REQUEST_FOR_PUBLIC_DOCUMENT,
 			MEX_TERMINATION_OF_LEASE,
-			MEX_TERMINATION_OF_HUNTING_LEASE);
+			MEX_TERMINATION_OF_HUNTING_LEASE,
+			MEX_FORWARDED_FROM_CONTACTSUNDSVALL);
 	}
 
 	@Test
