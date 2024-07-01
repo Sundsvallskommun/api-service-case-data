@@ -20,14 +20,12 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.ErrandDTO;
@@ -41,6 +39,8 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 @WireMockAppTestSuite(files = "classpath:/ErrandListenerIT", classes = Application.class)
 class ErrandListenerIT extends CustomAbstractAppTest {
 
+	private static final String PATH = "/2281/errands";
+
 	@Autowired
 	private ErrandRepository errandRepository;
 
@@ -53,7 +53,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 	void test1_persistErrandUnknown() throws JsonProcessingException {
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath("/errands")
+			.withServicePath(PATH)
 			.withRequest(OBJECT_MAPPER.writeValueAsString(createErrandDTO()))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
@@ -72,7 +72,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 	void test2_updateErrand() throws JsonProcessingException {
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath("/errands")
+			.withServicePath(PATH)
 			.withRequest(OBJECT_MAPPER.writeValueAsString(createErrandDTO()))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
@@ -84,7 +84,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(PATCH)
-			.withServicePath(MessageFormat.format("/errands/{0}", errandBeforePatch.getId()))
+			.withServicePath(MessageFormat.format(PATH + "/{0}", errandBeforePatch.getId()))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(Constants.AD_USER_HEADER_KEY, "PatchUser")
 			.withRequest(OBJECT_MAPPER.writeValueAsString(patchErrandDTO))
@@ -104,7 +104,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 		errandDTO1.setCaseType(CaseType.PARKING_PERMIT.name());
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath("/errands")
+			.withServicePath(PATH)
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO1))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
@@ -112,8 +112,8 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 		final ErrandDTO errandDTO2 = createErrandDTO();
 		errandDTO2.setCaseType(CaseType.LOST_PARKING_PERMIT.name());
 		setupCall()
-			.withHttpMethod(HttpMethod.POST)
-			.withServicePath("/errands")
+			.withHttpMethod(POST)
+			.withServicePath(PATH)
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO2))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
@@ -122,7 +122,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 		errandDTO3.setCaseType(CaseType.PARKING_PERMIT_RENEWAL.name());
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath("/errands")
+			.withServicePath(PATH)
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO3))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
@@ -143,7 +143,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath("/errands")
+			.withServicePath(PATH)
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO1))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();

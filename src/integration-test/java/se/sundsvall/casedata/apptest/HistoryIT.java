@@ -25,7 +25,7 @@ class HistoryIT extends AbstractAppTest {
 	void test01_getErrandHistory() {
 		setupCall()
 			.withHttpMethod(HttpMethod.GET)
-			.withServicePath(MessageFormat.format("/errands/{0}/history", 1L))
+			.withServicePath(MessageFormat.format("/2281/errands/{0}/history", 1L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
@@ -35,7 +35,7 @@ class HistoryIT extends AbstractAppTest {
 	void test02_getAttachmentHistory() {
 		setupCall()
 			.withHttpMethod(HttpMethod.GET)
-			.withServicePath(MessageFormat.format("/attachments/{0}/history", 2L))
+			.withServicePath(MessageFormat.format("/2281/attachments/{0}/history", 2L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
@@ -45,7 +45,7 @@ class HistoryIT extends AbstractAppTest {
 	void test03_getDecisionHistory() {
 		setupCall()
 			.withHttpMethod(HttpMethod.GET)
-			.withServicePath(MessageFormat.format("/decisions/{0}/history", 3L))
+			.withServicePath(MessageFormat.format("/2281/decisions/{0}/history", 3L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
@@ -55,7 +55,7 @@ class HistoryIT extends AbstractAppTest {
 	void test04_getFacilitiesHistory() {
 		setupCall()
 			.withHttpMethod(HttpMethod.GET)
-			.withServicePath(MessageFormat.format("/facilities/{0}/history", 4L))
+			.withServicePath(MessageFormat.format("/2281/facilities/{0}/history", 4L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
@@ -65,7 +65,7 @@ class HistoryIT extends AbstractAppTest {
 	void test05_getNotesHistory() {
 		setupCall()
 			.withHttpMethod(HttpMethod.GET)
-			.withServicePath(MessageFormat.format("/notes/{0}/history", 5L))
+			.withServicePath(MessageFormat.format("/2281/notes/{0}/history", 5L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
@@ -75,7 +75,7 @@ class HistoryIT extends AbstractAppTest {
 	void test06_getStakeholdersHistory() {
 		setupCall()
 			.withHttpMethod(HttpMethod.GET)
-			.withServicePath(MessageFormat.format("/stakeholders/{0}/history", 6L))
+			.withServicePath(MessageFormat.format("/2281/stakeholders/{0}/history", 6L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();

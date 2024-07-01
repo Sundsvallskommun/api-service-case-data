@@ -17,7 +17,7 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class ParkingPermitIT extends AbstractAppTest {
 
-	private static final String PATH = "/parking-permits";
+	private static final String PATH = "/2281/parking-permits";
 	private static final String EXPECTED_FILE = "expected.json";
 
 	@Test

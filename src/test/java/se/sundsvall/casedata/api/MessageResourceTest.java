@@ -28,7 +28,9 @@ import se.sundsvall.casedata.service.MessageService;
 @ActiveProfiles("junit")
 class MessageResourceTest {
 
-	private static final String GET_MESSAGES_PATH = "messages/{errandNumber}";
+	private static final String BASE_URL = "/{municipalityId}/messages";
+	private static final String MUNICIPALITY_ID = "2281";
+
 	private static final String PATCH_MESSAGE_PATH = "messages";
 	private static final String SET_VIEWED_PATH = "messages/{messageID}/viewed/{isViewed}";
 
@@ -49,8 +51,8 @@ class MessageResourceTest {
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path(GET_MESSAGES_PATH)
-				.build(Map.of("errandNumber", errandNumber)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandNumber}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandNumber", errandNumber)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -70,7 +72,7 @@ class MessageResourceTest {
 
 		// Act
 		webTestClient.post()
-			.uri(PATCH_MESSAGE_PATH)
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID))
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.bodyValue(request)
 			.exchange()
@@ -90,8 +92,9 @@ class MessageResourceTest {
 
 		// Act
 		webTestClient.put()
-			.uri(uriBuilder -> uriBuilder.path(SET_VIEWED_PATH)
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{messageID}/viewed/{isViewed}")
 				.build(Map.of(
+					"municipalityId", MUNICIPALITY_ID,
 					"messageID", messageID,
 					"isViewed", isViewed)))
 			.exchange()

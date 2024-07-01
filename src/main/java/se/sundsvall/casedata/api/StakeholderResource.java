@@ -26,6 +26,7 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.service.StakeholderService;
+import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,7 +36,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Validated
-@RequestMapping("/stakeholders")
+@RequestMapping("/{municipalityId}/stakeholders")
 @Tag(name = "Stakeholders", description = "Stakeholder operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
@@ -49,22 +50,32 @@ class StakeholderResource {
 	}
 
 	@Operation(description = "Get stakeholder by ID.")
-	@GetMapping(path = "/{id}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@GetMapping(path = "/{stakeholderId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<StakeholderDTO> getStakeholders(@PathVariable final Long id) {
-		return ok(stakeholderService.findById(id));
+	ResponseEntity<StakeholderDTO> getStakeholders(
+		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@PathVariable(name = "stakeholderId") final Long stakeholderId) {
+
+		return ok(stakeholderService.findById(stakeholderId));
 	}
 
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<List<StakeholderDTO>> getStakeholders(@RequestParam(required = false) final Optional<String> stakeholderRole) {
+	ResponseEntity<List<StakeholderDTO>> getStakeholders(
+		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@RequestParam(required = false) final Optional<String> stakeholderRole) {
+
 		return stakeholderRole.map(role -> ok(stakeholderService.findStakeholdersByRole(role))).orElseGet(() -> ok(stakeholderService.findAllStakeholders()));
 	}
 
 	@Operation(description = "Update stakeholder.")
 	@PatchMapping(path = "/{stakeholderId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> patchStakeholder(@PathVariable final Long stakeholderId, @RequestBody @Valid final StakeholderDTO stakeholderDTO) {
+	ResponseEntity<Void> patchStakeholder(
+		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@PathVariable(name = "stakeholderId") final Long stakeholderId,
+		@RequestBody @Valid final StakeholderDTO stakeholderDTO) {
+
 		stakeholderService.patch(stakeholderId, stakeholderDTO);
 		return noContent().build();
 	}
@@ -72,7 +83,11 @@ class StakeholderResource {
 	@Operation(description = "Replace stakeholder.")
 	@PutMapping(path = "/{stakeholderId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> putStakeholder(@PathVariable final Long stakeholderId, @RequestBody @Valid final StakeholderDTO stakeholderDTO) {
+	ResponseEntity<Void> putStakeholder(
+		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@PathVariable(name = "stakeholderId") final Long stakeholderId,
+		@RequestBody @Valid final StakeholderDTO stakeholderDTO) {
+
 		stakeholderService.put(stakeholderId, stakeholderDTO);
 		return noContent().build();
 	}

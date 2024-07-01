@@ -36,7 +36,6 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getCaseTitleAddition()).ifPresent(errand::setCaseTitleAddition);
 		Optional.ofNullable(patch.getDiaryNumber()).ifPresent(errand::setDiaryNumber);
 		Optional.ofNullable(patch.getPhase()).ifPresent(errand::setPhase);
-		Optional.ofNullable(patch.getMunicipalityId()).ifPresent(errand::setMunicipalityId);
 		Optional.ofNullable(patch.getStartDate()).ifPresent(errand::setStartDate);
 		Optional.ofNullable(patch.getEndDate()).ifPresent(errand::setEndDate);
 		Optional.ofNullable(patch.getApplicationReceived()).ifPresent(errand::setApplicationReceived);
@@ -110,7 +109,7 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getAddress()).ifPresent(obj -> facility.setAddress(toAddress(obj)));
 		Optional.ofNullable(patch.getFacilityCollectionName()).ifPresent(facility::setFacilityCollectionName);
 		Optional.ofNullable(patch.getFacilityType()).ifPresent(facility::setFacilityType);
-		Optional.ofNullable(patch.isMainFacility()).ifPresent(facility::setMainFacility);
+		Optional.of(patch.isMainFacility()).ifPresent(facility::setMainFacility);
 		return facility;
 	}
 }

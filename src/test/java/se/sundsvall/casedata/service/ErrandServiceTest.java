@@ -1,41 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import com.turkraft.springfilter.converter.FilterSpecificationConverter;
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.zalando.problem.ThrowableProblem;
-import se.sundsvall.casedata.api.model.PatchErrandDTO;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.Address;
-import se.sundsvall.casedata.integration.db.model.Appeal;
-import se.sundsvall.casedata.integration.db.model.Decision;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.Stream;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,6 +30,43 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityDto;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.Stream;
+
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.zalando.problem.ThrowableProblem;
+
+import se.sundsvall.casedata.api.model.PatchErrandDTO;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.FacilityRepository;
+import se.sundsvall.casedata.integration.db.model.Address;
+import se.sundsvall.casedata.integration.db.model.Decision;
+import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+
 @ExtendWith(MockitoExtension.class)
 class ErrandServiceTest {
 
@@ -86,12 +87,6 @@ class ErrandServiceTest {
 
 	@Captor
 	private ArgumentCaptor<List<Long>> idListCapture;
-
-	@Captor
-	private ArgumentCaptor<Errand> errandCaptor;
-
-	@Captor
-	private ArgumentCaptor<Appeal> appealCaptor;
 
 	@Test
 	void postWhenParkingPermit() {
@@ -326,7 +321,6 @@ class ErrandServiceTest {
 			assertThat(e.getCaseTitleAddition()).isEqualTo(patch.getCaseTitleAddition());
 			assertThat(e.getDiaryNumber()).isEqualTo(patch.getDiaryNumber());
 			assertThat(e.getPhase()).isEqualTo(patch.getPhase());
-			assertThat(e.getMunicipalityId()).isEqualTo(patch.getMunicipalityId());
 			assertThat(e.getStartDate()).isEqualTo(patch.getStartDate());
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
 			assertThat(e.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());

@@ -1,11 +1,26 @@
 package se.sundsvall.casedata;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.function.Consumer;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import org.apache.commons.lang3.RandomStringUtils;
+
 import se.sundsvall.casedata.api.model.AddressDTO;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
@@ -49,20 +64,7 @@ import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitClient;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.function.Consumer;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 
 public class TestUtil {
 
@@ -327,7 +329,6 @@ public class TestUtil {
 			.withCaseTitleAddition("caseTitleAddition")
 			.withDiaryNumber("diaryNumber")
 			.withPhase("phase")
-			.withMunicipalityId("municipalityId")
 			.withStartDate(LocalDate.now())
 			.withEndDate(LocalDate.now())
 			.withApplicationReceived(getRandomOffsetDateTime())

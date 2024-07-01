@@ -11,6 +11,8 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,21 +28,22 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
+import se.sundsvall.casedata.api.model.AttachmentDTO;
+import se.sundsvall.casedata.service.AttachmentService;
+import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import se.sundsvall.casedata.api.model.AttachmentDTO;
-import se.sundsvall.casedata.service.AttachmentService;
 
 @RestController
 @Validated
-@RequestMapping("/attachments")
+@RequestMapping("/{municipalityId}/attachments")
 @Tag(name = "Attachments", description = "Attachment operations")
-@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = { Problem.class, ConstraintViolationProblem.class })))
+@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 class AttachmentResource {
@@ -51,41 +54,58 @@ class AttachmentResource {
 		this.attachmentService = attachmentService;
 	}
 
-	@Operation(description = "Get attachment by ID.")
-	@GetMapping(path = "/{id}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	@Operation(description = "Get attachment by attachment id.")
+	@GetMapping(path = "/{attachmentId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<AttachmentDTO> getAttachments(@PathVariable final Long id) {
-		return ok(attachmentService.findById(id));
+	ResponseEntity<AttachmentDTO> getAttachments(
+		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@PathVariable(name = "attachmentId") final Long attachmentId) {
+
+		return ok(attachmentService.findById(attachmentId));
 	}
 
 	@Operation(description = "Get attachment by errandnumber.")
-	@GetMapping(path = "/errand/{errand_number}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	@GetMapping(path = "/errand/{errandNumber}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<List<AttachmentDTO>> getAttachmentsByErrandNumber(@PathVariable("errand_number") final String errandNumber) {
+	ResponseEntity<List<AttachmentDTO>> getAttachmentsByErrandNumber(
+		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@PathVariable("errandNumber") final String errandNumber) {
+
 		return ok(attachmentService.findByErrandNumber(errandNumber));
 	}
 
 	@Operation(description = "Create attachment")
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
-	ResponseEntity<Void> postAttachment(@RequestBody @Valid final AttachmentDTO attachmentDTO) {
+	ResponseEntity<Void> postAttachment(
+		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
+
 		final var result = attachmentService.createAttachment(attachmentDTO);
-		return created(fromPath("/attachments/{id}").buildAndExpand(result.getId()).toUri())
+		return created(fromPath("/{municipalityId}/attachments/{id}").buildAndExpand(municipalityId, result.getId()).toUri())
 			.build();
 	}
 
 	@Operation(description = "Replace attachment.")
-	@PutMapping(path = "/{attachmentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@PutMapping(path = "/{attachmentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> putAttachmentOnErrand(@PathVariable final Long attachmentId, @RequestBody @Valid final AttachmentDTO attachmentDTO) {
+	ResponseEntity<Void> putAttachmentOnErrand(
+		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@PathVariable(name = "attachmentId") final Long attachmentId,
+		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
+
 		attachmentService.replaceAttachment(attachmentId, attachmentDTO);
 		return noContent().build();
 	}
 
 	@Operation
-	@PatchMapping(path = "/{attachmentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
+	@PatchMapping(path = "/{attachmentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> patchAttachment(@PathVariable final Long attachmentId, @RequestBody @Valid final AttachmentDTO attachmentDTO) {
+	ResponseEntity<Void> patchAttachment(
+		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@PathVariable(name = "attachmentId") final Long attachmentId,
+		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
+
 		attachmentService.updateAttachment(attachmentId, attachmentDTO);
 		return noContent().build();
 	}
@@ -93,7 +113,10 @@ class AttachmentResource {
 	@Operation
 	@DeleteMapping(path = "/{attachmentId}")
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> deleteAttachment(@PathVariable final Long attachmentId) {
+	ResponseEntity<Void> deleteAttachment(
+		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@PathVariable(name = "attachmentId") final Long attachmentId) {
+
 		if (attachmentService.deleteAttachment(attachmentId)) {
 			return ResponseEntity.noContent().build();
 		}

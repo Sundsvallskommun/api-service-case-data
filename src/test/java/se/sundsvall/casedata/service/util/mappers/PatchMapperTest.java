@@ -46,7 +46,6 @@ class PatchMapperTest {
 			assertThat(e.getCaseTitleAddition()).isEqualTo(patch.getCaseTitleAddition());
 			assertThat(e.getDiaryNumber()).isEqualTo(patch.getDiaryNumber());
 			assertThat(e.getPhase()).isEqualTo(patch.getPhase());
-			assertThat(e.getMunicipalityId()).isEqualTo(patch.getMunicipalityId());
 			assertThat(e.getStartDate()).isEqualTo(patch.getStartDate());
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
 			assertThat(e.getApplicationReceived()).isEqualTo(patch.getApplicationReceived());

@@ -27,7 +27,7 @@ class MessageIT extends AbstractAppTest {
 
 	private static final String MESSAGE_ID = "a8883fb9-60b4-4f38-9f48-642070ff49ee";
 	private static final String ERRAND_NUMBER = "ERRAND-NUMBER-1";
-	private static final String PATH = "/messages";
+	private static final String PATH = "/2281/messages";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
 

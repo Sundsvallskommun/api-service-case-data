@@ -1,22 +1,5 @@
 package se.sundsvall.casedata.api;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.DecisionDTO;
-import se.sundsvall.casedata.api.model.FacilityDTO;
-import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
-import se.sundsvall.casedata.service.ErrandService;
-
-import java.util.List;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -29,9 +12,31 @@ import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
 
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.DecisionDTO;
+import se.sundsvall.casedata.api.model.FacilityDTO;
+import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
+import se.sundsvall.casedata.service.ErrandService;
+
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ErrandResourceTest {
+
+	private static final String BASE_URL = "/{municipalityId}/errands";
+
+	private static final String MUNICIPALITY_ID = "2281";
 
 	private static final String PATH = "errands";
 
@@ -46,8 +51,8 @@ class ErrandResourceTest {
 		final var errandId = 123L;
 
 		webTestClient.delete()
-			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}")
-				.build(Map.of("errandId", errandId)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId)))
 			.exchange()
 			.expectStatus().isNoContent();
 
@@ -61,8 +66,8 @@ class ErrandResourceTest {
 		final var decisionId = 456L;
 
 		webTestClient.delete()
-			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/decisions/{decisionId}")
-				.build(Map.of("errandId", errandId, "decisionId", decisionId)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/decisions/{decisionId}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId, "decisionId", decisionId)))
 			.exchange()
 			.expectStatus().isNoContent();
 
@@ -76,8 +81,8 @@ class ErrandResourceTest {
 		final var noteId = 456L;
 
 		webTestClient.delete()
-			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/notes/{noteId}")
-				.build(Map.of("errandId", errandId, "noteId", noteId)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/notes/{noteId}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId, "noteId", noteId)))
 			.exchange()
 			.expectStatus().isNoContent();
 
@@ -91,8 +96,8 @@ class ErrandResourceTest {
 		final var facilityId = 456L;
 
 		webTestClient.delete()
-			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities/{facilityId}")
-				.build(Map.of("errandId", errandId, "facilityId", facilityId)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities/{facilityId}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId, "facilityId", facilityId)))
 			.exchange()
 			.expectStatus().isNoContent();
 
@@ -108,8 +113,8 @@ class ErrandResourceTest {
 		when(errandServiceMock.findDecisionsOnErrand(errandId)).thenReturn(List.of(decisionDto));
 
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/decisions")
-				.build(Map.of("errandId", errandId)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/decisions")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBodyList(DecisionDTO.class)
@@ -129,8 +134,8 @@ class ErrandResourceTest {
 		when(errandServiceMock.findFacilitiesOnErrand(errandId)).thenReturn(List.of(facilityDto));
 
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities")
-				.build(Map.of("errandId", errandId)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBodyList(FacilityDTO.class)
@@ -151,8 +156,8 @@ class ErrandResourceTest {
 		when(errandServiceMock.findFacilityOnErrand(errandId, facilityId)).thenReturn(facilityDto);
 
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities/{facilityId}")
-				.build(Map.of("errandId", errandId, "facilityId", facilityId)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities/{facilityId}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId, "facilityId", facilityId)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(FacilityDTO.class)
@@ -177,13 +182,13 @@ class ErrandResourceTest {
 		when(errandServiceMock.createErrand(body)).thenReturn(body);
 
 		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path("/errands").build())
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/errands/" + body.getId());
+			.expectHeader().location("/2281/errands/" + body.getId());
 
 		verify(errandServiceMock).createErrand(body);
 	}
@@ -197,14 +202,14 @@ class ErrandResourceTest {
 		when(errandServiceMock.createFacility(errandId, facilityDTO)).thenReturn(facilityDTO);
 
 		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities")
-				.build(Map.of("errandId", errandId)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(facilityDTO)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/errands/" + errandId + "/facilities/" + facilityDTO.getId());
+			.expectHeader().location("/2281/errands/" + errandId + "/facilities/" + facilityDTO.getId());
 
 		verify(errandServiceMock).createFacility(errandId, facilityDTO);
 	}
@@ -218,8 +223,8 @@ class ErrandResourceTest {
 		when(errandServiceMock.updateFacilityOnErrand(errandId, facilityId, facilityDTO)).thenReturn(facilityDTO);
 
 		webTestClient.patch()
-			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities/{facilityId}")
-				.build(Map.of("errandId", errandId, "facilityId", facilityId)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities/{facilityId}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId, "facilityId", facilityId)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(facilityDTO)
 			.exchange()
@@ -241,8 +246,8 @@ class ErrandResourceTest {
 		final var facilityDTOs = List.of(facilityDTO_1, facilityDTO_2);
 
 		webTestClient.put()
-			.uri(uriBuilder -> uriBuilder.path(PATH + "/{errandId}/facilities")
-				.build(Map.of("errandId", errandId)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(facilityDTOs)
 			.exchange()
@@ -261,13 +266,13 @@ class ErrandResourceTest {
 		when(errandServiceMock.addAppealToErrand(errandId, body)).thenReturn(body);
 
 		webTestClient.patch()
-			.uri(uriBuilder -> uriBuilder.path("/errands/{errandId}/appeals").build(errandId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/appeals").build(MUNICIPALITY_ID, errandId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/appeals/" + appealId);
+			.expectHeader().location("/2281/appeals/" + appealId);
 
 		verify(errandServiceMock).addAppealToErrand(errandId, body);
 	}

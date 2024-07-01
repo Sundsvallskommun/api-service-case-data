@@ -71,7 +71,7 @@ public class ErrandDTO extends BaseDTO {
 	@Builder.Default
 	private List<StatusDTO> statuses = new ArrayList<>();
 
-	@Size(max = 255)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private String municipalityId;
 
 	@Schema(description = "Start date for the business.", format = "date", example = "2022-01-01")

@@ -51,7 +51,6 @@ class PatchErrandDTOTest {
 		final var caseTitleAddition = "abc";
 		final var diaryNumber = "abc";
 		final var phase = "Aktualisering";
-		final var municipalityId = "123";
 		final var startDate = LocalDate.now();
 		final var endDate = LocalDate.now();
 		final var applicationReceived = OffsetDateTime.now();
@@ -67,7 +66,6 @@ class PatchErrandDTOTest {
 			.withCaseTitleAddition(caseTitleAddition)
 			.withDiaryNumber(diaryNumber)
 			.withPhase(phase)
-			.withMunicipalityId(municipalityId)
 			.withStartDate(startDate)
 			.withEndDate(endDate)
 			.withApplicationReceived(applicationReceived)
@@ -84,7 +82,6 @@ class PatchErrandDTOTest {
 		assertThat(dto.getCaseTitleAddition()).isEqualTo(caseTitleAddition);
 		assertThat(dto.getDiaryNumber()).isEqualTo(diaryNumber);
 		assertThat(dto.getPhase()).isEqualTo(phase);
-		assertThat(dto.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(dto.getStartDate()).isEqualTo(startDate);
 		assertThat(dto.getEndDate()).isEqualTo(endDate);
 		assertThat(dto.getApplicationReceived()).isEqualTo(applicationReceived);

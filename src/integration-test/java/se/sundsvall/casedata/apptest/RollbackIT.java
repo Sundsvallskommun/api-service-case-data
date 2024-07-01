@@ -9,10 +9,9 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_
 
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -35,7 +34,7 @@ class RollbackIT extends CustomAbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath("/errands")
+			.withServicePath("/2281/errands")
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO))
 			.withExpectedResponseStatus(INTERNAL_SERVER_ERROR)
 			.sendRequestAndVerifyResponse();

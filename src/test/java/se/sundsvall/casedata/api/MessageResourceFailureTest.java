@@ -22,7 +22,8 @@ import se.sundsvall.casedata.service.MessageService;
 @ActiveProfiles("junit")
 class MessageResourceFailureTest {
 
-	private static final String PATH = "messages";
+	private static final String PATH = "/{municipalityId}/messages";
+	private static final String MUNICIPALITY_ID = "2281";
 
 	@MockBean
 	private MessageService messageServiceMock;
@@ -34,7 +35,7 @@ class MessageResourceFailureTest {
 	void patchMessageWithNoBody() {
 		// Act
 		final var response = webTestClient.post()
-			.uri(PATH)
+			.uri(uriBuilder -> uriBuilder.path(PATH).build(MUNICIPALITY_ID))
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -48,6 +49,6 @@ class MessageResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
 		assertThat(response.getDetail()).isEqualTo("""
 			Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> \
-			se.sundsvall.casedata.api.MessageResource.patchErrandWithMessage(se.sundsvall.casedata.api.model.MessageRequest)""");
+			se.sundsvall.casedata.api.MessageResource.patchErrandWithMessage(java.lang.String,se.sundsvall.casedata.api.model.MessageRequest)""");
 	}
 }

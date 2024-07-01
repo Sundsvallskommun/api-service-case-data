@@ -1,13 +1,5 @@
 package se.sundsvall.casedata.apptest;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.test.context.jdbc.Sql;
-import se.sundsvall.casedata.Application;
-import se.sundsvall.dept44.test.AbstractAppTest;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
-
-import java.util.Map;
-
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.PUT;
@@ -19,6 +11,15 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.test.context.jdbc.Sql;
+
+import se.sundsvall.casedata.Application;
+import se.sundsvall.dept44.test.AbstractAppTest;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+
 @WireMockAppTestSuite(files = "classpath:/StakeholderIT/", classes = Application.class)
 @Sql({
 	"/db/script/truncate.sql",
@@ -28,7 +29,7 @@ class StakeholderIT extends AbstractAppTest {
 
 	private static final Long STAKEHOLDER_ID = 1L;
 	private static final Long ERRAND_ID = 1L;
-	private static final String PATH = "/stakeholders";
+	private static final String PATH = "/2281/stakeholders";
 	private static final String ERRAND_PATH = "/errands/{id}";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
@@ -107,7 +108,7 @@ class StakeholderIT extends AbstractAppTest {
 	@Test
 	void test06_putStakeholders() {
 		setupCall()
-			.withServicePath(builder -> fromPath(ERRAND_PATH + PATH).build(Map.of("id", ERRAND_ID)))
+			.withServicePath(builder -> fromPath("/2281/errands/{id}/stakeholders").build(Map.of("id", ERRAND_ID)))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PUT)
@@ -117,7 +118,7 @@ class StakeholderIT extends AbstractAppTest {
 			.sendRequest();
 
 		setupCall()
-			.withServicePath(builder -> fromPath(ERRAND_PATH).build(Map.of("id", ERRAND_ID)))
+			.withServicePath(builder -> fromPath("/2281/" + ERRAND_PATH).build(Map.of("id", ERRAND_ID)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)

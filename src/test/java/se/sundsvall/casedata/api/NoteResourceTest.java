@@ -27,6 +27,9 @@ import se.sundsvall.casedata.service.NoteService;
 @ActiveProfiles("junit")
 class NoteResourceTest {
 
+	private static final String BASE_URL = "/{municipalityId}/notes";
+	private static final String MUNICIPALITY_ID = "2281";
+
 	@MockBean
 	private NoteService mockService;
 
@@ -40,7 +43,7 @@ class NoteResourceTest {
 		when(mockService.getNoteById(id)).thenReturn(dto);
 
 		var response = webTestClient.get()
-			.uri(builder -> builder.path("/notes/{id}").build(Map.of("id", id)))
+			.uri(builder -> builder.path(BASE_URL + "/{id}").build(Map.of("municipalityId", MUNICIPALITY_ID, "id", id)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(NoteDTO.class)
@@ -60,9 +63,9 @@ class NoteResourceTest {
 		when(mockService.getNotesByErrandIdAndNoteType(errandId, noteType)).thenReturn(List.of(dto1, dto2));
 
 		var response = webTestClient.get()
-			.uri(builder -> builder.path("/notes/errand/{errandId}")
+			.uri(builder -> builder.path(BASE_URL + "/errand/{errandId}")
 				.queryParam("noteType", noteType)
-				.build(Map.of("errandId", errandId)))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBodyList(NoteDTO.class)
@@ -79,7 +82,8 @@ class NoteResourceTest {
 		doNothing().when(mockService).deleteNoteById(id);
 
 		webTestClient.delete()
-			.uri(builder -> builder.path("/notes/{id}").build(Map.of("id", id)))
+			.uri(builder -> builder.path(BASE_URL + "/{id}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "id", id)))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
@@ -94,7 +98,8 @@ class NoteResourceTest {
 		doNothing().when(mockService).updateNote(id, dto);
 
 		webTestClient.patch()
-			.uri(builder -> builder.path("/notes/{id}").build(Map.of("id", id)))
+			.uri(builder -> builder.path(BASE_URL + "/{id}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "id", id)))
 			.bodyValue(dto)
 			.exchange()
 			.expectStatus().isNoContent()

@@ -1,5 +1,17 @@
 package se.sundsvall.casedata.api;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static se.sundsvall.casedata.TestUtil.createAppealDTO;
+import static se.sundsvall.casedata.TestUtil.createErrandDTO;
+import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -9,26 +21,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.violations.ConstraintViolationProblem;
+
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 import se.sundsvall.casedata.service.ErrandService;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static se.sundsvall.casedata.TestUtil.createAppealDTO;
-import static se.sundsvall.casedata.TestUtil.createErrandDTO;
-import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
-
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ErrandResourceFailureTest {
+
+	private static final String BASE_URL = "/{municipalityId}/errands";
+
+	private static final String MUNICIPALITY_ID = "2281";
 
 	@MockBean
 	private ErrandService errandServiceMock;
@@ -43,7 +48,7 @@ class ErrandResourceFailureTest {
 		body.getExtraParameters().put("longParameter", longExtraParameter);
 
 		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path("/errands").build())
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -65,7 +70,7 @@ class ErrandResourceFailureTest {
 		body.setFacilities(facilities);
 
 		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path("/errands").build())
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -86,7 +91,7 @@ class ErrandResourceFailureTest {
 		facility.setFacilityType(facilityType);
 
 		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path("/errands/{errandId}/facilities").build(errandId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities").build(MUNICIPALITY_ID, errandId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(facility)
 			.exchange()
@@ -110,7 +115,7 @@ class ErrandResourceFailureTest {
 		final var facilities = List.of(facility);
 
 		webTestClient.put()
-			.uri(uriBuilder -> uriBuilder.path("/errands/{errandId}/facilities").build(errandId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities").build(MUNICIPALITY_ID, errandId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(facilities)
 			.exchange()
@@ -131,7 +136,7 @@ class ErrandResourceFailureTest {
 		body.setAppeals(List.of(appeal));
 
 		final var result = webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path("/errands").build())
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -155,7 +160,7 @@ class ErrandResourceFailureTest {
 		body.setTimelinessReview("invalid");
 
 		final var result = webTestClient.patch()
-			.uri(uriBuilder -> uriBuilder.path("/errands/{errandId}/appeals").build(errandId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/appeals").build(MUNICIPALITY_ID, errandId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()

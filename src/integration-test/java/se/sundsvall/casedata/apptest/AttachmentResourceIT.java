@@ -1,6 +1,9 @@
 package se.sundsvall.casedata.apptest;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PATCH;
+import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -32,8 +35,8 @@ class AttachmentResourceIT extends AbstractAppTest {
 	@Test
 	void test01_GetAttachment() {
 		setupCall()
-			.withHttpMethod(HttpMethod.GET)
-			.withServicePath("/attachments/1")
+			.withHttpMethod(GET)
+			.withServicePath("/2281/attachments/1")
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -42,8 +45,8 @@ class AttachmentResourceIT extends AbstractAppTest {
 	@Test
 	void test02_GetAttachmentNotFound() {
 		setupCall()
-			.withHttpMethod(HttpMethod.GET)
-			.withServicePath("/attachments/1000")
+			.withHttpMethod(GET)
+			.withServicePath("/2281/attachments/1000")
 			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -53,7 +56,7 @@ class AttachmentResourceIT extends AbstractAppTest {
 	void test03_PutAttachment() {
 		setupCall()
 			.withHttpMethod(HttpMethod.PUT)
-			.withServicePath("/attachments/1")
+			.withServicePath("/2281/attachments/1")
 			.withRequest(REQUEST_FILE)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(Constants.AD_USER_HEADER_KEY, AD_USER)
@@ -61,8 +64,8 @@ class AttachmentResourceIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withHttpMethod(HttpMethod.GET)
-			.withServicePath("/attachments/1")
+			.withHttpMethod(GET)
+			.withServicePath("/2281/attachments/1")
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -72,7 +75,7 @@ class AttachmentResourceIT extends AbstractAppTest {
 	void test04_PutAttachmentNotFound() {
 		setupCall()
 			.withHttpMethod(HttpMethod.PUT)
-			.withServicePath("/attachments/10")
+			.withServicePath("/2281/attachments/10")
 			.withRequest(REQUEST_FILE)
 			.withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 			.withExpectedResponseStatus(NOT_FOUND)
@@ -84,22 +87,22 @@ class AttachmentResourceIT extends AbstractAppTest {
 	void test05_DeleteAttachmentOnErrand() {
 
 		setupCall()
-			.withHttpMethod(HttpMethod.GET)
-			.withServicePath("/attachments/3")
+			.withHttpMethod(GET)
+			.withServicePath("/2281/attachments/3")
 			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
 			.withHttpMethod(HttpMethod.DELETE)
-			.withServicePath("/attachments/3")
+			.withServicePath("/2281/attachments/3")
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(Constants.AD_USER_HEADER_KEY, AD_USER)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withHttpMethod(HttpMethod.GET)
-			.withServicePath("/attachments/3")
+			.withHttpMethod(GET)
+			.withServicePath("/2281/attachments/3")
 			.withExpectedResponseStatus(NOT_FOUND)
 			.sendRequestAndVerifyResponse();
 	}
@@ -108,7 +111,7 @@ class AttachmentResourceIT extends AbstractAppTest {
 	void test06_DeleteAttachmentOnErrandNotFound() {
 		setupCall()
 			.withHttpMethod(HttpMethod.DELETE)
-			.withServicePath("/attachments/10")
+			.withServicePath("/2281/attachments/10")
 			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
@@ -117,8 +120,8 @@ class AttachmentResourceIT extends AbstractAppTest {
 	@Test
 	void test07_createAttachment() {
 		final var location = setupCall()
-			.withHttpMethod(HttpMethod.POST)
-			.withServicePath("/attachments")
+			.withHttpMethod(POST)
+			.withServicePath("/2281/attachments")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseBodyIsNull()
@@ -126,7 +129,7 @@ class AttachmentResourceIT extends AbstractAppTest {
 			.getResponseHeaders().get("Location").getFirst();
 
 		setupCall()
-			.withHttpMethod(HttpMethod.GET)
+			.withHttpMethod(GET)
 			.withServicePath(location)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -136,8 +139,8 @@ class AttachmentResourceIT extends AbstractAppTest {
 	@Test
 	void test08_patchAttachmentNotFound() {
 		setupCall()
-			.withHttpMethod(HttpMethod.PATCH)
-			.withServicePath("/attachments/1000")
+			.withHttpMethod(PATCH)
+			.withServicePath("/2281/attachments/1000")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -147,8 +150,8 @@ class AttachmentResourceIT extends AbstractAppTest {
 	@Test
 	void test09_getAttachmentsByErrandNumber() {
 		setupCall()
-			.withHttpMethod(HttpMethod.GET)
-			.withServicePath("/attachments/errand/ERRAND-NUMBER-2")
+			.withHttpMethod(GET)
+			.withServicePath("/2281/attachments/errand/ERRAND-NUMBER-2")
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();

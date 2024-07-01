@@ -26,6 +26,7 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class DecisionIT extends AbstractAppTest {
 
+	private static final String MUNICIPALITY_ID = "/2281";
 	private static final Long DECISION_ID = 1L;
 	private static final Long ERRAND_ID = 1L;
 
@@ -36,7 +37,7 @@ class DecisionIT extends AbstractAppTest {
 	@Test
 	void test01_getDecisionById() {
 		setupCall()
-			.withServicePath(PATH + "/" + DECISION_ID)
+			.withServicePath(MUNICIPALITY_ID + "/" + PATH + "/" + DECISION_ID)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -46,7 +47,7 @@ class DecisionIT extends AbstractAppTest {
 	@Test
 	void test02_patchDecision() {
 		setupCall()
-			.withServicePath(PATH + "/" + DECISION_ID)
+			.withServicePath(MUNICIPALITY_ID + "/" + PATH + "/" + DECISION_ID)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PATCH)
@@ -56,7 +57,7 @@ class DecisionIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath("/errands/" + ERRAND_ID)
+			.withServicePath(MUNICIPALITY_ID + "/errands/" + ERRAND_ID)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -66,7 +67,7 @@ class DecisionIT extends AbstractAppTest {
 	@Test
 	void test03_putDecision() {
 		setupCall()
-			.withServicePath(PATH + "/" + DECISION_ID)
+			.withServicePath(MUNICIPALITY_ID + "/" + PATH + "/" + DECISION_ID)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PUT)
@@ -76,7 +77,7 @@ class DecisionIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath("/errands/" + ERRAND_ID)
+			.withServicePath(MUNICIPALITY_ID + "/errands/" + ERRAND_ID)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
