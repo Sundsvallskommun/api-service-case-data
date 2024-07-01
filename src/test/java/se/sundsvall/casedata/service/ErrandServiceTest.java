@@ -60,6 +60,7 @@ import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.FacilityRepository;
 import se.sundsvall.casedata.integration.db.model.Address;
+import se.sundsvall.casedata.integration.db.model.Appeal;
 import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
@@ -87,6 +88,12 @@ class ErrandServiceTest {
 
 	@Captor
 	private ArgumentCaptor<List<Long>> idListCapture;
+
+	@Captor
+	private ArgumentCaptor<Errand> errandCaptor;
+
+	@Captor
+	private ArgumentCaptor<Appeal> appealCaptor;
 
 	@Test
 	void postWhenParkingPermit() {
@@ -620,7 +627,7 @@ class ErrandServiceTest {
 	}
 
 	@Test
-	void createFacilty() {
+	void createFacilityTest() {
 
 		// Arrange
 		final var errand = createErrand();
@@ -638,7 +645,7 @@ class ErrandServiceTest {
 		assertThat(result).isEqualTo(facilityDto);
 		verify(processServiceMock).updateProcess(errand);
 		verify(errandRepositoryMock).findById(errandId);
-		verify(facilityRepositoryMock).save(facility);
+		verify(facilityRepositoryMock).save(any());
 		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
 	}
 

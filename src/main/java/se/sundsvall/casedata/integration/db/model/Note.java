@@ -2,7 +2,6 @@ package se.sundsvall.casedata.integration.db.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -13,9 +12,11 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.javers.core.metamodel.annotation.DiffIgnore;
@@ -25,24 +26,35 @@ import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-@Entity(name = "note")
+@Entity
+@Table(name = "note",
+	indexes = {
+		@Index(name = "idx_note_municipality_id", columnList = "municipality_id")
+	})
 @EntityListeners(NoteListener.class)
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(setterPrefix = "with")
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class Note extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "errand_id", foreignKey = @ForeignKey(name = "FK_note_errand_id"))
 	@JsonBackReference
 	private Errand errand;
+
+	@Column(name = "municipality_id")
+	private String municipalityId;
 
 	@Column(name = "title")
 	private String title;
@@ -69,32 +81,5 @@ public class Note extends BaseEntity {
 	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
-
-	@Override
-	public String toString() {
-		final long errandId = errand == null ? 0 : errand.getId();
-		return "Note{" +
-			"errand.id=" + errandId +
-			", title='" + title + '\'' +
-			", text='" + text + '\'' +
-			", createdBy='" + createdBy + '\'' +
-			", updatedBy='" + updatedBy + '\'' +
-			", noteType=" + noteType + '\'' +
-			", extraParameters=" + extraParameters + '\'' +
-			"} " + super.toString();
-	}
-
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof final Note note)) return false;
-		if (!super.equals(o)) return false;
-		return Objects.equals(title, note.title) && Objects.equals(text, note.text) && Objects.equals(createdBy, note.createdBy) && Objects.equals(updatedBy, note.updatedBy) && Objects.equals(noteType, note.noteType) && Objects.equals(extraParameters, note.extraParameters);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), title, text, createdBy, updatedBy, noteType, extraParameters);
-	}
 
 }

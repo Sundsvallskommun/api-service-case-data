@@ -9,8 +9,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 import org.hibernate.Length;
 
@@ -28,6 +30,10 @@ import lombok.ToString;
 import lombok.With;
 
 @Entity
+@Table(name = "message",
+	indexes = {
+		@Index(name = "idx_message_municipality_id", columnList = "municipality_id")
+	})
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -42,6 +48,9 @@ public class Message {
 
 	@With
 	private String errandNumber;
+
+	@Column(name = "municipality_id")
+	private String municipalityId;
 
 	@Enumerated(EnumType.STRING)
 	private Direction direction;

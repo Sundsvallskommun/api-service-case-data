@@ -8,6 +8,7 @@
         id bigint not null auto_increment,
         registered_at datetime(6),
         updated datetime(6),
+        municipality_id varchar(255),
         description text,
         status varchar(255),
         timeliness_review varchar(255),
@@ -25,6 +26,7 @@
         errand_number varchar(255),
         extension varchar(255),
         mime_type varchar(255),
+        municipality_id varchar(255),
         name varchar(255),
         file longtext,
         primary key (id)
@@ -47,6 +49,7 @@
         updated datetime(6),
         valid_from datetime(6),
         valid_to datetime(6),
+        municipality_id varchar(255),
         description text,
         decision_outcome enum ('APPROVAL','CANCELLATION','DISMISSAL','REJECTION'),
         decision_type enum ('FINAL','PROPOSED','RECOMMENDED'),
@@ -146,6 +149,7 @@
         facility_type varchar(255),
         house_number varchar(255),
         invoice_marking varchar(255),
+        municipality_id varchar(255),
         postal_code varchar(255),
         property_designation varchar(255),
         street varchar(255),
@@ -171,6 +175,7 @@
         message_type varchar(255),
         messageid varchar(255) not null,
         mobile_number varchar(255),
+        municipality_id varchar(255),
         sent varchar(255),
         subject varchar(255),
         userid varchar(255),
@@ -186,6 +191,7 @@
         attachmentid varchar(255) not null,
         content_type varchar(255),
         messageid varchar(255),
+        municipality_id varchar(255),
         name varchar(255),
         primary key (attachmentid)
     ) engine=InnoDB;
@@ -205,6 +211,7 @@
         created_by varchar(36),
         updated_by varchar(36),
         text varchar(10000),
+        municipality_id varchar(255),
         title varchar(255),
         note_type enum ('INTERNAL','PUBLIC'),
         primary key (id)
@@ -227,6 +234,7 @@
         authorized_signatory varchar(255),
         first_name varchar(255),
         last_name varchar(255),
+        municipality_id varchar(255),
         organization_name varchar(255),
         organization_number varchar(255),
         person_id varchar(255),
@@ -276,8 +284,17 @@
         primary key (role_order, stakeholder_id)
     ) engine=InnoDB;
 
+    create index idx_appeal_municipality_id 
+       on appeal (municipality_id);
+
     create index attachment_errand_number_idx 
        on attachment (errand_number);
+
+    create index idx_attachment_municipality_id 
+       on attachment (municipality_id);
+
+    create index idx_decision_municipality_id 
+       on decision (municipality_id);
 
     alter table if exists decision 
        add constraint UKj00sxiyx1fhmcdofxuugumdon unique (decided_by_id);
@@ -285,8 +302,23 @@
     alter table if exists errand 
        add constraint UK_errand_errand_number unique (errand_number);
 
+    create index idx_facility_municipality_id 
+       on facility (municipality_id);
+
+    create index idx_message_municipality_id 
+       on message (municipality_id);
+
+    create index idx_message_attachment_municipality_id 
+       on message_attachment (municipality_id);
+
     alter table if exists message_attachment 
        add constraint UK_message_attachment_data_id unique (message_attachment_data_id);
+
+    create index idx_note_municipality_id 
+       on note (municipality_id);
+
+    create index idx_stakeholder_municipality_id 
+       on stakeholder (municipality_id);
 
     alter table if exists appeal 
        add constraint FK_appeal_decision_id 

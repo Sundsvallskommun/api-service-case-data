@@ -153,20 +153,20 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final DecisionDTO decisionDTO) {
 
-		final var dto = errandService.addDecisionToErrand(errandId, decisionDTO);
-		return created(fromPath("/{municipalityId}/decisions/{id}").buildAndExpand(municipalityId, dto.getId()).toUri())
+		final var decision = errandService.addDecisionToErrand(errandId, decisionDTO);
+		return created(fromPath("/{municipalityId}/decisions/{decisionId}").buildAndExpand(municipalityId, decision.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
 
 	@Operation(description = "Get decisions on errand.")
-	@GetMapping(path = "/{id}/decisions", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@GetMapping(path = "/{errandId}/decisions", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<List<DecisionDTO>> getDecision(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
-		@PathVariable final Long id) {
+		@PathVariable(name = "errandId") final Long errandId) {
 
-		return ok(errandService.findDecisionsOnErrand(id));
+		return ok(errandService.findDecisionsOnErrand(errandId));
 	}
 
 	@Operation(description = "Delete decision on errand.")
@@ -300,8 +300,8 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final NoteDTO noteDTO) {
 
-		final var dto = errandService.addNoteToErrand(errandId, noteDTO);
-		return created(fromPath("/{municipalityId}/notes/{id}").buildAndExpand(municipalityId, dto.getId()).toUri())
+		final var note = errandService.addNoteToErrand(errandId, noteDTO);
+		return created(fromPath("/{municipalityId}/notes/{noteId}").buildAndExpand(municipalityId, note.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
@@ -330,8 +330,8 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final AppealDTO appealDTO) {
 
-		final var dto = errandService.addAppealToErrand(errandId, appealDTO);
-		return created(fromPath("/{municipalityId}/appeals/{id}").buildAndExpand(municipalityId, dto.getId()).toUri())
+		final var appeal = errandService.addAppealToErrand(errandId, appealDTO);
+		return created(fromPath("/{municipalityId}/appeals/{appealId}").buildAndExpand(municipalityId, appeal.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
@@ -360,8 +360,8 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final StakeholderDTO stakeholderDTO) {
 
-		final var dto = errandService.addStakeholderToErrand(errandId, stakeholderDTO);
-		return created(fromPath("/{municipalityId}/stakeholders/{id}").buildAndExpand(municipalityId, dto.getId()).toUri())
+		final var stakeholder = errandService.addStakeholderToErrand(errandId, stakeholderDTO);
+		return created(fromPath("/{municipalityId}/stakeholders/{stakeholderId}").buildAndExpand(municipalityId, stakeholder.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
