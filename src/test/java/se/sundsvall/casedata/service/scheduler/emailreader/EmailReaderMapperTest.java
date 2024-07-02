@@ -52,6 +52,7 @@ class EmailReaderMapperTest {
 			.element(0).satisfies(attachment -> {
 				assertThat(attachment.getName()).isEqualTo("someName");
 				assertThat(attachment.getFile()).isEqualTo("someContent");
+				assertThat(attachment.getMimeType()).isEqualTo("someContentType");
 			});
 	}
 
