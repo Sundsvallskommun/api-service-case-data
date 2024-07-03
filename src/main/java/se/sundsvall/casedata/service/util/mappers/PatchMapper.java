@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddress;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getStartDate()).ifPresent(errand::setStartDate);
 		Optional.ofNullable(patch.getEndDate()).ifPresent(errand::setEndDate);
 		Optional.ofNullable(patch.getApplicationReceived()).ifPresent(errand::setApplicationReceived);
-		Optional.ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(patch.getFacilities().stream().map(EntityMapper::toFacility).toList()));
+		Optional.ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(patch.getFacilities().stream().map(facilityDTO -> toFacility(facilityDTO, errand.getMunicipalityId())).toList()));
 		return errand;
 	}
 

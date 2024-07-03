@@ -51,7 +51,7 @@ class MessageAttachmentResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "attachmentId") final String attachmentId) {
 
-		return ok(service.getMessageAttachment(attachmentId));
+		return ok(service.getMessageAttachment(attachmentId, municipalityId));
 	}
 
 	@Operation(summary = "Get a streamed messageAttachment.", description = "Fetches the message attachment that matches the provided id in a streamed manner")
@@ -65,6 +65,6 @@ class MessageAttachmentResource {
 		@PathVariable(name = "attachmentId") final String attachmentId,
 		final HttpServletResponse response) {
 
-		service.getMessageAttachmentStreamed(attachmentId, response);
+		service.getMessageAttachmentStreamed(attachmentId, municipalityId, response);
 	}
 }

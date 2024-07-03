@@ -1,34 +1,32 @@
-SET FOREIGN_KEY_CHECKS = 0;
+set foreign_key_checks = 0;
 
-TRUNCATE table attachment;
-TRUNCATE table attachment_extra_parameters;
+truncate table attachment;
+truncate table attachment_extra_parameters;
+truncate table decision;
+truncate table decision_extra_parameters;
+truncate table decision_laws;
+truncate table errand;
+truncate table errand_extra_parameters;
+truncate table errand_message_ids;
+truncate table errand_statuses;
+truncate table facility;
+truncate table facility_extra_parameters;
+truncate table jv_commit;
+truncate table jv_commit_property;
+truncate table jv_global_id;
+truncate table jv_snapshot;
+truncate table message;
+truncate table message_attachment;
+truncate table message_attachment_data;
+truncate table email_header;
+truncate table email_header_values;
+truncate table note;
+truncate table note_extra_parameters;
+truncate table stakeholder;
+truncate table stakeholder_addresses;
+truncate table stakeholder_contact_information;
+truncate table stakeholder_extra_parameters;
+truncate table stakeholder_roles;
+truncate table appeal;
 
---TRUNCATE table decision;
-
-TRUNCATE table errand;
-TRUNCATE table errand_extra_parameters;
-TRUNCATE table errand_statuses;
---TRUNCATE table errand_message_ids;
-
-TRUNCATE table facility;
-TRUNCATE table facility_extra_parameters;
-
-TRUNCATE table note;
-TRUNCATE table note_extra_parameters;
-
-TRUNCATE table message;
-TRUNCATE table message_attachment;
-TRUNCATE table message_attachment_data;
-
-TRUNCATE table stakeholder;
-TRUNCATE table stakeholder_extra_parameters;
-TRUNCATE table stakeholder_addresses;
-TRUNCATE table stakeholder_contact_information;
-TRUNCATE table stakeholder_roles;
-
---TRUNCATE table jv_commit;
---TRUNCATE table jv_commit_property;
---TRUNCATE table jv_global_id;
---TRUNCATE table jv_snapshot;
-
-SET FOREIGN_KEY_CHECKS = 1;
+set foreign_key_checks = 1;

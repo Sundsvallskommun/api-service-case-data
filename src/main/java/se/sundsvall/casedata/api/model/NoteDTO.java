@@ -33,6 +33,9 @@ public class NoteDTO extends BaseDTO {
 	@Size(max = 10000)
 	private String text;
 
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
+	private String municipalityId;
+
 	@Schema(description = "AD-account for the user who created the note.", example = "user",
 		accessMode = Schema.AccessMode.READ_ONLY)
 	@Size(max = 36)

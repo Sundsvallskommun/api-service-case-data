@@ -57,7 +57,7 @@ class NoteResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "noteId") final Long noteId) {
 
-		return ok(noteService.getNoteById(noteId));
+		return ok(noteService.getNoteByIdAndMunicipalityId(noteId, municipalityId));
 	}
 
 	@Operation(description = "Get notes for a specific errand, possible to filter by note type")
@@ -68,7 +68,7 @@ class NoteResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestParam final Optional<NoteType> noteType) {
 
-		return ok(noteService.getNotesByErrandIdAndNoteType(errandId, noteType));
+		return ok(noteService.getNotesByErrandIdAndMunicipalityIdAndNoteType(errandId, municipalityId, noteType));
 	}
 
 	@Operation(description = "Update note")
@@ -79,11 +79,11 @@ class NoteResource {
 		@PathVariable(name = "noteId") final Long noteId,
 		@RequestBody @Valid final NoteDTO noteDTO) {
 
-		noteService.updateNote(noteId, noteDTO);
+		noteService.updateNote(noteId, municipalityId, noteDTO);
 		return noContent().build();
 	}
 
-	@Operation(description = "Delete a note by note id",
+	@Operation(description = "Delete a note by note id and municipality id",
 		responses = {
 			@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true),
 			@ApiResponse(responseCode = "403", description = "Forbidden")
@@ -93,7 +93,7 @@ class NoteResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "noteId") final Long noteId) {
 
-		noteService.deleteNoteById(noteId);
+		noteService.deleteNoteByIdAndMunicipalityId(noteId, municipalityId);
 		return noContent().build();
 	}
 }

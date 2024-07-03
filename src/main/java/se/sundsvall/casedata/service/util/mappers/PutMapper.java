@@ -1,5 +1,8 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
@@ -14,9 +17,6 @@ import se.sundsvall.casedata.integration.db.model.Note;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
-
-import java.util.ArrayList;
-import java.util.Optional;
 
 public final class PutMapper {
 
@@ -63,10 +63,10 @@ public final class PutMapper {
 			oldDecision.setDecidedAt(newDecision.getDecidedAt());
 			oldDecision.setValidFrom(newDecision.getValidFrom());
 			oldDecision.setValidTo(newDecision.getValidTo());
-			oldDecision.setDecidedBy(EntityMapper.toStakeholder(newDecision.getDecidedBy()));
+			oldDecision.setDecidedBy(EntityMapper.toStakeholder(newDecision.getDecidedBy(), oldDecision.getMunicipalityId()));
 			oldDecision.setLaw(new ArrayList<>(newDecision.getLaw().stream().map(EntityMapper::toLaw).toList()));
 			oldDecision.getAttachments().clear();
-			newDecision.getAttachments().forEach(attachment -> oldDecision.getAttachments().add(EntityMapper.toAttachment(attachment)));
+			newDecision.getAttachments().forEach(attachment -> oldDecision.getAttachments().add(EntityMapper.toAttachment(attachment, oldDecision.getMunicipalityId())));
 		});
 		return oldDecision;
 	}

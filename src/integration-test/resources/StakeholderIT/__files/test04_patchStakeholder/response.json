@@ -1,0 +1,21 @@
+{
+  "id": 1,
+  "version": 1,
+  "created": "2022-12-02T15:13:45.363+01:00",
+  "updated": "${json-unit.any-string}",
+  "type": "ORGANIZATION",
+  "firstName": "Patch John AB",
+  "lastName": "",
+  "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
+  "organizationName": "Patch John AB",
+  "organizationNumber": "112233-4455",
+  "municipalityId": "2281",
+  "authorizedSignatory": "John Doe",
+  "adAccount": "Patch-Organization-AD",
+  "roles": [
+    "PROPERTY_OWNER"
+  ],
+  "addresses": [],
+  "contactInformation": [],
+  "extraParameters": {}
+}

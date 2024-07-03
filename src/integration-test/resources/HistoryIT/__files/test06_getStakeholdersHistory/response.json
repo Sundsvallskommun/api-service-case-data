@@ -1,0 +1,222 @@
+[
+  {
+    "changeType": "NewObject",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 6.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 6,
+      "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+    }
+  },
+  {
+    "changeType": "ReferenceChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 6.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 6,
+      "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+    },
+    "left": null,
+    "property": "errand",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": {
+      "cdoId": 90,
+      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+    }
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 6.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 6,
+      "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+    },
+    "left": null,
+    "property": "type",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "PERSON"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 6.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 6,
+      "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+    },
+    "left": null,
+    "property": "municipalityId",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "2281"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 6.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 6,
+      "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+    },
+    "left": null,
+    "property": "firstName",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "Kalle"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 6.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 6,
+      "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+    },
+    "left": null,
+    "property": "lastName",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "Anka"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 6.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 6,
+      "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+    },
+    "left": null,
+    "property": "personId",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "d7af5383-166a-468b-ab86-da8ccd0ea97c"
+  },
+  {
+    "changeType": "ListChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 6.00,
+      "properties": []
+    },
+    "elementChanges": [
+      {
+        "elementChangeType": "ValueAdded",
+        "index": 0,
+        "value": "APPLICANT"
+      }
+    ],
+    "globalId": {
+      "cdoId": 6,
+      "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+    },
+    "property": "roles",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED"
+  },
+  {
+    "changeType": "ListChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 6.00,
+      "properties": []
+    },
+    "elementChanges": [
+      {
+        "elementChangeType": "ValueAdded",
+        "index": 0,
+        "value": {
+          "fragment": "addresses/0",
+          "ownerId": {
+            "cdoId": 246,
+            "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+          },
+          "valueObject": "se.sundsvall.casedata.integration.db.model.Address"
+        }
+      }
+    ],
+    "globalId": {
+      "cdoId": 6,
+      "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+    },
+    "property": "addresses",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED"
+  },
+  {
+    "changeType": "ListChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 6.00,
+      "properties": []
+    },
+    "elementChanges": [
+      {
+        "elementChangeType": "ValueAdded",
+        "index": 0,
+        "value": {
+          "fragment": "contactInformation/0",
+          "ownerId": {
+            "cdoId": 246,
+            "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+          },
+          "valueObject": "se.sundsvall.casedata.integration.db.model.ContactInformation"
+        }
+      },
+      {
+        "elementChangeType": "ValueAdded",
+        "index": 1,
+        "value": {
+          "fragment": "contactInformation/1",
+          "ownerId": {
+            "cdoId": 246,
+            "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+          },
+          "valueObject": "se.sundsvall.casedata.integration.db.model.ContactInformation"
+        }
+      }
+    ],
+    "globalId": {
+      "cdoId": 6,
+      "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+    },
+    "property": "contactInformation",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED"
+  }
+]

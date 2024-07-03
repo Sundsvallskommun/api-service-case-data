@@ -72,7 +72,8 @@ public class WebMessageCollectorService {
 	private Optional<Message> processMessage(final MessageDTO messageDTO) {
 		return errandRepository.findByExternalCaseId(messageDTO.getExternalCaseId()).map(result -> {
 			final var errandNumber = result.getErrandNumber();
-			final var message = messageMapper.toMessageEntity(errandNumber, messageDTO);
+			//TODO: Hårdkodad 2281 som municipalityId, detta måste ändras när WebMessageCollector uppdaterats.
+			final var message = messageMapper.toMessageEntity(errandNumber, messageDTO, "2281");
 			return messageRepository.saveAndFlush(message);
 		});
 	}

@@ -56,7 +56,7 @@ class StakeholderResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId) {
 
-		return ok(stakeholderService.findById(stakeholderId));
+		return ok(stakeholderService.findByIdAndMunicipalityId(stakeholderId, municipalityId));
 	}
 
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
@@ -65,7 +65,8 @@ class StakeholderResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@RequestParam(required = false) final Optional<String> stakeholderRole) {
 
-		return stakeholderRole.map(role -> ok(stakeholderService.findStakeholdersByRole(role))).orElseGet(() -> ok(stakeholderService.findAllStakeholders()));
+		return stakeholderRole.map(role -> ok(stakeholderService.findStakeholdersByRoleAndMunicipalityId(role, municipalityId)))
+			.orElseGet(() -> ok(stakeholderService.findAllStakeholdersByMunicipalityId(municipalityId)));
 	}
 
 	@Operation(description = "Update stakeholder.")
@@ -76,7 +77,7 @@ class StakeholderResource {
 		@PathVariable(name = "stakeholderId") final Long stakeholderId,
 		@RequestBody @Valid final StakeholderDTO stakeholderDTO) {
 
-		stakeholderService.patch(stakeholderId, stakeholderDTO);
+		stakeholderService.patch(stakeholderId, municipalityId, stakeholderDTO);
 		return noContent().build();
 	}
 
@@ -88,7 +89,7 @@ class StakeholderResource {
 		@PathVariable(name = "stakeholderId") final Long stakeholderId,
 		@RequestBody @Valid final StakeholderDTO stakeholderDTO) {
 
-		stakeholderService.put(stakeholderId, stakeholderDTO);
+		stakeholderService.put(stakeholderId, municipalityId, stakeholderDTO);
 		return noContent().build();
 	}
 

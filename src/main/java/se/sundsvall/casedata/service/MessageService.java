@@ -25,44 +25,45 @@ import se.sundsvall.casedata.service.scheduler.MessageMapper;
 @Service
 public class MessageService {
 
-	private final MessageRepository repository;
+	private final MessageRepository messageRepository;
 
 	private final MessageAttachmentRepository messageAttachmentRepository;
 
 	private final MessageMapper mapper;
 
-	public MessageService(final MessageRepository repository,
+	public MessageService(final MessageRepository messageRepository,
 		final MessageAttachmentRepository messageAttachmentRepository, final MessageMapper mapper) {
-		this.repository = repository;
+		this.messageRepository = messageRepository;
 		this.messageAttachmentRepository = messageAttachmentRepository;
 		this.mapper = mapper;
 	}
 
-	public List<MessageResponse> getMessagesByErrandNumber(final String errandNumber) {
-		return mapper.toMessageResponses(repository.findAllByErrandNumber(errandNumber));
+	public List<MessageResponse> getMessagesByErrandNumber(final String errandNumber, final String municipalityId) {
+		return mapper.toMessageResponses(messageRepository.findAllByErrandNumberAndMunicipalityId(errandNumber, municipalityId));
 	}
 
-	public void saveMessage(final MessageRequest request) {
-		repository.save(mapper.toMessageEntity(request));
+	public void saveMessage(final MessageRequest request, final String municipalityId) {
+		messageRepository.save(mapper.toMessageEntity(request, municipalityId));
 	}
 
-	public void updateViewedStatus(final String messageId, final boolean isViewed) {
-		final var message = repository
-			.findById(messageId)
+	public void updateViewedStatus(final String messageId, final String municipalityId, final boolean isViewed) {
+		final var message = messageRepository
+			.findByMessageIDAndMunicipalityId(messageId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Message with id %s not found" .formatted(messageId)));
 
 		message.setViewed(isViewed);
-		repository.save(message);
+		messageRepository.save(message);
 	}
 
-	public MessageAttachmentDTO getMessageAttachment(final String attachmentId) {
-		return mapper.toAttachmentDto(messageAttachmentRepository.findById(attachmentId).orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, "MessageAttachment not found")));
+	public MessageAttachmentDTO getMessageAttachment(final String attachmentId, final String municipalityId) {
+		return mapper.toAttachmentDto(messageAttachmentRepository.findByAttachmentIDAndMunicipalityId(attachmentId, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, "MessageAttachment not found")));
 	}
 
-	public void getMessageAttachmentStreamed(final String attachmentId, final HttpServletResponse response) {
+	public void getMessageAttachmentStreamed(final String attachmentId, final String municipalityId, final HttpServletResponse response) {
 		try {
 			final var attachmentEntity = messageAttachmentRepository
-				.findById(attachmentId)
+				.findByAttachmentIDAndMunicipalityId(attachmentId, municipalityId)
 				.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, "MessageAttachment not found"));
 
 			final var file = attachmentEntity.getAttachmentData().getFile();

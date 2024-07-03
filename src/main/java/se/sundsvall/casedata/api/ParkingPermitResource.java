@@ -49,7 +49,7 @@ class ParkingPermitResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(description = "personId of the applicant") @RequestParam(required = false) final String personId) {
 
-		return ok(parkingPermitService.findAll(personId));
+		return ok(parkingPermitService.findAllByPersonIdAndMunicipalityId(personId, municipalityId));
 	}
 
 }

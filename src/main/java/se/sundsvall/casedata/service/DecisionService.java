@@ -25,21 +25,21 @@ public class DecisionService {
 		this.decisionRepository = decisionRepository;
 	}
 
-	public DecisionDTO findById(final Long id) {
-		return toDecisionDto(decisionRepository.findById(id)
+	public DecisionDTO findByIdAndMunicipalityId(final Long id, final String municipalityId) {
+		return toDecisionDto(decisionRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, DECISION_NOT_FOUND)));
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void replaceDecision(final Long id, final DecisionDTO dto) {
-		final var entity = decisionRepository.findById(id)
+	public void replaceDecision(final Long id, final String municipalityId, final DecisionDTO dto) {
+		final var entity = decisionRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, DECISION_NOT_FOUND));
 		decisionRepository.save(putDecision(entity, dto));
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void updateDecision(final Long id, final PatchDecisionDTO dto) {
-		final var entity = decisionRepository.findById(id)
+	public void updateDecision(final Long id, final String municipalityId, final PatchDecisionDTO dto) {
+		final var entity = decisionRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, DECISION_NOT_FOUND));
 		decisionRepository.save(patchDecision(entity, dto));
 	}

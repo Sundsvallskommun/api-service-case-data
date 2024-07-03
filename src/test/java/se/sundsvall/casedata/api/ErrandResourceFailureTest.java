@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.createAppealDTO;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
@@ -32,8 +33,6 @@ import se.sundsvall.casedata.service.ErrandService;
 class ErrandResourceFailureTest {
 
 	private static final String BASE_URL = "/{municipalityId}/errands";
-
-	private static final String MUNICIPALITY_ID = "2281";
 
 	@MockBean
 	private ErrandService errandServiceMock;

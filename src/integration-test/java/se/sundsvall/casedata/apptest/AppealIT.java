@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.apptest;
 
+import static java.text.MessageFormat.format;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.PUT;
@@ -7,6 +8,9 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
+import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
+import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
@@ -26,26 +30,22 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class AppealIT extends AbstractAppTest {
 
-	private static final String MUNICIPALITY_ID = "2281";
-	private static final Long APPEAL_ID = 1L;
-	private static final String PATH = "/appeals";
-	private static final String REQUEST_FILE = "request.json";
-	private static final String EXPECTED_FILE = "expected.json";
+	private static final String APPEAL_ID = "1";
 
 	@Test
 	void test01_getAppealById() {
 		setupCall()
-			.withServicePath("/" + MUNICIPALITY_ID + "/" + PATH + "/" + APPEAL_ID)
+			.withServicePath(format("/{0}/appeals/{1}", MUNICIPALITY_ID, APPEAL_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(EXPECTED_FILE)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
 	void test02_patchAppeal() {
 		setupCall()
-			.withServicePath("/" + MUNICIPALITY_ID + "/" + PATH + "/" + APPEAL_ID)
+			.withServicePath(format("/{0}/appeals/{1}", MUNICIPALITY_ID, APPEAL_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PATCH)
@@ -55,17 +55,17 @@ class AppealIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath("/" + MUNICIPALITY_ID + "/" + PATH + "/" + APPEAL_ID)
+			.withServicePath(format("/{0}/appeals/{1}", MUNICIPALITY_ID, APPEAL_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(EXPECTED_FILE)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
 	void test03_putAppeal() {
 		setupCall()
-			.withServicePath("/" + MUNICIPALITY_ID + "/" + PATH + "/" + APPEAL_ID)
+			.withServicePath(format("/{0}/appeals/{1}", MUNICIPALITY_ID, APPEAL_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PUT)
@@ -75,10 +75,10 @@ class AppealIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath("/" + MUNICIPALITY_ID + "/" + PATH + "/" + APPEAL_ID)
+			.withServicePath(format("/{0}/appeals/{1}", MUNICIPALITY_ID, APPEAL_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(EXPECTED_FILE)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 }

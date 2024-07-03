@@ -1,5 +1,21 @@
 package se.sundsvall.casedata.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.createAppeal;
+import static se.sundsvall.casedata.TestUtil.createAppealDTO;
+import static se.sundsvall.casedata.TestUtil.createDecision;
+import static se.sundsvall.casedata.TestUtil.createErrand;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,27 +26,12 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import se.sundsvall.casedata.api.model.PatchAppealDTO;
 import se.sundsvall.casedata.integration.db.AppealRepository;
 import se.sundsvall.casedata.integration.db.model.Appeal;
-import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.TestUtil.createAppeal;
-import static se.sundsvall.casedata.TestUtil.createAppealDTO;
-import static se.sundsvall.casedata.TestUtil.createDecision;
-import static se.sundsvall.casedata.TestUtil.createErrand;
 
 @ExtendWith(MockitoExtension.class)
 class AppealServiceTest {
@@ -47,29 +48,30 @@ class AppealServiceTest {
 	@Test
 	void getAppealById() {
 		final Appeal appeal = createAppeal();
-		appeal.setId(new Random().nextLong(1, 1000));
-		final Errand errand = createErrand();
-		errand.setId(new Random().nextLong(1, 1000));
-		appeal.setErrand(errand);
 
-		doReturn(Optional.of(appeal)).when(appealRepositoryMock).findById(appeal.getId());
+		when(appealRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(appeal));
 
-		appealService.findById(appeal.getId());
-		verify(appealRepositoryMock).findById(appeal.getId());
+		var result = appealService.findByIdAndMunicipalityId(appeal.getId(), MUNICIPALITY_ID);
+
+		assertThat(result).isNotNull();
+
+		verify(appealRepositoryMock).findByIdAndMunicipalityId(appeal.getId(), MUNICIPALITY_ID);
+		verifyNoMoreInteractions(appealRepositoryMock);
 	}
+
 	@Test
 	void patchAppeal() {
 		final Appeal appeal = createAppeal();
 		appeal.setId(new Random().nextLong());
 
-		doReturn(Optional.of(appeal)).when(appealRepositoryMock).findById(appeal.getId());
+		doReturn(Optional.of(appeal)).when(appealRepositoryMock).findByIdAndMunicipalityId(appeal.getId(), MUNICIPALITY_ID);
 
 		final PatchAppealDTO patch = new PatchAppealDTO();
 		patch.setDescription("New description");
 		patch.setStatus(AppealStatus.REJECTED.name());
 		patch.setTimelinessReview(TimelinessReview.REJECTED.name());
 
-		appealService.updateAppeal(appeal.getId(), patch);
+		appealService.updateAppeal(appeal.getId(), MUNICIPALITY_ID, patch);
 
 		verify(appealRepositoryMock).save(appealCaptor.capture());
 
@@ -90,9 +92,9 @@ class AppealServiceTest {
 		final var entity = createAppeal();
 		entity.setErrand(createErrand());
 
-		when(appealRepositoryMock.findById(1L)).thenReturn(Optional.of(entity));
+		when(appealRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 
-		appealService.replaceAppeal(1L, dto);
+		appealService.replaceAppeal(1L, MUNICIPALITY_ID, dto);
 
 		verify(appealRepositoryMock).save(appealCaptor.capture());
 
@@ -102,14 +104,14 @@ class AppealServiceTest {
 		assertThat(savedAppeal.getStatus()).isEqualTo(AppealStatus.REJECTED);
 		assertThat(savedAppeal.getTimelinessReview()).isEqualTo(TimelinessReview.REJECTED);
 
-		verify(appealRepositoryMock).findById(1L);
+		verify(appealRepositoryMock).findByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
 		verify(appealRepositoryMock).save(entity);
 		verifyNoMoreInteractions(appealRepositoryMock);
 	}
 
 	@ParameterizedTest
 	@MethodSource("decisionProvider")
-	void putAppealWhenDecisionIsSet(Long decisionId, Long expectedDecisionId) {
+	void putAppealWhenDecisionIsSet(final Long decisionId, final Long expectedDecisionId) {
 		final var dto = createAppealDTO();
 		dto.setDescription("New description");
 		dto.setStatus(AppealStatus.REJECTED.name());
@@ -128,9 +130,9 @@ class AppealServiceTest {
 		errand.setDecisions(List.of(currentDecision, newDecision));
 		entity.setErrand(errand);
 
-		when(appealRepositoryMock.findById(1L)).thenReturn(Optional.of(entity));
+		when(appealRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 
-		appealService.replaceAppeal(1L, dto);
+		appealService.replaceAppeal(1L, MUNICIPALITY_ID, dto);
 
 		verify(appealRepositoryMock).save(appealCaptor.capture());
 
@@ -143,7 +145,7 @@ class AppealServiceTest {
 		if (expectedDecisionId == null) {
 			assertThat(savedAppeal.getDecision()).isNull();
 		}
-		verify(appealRepositoryMock).findById(1L);
+		verify(appealRepositoryMock).findByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
 		verify(appealRepositoryMock).save(entity);
 		verifyNoMoreInteractions(appealRepositoryMock);
 	}

@@ -83,7 +83,7 @@ class ErrandResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@RequestBody @Valid final ErrandDTO errandDTO) {
 
-		final ErrandDTO result = errandService.createErrand(errandDTO);
+		final ErrandDTO result = errandService.createErrand(errandDTO, municipalityId);
 		return created(
 			fromPath("/{municipalityId}/errands/{id}")
 				.buildAndExpand(municipalityId, result.getId())
@@ -99,7 +99,7 @@ class ErrandResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "errandId") final Long errandId) {
 
-		return ok(errandService.findById(errandId));
+		return ok(errandService.findByIdAndMunicipalityId(errandId, municipalityId));
 	}
 
 	@Operation(description = "Update errand.")
@@ -110,7 +110,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final PatchErrandDTO patchErrandDTO) {
 
-		errandService.updateErrand(errandId, patchErrandDTO);
+		errandService.updateErrand(errandId, municipalityId, patchErrandDTO);
 		return noContent().build();
 	}
 
@@ -122,7 +122,7 @@ class ErrandResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "errandId") final Long errandId) {
 
-		errandService.deleteById(errandId);
+		errandService.deleteByIdAndMunicipalityId(errandId, municipalityId);
 		return noContent().build();
 	}
 
@@ -138,7 +138,7 @@ class ErrandResource {
 		@Parameter(description = "extraParameters on errand. Use like this: extraParameters[artefact.permit.number]=12345&extraParameters[disability.aid]=Rullstol") final Optional<ExtraParameterDTO> extraParameterDTO,
 		@ParameterObject final Pageable pageable) {
 
-		return ok(errandService.findAll(filter, extraParameterDTO.orElse(new ExtraParameterDTO()).getExtraParameters(), pageable));
+		return ok(errandService.findAll(filter, municipalityId, extraParameterDTO.orElse(new ExtraParameterDTO()).getExtraParameters(), pageable));
 	}
 
 	/***
@@ -153,7 +153,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final DecisionDTO decisionDTO) {
 
-		final var decision = errandService.addDecisionToErrand(errandId, decisionDTO);
+		final var decision = errandService.addDecisionToErrand(errandId, municipalityId, decisionDTO);
 		return created(fromPath("/{municipalityId}/decisions/{decisionId}").buildAndExpand(municipalityId, decision.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -166,7 +166,7 @@ class ErrandResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "errandId") final Long errandId) {
 
-		return ok(errandService.findDecisionsOnErrand(errandId));
+		return ok(errandService.findDecisionsOnErrand(errandId, municipalityId));
 	}
 
 	@Operation(description = "Delete decision on errand.")
@@ -177,7 +177,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "decisionId") final Long decisionId) {
 
-		errandService.deleteDecisionOnErrand(errandId, decisionId);
+		errandService.deleteDecisionOnErrand(errandId, municipalityId, decisionId);
 		return noContent().build();
 	}
 
@@ -193,7 +193,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final FacilityDTO facilityDTO) {
 
-		final FacilityDTO result = errandService.createFacility(errandId, facilityDTO);
+		final FacilityDTO result = errandService.createFacility(errandId, municipalityId, facilityDTO);
 		return created(
 			fromPath("/{municipalityId}/errands/{id}/facilities/{facilityId}")
 				.buildAndExpand(municipalityId, errandId, result.getId())
@@ -209,7 +209,7 @@ class ErrandResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "errandId") final Long errandId) {
 
-		return ok(errandService.findFacilitiesOnErrand(errandId));
+		return ok(errandService.findFacilitiesOnErrand(errandId, municipalityId));
 	}
 
 	@Operation(description = "Get a specific facility on errand.")
@@ -220,7 +220,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "facilityId") final Long facilityId) {
 
-		return ok(errandService.findFacilityOnErrand(errandId, facilityId));
+		return ok(errandService.findFacilityOnErrand(errandId, facilityId, municipalityId));
 	}
 
 	@Operation(description = "Update errand facility")
@@ -232,7 +232,7 @@ class ErrandResource {
 		@PathVariable(name = "facilityId") final Long facilityId,
 		@RequestBody @Valid final FacilityDTO facilityDTO) {
 
-		errandService.updateFacilityOnErrand(errandId, facilityId, facilityDTO);
+		errandService.updateFacilityOnErrand(errandId, municipalityId, facilityId, facilityDTO);
 		return noContent().build();
 	}
 
@@ -244,7 +244,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final List<FacilityDTO> facilityDTOs) {
 
-		errandService.replaceFacilitiesOnErrand(errandId, facilityDTOs);
+		errandService.replaceFacilitiesOnErrand(errandId, municipalityId, facilityDTOs);
 		return noContent().build();
 	}
 
@@ -256,7 +256,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "facilityId") final Long facilityId) {
 
-		errandService.deleteFacilityOnErrand(errandId, facilityId);
+		errandService.deleteFacilityOnErrand(errandId, municipalityId, facilityId);
 		return noContent().build();
 	}
 
@@ -272,7 +272,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final StatusDTO statusDTO) {
 
-		errandService.addStatusToErrand(errandId, statusDTO);
+		errandService.addStatusToErrand(errandId, municipalityId, statusDTO);
 		return noContent().build();
 	}
 
@@ -284,7 +284,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final List<StatusDTO> statusDTOList) {
 
-		errandService.replaceStatusesOnErrand(errandId, statusDTOList);
+		errandService.replaceStatusesOnErrand(errandId, municipalityId, statusDTOList);
 		return noContent().build();
 	}
 
@@ -300,7 +300,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final NoteDTO noteDTO) {
 
-		final var note = errandService.addNoteToErrand(errandId, noteDTO);
+		final var note = errandService.addNoteToErrand(errandId, municipalityId, noteDTO);
 		return created(fromPath("/{municipalityId}/notes/{noteId}").buildAndExpand(municipalityId, note.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -314,7 +314,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "noteId") final Long noteId) {
 
-		errandService.deleteNoteOnErrand(errandId, noteId);
+		errandService.deleteNoteOnErrand(errandId, municipalityId, noteId);
 		return noContent().build();
 	}
 
@@ -330,7 +330,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final AppealDTO appealDTO) {
 
-		final var appeal = errandService.addAppealToErrand(errandId, appealDTO);
+		final var appeal = errandService.addAppealToErrand(errandId, municipalityId, appealDTO);
 		return created(fromPath("/{municipalityId}/appeals/{appealId}").buildAndExpand(municipalityId, appeal.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -344,7 +344,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable final Long appealId) {
 
-		errandService.deleteAppealOnErrand(errandId, appealId);
+		errandService.deleteAppealOnErrand(errandId, municipalityId, appealId);
 		return noContent().build();
 	}
 
@@ -360,7 +360,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final StakeholderDTO stakeholderDTO) {
 
-		final var stakeholder = errandService.addStakeholderToErrand(errandId, stakeholderDTO);
+		final var stakeholder = errandService.addStakeholderToErrand(errandId, municipalityId, stakeholderDTO);
 		return created(fromPath("/{municipalityId}/stakeholders/{stakeholderId}").buildAndExpand(municipalityId, stakeholder.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -374,7 +374,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final List<StakeholderDTO> stakeholderDTOList) {
 
-		errandService.replaceStakeholdersOnErrand(errandId, stakeholderDTOList);
+		errandService.replaceStakeholdersOnErrand(errandId, municipalityId, stakeholderDTOList);
 		return noContent().build();
 	}
 
@@ -386,7 +386,7 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId) {
 
-		errandService.deleteStakeholderOnErrand(errandId, stakeholderId);
+		errandService.deleteStakeholderOnErrand(errandId, municipalityId, stakeholderId);
 		return noContent().build();
 	}
 }

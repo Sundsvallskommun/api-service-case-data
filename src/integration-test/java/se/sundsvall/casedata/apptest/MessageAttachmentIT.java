@@ -5,6 +5,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
+import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 
 import java.util.List;
 
@@ -17,8 +18,8 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/MessageAttachmentIT/", classes = Application.class)
 @Sql({
-	"/db/scripts/truncate.sql",
-	"/db/scripts/testdata-it.sql"
+	"/db/script/truncate.sql",
+	"/db/script/attachmentIT-testdata.sql"
 })
 class MessageAttachmentIT extends AbstractAppTest {
 
@@ -28,7 +29,7 @@ class MessageAttachmentIT extends AbstractAppTest {
 			.withHttpMethod(GET)
 			.withServicePath("/2281/messageattachments/666")
 			.withExpectedResponseStatus(NOT_FOUND)
-			.withExpectedResponse("response.json")
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
@@ -38,7 +39,7 @@ class MessageAttachmentIT extends AbstractAppTest {
 			.withHttpMethod(GET)
 			.withServicePath("/2281/messageattachments/05b29c30-4512-46c0-9d82-d0f11cb04bae")
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponse("response.json")
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
@@ -48,7 +49,7 @@ class MessageAttachmentIT extends AbstractAppTest {
 			.withHttpMethod(GET)
 			.withServicePath("/2281/messageattachments/666/streamed")
 			.withExpectedResponseStatus(NOT_FOUND)
-			.withExpectedResponse("response.json")
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 

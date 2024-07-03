@@ -10,6 +10,9 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
+import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 
 import java.util.Map;
 
@@ -31,12 +34,10 @@ class FacilityIT extends AbstractAppTest {
 
 	private static final Long ERRAND_ID = 1L;
 	private static final Long FACILITY_ID = 1L;
-	private static final String MUNICIPALITY_ID = "2281";
 
 	private static final String FACILITIES_PATH = "/{municipalityId}/errands/{id}/facilities";
 	private static final String FACILITY_PATH = "/{municipalityId}/errands/{id}/facilities/{facilityId}";
-	private static final String REQUEST_FILE = "request.json";
-	private static final String EXPECTED_FILE = "expected.json";
+
 
 	@Test
 	void test01_getFacilitiesByErrandId() {
@@ -45,7 +46,7 @@ class FacilityIT extends AbstractAppTest {
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "id", ERRAND_ID)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(EXPECTED_FILE)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
@@ -56,7 +57,7 @@ class FacilityIT extends AbstractAppTest {
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "id", ERRAND_ID, "facilityId", FACILITY_ID)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(EXPECTED_FILE)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
@@ -85,7 +86,7 @@ class FacilityIT extends AbstractAppTest {
 			.withServicePath(location)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(EXPECTED_FILE)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
@@ -104,7 +105,7 @@ class FacilityIT extends AbstractAppTest {
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "id", ERRAND_ID, "facilityId", FACILITY_ID)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(EXPECTED_FILE)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
@@ -123,7 +124,7 @@ class FacilityIT extends AbstractAppTest {
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "id", ERRAND_ID)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(EXPECTED_FILE)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 }

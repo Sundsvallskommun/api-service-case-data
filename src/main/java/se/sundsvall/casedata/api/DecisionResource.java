@@ -53,7 +53,7 @@ class DecisionResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "decisionId") final Long decisionId) {
 
-		return ok(decisionService.findById(decisionId));
+		return ok(decisionService.findByIdAndMunicipalityId(decisionId, municipalityId));
 	}
 
 	@Operation(description = "Update decision.")
@@ -64,7 +64,7 @@ class DecisionResource {
 		@PathVariable(name = "decisionId") final Long decisionId,
 		@RequestBody @Valid final PatchDecisionDTO patchDecisionDTO) {
 
-		decisionService.updateDecision(decisionId, patchDecisionDTO);
+		decisionService.updateDecision(decisionId, municipalityId, patchDecisionDTO);
 		return noContent().build();
 	}
 
@@ -76,7 +76,7 @@ class DecisionResource {
 		@PathVariable(name = "decisionId") final Long decisionId,
 		@RequestBody @Valid final DecisionDTO decisionDTO) {
 
-		decisionService.replaceDecision(decisionId, decisionDTO);
+		decisionService.replaceDecision(decisionId, municipalityId, decisionDTO);
 		return noContent().build();
 	}
 

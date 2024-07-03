@@ -1,20 +1,23 @@
 package se.sundsvall.casedata.service;
 
-import io.github.resilience4j.retry.annotation.Retry;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderDto;
+import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
+import static se.sundsvall.casedata.service.util.mappers.PutMapper.putStakeholder;
+
+import java.util.List;
+
 import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
+
 import se.sundsvall.casedata.api.model.StakeholderDTO;
 import se.sundsvall.casedata.integration.db.StakeholderRepository;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
-import java.util.List;
-
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderDto;
-import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
-import static se.sundsvall.casedata.service.util.mappers.PutMapper.putStakeholder;
+import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 @Transactional
@@ -28,16 +31,16 @@ public class StakeholderService {
 		this.stakeholderRepository = stakeholderRepository;
 	}
 
-	public List<StakeholderDTO> findAllStakeholders() {
-		final List<Stakeholder> stakeholderList = stakeholderRepository.findAll();
+	public List<StakeholderDTO> findAllStakeholdersByMunicipalityId(final String municipalityId) {
+		final List<Stakeholder> stakeholderList = stakeholderRepository.findAllByMunicipalityId(municipalityId);
 		if (stakeholderList.isEmpty()) {
 			throw Problem.valueOf(Status.NOT_FOUND, STAKEHOLDER_NOT_FOUND);
 		}
 		return stakeholderList.stream().map(EntityMapper::toStakeholderDto).toList();
 	}
 
-	public List<StakeholderDTO> findStakeholdersByRole(final String stakeholderRole) {
-		final List<Stakeholder> stakeholderList = stakeholderRepository.findByRoles(stakeholderRole);
+	public List<StakeholderDTO> findStakeholdersByRoleAndMunicipalityId(final String stakeholderRole, final String municipalityId) {
+		final List<Stakeholder> stakeholderList = stakeholderRepository.findByRolesAndMunicipalityId(stakeholderRole, municipalityId);
 
 		if (stakeholderList.isEmpty()) {
 			throw Problem.valueOf(Status.NOT_FOUND, STAKEHOLDER_NOT_FOUND);
@@ -46,21 +49,22 @@ public class StakeholderService {
 		return stakeholderList.stream().map(EntityMapper::toStakeholderDto).toList();
 	}
 
-	public StakeholderDTO findById(final Long id) {
-		return toStakeholderDto(stakeholderRepository.findById(id).orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, STAKEHOLDER_NOT_FOUND)));
+	public StakeholderDTO findByIdAndMunicipalityId(final Long id, final String municipalityId) {
+		return toStakeholderDto(stakeholderRepository.findByIdAndMunicipalityId(id, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, STAKEHOLDER_NOT_FOUND)));
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void patch(final Long stakeholderId, final StakeholderDTO stakeholderDTO) {
-		final var entity = stakeholderRepository.findById(stakeholderId)
+	public void patch(final Long stakeholderId, final String municipalityId, final StakeholderDTO stakeholderDTO) {
+		final var entity = stakeholderRepository.findByIdAndMunicipalityId(stakeholderId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, STAKEHOLDER_NOT_FOUND));
 		patchStakeholder(entity, stakeholderDTO);
 		stakeholderRepository.save(entity);
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void put(final Long id, final StakeholderDTO dto) {
-		final var entity = stakeholderRepository.findById(id)
+	public void put(final Long id, final String municipalityId, final StakeholderDTO dto) {
+		final var entity = stakeholderRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, STAKEHOLDER_NOT_FOUND));
 		putStakeholder(entity, dto);
 		stakeholderRepository.save(entity);

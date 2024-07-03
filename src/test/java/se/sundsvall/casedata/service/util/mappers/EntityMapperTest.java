@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.createAddress;
 import static se.sundsvall.casedata.TestUtil.createAddressDTO;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
@@ -42,7 +43,7 @@ class EntityMapperTest {
 	@Test
 	void toErrandTest() {
 		final var errandDto = createErrandDTO();
-		final var errand = EntityMapper.toErrand(errandDto);
+		final var errand = EntityMapper.toErrand(errandDto, MUNICIPALITY_ID);
 
 		assertThat(errand).satisfies(e -> {
 			assertThat(e.getErrandNumber()).isEqualTo(errandDto.getErrandNumber());
@@ -76,7 +77,7 @@ class EntityMapperTest {
 	@Test
 	void toDecisionTest() {
 		final var decisionDto = createDecisionDTO();
-		final var decision = EntityMapper.toDecision(decisionDto);
+		final var decision = EntityMapper.toDecision(decisionDto, MUNICIPALITY_ID);
 
 		assertThat(decision).satisfies(d -> {
 			assertThat(d.getDescription()).isEqualTo(decisionDto.getDescription());
@@ -112,7 +113,7 @@ class EntityMapperTest {
 	@Test
 	void toNoteTest() {
 		final var noteDto = createNoteDTO();
-		final var note = EntityMapper.toNote(noteDto);
+		final var note = EntityMapper.toNote(noteDto, MUNICIPALITY_ID);
 
 		assertThat(note).satisfies(n -> {
 			assertThat(n.getText()).isEqualTo(noteDto.getText());
@@ -150,7 +151,7 @@ class EntityMapperTest {
 	@Test
 	void toFacilityTest() {
 		final var facilityDto = createFacilityDTO();
-		final var facility = EntityMapper.toFacility(facilityDto);
+		final var facility = EntityMapper.toFacility(facilityDto, MUNICIPALITY_ID);
 
 		assertThat(facility).satisfies(f -> {
 			assertThat(f.getFacilityType()).isEqualTo(facilityDto.getFacilityType());
@@ -184,7 +185,7 @@ class EntityMapperTest {
 	@Test
 	void toStakeholderTest() {
 		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.APPLICANT.name()));
-		final var stakeholder = EntityMapper.toStakeholder(stakeholderDto);
+		final var stakeholder = EntityMapper.toStakeholder(stakeholderDto, MUNICIPALITY_ID);
 
 		assertThat(stakeholder).satisfies(s -> {
 			assertThat(s.getAdAccount()).isEqualTo(stakeholderDto.getAdAccount());
@@ -226,7 +227,7 @@ class EntityMapperTest {
 	@Test
 	void toAttachmentTest() {
 		final var attachmentDto = createAttachmentDTO(AttachmentCategory.POLICE_REPORT);
-		final var attachment = EntityMapper.toAttachment(attachmentDto);
+		final var attachment = EntityMapper.toAttachment(attachmentDto, MUNICIPALITY_ID);
 
 		assertThat(attachment).satisfies(a -> {
 			assertThat(a.getCategory()).isEqualTo(attachmentDto.getCategory());

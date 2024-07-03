@@ -61,7 +61,7 @@ class AttachmentResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "attachmentId") final Long attachmentId) {
 
-		return ok(attachmentService.findById(attachmentId));
+		return ok(attachmentService.findByIdAndMunicipalityId(attachmentId, municipalityId));
 	}
 
 	@Operation(description = "Get attachment by errandnumber.")
@@ -71,7 +71,7 @@ class AttachmentResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable("errandNumber") final String errandNumber) {
 
-		return ok(attachmentService.findByErrandNumber(errandNumber));
+		return ok(attachmentService.findByErrandNumberAndMunicipalityId(errandNumber, municipalityId));
 	}
 
 	@Operation(description = "Create attachment")
@@ -81,7 +81,7 @@ class AttachmentResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
 
-		final var result = attachmentService.createAttachment(attachmentDTO);
+		final var result = attachmentService.createAttachment(attachmentDTO, municipalityId);
 		return created(fromPath("/{municipalityId}/attachments/{id}").buildAndExpand(municipalityId, result.getId()).toUri())
 			.build();
 	}
@@ -94,7 +94,7 @@ class AttachmentResource {
 		@PathVariable(name = "attachmentId") final Long attachmentId,
 		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
 
-		attachmentService.replaceAttachment(attachmentId, attachmentDTO);
+		attachmentService.replaceAttachment(attachmentId, municipalityId, attachmentDTO);
 		return noContent().build();
 	}
 
@@ -106,7 +106,7 @@ class AttachmentResource {
 		@PathVariable(name = "attachmentId") final Long attachmentId,
 		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
 
-		attachmentService.updateAttachment(attachmentId, attachmentDTO);
+		attachmentService.updateAttachment(attachmentId, municipalityId, attachmentDTO);
 		return noContent().build();
 	}
 
@@ -117,7 +117,7 @@ class AttachmentResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "attachmentId") final Long attachmentId) {
 
-		if (attachmentService.deleteAttachment(attachmentId)) {
+		if (attachmentService.deleteAttachment(attachmentId, municipalityId)) {
 			return ResponseEntity.noContent().build();
 		}
 		return notFound().build();

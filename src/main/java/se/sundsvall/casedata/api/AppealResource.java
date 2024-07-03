@@ -53,7 +53,7 @@ class AppealResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "appealId") final Long appealId) {
 
-		return ok(appealService.findById(appealId));
+		return ok(appealService.findByIdAndMunicipalityId(appealId, municipalityId));
 	}
 
 	@Operation(description = "Update appeal")
@@ -64,7 +64,7 @@ class AppealResource {
 		@PathVariable(name = "appealId") final Long appealId,
 		@RequestBody @Valid final PatchAppealDTO patchAppealDTO) {
 
-		appealService.updateAppeal(appealId, patchAppealDTO);
+		appealService.updateAppeal(appealId, municipalityId, patchAppealDTO);
 		return noContent().build();
 	}
 
@@ -76,7 +76,7 @@ class AppealResource {
 		@PathVariable(name = "appealId") final Long appealId,
 		@RequestBody @Valid final AppealDTO appealDTO) {
 
-		appealService.replaceAppeal(appealId, appealDTO);
+		appealService.replaceAppeal(appealId, municipalityId, appealDTO);
 		return noContent().build();
 	}
 }

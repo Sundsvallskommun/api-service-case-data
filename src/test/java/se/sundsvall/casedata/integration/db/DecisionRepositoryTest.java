@@ -27,7 +27,7 @@ import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
  * @see /src/test/resources/db/testdata-junit.sql for data setup.
  */
 @DataJpaTest
-@Import(value = { JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class })
+@Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
 @Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
@@ -45,9 +45,10 @@ class DecisionRepositoryTest {
 
 		// Arrange
 		final var id = 1L;
+		final var municipalityId = "2281";
 
 		// Act
-		final var result = decisionRepository.findById(id).orElseThrow();
+		final var result = decisionRepository.findByIdAndMunicipalityId(id, municipalityId).orElseThrow();
 
 		// Assert
 		assertThat(result.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
@@ -61,9 +62,10 @@ class DecisionRepositoryTest {
 
 		// Arrange
 		final var id = 666L;
+		final var municipalityId = "2281";
 
 		// Act
-		final var result = decisionRepository.findById(id);
+		final var result = decisionRepository.findByIdAndMunicipalityId(id, municipalityId);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.createNoteDTO;
 
 import java.util.List;
@@ -28,7 +29,6 @@ import se.sundsvall.casedata.service.NoteService;
 class NoteResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/notes";
-	private static final String MUNICIPALITY_ID = "2281";
 
 	@MockBean
 	private NoteService mockService;
@@ -40,7 +40,7 @@ class NoteResourceTest {
 	void getNoteByIdTest() {
 		final var id = 153L;
 		final var dto = createNoteDTO();
-		when(mockService.getNoteById(id)).thenReturn(dto);
+		when(mockService.getNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID)).thenReturn(dto);
 
 		var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_URL + "/{id}").build(Map.of("municipalityId", MUNICIPALITY_ID, "id", id)))
@@ -51,7 +51,7 @@ class NoteResourceTest {
 			.getResponseBody();
 
 		assertThat(response).isEqualTo(dto);
-		verify(mockService).getNoteById(id);
+		verify(mockService).getNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID);
 	}
 
 	@Test
@@ -60,7 +60,7 @@ class NoteResourceTest {
 		final Optional<NoteType> noteType = Optional.empty();
 		final var dto1 = createNoteDTO();
 		final var dto2 = createNoteDTO();
-		when(mockService.getNotesByErrandIdAndNoteType(errandId, noteType)).thenReturn(List.of(dto1, dto2));
+		when(mockService.getNotesByErrandIdAndMunicipalityIdAndNoteType(errandId, MUNICIPALITY_ID, noteType)).thenReturn(List.of(dto1, dto2));
 
 		var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_URL + "/errand/{errandId}")
@@ -73,13 +73,13 @@ class NoteResourceTest {
 			.getResponseBody();
 
 		assertThat(response).containsExactly(dto1, dto2).hasSize(2);
-		verify(mockService).getNotesByErrandIdAndNoteType(errandId, noteType);
+		verify(mockService).getNotesByErrandIdAndMunicipalityIdAndNoteType(errandId, MUNICIPALITY_ID, noteType);
 	}
 
 	@Test
 	void deleteNoteByIdTest() {
 		final var id = 153L;
-		doNothing().when(mockService).deleteNoteById(id);
+		doNothing().when(mockService).deleteNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID);
 
 		webTestClient.delete()
 			.uri(builder -> builder.path(BASE_URL + "/{id}")
@@ -88,14 +88,14 @@ class NoteResourceTest {
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(mockService).deleteNoteById(id);
+		verify(mockService).deleteNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID);
 	}
 
 	@Test
 	void patchNoteOnErrand() {
 		final var id = 153L;
 		final var dto = createNoteDTO();
-		doNothing().when(mockService).updateNote(id, dto);
+		doNothing().when(mockService).updateNote(id, MUNICIPALITY_ID, dto);
 
 		webTestClient.patch()
 			.uri(builder -> builder.path(BASE_URL + "/{id}")
@@ -105,7 +105,7 @@ class NoteResourceTest {
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(mockService).updateNote(id, dto);
+		verify(mockService).updateNote(id, MUNICIPALITY_ID, dto);
 	}
 
 }

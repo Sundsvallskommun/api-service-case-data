@@ -36,7 +36,7 @@ class HistoryResource {
 
 	private final HistoryService historyService;
 
-	HistoryResource(HistoryService historyService) {
+	HistoryResource(final HistoryService historyService) {
 		this.historyService = historyService;
 	}
 
@@ -46,7 +46,7 @@ class HistoryResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "attachmentId") final Long attachmentId) {
 
-		return ok(historyService.findAttachmentHistory(attachmentId));
+		return ok(historyService.findAttachmentHistory(attachmentId, municipalityId));
 	}
 
 	@Operation(description = "Get decision history.")
@@ -55,7 +55,7 @@ class HistoryResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "decisionId") final Long decisionId) {
 
-		return ok(historyService.findDecisionHistory(decisionId));
+		return ok(historyService.findDecisionHistory(decisionId, municipalityId));
 	}
 
 	@Operation(description = "Get errand history.")
@@ -64,7 +64,7 @@ class HistoryResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "errandId") final Long errandId) {
 
-		return ok(historyService.findErrandHistory(errandId));
+		return ok(historyService.findErrandHistory(errandId, municipalityId));
 	}
 
 	@Operation(description = "Get facility history.")
@@ -73,7 +73,7 @@ class HistoryResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "facilityId") final Long facilityId) {
 
-		return ok(historyService.findFacilityHistory(facilityId));
+		return ok(historyService.findFacilityHistory(facilityId, municipalityId));
 	}
 
 	@Operation(description = "Get note history.")
@@ -82,7 +82,7 @@ class HistoryResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "noteId") final Long noteId) {
 
-		return ok(historyService.findNoteHistory(noteId));
+		return ok(historyService.findNoteHistory(noteId, municipalityId));
 	}
 
 	@Operation(description = "Get stakeholder history.")
@@ -91,6 +91,6 @@ class HistoryResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId) {
 
-		return ok(historyService.findStakeholderHistory(stakeholderId));
+		return ok(historyService.findStakeholderHistory(stakeholderId, municipalityId));
 	}
 }

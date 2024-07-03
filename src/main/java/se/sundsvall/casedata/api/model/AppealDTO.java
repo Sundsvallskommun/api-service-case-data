@@ -2,8 +2,12 @@ package se.sundsvall.casedata.api.model;
 
 import java.time.OffsetDateTime;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
+
+import se.sundsvall.casedata.api.model.validation.ValidAppealStatus;
+import se.sundsvall.casedata.api.model.validation.ValidTimelinessReviewValue;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +15,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import se.sundsvall.casedata.api.model.validation.ValidAppealStatus;
-import se.sundsvall.casedata.api.model.validation.ValidTimelinessReviewValue;
 
 @Data
 @ToString(callSuper = true)
@@ -24,6 +26,9 @@ public class AppealDTO extends BaseDTO {
 
 	@Size(max = 100000)
 	private String description;
+
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
+	private String municipalityId;
 
 	@Schema(description = "The date when this appeal was first registered (timestamp from e-service, mail or letter)")
 	private OffsetDateTime registeredAt;

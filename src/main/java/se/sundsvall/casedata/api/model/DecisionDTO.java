@@ -15,6 +15,7 @@ import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,6 +38,9 @@ public class DecisionDTO extends BaseDTO {
 
 	@Size(max = 100000)
 	private String description;
+
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
+	private String municipalityId;
 
 	@Builder.Default
 	private List<LawDTO> law = new ArrayList<>();

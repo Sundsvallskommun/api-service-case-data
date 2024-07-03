@@ -52,7 +52,7 @@ class MessageResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@PathVariable(name = "errandNumber") final String errandNumber) {
 
-		return ok(service.getMessagesByErrandNumber(errandNumber));
+		return ok(service.getMessagesByErrandNumber(errandNumber, municipalityId));
 	}
 
 	@Operation(description = "Save a message.")
@@ -62,7 +62,7 @@ class MessageResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@RequestBody final MessageRequest request) {
 
-		service.saveMessage(request);
+		service.saveMessage(request, municipalityId);
 		return noContent().build();
 	}
 
@@ -74,7 +74,7 @@ class MessageResource {
 		@PathVariable(name = "messageId") final String messageId,
 		@PathVariable(name = "isViewed") final boolean isViewed) {
 
-		service.updateViewedStatus(messageId, isViewed);
+		service.updateViewedStatus(messageId, municipalityId, isViewed);
 		return noContent().build();
 	}
 }

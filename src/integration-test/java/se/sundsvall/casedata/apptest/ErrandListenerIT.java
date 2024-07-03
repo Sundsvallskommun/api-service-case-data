@@ -1,10 +1,7 @@
 package se.sundsvall.casedata.apptest;
 
+import static java.text.MessageFormat.format;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -12,89 +9,94 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
+import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
+import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.UNKNOWN;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
-import java.text.MessageFormat;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.BeforeEach;
+import com.google.gson.JsonParser;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.ErrandDTO;
-import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.service.util.Constants;
+import se.sundsvall.dept44.test.annotation.resource.Load;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+import se.sundsvall.dept44.test.extension.ResourceLoaderExtension;
 
 @WireMockAppTestSuite(files = "classpath:/ErrandListenerIT", classes = Application.class)
+@Sql({
+	"/db/script/truncate.sql",
+	"/db/script/errandIT-testdata.sql"
+})
+@ExtendWith(ResourceLoaderExtension.class)
 class ErrandListenerIT extends CustomAbstractAppTest {
-
-	private static final String PATH = "/2281/errands";
 
 	@Autowired
 	private ErrandRepository errandRepository;
-
-	@BeforeEach
-	void beforeEach() {
-		errandRepository.deleteAll();
-	}
 
 	@Test
 	void test1_persistErrandUnknown() throws JsonProcessingException {
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath(PATH)
+			.withServicePath(format("/{0}/errands", MUNICIPALITY_ID))
 			.withRequest(OBJECT_MAPPER.writeValueAsString(createErrandDTO()))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
 
 		final Errand errand = errandRepository.findAll().stream().max(Comparator.comparing(Errand::getCreated)).orElseThrow();
 
-		assertEquals(UNKNOWN, errand.getCreatedByClient());
-		assertEquals(UNKNOWN, errand.getCreatedBy());
-		assertNotNull(errand.getErrandNumber());
-		// The errand gets an update directly because we update with processId
-		assertEquals(UNKNOWN, errand.getUpdatedByClient());
-		assertEquals(UNKNOWN, errand.getUpdatedBy());
+		assertThat(errand).satisfies(e -> {
+			assertThat(e.getErrandNumber()).isNotNull();
+			assertThat(e.getCreatedByClient()).isEqualTo(UNKNOWN);
+			assertThat(e.getCreatedBy()).isEqualTo(UNKNOWN);
+			assertThat(e.getUpdatedByClient()).isEqualTo(UNKNOWN);
+			assertThat(e.getUpdatedBy()).isEqualTo(UNKNOWN);
+		});
 	}
 
 	@Test
-	void test2_updateErrand() throws JsonProcessingException {
-		setupCall()
-			.withHttpMethod(POST)
-			.withServicePath(PATH)
-			.withRequest(OBJECT_MAPPER.writeValueAsString(createErrandDTO()))
-			.withExpectedResponseStatus(CREATED)
-			.sendRequestAndVerifyResponse();
-
-		final Errand errandBeforePatch = errandRepository.findAll().stream().max(Comparator.comparing(Errand::getCreated)).orElseThrow();
-
-		final PatchErrandDTO patchErrandDTO = new PatchErrandDTO();
-		patchErrandDTO.setDiaryNumber("Patch");
+	void test2_updateErrand(@Load("ErrandListenerIT/__files/test2_updateErrand/request.json") final String request) {
+		final var requestJson = JsonParser.parseString(request).getAsJsonObject();
+		final var beforePatch = errandRepository.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID).orElseThrow();
 
 		setupCall()
 			.withHttpMethod(PATCH)
-			.withServicePath(MessageFormat.format(PATH + "/{0}", errandBeforePatch.getId()))
+			.withServicePath(format("/{0}/errands/{1}", MUNICIPALITY_ID, 1L))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(Constants.AD_USER_HEADER_KEY, "PatchUser")
-			.withRequest(OBJECT_MAPPER.writeValueAsString(patchErrandDTO))
+			.withHeader(AD_USER_HEADER_KEY, "PatchUser")
+			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 
-		final Errand errandAfterPatch = errandRepository.findAll().stream().max(Comparator.comparing(Errand::getCreated)).orElseThrow();
+		final var afterPatch = errandRepository.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID).orElseThrow();
 
-		assertNotEquals(errandBeforePatch.getUpdatedByClient(), errandAfterPatch.getUpdatedByClient());
-		assertNotEquals(errandBeforePatch.getUpdatedBy(), errandAfterPatch.getUpdatedBy());
+		assertThat(afterPatch).satisfies(after -> {
+			assertThat(after.getDiaryNumber()).isNotEqualTo(beforePatch.getDiaryNumber());
+			assertThat(after.getDescription()).isNotEqualTo(beforePatch.getDescription());
+			assertThat(after.getPriority()).isNotEqualTo(beforePatch.getPriority());
+			assertThat(after.getUpdatedByClient()).isNotEqualTo(beforePatch.getUpdatedByClient());
+			assertThat(after.getUpdatedBy()).isNotEqualTo(beforePatch.getUpdatedBy());
+		});
+		assertThat(afterPatch).satisfies(after -> {
+			assertThat(after.getDiaryNumber()).isEqualTo(requestJson.get("diaryNumber").getAsString());
+			assertThat(after.getDescription()).isEqualTo(requestJson.get("description").getAsString());
+			assertThat(after.getPriority().name()).isEqualTo(requestJson.get("priority").getAsString());
+		});
 	}
 
 	@Test
@@ -104,7 +106,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 		errandDTO1.setCaseType(CaseType.PARKING_PERMIT.name());
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath(PATH)
+			.withServicePath(format("/{0}/errands", MUNICIPALITY_ID))
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO1))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
@@ -113,7 +115,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 		errandDTO2.setCaseType(CaseType.LOST_PARKING_PERMIT.name());
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath(PATH)
+			.withServicePath(format("/{0}/errands", MUNICIPALITY_ID))
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO2))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
@@ -122,17 +124,18 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 		errandDTO3.setCaseType(CaseType.PARKING_PERMIT_RENEWAL.name());
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath(PATH)
+			.withServicePath(format("/{0}/errands", MUNICIPALITY_ID))
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO3))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
 
-		final List<Errand> resultList = errandRepository.findAll();
+		final var errands = errandRepository.findAll().stream()
+			.filter(errand -> errand.getCreated().isAfter(OffsetDateTime.now().minusMinutes(2)))
+			.toList();
 
-		for (int i = 0; i < resultList.size(); i++) {
-			assertEquals(MessageFormat.format("{0}-{1}-{2}", CaseType.PARKING_PERMIT.getAbbreviation(), String.valueOf(LocalDate.now().getYear()), String.format("%06d", i + 1)), resultList.get(i).getErrandNumber());
+		for (int i = 0; i < errands.size(); i++) {
+			assertThat(errands.get(i).getErrandNumber()).isEqualTo(format("{0}-{1}-{2}", CaseType.PARKING_PERMIT.getAbbreviation(), String.valueOf(LocalDate.now().getYear()), String.format("%06d", i + 1)));
 		}
-		resultList.forEach(errand -> assertTrue(errand.getErrandNumber().startsWith(CaseType.PARKING_PERMIT.getAbbreviation())));
 	}
 
 	@ParameterizedTest
@@ -143,7 +146,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath(PATH)
+			.withServicePath(format("/{0}/errands", MUNICIPALITY_ID))
 			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO1))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();

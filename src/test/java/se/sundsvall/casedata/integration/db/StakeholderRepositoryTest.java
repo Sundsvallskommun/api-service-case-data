@@ -6,6 +6,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.integration.db.model.enums.AddressCategory.POSTAL_ADDRESS;
 import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
 import static se.sundsvall.casedata.integration.db.model.enums.StakeholderType.PERSON;
@@ -36,7 +37,7 @@ import se.sundsvall.casedata.integration.db.model.Stakeholder;
  * @see /src/test/resources/db/testdata-junit.sql for data setup.
  */
 @DataJpaTest
-@Import(value = { JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class })
+@Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
 @Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
@@ -56,7 +57,7 @@ class StakeholderRepositoryTest {
 		final var id = 1L;
 
 		// Act
-		final var result = stakeholderRepository.findById(id).orElseThrow();
+		final var result = stakeholderRepository.findByIdAndMunicipalityId(id, MUNICIPALITY_ID).orElseThrow();
 
 		// Assert
 		assertThat(result.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
@@ -88,7 +89,7 @@ class StakeholderRepositoryTest {
 		final var role = "ADMINISTRATOR";
 
 		// Act
-		final var result = stakeholderRepository.findByRoles(role);
+		final var result = stakeholderRepository.findByRolesAndMunicipalityId(role, MUNICIPALITY_ID);
 
 		// Assert
 		assertThat(result)
@@ -111,7 +112,7 @@ class StakeholderRepositoryTest {
 		final var role = "NON-EXISTING";
 
 		// Act
-		final var result = stakeholderRepository.findByRoles(role);
+		final var result = stakeholderRepository.findByRolesAndMunicipalityId(role, MUNICIPALITY_ID);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -120,7 +121,6 @@ class StakeholderRepositoryTest {
 	@Test
 	void create() {
 
-		final var type = PERSON;
 		final var firstName = "firstName";
 		final var lastName = "lastName";
 		final var personId = UUID.randomUUID().toString();
@@ -168,7 +168,7 @@ class StakeholderRepositoryTest {
 		assertThat(result.getLastName()).isEqualTo(lastName);
 		assertThat(result.getPersonId()).isEqualTo(personId);
 		assertThat(result.getRoles()).isEqualTo(List.of(role));
-		assertThat(result.getType()).isEqualTo(type);
+		assertThat(result.getType()).isEqualTo(PERSON);
 		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 		assertThat(result.getVersion()).isEqualTo(version);
 	}

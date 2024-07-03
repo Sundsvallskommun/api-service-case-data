@@ -6,6 +6,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import se.sundsvall.casedata.service.MessageService;
 class MessageResourceFailureTest {
 
 	private static final String PATH = "/{municipalityId}/messages";
-	private static final String MUNICIPALITY_ID = "2281";
 
 	@MockBean
 	private MessageService messageServiceMock;
