@@ -51,9 +51,9 @@ class DecisionServiceTest {
 
 	@Test
 	void patchDecisionOnErrand() throws JsonProcessingException {
-		final Errand errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
+		final Errand errand = toErrand(createErrandDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
 		errand.setId(new Random().nextLong(1, 1000));
-		final Decision decision = toDecision(createDecisionDTO(), MUNICIPALITY_ID);
+		final Decision decision = toDecision(createDecisionDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
 		decision.setId(new Random().nextLong());
 		errand.setDecisions(List.of(decision));
 

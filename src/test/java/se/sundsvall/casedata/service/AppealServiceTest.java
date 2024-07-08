@@ -84,7 +84,7 @@ class AppealServiceTest {
 
 	@Test
 	void putAppeal() {
-		final var dto = createAppealDTO();
+		final var dto = createAppealDTO(MUNICIPALITY_ID);
 		dto.setDescription("New description");
 		dto.setStatus(AppealStatus.REJECTED.name());
 		dto.setTimelinessReview(TimelinessReview.REJECTED.name());
@@ -112,7 +112,7 @@ class AppealServiceTest {
 	@ParameterizedTest
 	@MethodSource("decisionProvider")
 	void putAppealWhenDecisionIsSet(final Long decisionId, final Long expectedDecisionId) {
-		final var dto = createAppealDTO();
+		final var dto = createAppealDTO(MUNICIPALITY_ID);
 		dto.setDescription("New description");
 		dto.setStatus(AppealStatus.REJECTED.name());
 		dto.setTimelinessReview(TimelinessReview.REJECTED.name());

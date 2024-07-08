@@ -1,7 +1,5 @@
 package se.sundsvall.casedata;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 import java.time.LocalDate;
@@ -29,7 +27,6 @@ import se.sundsvall.casedata.api.model.CoordinatesDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.FacilityDTO;
-import se.sundsvall.casedata.api.model.GetParkingPermitDTO;
 import se.sundsvall.casedata.api.model.LawDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.PatchDecisionDTO;
@@ -62,9 +59,6 @@ import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
-import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitClient;
-
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 
 public class TestUtil {
 
@@ -76,7 +70,7 @@ public class TestUtil {
 		.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
 		.registerModule(new JavaTimeModule());
 
-	public static ErrandDTO createErrandDTO() {
+	public static ErrandDTO createErrandDTO(final String municipalityId) {
 		final var errandDTO = new ErrandDTO();
 		errandDTO.setId(new Random().nextLong(1, 100000));
 		errandDTO.setExternalCaseId(UUID.randomUUID().toString());
@@ -88,18 +82,18 @@ public class TestUtil {
 		errandDTO.setCaseTitleAddition(RandomStringUtils.random(10, true, false));
 		errandDTO.setDiaryNumber(RandomStringUtils.random(10, true, true));
 		errandDTO.setPhase(RandomStringUtils.random(10, true, true));
-		errandDTO.setMunicipalityId("2281");
+		errandDTO.setMunicipalityId(municipalityId);
 		errandDTO.setStartDate(LocalDate.now().minusDays(3));
 		errandDTO.setEndDate(LocalDate.now().plusDays(10));
 		errandDTO.setApplicationReceived(getRandomOffsetDateTime());
-		errandDTO.setFacilities(createFacilities(true, new ArrayList<>(List.of(FacilityType.GARAGE))));
+		errandDTO.setFacilities(createFacilities(true, new ArrayList<>(List.of(FacilityType.GARAGE)), municipalityId));
 		errandDTO.setStatuses(new ArrayList<>(List.of(createStatusDTO())));
-		errandDTO.setDecisions(new ArrayList<>(List.of(createDecisionDTO())));
-		errandDTO.setAppeals(new ArrayList<>(List.of(createAppealDTO())));
-		errandDTO.setNotes(new ArrayList<>(List.of(createNoteDTO(), createNoteDTO(), createNoteDTO())));
+		errandDTO.setDecisions(new ArrayList<>(List.of(createDecisionDTO(municipalityId))));
+		errandDTO.setAppeals(new ArrayList<>(List.of(createAppealDTO(municipalityId))));
+		errandDTO.setNotes(new ArrayList<>(List.of(createNoteDTO(municipalityId), createNoteDTO(municipalityId), createNoteDTO(municipalityId))));
 		errandDTO.setStakeholders(new ArrayList<>(List.of(
-			createStakeholderDTO(StakeholderType.PERSON, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole()))),
-			createStakeholderDTO(StakeholderType.ORGANIZATION, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole()))))));
+			createStakeholderDTO(StakeholderType.PERSON, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole())), municipalityId),
+			createStakeholderDTO(StakeholderType.ORGANIZATION, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole())), municipalityId))));
 		errandDTO.setMessageIds(new ArrayList<>(List.of(
 			RandomStringUtils.random(10, true, true),
 			RandomStringUtils.random(10, true, true),
@@ -135,23 +129,23 @@ public class TestUtil {
 		return statusDTO;
 	}
 
-	public static DecisionDTO createDecisionDTO() {
+	public static DecisionDTO createDecisionDTO(final String municipalityId) {
 		final var decisionDTO = new DecisionDTO();
 		decisionDTO.setDecisionType(getRandomDecisionType());
 		decisionDTO.setDecisionOutcome(DecisionOutcome.CANCELLATION);
 		decisionDTO.setDescription(RandomStringUtils.random(30, true, false));
-		decisionDTO.setDecidedBy(createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name())));
+		decisionDTO.setDecidedBy(createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name()), municipalityId));
 		decisionDTO.setDecidedAt(getRandomOffsetDateTime());
 		decisionDTO.setValidFrom(getRandomOffsetDateTime());
 		decisionDTO.setValidTo(getRandomOffsetDateTime());
 		decisionDTO.setLaw(new ArrayList<>(List.of(createLawDTO())));
-		decisionDTO.setAttachments(new ArrayList<>(List.of(createAttachmentDTO(AttachmentCategory.POLICE_REPORT))));
+		decisionDTO.setAttachments(new ArrayList<>(List.of(createAttachmentDTO(AttachmentCategory.POLICE_REPORT, municipalityId))));
 		decisionDTO.setExtraParameters(createExtraParameters());
-		decisionDTO.setMunicipalityId("2281");
+		decisionDTO.setMunicipalityId(municipalityId);
 		return decisionDTO;
 	}
 
-	public static AppealDTO createAppealDTO() {
+	public static AppealDTO createAppealDTO(final String municipalityId) {
 		final var appealDTO = new AppealDTO();
 		appealDTO.setDescription("Appeal description");
 		appealDTO.setRegisteredAt(getRandomOffsetDateTime());
@@ -159,11 +153,11 @@ public class TestUtil {
 		appealDTO.setStatus(AppealStatus.COMPLETED.toString());
 		appealDTO.setTimelinessReview(TimelinessReview.NOT_RELEVANT.toString());
 		appealDTO.setDecisionId(123L);
-		appealDTO.setMunicipalityId("2281");
+		appealDTO.setMunicipalityId(municipalityId);
 		return appealDTO;
 	}
 
-	public static FacilityDTO createFacilityDTO() {
+	public static FacilityDTO createFacilityDTO(final String municipalityId) {
 		return FacilityDTO.builder()
 			.withDescription("description")
 			.withCreated(getRandomOffsetDateTime())
@@ -174,11 +168,11 @@ public class TestUtil {
 			.withFacilityType(FacilityType.GARAGE.name())
 			.withFacilityCollectionName("facilityCollectionName")
 			.withMainFacility(true)
-			.withMunicipalityId("2281")
+			.withMunicipalityId(municipalityId)
 			.build();
 	}
 
-	public static AttachmentDTO createAttachmentDTO(final AttachmentCategory category) {
+	public static AttachmentDTO createAttachmentDTO(final AttachmentCategory category, final String municipalityId) {
 		final var attachmentDTO = new AttachmentDTO();
 		attachmentDTO.setId(new Random().nextLong(1, 100000));
 		attachmentDTO.setCategory(category.toString());
@@ -188,7 +182,7 @@ public class TestUtil {
 		attachmentDTO.setMimeType("application/pdf");
 		attachmentDTO.setFile("dGVzdA==");
 		attachmentDTO.setExtraParameters(createExtraParameters());
-		attachmentDTO.setMunicipalityId("2281");
+		attachmentDTO.setMunicipalityId(municipalityId);
 
 		return attachmentDTO;
 	}
@@ -203,12 +197,12 @@ public class TestUtil {
 		return lawDTO;
 	}
 
-	public static List<FacilityDTO> createFacilities(final boolean oneMainFacility, final List<FacilityType> facilityTypes) {
+	public static List<FacilityDTO> createFacilities(final boolean oneMainFacility, final List<FacilityType> facilityTypes, final String municipalityId) {
 		final var facilityList = new ArrayList<FacilityDTO>();
 
 		facilityTypes.forEach(facilityType -> {
 			final FacilityDTO facilityDTO = new FacilityDTO();
-			facilityDTO.setMunicipalityId("2281");
+			facilityDTO.setMunicipalityId(municipalityId);
 			facilityDTO.setFacilityType(facilityType.name());
 			facilityDTO.setMainFacility(oneMainFacility && facilityList.isEmpty());
 			facilityDTO.setDescription(RandomStringUtils.random(20, true, false));
@@ -235,7 +229,7 @@ public class TestUtil {
 		return extraParams;
 	}
 
-	public static StakeholderDTO createStakeholderDTO(final StakeholderType stakeholderType, final List<String> stakeholderRoles) {
+	public static StakeholderDTO createStakeholderDTO(final StakeholderType stakeholderType, final List<String> stakeholderRoles, final String municipalityId) {
 		if (stakeholderType.equals(StakeholderType.PERSON)) {
 			final var person = new StakeholderDTO();
 			person.setType(StakeholderType.PERSON);
@@ -247,7 +241,7 @@ public class TestUtil {
 			person.setContactInformation(List.of(createContactInformationDTO(ContactType.EMAIL), createContactInformationDTO(ContactType.PHONE), createContactInformationDTO(ContactType.CELLPHONE)));
 			person.setAddresses(List.of(createAddressDTO(AddressCategory.VISITING_ADDRESS)));
 			person.setExtraParameters(createExtraParameters());
-			person.setMunicipalityId("2281");
+			person.setMunicipalityId(municipalityId);
 			return person;
 		} else {
 			final var organization = new StakeholderDTO();
@@ -260,7 +254,7 @@ public class TestUtil {
 			organization.setExtraParameters(createExtraParameters());
 			organization.setAuthorizedSignatory(RandomStringUtils.random(10, true, false));
 			organization.setAdAccount(RandomStringUtils.random(10, true, false));
-			organization.setMunicipalityId("2281");
+			organization.setMunicipalityId(municipalityId);
 			return organization;
 		}
 	}
@@ -301,7 +295,7 @@ public class TestUtil {
 		return coordinates;
 	}
 
-	public static NoteDTO createNoteDTO() {
+	public static NoteDTO createNoteDTO(final String municipalityId) {
 		final var noteDTO = new NoteDTO();
 		noteDTO.setId(new Random().nextLong(1, 100000));
 		noteDTO.setTitle(RandomStringUtils.random(10, true, false));
@@ -310,28 +304,12 @@ public class TestUtil {
 		noteDTO.setCreatedBy(RandomStringUtils.random(10, true, false));
 		noteDTO.setUpdatedBy(RandomStringUtils.random(10, true, false));
 		noteDTO.setNoteType(NoteType.PUBLIC);
-		noteDTO.setMunicipalityId("2281");
+		noteDTO.setMunicipalityId(municipalityId);
 
 		return noteDTO;
 	}
 
-	public static GetParkingPermitDTO createGetParkingPermitDTO() {
-		return GetParkingPermitDTO.builder()
-			.withErrandId(new Random().nextLong(1, 100000))
-			.withArtefactPermitNumber(RandomStringUtils.random(10, true, true))
-			.withArtefactPermitStatus(RandomStringUtils.random(10, true, false))
-			.withErrandDecision(createDecisionDTO())
-			.build();
-	}
-
-	public static void mockStartProcess(final ParkingPermitClient parkingPermitClientMock) {
-		final var response = new StartProcessResponse();
-		response.setProcessId(UUID.randomUUID().toString());
-
-		doReturn(response).when(parkingPermitClientMock).startProcess(any());
-	}
-
-	public static PatchErrandDTO createPatchErrandDto() {
+	public static PatchErrandDTO createPatchErrandDto(final String municipalityId) {
 		return PatchErrandDTO.builder()
 			.withExternalCaseId("externalCaseId")
 			.withCaseType(CaseType.ANMALAN_ATTEFALL)
@@ -344,7 +322,7 @@ public class TestUtil {
 			.withEndDate(LocalDate.now())
 			.withApplicationReceived(getRandomOffsetDateTime())
 			.withExtraParameters(createExtraParameters())
-			.withFacilities(new ArrayList<>(List.of(createFacilityDTO())))
+			.withFacilities(new ArrayList<>(List.of(createFacilityDTO(municipalityId))))
 			.build();
 	}
 

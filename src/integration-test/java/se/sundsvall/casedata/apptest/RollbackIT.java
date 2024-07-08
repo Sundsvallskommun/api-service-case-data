@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
+import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ class RollbackIT extends CustomAbstractAppTest {
 	void test01_500rollback() throws JsonProcessingException {
 
 		final List<Errand> listBefore = errandRepository.findAll();
-		final var errandDTO = createErrandDTO();
+		final var errandDTO = createErrandDTO(MUNICIPALITY_ID);
 		errandDTO.setCaseType(PARKING_PERMIT.name());
 
 		setupCall()

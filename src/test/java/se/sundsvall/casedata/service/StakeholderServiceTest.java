@@ -74,8 +74,8 @@ class StakeholderServiceTest {
 	@Test
 	void findStakeholdersByRoleAndMunicipalityId() {
 		final List<Stakeholder> stakeholders = Stream.of(
-				createStakeholderDTO(ORGANIZATION, List.of(DRIVER.name())),
-				createStakeholderDTO(PERSON, List.of(DRIVER.name(), OPERATOR.name())))
+				createStakeholderDTO(ORGANIZATION, List.of(DRIVER.name()), MUNICIPALITY_ID),
+				createStakeholderDTO(PERSON, List.of(DRIVER.name(), OPERATOR.name()), MUNICIPALITY_ID))
 			.map(stakeholderDTO -> toStakeholder(stakeholderDTO, MUNICIPALITY_ID))
 			.toList();
 		when(stakeholderRepository.findByRolesAndMunicipalityId(DRIVER.name(), MUNICIPALITY_ID)).thenReturn(stakeholders);
@@ -102,7 +102,7 @@ class StakeholderServiceTest {
 
 	@Test
 	void testFindByIdAndMunicipalityId() {
-		final var stakeholder = toStakeholder(createStakeholderDTO(PERSON, List.of(StakeholderRole.APPLICANT.name())), MUNICIPALITY_ID);
+		final var stakeholder = toStakeholder(createStakeholderDTO(PERSON, List.of(StakeholderRole.APPLICANT.name()), MUNICIPALITY_ID), MUNICIPALITY_ID);
 		when(stakeholderRepository.findByIdAndMunicipalityId(anyLong(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(stakeholder));
 
 		final var result = stakeholderService.findByIdAndMunicipalityId(5L, MUNICIPALITY_ID);
@@ -128,7 +128,7 @@ class StakeholderServiceTest {
 	@Test
 	void testPut() {
 		final var stakeholder = createStakeholder();
-		final var stakeholderDto = createStakeholderDTO(PERSON, List.of(StakeholderRole.APPLICANT.name()));
+		final var stakeholderDto = createStakeholderDTO(PERSON, List.of(StakeholderRole.APPLICANT.name()), MUNICIPALITY_ID);
 
 		when(stakeholderRepository.findByIdAndMunicipalityId(any(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(stakeholder));
 

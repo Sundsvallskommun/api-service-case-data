@@ -67,8 +67,8 @@ class NoteServiceTest {
 
 	@Test
 	void testPatchNoteOnErrand() throws JsonProcessingException {
-		final Errand errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
-		final Note note = toNote(createNoteDTO(), MUNICIPALITY_ID);
+		final Errand errand = toErrand(createErrandDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
+		final Note note = toNote(createNoteDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
 		errand.setNotes(List.of(note));
 
 		final var mockNote = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(note), Note.class);
@@ -109,8 +109,8 @@ class NoteServiceTest {
 
 	@Test
 	void testPut() throws JsonProcessingException {
-		final Errand errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
-		final Note note = toNote(createNoteDTO(), MUNICIPALITY_ID);
+		final Errand errand = toErrand(createErrandDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
+		final Note note = toNote(createNoteDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
 		errand.setNotes(List.of(note));
 
 		final var mockNote = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(note), Note.class);

@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
 import static se.sundsvall.casedata.TestUtil.createDecision;
@@ -27,7 +28,7 @@ class PutMapperTest {
 	@Test
 	void putAttachmentTest() {
 		final var attachment = createAttachment();
-		final var attachmentDTO = createAttachmentDTO(AttachmentCategory.NOTIFICATION_WITHOUT_PERSONAL_NUMBER);
+		final var attachmentDTO = createAttachmentDTO(AttachmentCategory.NOTIFICATION_WITHOUT_PERSONAL_NUMBER, MUNICIPALITY_ID);
 
 		assertThat(attachment).satisfies(a -> {
 			assertThat(a.getCategory()).isNotEqualTo(attachmentDTO.getCategory());
@@ -54,7 +55,7 @@ class PutMapperTest {
 	@Test
 	void putStakeholderTest() {
 		final var stakeholder = createStakeholder();
-		final var stakeholderDTO = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.PROPERTY_OWNER.name()));
+		final var stakeholderDTO = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.PROPERTY_OWNER.name()), MUNICIPALITY_ID);
 
 		assertThat(stakeholder).satisfies(s -> {
 			assertThat(s.getType()).isNotEqualTo(stakeholderDTO.getType());
@@ -89,7 +90,7 @@ class PutMapperTest {
 	@Test
 	void putDecisionTest() {
 		final var decision = createDecision();
-		final var decisionDto = createDecisionDTO();
+		final var decisionDto = createDecisionDTO(MUNICIPALITY_ID);
 
 		assertThat(decision).satisfies(d -> {
 			assertThat(d.getDecisionType()).isNotEqualTo(decisionDto.getDecisionType());
@@ -113,7 +114,7 @@ class PutMapperTest {
 	@Test
 	void putNoteTest() {
 		final var note = createNote();
-		final var noteDto = createNoteDTO();
+		final var noteDto = createNoteDTO(MUNICIPALITY_ID);
 
 		assertThat(note).satisfies(n -> {
 			assertThat(n.getTitle()).isNotEqualTo(noteDto.getTitle());

@@ -36,7 +36,7 @@ class PatchMapperTest {
 	@Test
 	void patchErrandTest() {
 		final var errand = createErrand();
-		final var patch = createPatchErrandDto();
+		final var patch = createPatchErrandDto(MUNICIPALITY_ID);
 
 		final var patchedErrand = patchErrand(errand, patch);
 
@@ -77,7 +77,7 @@ class PatchMapperTest {
 	@Test
 	void patchStakeholderOrganizationTest() {
 		final var stakeholder = createStakeholder();
-		final var patch = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.OPERATOR.name()));
+		final var patch = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.OPERATOR.name()), MUNICIPALITY_ID);
 
 		final var patchedStakeholder = patchStakeholder(stakeholder, patch);
 
@@ -97,7 +97,7 @@ class PatchMapperTest {
 	@Test
 	void patchStakeholderPersonTest() {
 		final var stakeholder = createStakeholder();
-		final var patch = createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name()));
+		final var patch = createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name()), MUNICIPALITY_ID);
 
 		final var patchedStakeholder = patchStakeholder(stakeholder, patch);
 
@@ -117,7 +117,7 @@ class PatchMapperTest {
 	@Test
 	void patchAttachmentTest() {
 		final var attachment = createAttachment();
-		final var patch = createAttachmentDTO(AttachmentCategory.POLICE_REPORT);
+		final var patch = createAttachmentDTO(AttachmentCategory.POLICE_REPORT, MUNICIPALITY_ID);
 
 		final var patchedAttachment = patchAttachment(attachment, patch);
 
@@ -135,7 +135,7 @@ class PatchMapperTest {
 	@Test
 	void patchNoteTest() {
 		final var note = createNote();
-		final var patch = createNoteDTO();
+		final var patch = createNoteDTO(MUNICIPALITY_ID);
 
 		final var patchedNote = patchNote(note, patch);
 
@@ -152,7 +152,7 @@ class PatchMapperTest {
 	@Test
 	void patchFacilityTest() {
 		final var facility = createFacility();
-		final var patch = createFacilityDTO();
+		final var patch = createFacilityDTO(MUNICIPALITY_ID);
 
 		final var patchedFacility = patchFacility(facility, patch);
 

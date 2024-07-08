@@ -105,7 +105,7 @@ class ErrandResourceTest {
 	@Test
 	void getDecision() {
 		final var errandId = 123L;
-		final var decisionDto = createDecisionDTO();
+		final var decisionDto = createDecisionDTO(MUNICIPALITY_ID);
 
 		when(errandServiceMock.findDecisionsOnErrand(errandId, MUNICIPALITY_ID)).thenReturn(List.of(decisionDto));
 
@@ -126,7 +126,7 @@ class ErrandResourceTest {
 	@Test
 	void getFacilities() {
 		final var errandId = 123L;
-		final var facilityDto = createFacilityDTO();
+		final var facilityDto = createFacilityDTO(MUNICIPALITY_ID);
 
 		when(errandServiceMock.findFacilitiesOnErrand(errandId, MUNICIPALITY_ID)).thenReturn(List.of(facilityDto));
 
@@ -148,7 +148,7 @@ class ErrandResourceTest {
 	void getFacilitity() {
 		final var errandId = 123L;
 		final var facilityId = 456L;
-		final var facilityDto = createFacilityDTO();
+		final var facilityDto = createFacilityDTO(MUNICIPALITY_ID);
 
 		when(errandServiceMock.findFacilityOnErrand(errandId, facilityId, MUNICIPALITY_ID)).thenReturn(facilityDto);
 
@@ -169,9 +169,9 @@ class ErrandResourceTest {
 	@ParameterizedTest
 	@EnumSource(FacilityType.class)
 	void postErrandWithFacilityType(final FacilityType facilityType) {
-		final var body = createErrandDTO();
+		final var body = createErrandDTO(MUNICIPALITY_ID);
 		body.setId(123L);
-		final var facility = createFacilityDTO();
+		final var facility = createFacilityDTO(MUNICIPALITY_ID);
 		facility.setFacilityType(facilityType.name());
 		final var facilities = List.of(facility);
 		body.setFacilities(facilities);
@@ -193,7 +193,7 @@ class ErrandResourceTest {
 	@Test
 	void postErrandFacility() {
 		final var errandId = 123L;
-		final var facilityDTO = createFacilityDTO();
+		final var facilityDTO = createFacilityDTO(MUNICIPALITY_ID);
 		facilityDTO.setId(456L);
 
 		when(errandServiceMock.createFacility(errandId, MUNICIPALITY_ID, facilityDTO)).thenReturn(facilityDTO);
@@ -215,7 +215,7 @@ class ErrandResourceTest {
 	void patchErrandFacility() {
 		final var errandId = 123L;
 		final var facilityId = 456L;
-		final var facilityDTO = createFacilityDTO();
+		final var facilityDTO = createFacilityDTO(MUNICIPALITY_ID);
 
 		when(errandServiceMock.updateFacilityOnErrand(errandId, MUNICIPALITY_ID, facilityId, facilityDTO)).thenReturn(facilityDTO);
 
@@ -234,10 +234,10 @@ class ErrandResourceTest {
 	void putErrandFacilities() {
 		final var errandId = 123L;
 		final var facilityId_1 = 456L;
-		final var facilityDTO_1 = createFacilityDTO();
+		final var facilityDTO_1 = createFacilityDTO(MUNICIPALITY_ID);
 		facilityDTO_1.setId(facilityId_1);
 		final var facilityId_2 = 789L;
-		final var facilityDTO_2 = createFacilityDTO();
+		final var facilityDTO_2 = createFacilityDTO(MUNICIPALITY_ID);
 		facilityDTO_2.setId(facilityId_2);
 
 		final var facilityDTOs = List.of(facilityDTO_1, facilityDTO_2);
@@ -257,7 +257,7 @@ class ErrandResourceTest {
 	void patchErrandWithAppeal() {
 		final var errandId = 123L;
 		final var appealId = 456L;
-		final var body = createAppealDTO();
+		final var body = createAppealDTO(MUNICIPALITY_ID);
 		body.setId(appealId);
 
 		when(errandServiceMock.addAppealToErrand(errandId, MUNICIPALITY_ID, body)).thenReturn(body);

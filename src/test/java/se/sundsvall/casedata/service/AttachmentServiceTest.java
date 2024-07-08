@@ -48,7 +48,7 @@ class AttachmentServiceTest {
 
 	@Test
 	void testFindById() {
-		final var attachment = toAttachment(createAttachmentDTO(AttachmentCategory.SIGNATURE), MUNICIPALITY_ID);
+		final var attachment = toAttachment(createAttachmentDTO(AttachmentCategory.SIGNATURE, MUNICIPALITY_ID), MUNICIPALITY_ID);
 		when(attachmentRepository.findByIdAndMunicipalityId(anyLong(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(attachment));
 
 		final var result = attachmentService.findByIdAndMunicipalityId(5L, MUNICIPALITY_ID);
@@ -70,8 +70,8 @@ class AttachmentServiceTest {
 
 	@Test
 	void putAttachment() {
-		final Attachment attachment = toAttachment(createAttachmentDTO(AttachmentCategory.PASSPORT_PHOTO), MUNICIPALITY_ID);
-		final AttachmentDTO attachmentDTO = createAttachmentDTO((AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT));
+		final Attachment attachment = toAttachment(createAttachmentDTO(AttachmentCategory.PASSPORT_PHOTO, MUNICIPALITY_ID), MUNICIPALITY_ID);
+		final AttachmentDTO attachmentDTO = createAttachmentDTO(AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT, MUNICIPALITY_ID);
 
 		when(attachmentRepository.findByIdAndMunicipalityId(anyLong(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(attachment));
 
@@ -127,7 +127,7 @@ class AttachmentServiceTest {
 	@Test
 	void testFindByErrandNumberAndMunicipalityId() {
 
-		final var attachment = toAttachment(createAttachmentDTO(AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT), MUNICIPALITY_ID);
+		final var attachment = toAttachment(createAttachmentDTO(AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT, MUNICIPALITY_ID), MUNICIPALITY_ID);
 		attachment.setErrandNumber("someErrandNumber");
 		doReturn(List.of(attachment)).when(attachmentRepository).findAllByErrandNumberAndMunicipalityId(any(String.class), eq(MUNICIPALITY_ID));
 
@@ -155,11 +155,11 @@ class AttachmentServiceTest {
 	@Test
 	void testPost() {
 
-		final var attachment = toAttachment(createAttachmentDTO(AttachmentCategory.ANMALAN_ANDRING_AVLOPPSANLAGGNING), MUNICIPALITY_ID);
+		final var attachment = toAttachment(createAttachmentDTO(AttachmentCategory.ANMALAN_ANDRING_AVLOPPSANLAGGNING, MUNICIPALITY_ID), MUNICIPALITY_ID);
 		attachment.setErrandNumber("someErrandNumber");
 		doReturn(attachment).when(attachmentRepository).save(any(Attachment.class));
 
-		final var result = attachmentService.createAttachment(createAttachmentDTO(AttachmentCategory.ADDRESS_SHEET), MUNICIPALITY_ID);
+		final var result = attachmentService.createAttachment(createAttachmentDTO(AttachmentCategory.ADDRESS_SHEET, MUNICIPALITY_ID), MUNICIPALITY_ID);
 		assertEquals(attachment, result);
 
 		verify(attachmentRepository).save(any(Attachment.class));

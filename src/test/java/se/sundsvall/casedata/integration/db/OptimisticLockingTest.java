@@ -39,7 +39,7 @@ class OptimisticLockingTest {
 	@Test
 	void patchErrandWithStakeholderOptimisticLockingFailureException() {
 		final var errand = createErrand();
-		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()));
+		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()), MUNICIPALITY_ID);
 		when(errandRepositoryMock.findByIdAndMunicipalityId(any(Long.class), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(errand));
 		doThrow(OptimisticLockingFailureException.class).when(errandRepositoryMock).save(any());
 
@@ -53,7 +53,7 @@ class OptimisticLockingTest {
 	@Test
 	void patchErrandWithStakeholderOtherException() {
 		final var errand = createErrand();
-		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()));
+		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()), MUNICIPALITY_ID);
 		when(errandRepositoryMock.findByIdAndMunicipalityId(any(Long.class), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(errand));
 		doThrow(RuntimeException.class).when(errandRepositoryMock).save(any());
 

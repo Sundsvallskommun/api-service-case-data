@@ -108,7 +108,7 @@ class WebMessageCollectorServiceTest {
 
 		when(webMessageCollectorClientMock.getMessages(familyId, instance)).thenReturn(messageDTOs);
 
-		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(Errand.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).build()));
+		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(Errand.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).withMunicipalityId(MUNICIPALITY_ID).build()));
 		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(instance, List.of(familyId)));
 		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID)).thenReturn(message);
 		when(messageRepositoryMock.saveAndFlush(any(Message.class))).thenReturn(message);
