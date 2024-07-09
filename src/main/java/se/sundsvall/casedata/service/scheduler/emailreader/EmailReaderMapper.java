@@ -41,6 +41,7 @@ public class EmailReaderMapper {
 				(Attachment) Attachment.builder()
 					.withFile(emailAttachment.getContent())
 					.withName(emailAttachment.getName())
+					.withMimeType(emailAttachment.getContentType())
 					.build())
 			.toList();
 	}

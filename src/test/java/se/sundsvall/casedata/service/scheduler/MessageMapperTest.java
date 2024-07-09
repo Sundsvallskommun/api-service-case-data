@@ -321,6 +321,7 @@ class MessageMapperTest {
 		// Assert
 		assertThat(result.getFile()).isEqualTo(Base64.getEncoder().encodeToString("content".getBytes()));
 		assertThat(result.getName()).isEqualTo("name");
+		assertThat(result.getMimeType()).isEqualTo("contentType");
 
 	}
 

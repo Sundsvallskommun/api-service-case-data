@@ -159,6 +159,7 @@ public class MessageMapper {
 			return Attachment.builder()
 				.withFile(Base64.getEncoder().encodeToString(attachment.getAttachmentData().getFile().getBinaryStream().readAllBytes()))
 				.withName(attachment.getName())
+				.withMimeType(attachment.getContentType())
 				.build();
 		} catch (final Exception e) {
 			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
