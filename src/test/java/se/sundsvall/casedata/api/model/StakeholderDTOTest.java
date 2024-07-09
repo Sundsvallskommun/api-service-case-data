@@ -46,7 +46,6 @@ class StakeholderDTOTest {
 		final var personId = "personId";
 		final var organizationName = "organizationName";
 		final var organizationNumber = "organizationNumber";
-		final var municipalityId = "municipalityId";
 		final var authorizedSignatory = "authorizedSignatory";
 		final var adAccount = "adAccount";
 		final var roles = new ArrayList<String>();
@@ -61,7 +60,6 @@ class StakeholderDTOTest {
 			.withPersonId(personId)
 			.withOrganizationName(organizationName)
 			.withOrganizationNumber(organizationNumber)
-			.withMunicipalityId(municipalityId)
 			.withAuthorizedSignatory(authorizedSignatory)
 			.withAdAccount(adAccount)
 			.withRoles(roles)
@@ -76,7 +74,6 @@ class StakeholderDTOTest {
 		assertThat(bean.getPersonId()).isEqualTo(personId);
 		assertThat(bean.getOrganizationName()).isEqualTo(organizationName);
 		assertThat(bean.getOrganizationNumber()).isEqualTo(organizationNumber);
-		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getAuthorizedSignatory()).isEqualTo(authorizedSignatory);
 		assertThat(bean.getAdAccount()).isEqualTo(adAccount);
 		assertThat(bean.getRoles()).isEqualTo(roles);

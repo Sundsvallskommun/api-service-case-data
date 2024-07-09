@@ -33,9 +33,6 @@ public class FacilityDTO extends BaseDTO {
 	@Valid
 	private AddressDTO address;
 
-	@Schema(description = "The municipality id where this appeal belongs to", accessMode = Schema.AccessMode.READ_ONLY)
-	private String municipalityId;
-
 	@Schema(description = "The name on the sign.", example = "Sundsvalls testfabrik")
 	@Size(max = 255)
 	private String facilityCollectionName;

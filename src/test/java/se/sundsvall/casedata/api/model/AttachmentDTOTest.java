@@ -38,7 +38,6 @@ class AttachmentDTOTest {
 	@Test
 	void builderTest() {
 		final var category = "category";
-		final var municipalityId = "municipalityId";
 		final var name = "name";
 		final var note = "note";
 		final var extension = "extension";
@@ -49,7 +48,6 @@ class AttachmentDTOTest {
 
 		final var bean = AttachmentDTO.builder()
 			.withCategory(category)
-			.withMunicipalityId(municipalityId)
 			.withName(name)
 			.withNote(note)
 			.withExtension(extension)
@@ -60,7 +58,6 @@ class AttachmentDTOTest {
 			.build();
 
 		assertThat(bean.getCategory()).isEqualTo(category);
-		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getName()).isEqualTo(name);
 		assertThat(bean.getNote()).isEqualTo(note);
 		assertThat(bean.getExtension()).isEqualTo(extension);

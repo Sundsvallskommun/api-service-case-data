@@ -7,7 +7,6 @@
   "firstName": "John",
   "lastName": "Doe",
   "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
-  "municipalityId": "2281",
   "adAccount": "AD-1",
   "roles": [
     "APPLICANT"

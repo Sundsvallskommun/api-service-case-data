@@ -67,8 +67,8 @@ class NoteServiceTest {
 
 	@Test
 	void testPatchNoteOnErrand() throws JsonProcessingException {
-		final Errand errand = toErrand(createErrandDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
-		final Note note = toNote(createNoteDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
+		final Errand errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
+		final Note note = toNote(createNoteDTO(), MUNICIPALITY_ID);
 		errand.setNotes(List.of(note));
 
 		final var mockNote = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(note), Note.class);
@@ -109,8 +109,8 @@ class NoteServiceTest {
 
 	@Test
 	void testPut() throws JsonProcessingException {
-		final Errand errand = toErrand(createErrandDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
-		final Note note = toNote(createNoteDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
+		final Errand errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
+		final Note note = toNote(createNoteDTO(), MUNICIPALITY_ID);
 		errand.setNotes(List.of(note));
 
 		final var mockNote = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(note), Note.class);
@@ -118,7 +118,6 @@ class NoteServiceTest {
 		when(noteRepository.findByIdAndMunicipalityId(note.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(mockNote));
 
 		final NoteDTO putDTO = new NoteDTO();
-		putDTO.setMunicipalityId("2281");
 		putDTO.setTitle(RandomStringUtils.random(10, true, false));
 		putDTO.setText(RandomStringUtils.random(10, true, false));
 		putDTO.setNoteType(NoteType.PUBLIC);

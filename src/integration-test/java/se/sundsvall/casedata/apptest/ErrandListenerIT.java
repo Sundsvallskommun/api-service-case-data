@@ -54,7 +54,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(format("/{0}/errands", MUNICIPALITY_ID))
-			.withRequest(OBJECT_MAPPER.writeValueAsString(createErrandDTO(MUNICIPALITY_ID)))
+			.withRequest(OBJECT_MAPPER.writeValueAsString(createErrandDTO()))
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
 
@@ -91,8 +91,6 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 			assertThat(after.getPriority()).isNotEqualTo(beforePatch.getPriority());
 			assertThat(after.getUpdatedByClient()).isNotEqualTo(beforePatch.getUpdatedByClient());
 			assertThat(after.getUpdatedBy()).isNotEqualTo(beforePatch.getUpdatedBy());
-		});
-		assertThat(afterPatch).satisfies(after -> {
 			assertThat(after.getDiaryNumber()).isEqualTo(requestJson.get("diaryNumber").getAsString());
 			assertThat(after.getDescription()).isEqualTo(requestJson.get("description").getAsString());
 			assertThat(after.getPriority().name()).isEqualTo(requestJson.get("priority").getAsString());
@@ -102,7 +100,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 	@Test
 	void test3_generateErrandNumberForSameAbbreviation() throws JsonProcessingException {
 
-		final ErrandDTO errandDTO1 = createErrandDTO(MUNICIPALITY_ID);
+		final ErrandDTO errandDTO1 = createErrandDTO();
 		errandDTO1.setCaseType(CaseType.PARKING_PERMIT.name());
 		setupCall()
 			.withHttpMethod(POST)
@@ -111,7 +109,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
 
-		final ErrandDTO errandDTO2 = createErrandDTO(MUNICIPALITY_ID);
+		final ErrandDTO errandDTO2 = createErrandDTO();
 		errandDTO2.setCaseType(CaseType.LOST_PARKING_PERMIT.name());
 		setupCall()
 			.withHttpMethod(POST)
@@ -120,7 +118,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 			.withExpectedResponseStatus(CREATED)
 			.sendRequestAndVerifyResponse();
 
-		final ErrandDTO errandDTO3 = createErrandDTO(MUNICIPALITY_ID);
+		final ErrandDTO errandDTO3 = createErrandDTO();
 		errandDTO3.setCaseType(CaseType.PARKING_PERMIT_RENEWAL.name());
 		setupCall()
 			.withHttpMethod(POST)
@@ -141,7 +139,7 @@ class ErrandListenerIT extends CustomAbstractAppTest {
 	@ParameterizedTest
 	@EnumSource(CaseType.class)
 	void test4_generateErrandNumberForDifferentAbbreviation(final CaseType caseType) throws JsonProcessingException {
-		final ErrandDTO errandDTO1 = createErrandDTO(MUNICIPALITY_ID);
+		final ErrandDTO errandDTO1 = createErrandDTO();
 		errandDTO1.setCaseType(caseType.name());
 
 		setupCall()

@@ -8,7 +8,6 @@
     "firstName": "John",
     "lastName": "Doe",
     "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
-    "municipalityId": "2281",
     "adAccount": "AD-1",
     "roles": [
       "APPLICANT"
@@ -26,7 +25,6 @@
     "firstName": "Kalle",
     "lastName": "Anka",
     "personId": "d1af5f83-166a-468b-ab86-da8ca30ea97c",
-    "municipalityId": "2281",
     "adAccount": "AD-2",
     "roles": [
       "APPLICANT"
@@ -44,7 +42,6 @@
     "firstName": "Kajsa",
     "lastName": "Anka",
     "personId": "d2af5f83-166a-468b-ab86-da8ca30ea97c",
-    "municipalityId": "2281",
     "adAccount": "AD-3",
     "roles": [
       "CONTROL_OFFICIAL"

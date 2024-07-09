@@ -57,9 +57,6 @@ public class StakeholderDTO extends BaseDTO {
 	@Schema(description = "Organization number with 10 or 12 digits.", example = "19901010-1234")
 	private String organizationNumber;
 
-	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
-	private String municipalityId;
-
 	@Size(max = 255)
 	@Schema(example = "Test Testorsson")
 	private String authorizedSignatory;

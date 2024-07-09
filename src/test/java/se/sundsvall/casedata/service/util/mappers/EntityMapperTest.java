@@ -64,7 +64,7 @@ class EntityMapperTest {
 
 	@Test
 	void toErrandTest() {
-		final var errandDto = createErrandDTO(MUNICIPALITY_ID);
+		final var errandDto = createErrandDTO();
 		final var errand = toErrand(errandDto, MUNICIPALITY_ID);
 
 		assertThat(errand).satisfies(e -> {
@@ -98,7 +98,7 @@ class EntityMapperTest {
 
 	@Test
 	void toDecisionTest() {
-		final var decisionDto = createDecisionDTO(MUNICIPALITY_ID);
+		final var decisionDto = createDecisionDTO();
 		final var decision = toDecision(decisionDto, MUNICIPALITY_ID);
 
 		assertThat(decision).satisfies(d -> {
@@ -134,7 +134,7 @@ class EntityMapperTest {
 
 	@Test
 	void toNoteTest() {
-		final var noteDto = createNoteDTO(MUNICIPALITY_ID);
+		final var noteDto = createNoteDTO();
 		final var note = toNote(noteDto, MUNICIPALITY_ID);
 
 		assertThat(note).satisfies(n -> {
@@ -172,7 +172,7 @@ class EntityMapperTest {
 
 	@Test
 	void toFacilityTest() {
-		final var facilityDto = createFacilityDTO(MUNICIPALITY_ID);
+		final var facilityDto = createFacilityDTO();
 		final var facility = toFacility(facilityDto, MUNICIPALITY_ID);
 
 		assertThat(facility).satisfies(f -> {
@@ -206,7 +206,7 @@ class EntityMapperTest {
 
 	@Test
 	void toStakeholderTest() {
-		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.APPLICANT.name()), MUNICIPALITY_ID);
+		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.APPLICANT.name()));
 		final var stakeholder = toStakeholder(stakeholderDto, MUNICIPALITY_ID);
 
 		assertThat(stakeholder).satisfies(s -> {
@@ -248,7 +248,7 @@ class EntityMapperTest {
 
 	@Test
 	void toAttachmentTest() {
-		final var attachmentDto = createAttachmentDTO(AttachmentCategory.POLICE_REPORT, MUNICIPALITY_ID);
+		final var attachmentDto = createAttachmentDTO(AttachmentCategory.POLICE_REPORT);
 		final var attachment = toAttachment(attachmentDto, MUNICIPALITY_ID);
 
 		assertThat(attachment).satisfies(a -> {

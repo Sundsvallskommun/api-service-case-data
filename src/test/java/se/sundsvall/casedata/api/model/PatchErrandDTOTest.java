@@ -8,7 +8,6 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.createExtraParameters;
 import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
 
@@ -57,7 +56,7 @@ class PatchErrandDTOTest {
 		final var endDate = LocalDate.now();
 		final var applicationReceived = OffsetDateTime.now();
 		final var extraParameters = createExtraParameters();
-		final var facilities = List.of(createFacilityDTO(MUNICIPALITY_ID));
+		final var facilities = List.of(createFacilityDTO());
 
 		// Act
 		final var dto = PatchErrandDTO.builder()

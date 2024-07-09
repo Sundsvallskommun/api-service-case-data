@@ -100,7 +100,7 @@ class ErrandServiceTest {
 	@Test
 	void postWhenParkingPermit() {
 		// Arrange
-		final var inputErrandDTO = createErrandDTO(MUNICIPALITY_ID);
+		final var inputErrandDTO = createErrandDTO();
 		inputErrandDTO.setCaseType(PARKING_PERMIT.name());
 		final var inputErrand = toErrand(inputErrandDTO, MUNICIPALITY_ID);
 		inputErrand.setId(new Random().nextLong(1, 1000));
@@ -122,7 +122,7 @@ class ErrandServiceTest {
 	@Test
 	void postWhenAnmalanAttefall() {
 		// Arrange
-		final var inputErrandDTO = createErrandDTO(MUNICIPALITY_ID);
+		final var inputErrandDTO = createErrandDTO();
 		inputErrandDTO.setCaseType(ANMALAN_ATTEFALL.name());
 		final var inputErrand = toErrand(inputErrandDTO, MUNICIPALITY_ID);
 		inputErrand.setId(new Random().nextLong(1, 1000));
@@ -156,7 +156,7 @@ class ErrandServiceTest {
 	void findByIdAndMunicipalityIdNotFound() {
 
 		// Arrange
-		final var errandDTO = createErrandDTO(MUNICIPALITY_ID);
+		final var errandDTO = createErrandDTO();
 		final var errand = toErrand(errandDTO, MUNICIPALITY_ID);
 		errand.setId(new Random().nextLong(1, 1000));
 		when(errandRepositoryMock.findByIdAndMunicipalityId(any(), eq(MUNICIPALITY_ID))).thenReturn(Optional.empty());
@@ -209,7 +209,7 @@ class ErrandServiceTest {
 
 		// Arrange
 		final var errand = createErrand();
-		final var newStakeholder = createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name()), MUNICIPALITY_ID);
+		final var newStakeholder = createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name()));
 		when(errandRepositoryMock.findByIdAndMunicipalityId(errand.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -230,7 +230,7 @@ class ErrandServiceTest {
 
 		// Arrange
 		final var errand = createErrand();
-		final var newNote = createNoteDTO(MUNICIPALITY_ID);
+		final var newNote = createNoteDTO();
 		when(errandRepositoryMock.findByIdAndMunicipalityId(errand.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -271,7 +271,7 @@ class ErrandServiceTest {
 
 		// Arrange
 		final var errand = createErrand();
-		final var newDecision = createDecisionDTO(MUNICIPALITY_ID);
+		final var newDecision = createDecisionDTO();
 		when(errandRepositoryMock.findByIdAndMunicipalityId(errand.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -293,7 +293,7 @@ class ErrandServiceTest {
 		// Arrange
 		final var errand = createErrand();
 		errand.getDecisions().add(Decision.builder().withId(123L).build());
-		final var newAppeal = createAppealDTO(MUNICIPALITY_ID);
+		final var newAppeal = createAppealDTO();
 		when(errandRepositoryMock.findByIdAndMunicipalityId(errand.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -313,7 +313,7 @@ class ErrandServiceTest {
 
 		// Arrange
 		final var errand = createErrand();
-		final var patch = createPatchErrandDto(MUNICIPALITY_ID);
+		final var patch = createPatchErrandDto();
 		when(errandRepositoryMock.findByIdAndMunicipalityId(errand.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(errand));
 
 		// Act
@@ -342,7 +342,7 @@ class ErrandServiceTest {
 	void deleteStakeholderOnErrand() {
 
 		// Arrange
-		final var errand = toErrand(createErrandDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
+		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
 		errand.setCaseType(PARKING_PERMIT_RENEWAL.name());
 		// Set ID on every stakeholder
 		errand.getStakeholders().forEach(s -> s.setId(new Random().nextLong(1, 1000)));
@@ -398,12 +398,12 @@ class ErrandServiceTest {
 
 		errand.getFacilities().getFirst().setId(facilityId_1);
 
-		final var facilityDTO_1 = createFacilityDTO(MUNICIPALITY_ID);
-		facilityDTO_1.setId(facilityId_1);
-		final var facilityDTO_2 = createFacilityDTO(MUNICIPALITY_ID);
-		facilityDTO_2.setId(facilityId_2);
+		final var facilityDTO1 = createFacilityDTO();
+		facilityDTO1.setId(facilityId_1);
+		final var facilityDTO2 = createFacilityDTO();
+		facilityDTO2.setId(facilityId_2);
 
-		final var facilities = List.of(facilityDTO_1, facilityDTO_2, createFacilityDTO(MUNICIPALITY_ID));
+		final var facilities = List.of(facilityDTO1, facilityDTO2, createFacilityDTO());
 
 		when(errandRepositoryMock.findByIdAndMunicipalityId(any(Long.class), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -434,7 +434,7 @@ class ErrandServiceTest {
 
 		// Arrange
 		final var errand = mockErrandFindByIdAndMunicipalityId();
-		final var stakeholders = List.of(createStakeholderDTO(getRandomStakeholderType(), List.of(getRandomStakeholderRole()), MUNICIPALITY_ID));
+		final var stakeholders = List.of(createStakeholderDTO(getRandomStakeholderType(), List.of(getRandomStakeholderRole())));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
@@ -451,7 +451,7 @@ class ErrandServiceTest {
 	void findAllWithoutDuplicates() {
 
 		// Arrange
-		final var errandDTO = createErrandDTO(MUNICIPALITY_ID);
+		final var errandDTO = createErrandDTO();
 		final var returnErrands = Stream.of(errandDTO, errandDTO, errandDTO, errandDTO, errandDTO)
 			.map(dto -> EntityMapper.toErrand(dto, MUNICIPALITY_ID))
 			.toList();
@@ -489,7 +489,7 @@ class ErrandServiceTest {
 	void getDecisionsOnErrandNotFound() {
 
 		// Arrange
-		final var errand = toErrand(createErrandDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
+		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
 		errand.setId(new Random().nextLong(1, 1000));
 		errand.setDecisions(new ArrayList<>());
 		when(errandRepositoryMock.findByIdAndMunicipalityId(any(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(errand));
@@ -504,7 +504,7 @@ class ErrandServiceTest {
 	void deleteDecisionOnErrand() {
 
 		// Arrange
-		final var errand = toErrand(createErrandDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
+		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
 		errand.setCaseType(PARKING_PERMIT_RENEWAL.name());
 
 		// Set ID on every decision
@@ -528,7 +528,7 @@ class ErrandServiceTest {
 	@Test
 	void deleteNoteOnErrand() {
 		// Arrange
-		final var errand = toErrand(createErrandDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
+		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
 		errand.setCaseType(ANMALAN_ATTEFALL.name());
 		// Set ID on every note
 		errand.getNotes().forEach(note -> note.setId(new Random().nextLong()));
@@ -552,7 +552,7 @@ class ErrandServiceTest {
 	void deleteAppealOnErrand() {
 
 		// Arrange
-		final var errand = toErrand(createErrandDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
+		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
 		// Set ID on every decision
 		errand.getDecisions().forEach(d -> d.setId(new Random().nextLong()));
 
@@ -572,7 +572,7 @@ class ErrandServiceTest {
 	}
 
 	private Errand mockErrandFindByIdAndMunicipalityId() {
-		final var errand = toErrand(createErrandDTO(MUNICIPALITY_ID), MUNICIPALITY_ID);
+		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
 		errand.setId(new Random().nextLong(1, 1000));
 		when(errandRepositoryMock.findByIdAndMunicipalityId(any(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(errand));
 		return errand;
@@ -637,7 +637,7 @@ class ErrandServiceTest {
 		// Arrange
 		final var errand = createErrand();
 		final var errandId = errand.getId();
-		final var facilityDto = createFacilityDTO(MUNICIPALITY_ID);
+		final var facilityDto = createFacilityDTO();
 		final var facility = toFacility(facilityDto, MUNICIPALITY_ID);
 
 		when(errandRepositoryMock.findByIdAndMunicipalityId(errandId, MUNICIPALITY_ID)).thenReturn(Optional.of(errand));
@@ -682,7 +682,7 @@ class ErrandServiceTest {
 		final var errandId = errand.getId();
 		final var facility = createFacility();
 		final var facilityId = facility.getId();
-		final var patch = createFacilityDTO(MUNICIPALITY_ID);
+		final var patch = createFacilityDTO();
 
 		when(errandRepositoryMock.findByIdAndMunicipalityId(errand.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(errand));
 		when(facilityRepositoryMock.findByIdAndErrandIdAndMunicipalityId(facilityId, errandId, MUNICIPALITY_ID)).thenReturn(Optional.of(facility));

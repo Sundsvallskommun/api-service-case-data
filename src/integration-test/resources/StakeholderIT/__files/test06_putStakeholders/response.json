@@ -12,7 +12,6 @@
   "diaryNumber": "",
   "phase": "Aktualisering",
   "statuses": [],
-  "municipalityId": "2281",
   "processId": "896a44d8-724b-11ed-a840-0242ac110002",
   "stakeholders": [
     {
@@ -24,7 +23,6 @@
       "firstName": "John",
       "lastName": "Doe",
       "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
-      "municipalityId": "2281",
       "adAccount": "AD-1",
       "roles": [
         "APPLICANT"
@@ -42,7 +40,6 @@
       "firstName": "Kalle",
       "lastName": "Anka",
       "personId": "d1af5f83-166a-468b-ab86-da8ca30ea97c",
-      "municipalityId": "2281",
       "adAccount": "AD-2",
       "roles": [
         "APPLICANT"

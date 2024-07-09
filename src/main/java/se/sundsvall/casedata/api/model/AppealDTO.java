@@ -27,9 +27,6 @@ public class AppealDTO extends BaseDTO {
 	@Size(max = 100000)
 	private String description;
 
-	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
-	private String municipalityId;
-
 	@Schema(description = "The date when this appeal was first registered (timestamp from e-service, mail or letter)")
 	private OffsetDateTime registeredAt;
 

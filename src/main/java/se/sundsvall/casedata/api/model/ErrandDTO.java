@@ -71,9 +71,6 @@ public class ErrandDTO extends BaseDTO {
 	@Builder.Default
 	private List<StatusDTO> statuses = new ArrayList<>();
 
-	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
-	private String municipalityId;
-
 	@Schema(description = "Start date for the business.", format = "date", example = "2022-01-01")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate startDate;

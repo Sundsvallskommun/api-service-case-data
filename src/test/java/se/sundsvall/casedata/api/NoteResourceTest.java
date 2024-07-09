@@ -39,7 +39,7 @@ class NoteResourceTest {
 	@Test
 	void getNoteByIdTest() {
 		final var id = 153L;
-		final var dto = createNoteDTO(MUNICIPALITY_ID);
+		final var dto = createNoteDTO();
 		when(mockService.getNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID)).thenReturn(dto);
 
 		var response = webTestClient.get()
@@ -58,8 +58,8 @@ class NoteResourceTest {
 	void getNotesByErrandIdTest() {
 		final var errandId = 146L;
 		final Optional<NoteType> noteType = Optional.empty();
-		final var dto1 = createNoteDTO(MUNICIPALITY_ID);
-		final var dto2 = createNoteDTO(MUNICIPALITY_ID);
+		final var dto1 = createNoteDTO();
+		final var dto2 = createNoteDTO();
 		when(mockService.getNotesByErrandIdAndMunicipalityIdAndNoteType(errandId, MUNICIPALITY_ID, noteType)).thenReturn(List.of(dto1, dto2));
 
 		var response = webTestClient.get()
@@ -94,7 +94,7 @@ class NoteResourceTest {
 	@Test
 	void patchNoteOnErrand() {
 		final var id = 153L;
-		final var dto = createNoteDTO(MUNICIPALITY_ID);
+		final var dto = createNoteDTO();
 		doNothing().when(mockService).updateNote(id, MUNICIPALITY_ID, dto);
 
 		webTestClient.patch()

@@ -39,7 +39,6 @@ class FacilityDTOTest {
 	void builderTest() {
 		final var description = "description";
 		final var address = AddressDTO.builder().build();
-		final var municipalityId = "municipalityId";
 		final var facilityCollectionName = "facilityCollectionName";
 		final var mainFacility = true;
 		final var facilityType = "facilityType";
@@ -48,7 +47,6 @@ class FacilityDTOTest {
 		final var bean = FacilityDTO.builder()
 			.withDescription(description)
 			.withAddress(address)
-			.withMunicipalityId(municipalityId)
 			.withFacilityCollectionName(facilityCollectionName)
 			.withMainFacility(mainFacility)
 			.withFacilityType(facilityType)
@@ -57,7 +55,6 @@ class FacilityDTOTest {
 
 		assertThat(bean.getDescription()).isEqualTo(description);
 		assertThat(bean.getAddress()).isEqualTo(address);
-		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getFacilityCollectionName()).isEqualTo(facilityCollectionName);
 		assertThat(bean.isMainFacility()).isEqualTo(mainFacility);
 		assertThat(bean.getFacilityType()).isEqualTo(facilityType);

@@ -42,7 +42,7 @@ class ErrandResourceFailureTest {
 
 	@Test
 	void postErrandWithExtraParameterTooLong() {
-		final var body = createErrandDTO(MUNICIPALITY_ID);
+		final var body = createErrandDTO();
 		final String longExtraParameter = String.join("", Collections.nCopies(9000, "a")); // This creates a string longer than 8192 characters
 		body.getExtraParameters().put("longParameter", longExtraParameter);
 
@@ -62,8 +62,8 @@ class ErrandResourceFailureTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"", " ", "invalid"})
 	void postErrandWithInvalidFacilityType(final String facilityType) {
-		final var body = createErrandDTO(MUNICIPALITY_ID);
-		final var facility = createFacilityDTO(MUNICIPALITY_ID);
+		final var body = createErrandDTO();
+		final var facility = createFacilityDTO();
 		facility.setFacilityType(facilityType);
 		final var facilities = List.of(facility);
 		body.setFacilities(facilities);
@@ -86,7 +86,7 @@ class ErrandResourceFailureTest {
 	void postFacilityWithInvalidFacilityType(final String facilityType) {
 
 		final var errandId = 123L;
-		final var facility = createFacilityDTO(MUNICIPALITY_ID);
+		final var facility = createFacilityDTO();
 		facility.setFacilityType(facilityType);
 
 		webTestClient.post()
@@ -108,7 +108,7 @@ class ErrandResourceFailureTest {
 
 		final var errandId = 123L;
 		final var facilityId = 456L;
-		final var facility = createFacilityDTO(MUNICIPALITY_ID);
+		final var facility = createFacilityDTO();
 		facility.setId(facilityId);
 		facility.setFacilityType(facilityType);
 		final var facilities = List.of(facility);
@@ -128,8 +128,8 @@ class ErrandResourceFailureTest {
 
 	@Test
 	void postErrandWithInvalidAppeal() {
-		final var body = createErrandDTO(MUNICIPALITY_ID);
-		final var appeal = createAppealDTO(MUNICIPALITY_ID);
+		final var body = createErrandDTO();
+		final var appeal = createAppealDTO();
 		appeal.setStatus("invalid");
 		appeal.setTimelinessReview("invalid");
 		body.setAppeals(List.of(appeal));
@@ -154,7 +154,7 @@ class ErrandResourceFailureTest {
 	@Test
 	void patchErrandWithInvalidAppeal() {
 		final var errandId = 123L;
-		final var body = createAppealDTO(MUNICIPALITY_ID);
+		final var body = createAppealDTO();
 		body.setStatus("invalid");
 		body.setTimelinessReview("invalid");
 

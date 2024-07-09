@@ -42,7 +42,6 @@ class NoteDTOTest {
 	void builderTest() {
 		final var title = "title";
 		final var text = "text";
-		final var municipalityId = "municipalityId";
 		final var createdBy = "createdBy";
 		final var updatedBy = "updatedBy";
 		final var noteType = NoteType.INTERNAL;
@@ -51,7 +50,6 @@ class NoteDTOTest {
 		final var bean = NoteDTO.builder()
 			.withTitle(title)
 			.withText(text)
-			.withMunicipalityId(municipalityId)
 			.withCreatedBy(createdBy)
 			.withUpdatedBy(updatedBy)
 			.withNoteType(noteType)
@@ -60,7 +58,6 @@ class NoteDTOTest {
 
 		assertThat(bean.getTitle()).isEqualTo(title);
 		assertThat(bean.getText()).isEqualTo(text);
-		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getCreatedBy()).isEqualTo(createdBy);
 		assertThat(bean.getUpdatedBy()).isEqualTo(updatedBy);
 		assertThat(bean.getNoteType()).isEqualTo(noteType);

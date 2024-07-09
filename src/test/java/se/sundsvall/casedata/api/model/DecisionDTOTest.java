@@ -43,7 +43,6 @@ class DecisionDTOTest {
 		final var decisionType = DecisionType.FINAL;
 		final var decisionOutcome = DecisionOutcome.APPROVAL;
 		final var description = "description";
-		final var municipalityId = "municipalityId";
 		final var decidedBy = StakeholderDTO.builder().build();
 		final var decidedAt = OffsetDateTime.now();
 		final var validFrom = OffsetDateTime.now();
@@ -54,7 +53,6 @@ class DecisionDTOTest {
 			.withDecisionType(decisionType)
 			.withDecisionOutcome(decisionOutcome)
 			.withDescription(description)
-			.withMunicipalityId(municipalityId)
 			.withDecidedBy(decidedBy)
 			.withDecidedAt(decidedAt)
 			.withValidFrom(validFrom)
@@ -65,7 +63,6 @@ class DecisionDTOTest {
 		assertThat(bean.getDecisionType()).isEqualTo(decisionType);
 		assertThat(bean.getDecisionOutcome()).isEqualTo(decisionOutcome);
 		assertThat(bean.getDescription()).isEqualTo(description);
-		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getDecidedBy()).isEqualTo(decidedBy);
 		assertThat(bean.getDecidedAt()).isEqualTo(decidedAt);
 		assertThat(bean.getValidFrom()).isEqualTo(validFrom);

@@ -12,7 +12,6 @@
   "diaryNumber": "",
   "phase": "Aktualisering",
   "statuses": [],
-  "municipalityId": "2281",
   "processId": "896a44d8-724b-11ed-a840-0242ac110002",
   "stakeholders": [
     {
@@ -24,7 +23,6 @@
       "firstName": "FIRST-NAME-1",
       "lastName": "LAST-NAME-1",
       "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
-      "municipalityId": "2281",
       "adAccount": "AD-1",
       "roles": [],
       "addresses": [],
@@ -42,7 +40,6 @@
       "decisionType": "FINAL",
       "decisionOutcome": "DISMISSAL",
       "description": "This is a put description",
-      "municipalityId": "2281",
       "law": [
         {
           "heading": "this is a heading",
@@ -61,7 +58,6 @@
         "personId": "3ed5bc30-6308-4fd5-a5a7-78d7f96f4438",
         "organizationName": "Test Organization",
         "organizationNumber": "19901010-1234",
-        "municipalityId": "2281",
         "authorizedSignatory": "Test Testorsson",
         "adAccount": "AD-account",
         "roles": [
@@ -103,7 +99,6 @@
           "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
           "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
           "category": "FAPL",
-          "municipalityId": "2281",
           "name": "Test name",
           "note": "Test note",
           "extension": "test extension",

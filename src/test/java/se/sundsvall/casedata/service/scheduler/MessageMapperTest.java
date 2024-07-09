@@ -200,7 +200,7 @@ class MessageMapperTest {
 	void testToAttachmentEntity() throws Exception {
 
 		final var messageID = "messageID";
-		final var content = new String(Base64.getEncoder().encode("content" .getBytes()), StandardCharsets.UTF_8);
+		final var content = new String(Base64.getEncoder().encode("content".getBytes()), StandardCharsets.UTF_8);
 		final var contentType = "contentType";
 		final var name = "name";
 		final var attachmentRequest = AttachmentRequest.builder()
@@ -213,7 +213,7 @@ class MessageMapperTest {
 
 		assertThat(bean.getAttachmentData()).isNotNull();
 		assertThat(bean.getAttachmentData().getId()).isZero();
-		assertThat(bean.getAttachmentData().getFile().getBinaryStream().readAllBytes()).isEqualTo("content" .getBytes());
+		assertThat(bean.getAttachmentData().getFile().getBinaryStream().readAllBytes()).isEqualTo("content".getBytes());
 		assertThat(bean.getAttachmentID()).isNotBlank().satisfies(s -> assertThat(isValidUUID(s)).isTrue());
 		assertThat(bean.getContentType()).isEqualTo(contentType);
 		assertThat(bean.getMessageID()).isEqualTo(messageID);
@@ -308,7 +308,7 @@ class MessageMapperTest {
 		// Arrange
 		final var attachment = MessageAttachment.builder()
 			.withAttachmentData(MessageAttachmentData.builder()
-				.withFile(new MariaDbBlob("content" .getBytes()))
+				.withFile(new MariaDbBlob("content".getBytes()))
 				.build())
 			.withAttachmentID("attachmentID")
 			.withContentType("contentType")
@@ -319,7 +319,7 @@ class MessageMapperTest {
 		final var result = messageMapper.toAttachment(attachment);
 
 		// Assert
-		assertThat(result.getFile()).isEqualTo(Base64.getEncoder().encodeToString("content" .getBytes()));
+		assertThat(result.getFile()).isEqualTo(Base64.getEncoder().encodeToString("content".getBytes()));
 		assertThat(result.getName()).isEqualTo("name");
 
 	}

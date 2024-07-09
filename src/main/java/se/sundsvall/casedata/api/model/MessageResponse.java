@@ -36,9 +36,6 @@ public class MessageResponse {
 	@Schema(description = "The errand number", example = "PRH-2022-000001")
 	private String errandNumber;
 
-	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
-	private String municipalityId;
-
 	@Enumerated(EnumType.STRING)
 	@Schema(description = "If the message is inbound or outbound from the perspective of " +
 		"case-data/e-service.", example = "INBOUND")

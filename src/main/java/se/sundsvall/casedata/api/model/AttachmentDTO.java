@@ -6,7 +6,6 @@ import java.util.Map;
 import se.sundsvall.casedata.api.model.validation.ValidAttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,9 +24,6 @@ public class AttachmentDTO extends BaseDTO {
 
 	@ValidAttachmentCategory
 	private String category;
-
-	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
-	private String municipalityId;
 
 	private String name;
 

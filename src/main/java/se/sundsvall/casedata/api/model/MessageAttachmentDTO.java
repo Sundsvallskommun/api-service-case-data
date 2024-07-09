@@ -30,9 +30,6 @@ public class MessageAttachmentDTO {
 	)
 	private String attachmentID;
 
-	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
-	private String municipalityId;
-
 	@NotBlank
 	@Schema(
 		description = "The attachment filename",
