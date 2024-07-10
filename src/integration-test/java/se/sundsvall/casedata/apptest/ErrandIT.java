@@ -118,7 +118,7 @@ class ErrandIT extends CustomAbstractAppTest {
 				EXCLUDE_FIELDS)
 			.isEqualTo(getErrandDTO);
 
-		verify(1, postRequestedFor(urlEqualTo(PARKING_PERMIT_START_URL + id)));
+		verify(1, postRequestedFor(urlEqualTo(format(PARKING_PERMIT_START_URL, municipalityId, id))));
 	}
 
 	@ParameterizedTest

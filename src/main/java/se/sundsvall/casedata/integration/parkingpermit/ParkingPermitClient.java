@@ -21,11 +21,15 @@ import io.github.resilience4j.retry.annotation.Retry;
 public interface ParkingPermitClient {
 
 	@Retry(name = CLIENT_ID)
-	@PostMapping(path = "/process/start/{errandId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-	StartProcessResponse startProcess(@PathVariable final Long errandId);
+	@PostMapping(path = "/{municipalityId}/process/start/{errandId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+	StartProcessResponse startProcess(
+		@PathVariable(name = "municipalityId") final String municipalityId,
+		@PathVariable(name = "errandId") final Long errandId);
 
 	@Retry(name = CLIENT_ID)
-	@PostMapping(path = "/process/update/{processInstanceId}", consumes = APPLICATION_JSON_VALUE)
-	ResponseEntity<Void> updateProcess(@PathVariable final String processInstanceId);
+	@PostMapping(path = "/{municipalityId}/process/update/{processInstanceId}", consumes = APPLICATION_JSON_VALUE)
+	ResponseEntity<Void> updateProcess(
+		@PathVariable(name = "municipalityId") final String municipalityId,
+		@PathVariable(name = "processInstanceId") final String processInstanceId);
 
 }
