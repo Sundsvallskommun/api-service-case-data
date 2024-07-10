@@ -1,0 +1,62 @@
+{
+  "id": 1,
+  "version": 3,
+  "created": "2022-12-02T15:13:45.363+01:00",
+  "updated": "${json-unit.any-string}",
+  "errandNumber": "ERRAND-NUMBER-1",
+  "externalCaseId": "",
+  "caseType": "PARKING_PERMIT",
+  "priority": "MEDIUM",
+  "description": "",
+  "caseTitleAddition": "Nytt parkeringstillstånd",
+  "diaryNumber": "",
+  "phase": "Aktualisering",
+  "statuses": [],
+  "processId": "896a44d8-724b-11ed-a840-0242ac110002",
+  "stakeholders": [
+    {
+      "id": 1,
+      "version": 1,
+      "created": "${json-unit.any-string}",
+      "updated": "${json-unit.any-string}",
+      "type": "PERSON",
+      "firstName": "John",
+      "lastName": "Doe",
+      "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
+      "adAccount": "AD-1",
+      "roles": [
+        "APPLICANT"
+      ],
+      "addresses": [],
+      "contactInformation": [],
+      "extraParameters": {}
+    },
+    {
+      "id": 2,
+      "version": 1,
+      "created": "${json-unit.any-string}",
+      "updated": "${json-unit.any-string}",
+      "type": "PERSON",
+      "firstName": "Kalle",
+      "lastName": "Anka",
+      "personId": "d1af5f83-166a-468b-ab86-da8ca30ea97c",
+      "adAccount": "AD-2",
+      "roles": [
+        "APPLICANT"
+      ],
+      "addresses": [],
+      "contactInformation": [],
+      "extraParameters": {}
+    }
+  ],
+  "facilities": [],
+  "decisions": [],
+  "appeals": [],
+  "notes": [],
+  "messageIds": [],
+  "createdByClient": "WSO2_test",
+  "updatedByClient": "WSO2_MS_caseManagement",
+  "createdBy": "UNKNOWN",
+  "updatedBy": "Hi my name is AD_USER",
+  "extraParameters": {}
+}

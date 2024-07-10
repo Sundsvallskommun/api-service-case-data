@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -282,12 +283,11 @@ class MessageMapperTest {
 			.username(username)
 			.attachments(attachments);
 
-		final var bean = messageMapper.toMessageEntity(errandNumber, dto);
+		final var bean = messageMapper.toMessageEntity(errandNumber, dto, MUNICIPALITY_ID);
 
 		assertThat(bean.getDirection()).isEqualTo(Direction.OUTBOUND);
 		assertThat(bean.getEmail()).isEqualTo(email);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
-		assertThat(bean.getExternalCaseID()).isEqualTo(externalCaseId);
 		assertThat(bean.getFamilyID()).isEqualTo(familyId);
 		assertThat(bean.getFirstName()).isEqualTo(firstName);
 		assertThat(bean.getLastName()).isEqualTo(lastName);

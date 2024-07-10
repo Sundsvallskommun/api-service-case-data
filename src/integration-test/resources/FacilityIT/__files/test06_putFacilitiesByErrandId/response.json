@@ -1,0 +1,93 @@
+[
+  {
+    "id": 1,
+    "version": 3,
+    "created": "2024-04-25T15:37:23.52512+02:00",
+    "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+    "description": "Description 1",
+    "address": {
+      "addressCategory": "POSTAL_ADDRESS",
+      "street": "Street 1",
+      "houseNumber": "HouseNumber 1",
+      "postalCode": "PostalCode 1",
+      "city": "City 1",
+      "country": "Country 1",
+      "careOf": "Cateof 1",
+      "attention": "Attention",
+      "propertyDesignation": "PropertyDesignation 1",
+      "apartmentNumber": "apartmentNumber 1",
+      "isZoningPlanArea": true,
+      "invoiceMarking": "invoiceMarking 1",
+      "location": {
+        "latitude": 3.0,
+        "longitude": 2.0
+      }
+    },
+    "facilityCollectionName": "FacilityCollectionName 1",
+    "mainFacility": true,
+    "facilityType": "WORKSHOP_BUILDING",
+    "extraParameters": {
+      "additionalProp3": "string3",
+      "additionalProp2": "string2",
+      "additionalProp1": "string1"
+    }
+  },
+  {
+    "id": 2,
+    "version": 3,
+    "created": "2024-04-25T15:37:23.52512+02:00",
+    "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+    "description": "Description 2",
+    "address": {
+      "addressCategory": "POSTAL_ADDRESS",
+      "street": "Street 2",
+      "houseNumber": "HouseNumber 2",
+      "postalCode": "PostalCode 2",
+      "city": "City 2",
+      "country": "Country 2",
+      "careOf": "Cateof 2",
+      "attention": "Attention",
+      "propertyDesignation": "PropertyDesignation 2",
+      "apartmentNumber": "apartmentNumber 2",
+      "isZoningPlanArea": true,
+      "invoiceMarking": "invoiceMarking 2",
+      "location": {
+        "latitude": 3.0,
+        "longitude": 2.0
+      }
+    },
+    "facilityCollectionName": "FacilityCollectionName 3",
+    "mainFacility": false,
+    "facilityType": "WEEKEND_COTTAGE",
+    "extraParameters": {}
+  },
+  {
+    "id": 3,
+    "version": 0,
+    "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+    "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+    "description": "Description 3",
+    "address": {
+      "addressCategory": "POSTAL_ADDRESS",
+      "street": "Street 3",
+      "houseNumber": "HouseNumber 3",
+      "postalCode": "PostalCode 3",
+      "city": "City 3",
+      "country": "Country 3",
+      "careOf": "Cateof 3",
+      "attention": "Attention",
+      "propertyDesignation": "PropertyDesignation 3",
+      "apartmentNumber": "apartmentNumber 3",
+      "isZoningPlanArea": true,
+      "invoiceMarking": "invoiceMarking 3",
+      "location": {
+        "latitude": 3.0,
+        "longitude": 2.0
+      }
+    },
+    "facilityCollectionName": "FacilityCollectionName 3",
+    "mainFacility": false,
+    "facilityType": "WEEKEND_COTTAGE",
+    "extraParameters": {}
+  }
+]

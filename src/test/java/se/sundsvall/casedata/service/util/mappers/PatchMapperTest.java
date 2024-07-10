@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
 import static se.sundsvall.casedata.TestUtil.createDecision;
@@ -14,6 +15,7 @@ import static se.sundsvall.casedata.TestUtil.createPatchErrandDto;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddress;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchAttachment;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecision;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchErrand;
@@ -46,12 +48,11 @@ class PatchMapperTest {
 			assertThat(e.getCaseTitleAddition()).isEqualTo(patch.getCaseTitleAddition());
 			assertThat(e.getDiaryNumber()).isEqualTo(patch.getDiaryNumber());
 			assertThat(e.getPhase()).isEqualTo(patch.getPhase());
-			assertThat(e.getMunicipalityId()).isEqualTo(patch.getMunicipalityId());
 			assertThat(e.getStartDate()).isEqualTo(patch.getStartDate());
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
 			assertThat(e.getApplicationReceived()).isEqualTo(patch.getApplicationReceived());
 			assertThat(e.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
-			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(EntityMapper::toFacility).toList());
+			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(facilityDTO -> toFacility(facilityDTO, MUNICIPALITY_ID)).toList());
 		});
 	}
 

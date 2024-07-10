@@ -1,0 +1,142 @@
+[
+  {
+    "changeType": "NewObject",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 2.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 2,
+      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+    }
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 2.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 2,
+      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+    },
+    "left": null,
+    "property": "category",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "BESLUT"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 2.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 2,
+      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+    },
+    "left": null,
+    "property": "name",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "beslut-arende-PRH-2022-000001"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 2.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 2,
+      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+    },
+    "left": null,
+    "property": "note",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": ""
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 2.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 2,
+      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+    },
+    "left": null,
+    "property": "extension",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "pdf"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 2.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 2,
+      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+    },
+    "left": null,
+    "property": "mimeType",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "application/pdf"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 2.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 2,
+      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+    },
+    "left": null,
+    "property": "file",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "JVBERi0xLjUKJeLjz9"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 2.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 2,
+      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+    },
+    "left": null,
+    "property": "municipalityId",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "2281"
+  }
+]

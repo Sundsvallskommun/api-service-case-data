@@ -8,12 +8,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
-import jakarta.servlet.http.HttpServletResponse;
 import se.sundsvall.casedata.api.model.MessageAttachmentDTO;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
@@ -24,43 +25,45 @@ import se.sundsvall.casedata.service.scheduler.MessageMapper;
 @Service
 public class MessageService {
 
-	private final MessageRepository repository;
+	private final MessageRepository messageRepository;
 
-	private final MessageAttachmentRepository attachmentRepository;
+	private final MessageAttachmentRepository messageAttachmentRepository;
 
 	private final MessageMapper mapper;
 
-	public MessageService(final MessageRepository repository, final MessageAttachmentRepository attachmentRepository, final MessageMapper mapper) {
-		this.repository = repository;
-		this.attachmentRepository = attachmentRepository;
+	public MessageService(final MessageRepository messageRepository,
+		final MessageAttachmentRepository messageAttachmentRepository, final MessageMapper mapper) {
+		this.messageRepository = messageRepository;
+		this.messageAttachmentRepository = messageAttachmentRepository;
 		this.mapper = mapper;
 	}
 
-	public List<MessageResponse> getMessagesByErrandNumber(final String errandNumber) {
-		return mapper.toMessageResponses(repository.findAllByErrandNumber(errandNumber));
+	public List<MessageResponse> getMessagesByErrandNumber(final String errandNumber, final String municipalityId) {
+		return mapper.toMessageResponses(messageRepository.findAllByErrandNumberAndMunicipalityId(errandNumber, municipalityId));
 	}
 
-	public void saveMessage(final MessageRequest request) {
-		repository.save(mapper.toMessageEntity(request));
+	public void saveMessage(final MessageRequest request, final String municipalityId) {
+		messageRepository.save(mapper.toMessageEntity(request, municipalityId));
 	}
 
-	public void updateViewedStatus(final String messageID, final boolean isViewed) {
-		final var message = repository
-			.findById(messageID)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Message with id %s not found".formatted(messageID)));
+	public void updateViewedStatus(final String messageId, final String municipalityId, final boolean isViewed) {
+		final var message = messageRepository
+			.findByMessageIDAndMunicipalityId(messageId, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Message with id %s not found" .formatted(messageId)));
 
 		message.setViewed(isViewed);
-		repository.save(message);
+		messageRepository.save(message);
 	}
 
-	public MessageAttachmentDTO getMessageAttachment(final String attachmentID) {
-		return mapper.toAttachmentDto(attachmentRepository.findById(attachmentID).orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, "MessageAttachment not found")));
+	public MessageAttachmentDTO getMessageAttachment(final String attachmentId, final String municipalityId) {
+		return mapper.toAttachmentDto(messageAttachmentRepository.findByAttachmentIDAndMunicipalityId(attachmentId, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, "MessageAttachment not found")));
 	}
 
-	public void getMessageAttachmentStreamed(String attachmentID, HttpServletResponse response) {
+	public void getMessageAttachmentStreamed(final String attachmentId, final String municipalityId, final HttpServletResponse response) {
 		try {
-			final var attachmentEntity = attachmentRepository
-				.findById(attachmentID)
+			final var attachmentEntity = messageAttachmentRepository
+				.findByAttachmentIDAndMunicipalityId(attachmentId, municipalityId)
 				.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, "MessageAttachment not found"));
 
 			final var file = attachmentEntity.getAttachmentData().getFile();
@@ -70,7 +73,7 @@ public class MessageService {
 			response.setContentLength((int) file.length());
 			StreamUtils.copy(file.getBinaryStream(), response.getOutputStream());
 		} catch (IOException | SQLException e) {
-			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "%s occurred when copying file with attachment id '%s' to response: %s".formatted(e.getClass().getSimpleName(), attachmentID, e.getMessage()));
+			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "%s occurred when copying file with attachment id '%s' to response: %s" .formatted(e.getClass().getSimpleName(), attachmentId, e.getMessage()));
 		}
 	}
 }

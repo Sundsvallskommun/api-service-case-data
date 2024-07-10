@@ -4,7 +4,6 @@ import static org.hibernate.Length.LONG32;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -19,19 +18,27 @@ import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.With;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "attachment", indexes = {@Index(name = "attachment_errand_number_idx", columnList = "errand_number")})
+@Table(name = "attachment",
+	indexes = {
+		@Index(name = "attachment_errand_number_idx", columnList = "errand_number"),
+		@Index(name = "idx_attachment_municipality_id", columnList = "municipality_id")
+	})
 @Getter
 @Setter
 @SuperBuilder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Attachment extends BaseEntity {
 
 	@Column(name = "category")
@@ -56,6 +63,9 @@ public class Attachment extends BaseEntity {
 	@Column(name = "errand_number")
 	private String errandNumber;
 
+	@Column(name = "municipality_id")
+	private String municipalityId;
+
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "attachment_extra_parameters",
 		joinColumns = @JoinColumn(name = "attachment_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_attachment_extra_parameters_attachment_id")))
@@ -63,34 +73,5 @@ public class Attachment extends BaseEntity {
 	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
-
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
-		final Attachment that = (Attachment) o;
-		return Objects.equals(category, that.category) && Objects.equals(name, that.name) && Objects.equals(note, that.note) && Objects.equals(extension, that.extension) && Objects.equals(mimeType, that.mimeType) && Objects.equals(file, that.file) && Objects.equals(errandNumber, that.errandNumber) && Objects.equals(extraParameters, that.extraParameters);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), category, name, note, extension, mimeType, file, errandNumber, extraParameters);
-	}
-
-	@Override
-	public String toString() {
-		return "Attachment{" +
-
-			"category=" + category +
-			", name='" + name + '\'' +
-			", note='" + note + '\'' +
-			", extension='" + extension + '\'' +
-			", mimeType='" + mimeType + '\'' +
-			", file='" + file + '\'' +
-			", errandNumber='" + errandNumber + '\'' +
-			", extraParameters=" + extraParameters +
-			'}' + super.toString();
-	}
 
 }

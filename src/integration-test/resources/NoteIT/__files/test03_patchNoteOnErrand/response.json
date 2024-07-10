@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "version": 2,
+  "created": "2023-10-02T15:13:45.363+02:00",
+  "updated": "${json-unit.any-string}",
+  "title": "hawk-tuah",
+  "text": "Det här är en text",
+  "municipalityId": "2281",
+  "createdBy": "Skaparmannen",
+  "updatedBy": "Hi my name is AD_USER",
+  "extraParameters": {}
+}

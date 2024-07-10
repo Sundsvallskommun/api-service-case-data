@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -18,12 +17,14 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.TimeZoneStorage;
@@ -35,24 +36,35 @@ import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-@Entity(name = "decision")
+@Entity
+@Table(name = "decision",
+	indexes = {
+		@Index(name = "idx_decision_municipality_id", columnList = "municipality_id")
+	})
 @EntityListeners(DecisionListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(setterPrefix = "with")
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Decision extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "errand_id", foreignKey = @ForeignKey(name = "FK_decision_errand_id"))
 	@JsonBackReference
 	private Errand errand;
+
+	@Column(name = "municipality_id")
+	private String municipalityId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "decision_type")
@@ -100,37 +112,5 @@ public class Decision extends BaseEntity {
 	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
-
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof final Decision decision)) return false;
-		if (!super.equals(o)) return false;
-		return decisionType == decision.decisionType && decisionOutcome == decision.decisionOutcome && Objects.equals(description, decision.description) && Objects.equals(law, decision.law) && Objects.equals(decidedBy, decision.decidedBy) && Objects.equals(decidedAt, decision.decidedAt) && Objects.equals(validFrom, decision.validFrom) && Objects.equals(validTo, decision.validTo) && Objects.equals(attachments, decision.attachments) && Objects.equals(extraParameters, decision.extraParameters);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), decisionType, decisionOutcome, description, law, decidedBy, decidedAt, validFrom, validTo, attachments, extraParameters);
-	}
-
-	@Override
-	public String toString() {
-		final long errandId = errand == null ? 0 : errand.getId();
-
-		return "Decision{" +
-			"errand.id=" + errandId +
-			", decisionType=" + decisionType +
-			", decisionOutcome=" + decisionOutcome +
-			", description='" + description + '\'' +
-			", law=" + law +
-			", decidedBy=" + decidedBy +
-			", decidedAt=" + decidedAt +
-			", validFrom=" + validFrom +
-			", validTo=" + validTo +
-			", attachments=" + attachments +
-			", extraParameters=" + extraParameters +
-			"} " + super.toString();
-	}
 
 }

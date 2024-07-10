@@ -17,12 +17,20 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 @CircuitBreaker(name = "errandRepository")
 public interface ErrandRepository extends JpaRepository<Errand, Long>, JpaSpecificationExecutor<Errand> {
 
-	Page<Errand> findAllByIdIn(List<Long> id, Pageable pageable);
+	Page<Errand> findAllByIdInAndMunicipalityId(final List<Long> id, final String municipalityId, final Pageable pageable);
 
-	List<Errand> findAllByErrandNumberStartingWith(String caseTypeAbbreviation);
+	List<Errand> findAllByErrandNumberStartingWith(final String caseTypeAbbreviation);
 
-	Optional<Errand> findByExternalCaseId(String externalCaseId);
+	List<Errand> findAllByMunicipalityId(final String municipalityId);
 
-	Optional<Errand> findByErrandNumber(String errandNumber);
+	Optional<Errand> findByExternalCaseId(final String externalCaseId);
+
+	Optional<Errand> findByErrandNumber(final String errandNumber);
+
+	Optional<Errand> findByIdAndMunicipalityId(final Long id, final String municipalityId);
+
+	boolean existsByIdAndMunicipalityId(final Long id, final String municipalityId);
+
+	void deleteByIdAndMunicipalityId(final Long id, final String municipalityId);
 
 }

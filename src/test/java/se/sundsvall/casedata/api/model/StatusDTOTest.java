@@ -7,6 +7,7 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.time.OffsetDateTime;
@@ -31,5 +32,28 @@ class StatusDTOTest {
 			hasValidBeanHashCode(),
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
+	}
+
+	@Test
+	void builderTest() {
+		final var statusType = "statusType";
+		final var description = "description";
+		final var dateTime = OffsetDateTime.now();
+
+		final var bean = StatusDTO.builder()
+			.withStatusType(statusType)
+			.withDescription(description)
+			.withDateTime(dateTime)
+			.build();
+
+		assertThat(bean.getStatusType()).isEqualTo(statusType);
+		assertThat(bean.getDescription()).isEqualTo(description);
+		assertThat(bean.getDateTime()).isEqualTo(dateTime);
+	}
+
+	@Test
+	void testNoDirtOnEmptyBean() {
+		assertThat(StatusDTO.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new StatusDTO()).hasAllNullFieldsOrProperties();
 	}
 }

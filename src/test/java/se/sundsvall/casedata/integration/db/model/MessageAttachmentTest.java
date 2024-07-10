@@ -29,12 +29,14 @@ class MessageAttachmentTest {
 		final var attachmentID = "attachmentID";
 		final var contentType = "contentType";
 		final var messageID = "messageID";
+		final var municipalityId = "municipalityId";
 		final var name = "name";
 
 		final var bean = MessageAttachment.builder()
 			.withAttachmentData(attachmentData)
 			.withAttachmentID(attachmentID)
 			.withContentType(contentType)
+			.withMunicipalityId(municipalityId)
 			.withMessageID(messageID)
 			.withName(name)
 			.build();
@@ -44,6 +46,7 @@ class MessageAttachmentTest {
 		assertThat(bean.getAttachmentID()).isEqualTo(attachmentID);
 		assertThat(bean.getContentType()).isEqualTo(contentType);
 		assertThat(bean.getMessageID()).isEqualTo(messageID);
+		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getName()).isEqualTo(name);
 	}
 

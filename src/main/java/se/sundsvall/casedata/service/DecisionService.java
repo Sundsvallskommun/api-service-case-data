@@ -1,16 +1,18 @@
 package se.sundsvall.casedata.service;
 
-import io.github.resilience4j.retry.annotation.Retry;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecisionDto;
+import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecision;
+import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
+
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
+
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.PatchDecisionDTO;
 import se.sundsvall.casedata.integration.db.DecisionRepository;
 
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecisionDto;
-import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecision;
-import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
+import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 public class DecisionService {
@@ -23,22 +25,21 @@ public class DecisionService {
 		this.decisionRepository = decisionRepository;
 	}
 
-
-	public DecisionDTO findById(final Long id) {
-		return toDecisionDto(decisionRepository.findById(id)
+	public DecisionDTO findByIdAndMunicipalityId(final Long id, final String municipalityId) {
+		return toDecisionDto(decisionRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, DECISION_NOT_FOUND)));
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void replaceDecision(final Long id, final DecisionDTO dto) {
-		final var entity = decisionRepository.findById(id)
+	public void replaceDecision(final Long id, final String municipalityId, final DecisionDTO dto) {
+		final var entity = decisionRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, DECISION_NOT_FOUND));
 		decisionRepository.save(putDecision(entity, dto));
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void updateDecision(final Long id, final PatchDecisionDTO dto) {
-		final var entity = decisionRepository.findById(id)
+	public void updateDecision(final Long id, final String municipalityId, final PatchDecisionDTO dto) {
+		final var entity = decisionRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, DECISION_NOT_FOUND));
 		decisionRepository.save(patchDecision(entity, dto));
 	}

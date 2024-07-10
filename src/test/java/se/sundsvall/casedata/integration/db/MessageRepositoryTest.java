@@ -2,6 +2,7 @@ package se.sundsvall.casedata.integration.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
 
 import org.junit.jupiter.api.Test;
@@ -83,7 +84,7 @@ class MessageRepositoryTest {
 		final var errandNumber = "PRE-1970-000123";
 
 		// Act
-		final var result = messageRepository.findAllByErrandNumber(errandNumber);
+		final var result = messageRepository.findAllByErrandNumberAndMunicipalityId(errandNumber, MUNICIPALITY_ID);
 
 		// Assert
 		assertThat(result)
@@ -111,7 +112,7 @@ class MessageRepositoryTest {
 		final var errandNumber = "NON-EXISTING";
 
 		// Act
-		final var result = messageRepository.findAllByErrandNumber(errandNumber);
+		final var result = messageRepository.findAllByErrandNumberAndMunicipalityId(errandNumber, MUNICIPALITY_ID);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();

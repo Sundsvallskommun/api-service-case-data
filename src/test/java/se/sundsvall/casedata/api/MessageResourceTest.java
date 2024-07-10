@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 
 import java.util.List;
 import java.util.Map;
@@ -28,9 +29,7 @@ import se.sundsvall.casedata.service.MessageService;
 @ActiveProfiles("junit")
 class MessageResourceTest {
 
-	private static final String GET_MESSAGES_PATH = "messages/{errandNumber}";
-	private static final String PATCH_MESSAGE_PATH = "messages";
-	private static final String SET_VIEWED_PATH = "messages/{messageID}/viewed/{isViewed}";
+	private static final String BASE_URL = "/{municipalityId}/messages";
 
 	@MockBean
 	private MessageService messageServiceMock;
@@ -45,12 +44,12 @@ class MessageResourceTest {
 		final var errandNumber = RandomStringUtils.randomAlphanumeric(10);
 		final var messages = List.of(MessageResponse.builder().build());
 
-		when(messageServiceMock.getMessagesByErrandNumber(errandNumber)).thenReturn(messages);
+		when(messageServiceMock.getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID)).thenReturn(messages);
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path(GET_MESSAGES_PATH)
-				.build(Map.of("errandNumber", errandNumber)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandNumber}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandNumber", errandNumber)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -60,7 +59,7 @@ class MessageResourceTest {
 
 		// Assert
 		assertThat(response).isEqualTo(messages);
-		verify(messageServiceMock).getMessagesByErrandNumber(errandNumber);
+		verify(messageServiceMock).getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID);
 	}
 
 	@Test
@@ -70,7 +69,7 @@ class MessageResourceTest {
 
 		// Act
 		webTestClient.post()
-			.uri(PATCH_MESSAGE_PATH)
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID))
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.bodyValue(request)
 			.exchange()
@@ -79,7 +78,7 @@ class MessageResourceTest {
 			.expectBody().isEmpty();
 
 		// Assert
-		verify(messageServiceMock).saveMessage(request);
+		verify(messageServiceMock).saveMessage(request, MUNICIPALITY_ID);
 	}
 
 	@Test
@@ -90,8 +89,9 @@ class MessageResourceTest {
 
 		// Act
 		webTestClient.put()
-			.uri(uriBuilder -> uriBuilder.path(SET_VIEWED_PATH)
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{messageID}/viewed/{isViewed}")
 				.build(Map.of(
+					"municipalityId", MUNICIPALITY_ID,
 					"messageID", messageID,
 					"isViewed", isViewed)))
 			.exchange()
@@ -100,6 +100,6 @@ class MessageResourceTest {
 			.expectBody().isEmpty();
 
 		// Assert
-		verify(messageServiceMock).updateViewedStatus(messageID, isViewed);
+		verify(messageServiceMock).updateViewedStatus(messageID, MUNICIPALITY_ID, isViewed);
 	}
 }

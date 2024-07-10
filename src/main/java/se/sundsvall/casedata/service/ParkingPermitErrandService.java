@@ -28,10 +28,10 @@ public class ParkingPermitErrandService {
 		this.errandRepository = errandRepository;
 	}
 
-	public List<GetParkingPermitDTO> findAll(final String personId) {
+	public List<GetParkingPermitDTO> findAllByPersonIdAndMunicipalityId(final String personId, final String municipalityId) {
 		final List<GetParkingPermitDTO> parkingPermitsDTOList = new ArrayList<>();
 
-		final List<Errand> allErrands = personId == null ? errandRepository.findAll() : findAllErrandsWithApplicant(personId);
+		final List<Errand> allErrands = personId == null ? errandRepository.findAllByMunicipalityId(municipalityId) : findAllErrandsWithApplicant(personId, municipalityId);
 
 		final List<ErrandDTO> allErrandsWithPrh = allErrands.stream()
 			.filter(errand -> errand.getExtraParameters().containsKey(PERMIT_NUMBER_EXTRA_PARAMETER_KEY))
@@ -43,10 +43,10 @@ public class ParkingPermitErrandService {
 		}
 
 		allErrandsWithPrh.forEach(errand -> parkingPermitsDTOList.add(GetParkingPermitDTO.builder()
-			.artefactPermitNumber(errand.getExtraParameters().get(PERMIT_NUMBER_EXTRA_PARAMETER_KEY))
-			.artefactPermitStatus(errand.getExtraParameters().get(PERMIT_STATUS_EXTRA_PARAMETER_KEY))
-			.errandId(errand.getId())
-			.errandDecision(errand.getDecisions().stream().filter(decisionDTO -> DecisionType.FINAL.equals(decisionDTO.getDecisionType())).findFirst().orElse(null))
+			.withArtefactPermitNumber(errand.getExtraParameters().get(PERMIT_NUMBER_EXTRA_PARAMETER_KEY))
+			.withArtefactPermitStatus(errand.getExtraParameters().get(PERMIT_STATUS_EXTRA_PARAMETER_KEY))
+			.withErrandId(errand.getId())
+			.withErrandDecision(errand.getDecisions().stream().filter(decisionDTO -> DecisionType.FINAL.equals(decisionDTO.getDecisionType())).findFirst().orElse(null))
 			.build()));
 
 		return parkingPermitsDTOList;
@@ -56,8 +56,8 @@ public class ParkingPermitErrandService {
 	 * @param personId of the applicant
 	 * @return all errands with stakeholder who has the role APPLICANT and matching personId
 	 */
-	private List<Errand> findAllErrandsWithApplicant(final String personId) {
-		return errandRepository.findAll().stream()
+	private List<Errand> findAllErrandsWithApplicant(final String personId, final String municipalityId) {
+		return errandRepository.findAllByMunicipalityId(municipalityId).stream()
 			.filter(errand -> errand.getStakeholders().stream()
 				.filter(stakeholder -> nonNull(stakeholder.getPersonId()))
 				.anyMatch(stakeholder -> stakeholder.getPersonId().equals(personId) && stakeholder.getRoles().contains(StakeholderRole.APPLICANT.name())))

@@ -25,7 +25,7 @@ import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
  * @see /src/test/resources/db/testdata-junit.sql for data setup.
  */
 @DataJpaTest
-@Import(value = { JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class })
+@Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
 @Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
@@ -39,42 +39,15 @@ class FacilityRepositoryTest {
 	private FacilityRepository facilityRepository;
 
 	@Test
-	void findById() {
-
-		// Arrange
-		final var id = 1L;
-
-		// Act
-		final var result = facilityRepository.findById(id).orElseThrow();
-
-		// Assert
-		assertThat(result.getId()).isEqualTo(id);
-		assertThat(result.getUpdated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:15:01.563+01:00", ISO_DATE_TIME));
-		assertThat(result.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
-	}
-
-	@Test
-	void findByIdNothingFound() {
-
-		// Arrange
-		final var id = 666L;
-
-		// Act
-		final var result = facilityRepository.findById(id);
-
-		// Assert
-		assertThat(result).isNotNull().isEmpty();
-	}
-
-	@Test
-	void findByIdAndErrandId() {
+	void findByIdAndErrandIdAndMunicipalityId() {
 
 		// Arrange
 		final var id = 1L;
 		final var errandId = 1L;
+		final var municipalityId = "2281";
 
 		// Act
-		final var result = facilityRepository.findByIdAndErrandId(id, errandId).orElseThrow();
+		final var result = facilityRepository.findByIdAndErrandIdAndMunicipalityId(id, errandId, municipalityId).orElseThrow();
 
 		// Assert
 		assertThat(result.getId()).isEqualTo(id);
@@ -83,14 +56,15 @@ class FacilityRepositoryTest {
 	}
 
 	@Test
-	void findByIdAndErrandIdNothingFound() {
+	void findByIdAndErrandIdAndMunicipalityIdNothingFound() {
 
 		// Arrange
 		final var id = 666L;
 		final var errandId = 666L;
+		final var municipalityId = "2281";
 
 		// Act
-		final var result = facilityRepository.findByIdAndErrandId(id, errandId);
+		final var result = facilityRepository.findByIdAndErrandIdAndMunicipalityId(id, errandId, municipalityId);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();

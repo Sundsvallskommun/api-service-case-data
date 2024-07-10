@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
@@ -40,7 +41,7 @@ import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 class DecisionServiceTest {
 
 	@InjectMocks
-	DecisionService decisionService;
+	private DecisionService decisionService;
 
 	@Mock
 	private DecisionRepository decisionRepository;
@@ -50,22 +51,23 @@ class DecisionServiceTest {
 
 	@Test
 	void patchDecisionOnErrand() throws JsonProcessingException {
-		final Errand errand = toErrand(createErrandDTO());
+		final Errand errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
 		errand.setId(new Random().nextLong(1, 1000));
-		final Decision decision = toDecision(createDecisionDTO());
+		final Decision decision = toDecision(createDecisionDTO(), MUNICIPALITY_ID);
 		decision.setId(new Random().nextLong());
 		errand.setDecisions(List.of(decision));
 
+
 		final var mockDecision = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(decision), Decision.class);
 		mockDecision.setErrand(errand);
-		doReturn(Optional.of(mockDecision)).when(decisionRepository).findById(decision.getId());
+		doReturn(Optional.of(mockDecision)).when(decisionRepository).findByIdAndMunicipalityId(decision.getId(), MUNICIPALITY_ID);
 
 		final PatchDecisionDTO patch = new PatchDecisionDTO();
 		patch.setDecisionOutcome(DecisionOutcome.CANCELLATION);
 		patch.setDescription(RandomStringUtils.random(10, true, false));
 		patch.setExtraParameters(createExtraParameters());
 
-		decisionService.updateDecision(decision.getId(), patch);
+		decisionService.updateDecision(decision.getId(), MUNICIPALITY_ID, patch);
 		Mockito.verify(decisionRepository).save(decisionCaptor.capture());
 		final Decision persistedDecision = decisionCaptor.getValue();
 
@@ -83,9 +85,10 @@ class DecisionServiceTest {
 	void testPatch() {
 		final var dto = new PatchDecisionDTO();
 		final var entity = new Decision();
-		when(decisionRepository.findById(1L)).thenReturn(Optional.of(entity));
 
-		decisionService.updateDecision(1L, dto);
+		when(decisionRepository.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
+
+		decisionService.updateDecision(1L, MUNICIPALITY_ID, dto);
 
 		verify(decisionRepository, times(1)).save(entity);
 		verifyNoMoreInteractions(decisionRepository);

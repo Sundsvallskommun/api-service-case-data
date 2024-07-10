@@ -37,7 +37,7 @@ import se.sundsvall.casedata.integration.db.model.enums.Priority;
  * @see /src/test/resources/db/testdata-junit.sql for data setup.
  */
 @DataJpaTest
-@Import(value = { JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class })
+@Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
 @Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
@@ -56,9 +56,10 @@ class ErrandRepositoryTest {
 		// Arrange
 		final var idList = List.of(2L, 3L);
 		final var pageRequest = PageRequest.of(0, 10, Sort.by(ASC, "priority"));
+		final var municipalityId = "2281";
 
 		// Act
-		final var result = errandRepository.findAllByIdIn(idList, pageRequest);
+		final var result = errandRepository.findAllByIdInAndMunicipalityId(idList, municipalityId, pageRequest);
 
 		// Assert
 		assertThat(result)
@@ -75,9 +76,10 @@ class ErrandRepositoryTest {
 		// Arrange
 		final var idList = List.of(666L, 777L);
 		final var pageRequest = PageRequest.of(0, 10, Sort.by(ASC, "priority"));
+		final var municipalityId = "2281";
 
 		// Act
-		final var result = errandRepository.findAllByIdIn(idList, pageRequest);
+		final var result = errandRepository.findAllByIdInAndMunicipalityId(idList, municipalityId, pageRequest);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();

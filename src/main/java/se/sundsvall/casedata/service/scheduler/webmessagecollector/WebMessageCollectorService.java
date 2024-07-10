@@ -70,9 +70,10 @@ public class WebMessageCollectorService {
 	}
 
 	private Optional<Message> processMessage(final MessageDTO messageDTO) {
-		return errandRepository.findByExternalCaseId(messageDTO.getExternalCaseId()).map(result -> {
-			final var errandNumber = result.getErrandNumber();
-			final var message = messageMapper.toMessageEntity(errandNumber, messageDTO);
+		return errandRepository.findByExternalCaseId(messageDTO.getExternalCaseId()).map(errand -> {
+			final var errandNumber = errand.getErrandNumber();
+			final var municipalityId = errand.getMunicipalityId();
+			final var message = messageMapper.toMessageEntity(errandNumber, messageDTO, municipalityId);
 			return messageRepository.saveAndFlush(message);
 		});
 	}

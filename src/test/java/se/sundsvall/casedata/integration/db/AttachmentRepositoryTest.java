@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.Assertions.within;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -31,7 +32,7 @@ import se.sundsvall.casedata.integration.db.model.Attachment;
  * @see /src/test/resources/db/testdata-junit.sql for data setup.
  */
 @DataJpaTest
-@Import(value = { JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class })
+@Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
 @Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
@@ -45,13 +46,13 @@ class AttachmentRepositoryTest {
 	private AttachmentRepository attachmentRepository;
 
 	@Test
-	void findAllByErrandNumber() {
+	void findAllByErrandNumberAndMunicipalityId() {
 
 		// Arrange
 		final var errandNumber = "ERRAND-NUMBER-2";
 
 		// Act
-		final var result = attachmentRepository.findAllByErrandNumber(errandNumber);
+		final var result = attachmentRepository.findAllByErrandNumberAndMunicipalityId(errandNumber, MUNICIPALITY_ID);
 
 		// Assert
 		assertThat(result)
@@ -64,13 +65,13 @@ class AttachmentRepositoryTest {
 	}
 
 	@Test
-	void findAllByErrandNumberNothingFound() {
+	void findAllByErrandNumberAndMunicipalityIdNothingFound() {
 
 		// Arrange
 		final var errandNumber = "NON-EXISTING";
 
 		// Act
-		final var result = attachmentRepository.findAllByErrandNumber(errandNumber);
+		final var result = attachmentRepository.findAllByErrandNumberAndMunicipalityId(errandNumber, MUNICIPALITY_ID);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -83,7 +84,7 @@ class AttachmentRepositoryTest {
 		final var id = 1L;
 
 		// Act
-		final var result = attachmentRepository.findById(id).orElseThrow();
+		final var result = attachmentRepository.findByIdAndMunicipalityId(id, MUNICIPALITY_ID).orElseThrow();
 
 		// Assert
 		assertThat(result.getCategory()).isEqualTo("MEDICAL_CONFIRMATION");
@@ -105,7 +106,7 @@ class AttachmentRepositoryTest {
 		final var id = 666L;
 
 		// Act
-		final var result = attachmentRepository.findById(id);
+		final var result = attachmentRepository.findByIdAndMunicipalityId(id, MUNICIPALITY_ID);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -116,13 +117,13 @@ class AttachmentRepositoryTest {
 
 		// Arrange
 		final var id = 1L;
-		assertThat(attachmentRepository.existsById(id)).isTrue();
+		assertThat(attachmentRepository.existsByIdAndMunicipalityId(id, MUNICIPALITY_ID)).isTrue();
 
 		// Act
-		attachmentRepository.deleteById(id);
+		attachmentRepository.deleteByIdAndMunicipalityId(id, MUNICIPALITY_ID);
 
 		// Assert
-		assertThat(attachmentRepository.existsById(id)).isFalse();
+		assertThat(attachmentRepository.existsByIdAndMunicipalityId(id, MUNICIPALITY_ID)).isFalse();
 	}
 
 	@Test
@@ -137,12 +138,14 @@ class AttachmentRepositoryTest {
 		final var mimeType = "application/pdf";
 		final var file = "file";
 		final var errandNumber = "PRH-2022-000029";
+		final var municipalityId = "2281";
 		final var extraParameters = Map.of("key", "value");
 		final var entity = Attachment.builder()
 			.withVersion(version)
 			.withCategory(category)
 			.withName(name)
 			.withNote(note)
+			.withMunicipalityId(municipalityId)
 			.withExtension(extension)
 			.withErrandNumber(errandNumber)
 			.withMimeType(mimeType)
@@ -164,6 +167,7 @@ class AttachmentRepositoryTest {
 		assertThat(result.getId()).isPositive();
 		assertThat(result.getMimeType()).isEqualTo(mimeType);
 		assertThat(result.getName()).isEqualTo(name);
+		assertThat(result.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(result.getNote()).isEqualTo(note);
 		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 		assertThat(result.getVersion()).isEqualTo(version);

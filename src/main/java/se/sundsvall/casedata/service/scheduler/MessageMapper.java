@@ -35,7 +35,7 @@ public class MessageMapper {
 		this.blobBuilder = blobBuilder;
 	}
 
-	public Message toMessageEntity(final String errandNumber, final MessageDTO dto) {
+	public Message toMessageEntity(final String errandNumber, final MessageDTO dto, final String municipalityId) {
 		return Message.builder()
 			.withMessageID(UUID.randomUUID().toString())
 			.withErrandNumber(errandNumber)
@@ -49,12 +49,13 @@ public class MessageMapper {
 			.withEmail(dto.getEmail())
 			.withUserID(dto.getUserId())
 			.withUsername(dto.getUsername())
+			.withMunicipalityId(municipalityId)
 			.withMessageType(MessageType.WEBMESSAGE.name())
 			.build();
 	}
 
 
-	public Message toMessageEntity(final MessageRequest request) {
+	public Message toMessageEntity(final MessageRequest request, final String municipalityId) {
 		final var entity = Message.builder()
 			.withMessageID(request.getMessageID())
 			.withErrandNumber(request.getErrandNumber())
@@ -70,6 +71,7 @@ public class MessageMapper {
 			.withMobileNumber(request.getMobileNumber())
 			.withEmail(request.getEmail())
 			.withUserID(request.getUserID())
+			.withMunicipalityId(municipalityId)
 			.withClassification(request.getClassification())
 			.withUsername(request.getUsername());
 

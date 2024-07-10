@@ -54,9 +54,6 @@ public class PatchErrandDTO {
 	@Size(max = 255)
 	private String phase;
 
-	@Size(max = 255)
-	private String municipalityId;
-
 	@Schema(description = "The facilities in the case")
 	private List<FacilityDTO> facilities;
 

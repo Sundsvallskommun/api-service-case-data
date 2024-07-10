@@ -1,123 +1,130 @@
 {
-  "appeals": [],
-  "caseTitleAddition": "Nytt parkeringstillstånd",
-  "caseType": "PARKING_PERMIT",
+  "id": 1,
+  "version": 2,
   "created": "2022-12-02T15:13:45.363+01:00",
-  "createdBy": "UNKNOWN",
-  "createdByClient": "WSO2_test",
+  "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+  "errandNumber": "ERRAND-NUMBER-1",
+  "externalCaseId": "",
+  "caseType": "PARKING_PERMIT",
+  "priority": "MEDIUM",
+  "description": "",
+  "caseTitleAddition": "Nytt parkeringstillstånd",
+  "diaryNumber": "",
+  "phase": "Aktualisering",
+  "statuses": [],
+  "processId": "896a44d8-724b-11ed-a840-0242ac110002",
+  "stakeholders": [
+    {
+      "id": 1,
+      "version": 0,
+      "created": "2022-12-02T15:13:45.363+01:00",
+      "updated": "2022-12-02T15:15:01.563+01:00",
+      "type": "PERSON",
+      "firstName": "FIRST-NAME-1",
+      "lastName": "LAST-NAME-1",
+      "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
+      "adAccount": "AD-1",
+      "roles": [],
+      "addresses": [],
+      "contactInformation": [],
+      "extraParameters": {}
+    }
+  ],
+  "facilities": [],
   "decisions": [
     {
-      "attachments": [
+      "id": 1,
+      "version": 2,
+      "created": "2024-01-01T12:00:00+01:00",
+      "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+      "decisionType": "FINAL",
+      "decisionOutcome": "DISMISSAL",
+      "description": "This is a put description",
+      "law": [
         {
-          "category": "FAPL",
-          "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-          "errandNumber": "test errandNumber",
-          "extension": "test extension",
-          "extraParameters": {},
-          "file": "test file",
-          "id": 1,
-          "mimeType": "test mimeType",
-          "name": "Test name",
-          "note": "Test note",
-          "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-          "version": 0
+          "heading": "this is a heading",
+          "sfs": "this is a sfs",
+          "chapter": "this is a chapter",
+          "article": "this is an article"
         }
       ],
-      "created": "2024-01-01T12:00:00+01:00",
-      "decidedAt": "2024-01-02T13:00:00+01:00",
       "decidedBy": {
+        "id": 3,
+        "version": 2,
+        "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+        "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+        "firstName": "John",
+        "lastName": "Doe",
+        "personId": "3ed5bc30-6308-4fd5-a5a7-78d7f96f4438",
+        "organizationName": "Test Organization",
+        "organizationNumber": "19901010-1234",
+        "authorizedSignatory": "Test Testorsson",
         "adAccount": "AD-account",
+        "roles": [
+          "PAYMENT_PERSON"
+        ],
         "addresses": [
           {
-            "apartmentNumber": "LGH Test",
-            "attention": "Test Attention",
-            "careOf": "Test CareOf",
+            "street": "test street",
+            "houseNumber": "18",
+            "postalCode": "123 45",
             "city": "Test City",
             "country": "Test Country",
-            "houseNumber": "18",
+            "careOf": "Test CareOf",
+            "attention": "Test Attention",
+            "propertyDesignation": "Test PropertyDesignation",
+            "apartmentNumber": "LGH Test",
             "invoiceMarking": "Test InvoiceMarking",
             "location": {
               "latitude": 1.0,
               "longitude": 1.0
-            },
-            "postalCode": "123 45",
-            "propertyDesignation": "Test PropertyDesignation",
-            "street": "test street"
+            }
           }
         ],
-        "authorizedSignatory": "Test Testorsson",
         "contactInformation": [
           {
             "contactType": "PHONE",
             "value": "0701234567"
           }
         ],
-        "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-        "extraParameters": {},
-        "firstName": "John",
-        "id": 3,
-        "lastName": "Doe",
-        "organizationName": "Test Organization",
-        "organizationNumber": "19901010-1234",
-        "personId": "3ed5bc30-6308-4fd5-a5a7-78d7f96f4438",
-        "roles": [
-          "PAYMENT_PERSON"
-        ],
-        "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-        "version": 2
+        "extraParameters": {}
       },
-      "decisionOutcome": "DISMISSAL",
-      "decisionType": "FINAL",
-      "description": "This is a put description",
-      "extraParameters": {},
-      "id": 1,
-      "law": [
-        {
-          "article": "this is an article",
-          "chapter": "this is a chapter",
-          "heading": "this is a heading",
-          "sfs": "this is a sfs"
-        }
-      ],
-      "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+      "decidedAt": "2024-01-02T13:00:00+01:00",
       "validFrom": "2024-01-01T13:00:00+01:00",
       "validTo": "2025-01-02T13:00:00+01:00",
-      "version": 2
+      "attachments": [
+        {
+          "id": 1,
+          "version": 0,
+          "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+          "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+          "category": "FAPL",
+          "name": "Test name",
+          "note": "Test note",
+          "extension": "test extension",
+          "mimeType": "test mimeType",
+          "file": "test file",
+          "errandNumber": "test errandNumber",
+          "extraParameters": {}
+        }
+      ],
+      "extraParameters": {}
     }
   ],
-  "description": "",
-  "diaryNumber": "",
-  "errandNumber": "ERRAND-NUMBER-1",
-  "externalCaseId": "",
-  "extraParameters": {},
-  "facilities": [],
-  "id": 1,
-  "messageIds": [],
-  "municipalityId": "2281",
+  "appeals": [],
   "notes": [],
-  "phase": "Aktualisering",
-  "priority": "MEDIUM",
-  "processId": "896a44d8-724b-11ed-a840-0242ac110002",
-  "stakeholders": [
-    {
-      "adAccount": "AD-1",
-      "addresses": [],
-      "contactInformation": [],
-      "created": "2022-12-02T15:13:45.363+01:00",
-      "extraParameters": {},
-      "firstName": "FIRST-NAME-1",
-      "id": 1,
-      "lastName": "LAST-NAME-1",
-      "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
-      "roles": [],
-      "type": "PERSON",
-      "updated": "2022-12-02T15:15:01.563+01:00",
-      "version": 0
-    }
-  ],
-  "statuses": [],
-  "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-  "updatedBy": "Hi my name is AD_USER",
+  "messageIds": [],
+  "createdByClient": "WSO2_test",
   "updatedByClient": "WSO2_MS_caseManagement",
-  "version": 2
+  "createdBy": "UNKNOWN",
+  "updatedBy": "Hi my name is AD_USER",
+  "extraParameters": {}
 }
+
+
+
+
+
+
+
+

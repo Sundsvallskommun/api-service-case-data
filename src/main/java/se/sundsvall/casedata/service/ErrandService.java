@@ -1,12 +1,37 @@
 package se.sundsvall.casedata.service;
 
-import io.github.resilience4j.retry.annotation.Retry;
+import static java.text.MessageFormat.format;
+import static java.util.Objects.isNull;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAppeal;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAppealDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecision;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecisionDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholder;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
+import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacility;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
+
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
@@ -24,29 +49,7 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
 import se.sundsvall.casedata.service.util.mappers.PutMapper;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.isNull;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAppeal;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAppealDto;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecision;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecisionDto;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandDto;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityDto;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteDto;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholder;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderDto;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
-import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacility;
+import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 public class ErrandService {
@@ -71,62 +74,64 @@ public class ErrandService {
 		this.processService = processService;
 	}
 
-	//////////////////////////////
+	//////////////////////////////f
 	// GET operations
 	//////////////////////////////
 
-	public List<DecisionDTO> findDecisionsOnErrand(final Long errandId) {
-		final List<Decision> decisionList = getErrand(errandId).getDecisions();
+	public List<DecisionDTO> findDecisionsOnErrand(final Long errandId, final String municipalityId) {
+		final List<Decision> decisionList = getErrandByIdAndMunicipalityId(errandId, municipalityId).getDecisions();
 		if ((decisionList == null) || decisionList.isEmpty()) {
-			throw Problem.valueOf(NOT_FOUND, MessageFormat.format(DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID, errandId));
+			throw Problem.valueOf(NOT_FOUND, format(DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID, errandId));
 		}
 		return decisionList.stream().map(EntityMapper::toDecisionDto).toList();
 	}
 
-	public List<FacilityDTO> findFacilitiesOnErrand(final Long errandId) {
-		return getErrand(errandId).getFacilities().stream()
+	public List<FacilityDTO> findFacilitiesOnErrand(final Long errandId, final String municipalityId) {
+		return getErrandByIdAndMunicipalityId(errandId, municipalityId).getFacilities().stream()
 			.map(EntityMapper::toFacilityDto)
 			.toList();
 	}
 
-	public FacilityDTO findFacilityOnErrand(final Long errandId, Long facilityId) {
-		return toFacilityDto(facilityRepository.findByIdAndErrandId(facilityId, errandId)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, facilityId, errandId))));
+	public FacilityDTO findFacilityOnErrand(final Long errandId, final Long facilityId, final String municipalityId) {
+		return toFacilityDto(facilityRepository.findByIdAndErrandIdAndMunicipalityId(facilityId, errandId, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, facilityId, errandId))));
 	}
 
-	public ErrandDTO findById(final Long errandId) {
-		return toErrandDto(errandRepository.findById(errandId)
+	public ErrandDTO findByIdAndMunicipalityId(final Long errandId, final String municipalityId) {
+		return toErrandDto(errandRepository.findByIdAndMunicipalityId(errandId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
-				MessageFormat.format(ERRAND_WAS_NOT_FOUND, errandId))));
+				format(ERRAND_WAS_NOT_FOUND, errandId))));
 	}
 
-	public Errand getErrand(final Long errandId) {
-		return errandRepository.findById(errandId)
+	public Errand getErrandByIdAndMunicipalityId(final Long errandId, final String municipalityId) {
+		return errandRepository.findByIdAndMunicipalityId(errandId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
-				MessageFormat.format(ERRAND_WAS_NOT_FOUND, errandId)));
+				format(ERRAND_WAS_NOT_FOUND, errandId)));
 	}
 
-	public void deleteById(final Long errandId) {
-		if (!errandRepository.existsById(errandId)) {
-			throw Problem.valueOf(NOT_FOUND, MessageFormat.format(ERRAND_WAS_NOT_FOUND, errandId));
+	@Transactional
+	public void deleteByIdAndMunicipalityId(final Long errandId, final String municipalityId) {
+		if (!errandRepository.existsByIdAndMunicipalityId(errandId, municipalityId)) {
+			throw Problem.valueOf(NOT_FOUND, format(ERRAND_WAS_NOT_FOUND, errandId));
 		}
 
-		errandRepository.deleteById(errandId);
+		errandRepository.deleteByIdAndMunicipalityId(errandId, municipalityId);
 	}
 
 	/**
 	 * @return Page of ErrandDTO without duplicates
 	 */
-	public Page<ErrandDTO> findAll(final Specification<Errand> specification, final Map<String, String> extraParameters, final Pageable pageable) {
+	public Page<ErrandDTO> findAll(final Specification<Errand> specification, final String municipalityId, final Map<String, String> extraParameters, final Pageable pageable) {
 		// Extract all ID's and remove duplicates
 		final List<Long> allIds = errandRepository.findAll(specification).stream()
-			.filter(errandDTO -> hashmapContainsAllKeyAndValues(errandDTO.getExtraParameters(), extraParameters))
+			.filter(errand -> municipalityId.equals(errand.getMunicipalityId()))
+			.filter(errand -> hashmapContainsAllKeyAndValues(errand.getExtraParameters(), extraParameters))
 			.map(Errand::getId)
-			.collect(Collectors.toSet())
-			.stream().toList();
+			.distinct()
+			.toList();
 
 		// Get errands without duplicates
-		final Page<ErrandDTO> errandDTOPage = errandRepository.findAllByIdIn(allIds, pageable)
+		final Page<ErrandDTO> errandDTOPage = errandRepository.findAllByIdInAndMunicipalityId(allIds, municipalityId, pageable)
 			.map(EntityMapper::toErrandDto);
 
 		if (errandDTOPage.isEmpty()) {
@@ -152,8 +157,8 @@ public class ErrandService {
 	/**
 	 * Saves errand and update the process in ParkingPermit if it's a parking permit errand
 	 */
-	public ErrandDTO createErrand(final ErrandDTO errandDTO) {
-		final var errand = toErrand(errandDTO);
+	public ErrandDTO createErrand(final ErrandDTO errandDTO, final String municipalityId) {
+		final var errand = toErrand(errandDTO, municipalityId);
 		final var resultErrand = errandRepository.save(errand);
 
 		// Will not start a process if it's not a parking permit or mex errand
@@ -163,9 +168,9 @@ public class ErrandService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public FacilityDTO createFacility(final Long errandId, final FacilityDTO facilityDTO) {
-		final var errand = getErrand(errandId);
-		final var facility = toFacility(facilityDTO);
+	public FacilityDTO createFacility(final Long errandId, final String municipalityId, final FacilityDTO facilityDTO) {
+		final var errand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
+		final var facility = toFacility(facilityDTO, municipalityId);
 		facility.setErrand(errand);
 
 		final var facilityDto = toFacilityDto(facilityRepository.save(facility));
@@ -180,59 +185,59 @@ public class ErrandService {
 	//////////////////////////////
 
 	@Retry(name = "OptimisticLocking")
-	public void deleteStakeholderOnErrand(final Long errandId, final Long stakeholderId) {
-		final var errand = getErrand(errandId);
+	public void deleteStakeholderOnErrand(final Long errandId, final String municipalityId, final Long stakeholderId) {
+		final var errand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
 		final var stakeholderToRemove = errand.getStakeholders().stream()
 			.filter(stakeholder -> stakeholder.getId().equals(stakeholderId))
-			.findFirst().orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, stakeholderId, errandId)));
+			.findFirst().orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, stakeholderId, errandId)));
 		errand.getStakeholders().remove(stakeholderToRemove);
 		errandRepository.save(errand);
 		processService.updateProcess(errand);
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void deleteDecisionOnErrand(final Long errandId, final Long decisionId) {
-		final var errand = getErrand(errandId);
+	public void deleteDecisionOnErrand(final Long errandId, final String municipalityId, final Long decisionId) {
+		final var errand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
 		final var decisionToRemove = errand.getDecisions().stream()
 			.filter(decision -> decision.getId().equals(decisionId))
 			.findAny()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, decisionId, errandId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, decisionId, errandId)));
 		errand.getDecisions().remove(decisionToRemove);
 		errandRepository.save(errand);
 		processService.updateProcess(errand);
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void deleteNoteOnErrand(final Long errandId, final Long noteId) {
-		final var errand = getErrand(errandId);
+	public void deleteNoteOnErrand(final Long errandId, final String municipalityId, final Long noteId) {
+		final var errand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
 		final var noteToRemove = errand.getNotes().stream()
 			.filter(note -> note.getId().equals(noteId))
 			.findAny()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, noteId, errandId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, noteId, errandId)));
 		errand.getNotes().remove(noteToRemove);
 		errandRepository.save(errand);
 		processService.updateProcess(errand);
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void deleteAppealOnErrand(final Long errandId, final Long appealId) {
-		final var errand = getErrand(errandId);
+	public void deleteAppealOnErrand(final Long errandId, final String municipalityId, final Long appealId) {
+		final var errand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
 		final var appealToRemove = errand.getAppeals().stream()
 			.filter(appeal -> appeal.getId().equals(appealId))
 			.findAny()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(APPEAL_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, appealId, errandId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(APPEAL_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, appealId, errandId)));
 		errand.getAppeals().remove(appealToRemove);
 		errandRepository.save(errand);
 		processService.updateProcess(errand);
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void deleteFacilityOnErrand(final Long errandId, final Long facilityId) {
-		final var errand = getErrand(errandId);
+	public void deleteFacilityOnErrand(final Long errandId, final String municipalityId, final Long facilityId) {
+		final var errand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
 		final var facilityToRemove = errand.getFacilities().stream()
 			.filter(facility -> facility.getId().equals(facilityId))
 			.findAny()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, facilityId, errandId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, facilityId, errandId)));
 
 		errand.getFacilities().remove(facilityToRemove);
 		errandRepository.save(errand);
@@ -244,16 +249,16 @@ public class ErrandService {
 	//////////////////////////////
 
 	@Retry(name = "OptimisticLocking")
-	public void updateErrand(final Long errandId, final PatchErrandDTO patchErrandDTO) {
-		final var oldErrand = getErrand(errandId);
+	public void updateErrand(final Long errandId, final String municipalityId, final PatchErrandDTO patchErrandDTO) {
+		final var oldErrand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
 		final var updatedErrand = PatchMapper.patchErrand(oldErrand, patchErrandDTO);
 		errandRepository.save(updatedErrand);
 		processService.updateProcess(updatedErrand);
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void addStatusToErrand(final Long errandId, final StatusDTO statusDTO) {
-		final var oldErrand = getErrand(errandId);
+	public void addStatusToErrand(final Long errandId, final String municipalityId, final StatusDTO statusDTO) {
+		final var oldErrand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
 		final var status = toStatus(statusDTO);
 		oldErrand.getStatuses().add(status);
 		final var updatedErrand = errandRepository.save(oldErrand);
@@ -261,9 +266,9 @@ public class ErrandService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public StakeholderDTO addStakeholderToErrand(final Long errandId, final StakeholderDTO stakeholderDTO) {
-		final var oldErrand = getErrand(errandId);
-		final var stakeholder = toStakeholder(stakeholderDTO);
+	public StakeholderDTO addStakeholderToErrand(final Long errandId, final String municipalityId, final StakeholderDTO stakeholderDTO) {
+		final var oldErrand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
+		final var stakeholder = toStakeholder(stakeholderDTO, municipalityId);
 		stakeholder.setErrand(oldErrand);
 		oldErrand.getStakeholders().add(stakeholder);
 		final var updatedErrand = errandRepository.save(oldErrand);
@@ -272,9 +277,9 @@ public class ErrandService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public NoteDTO addNoteToErrand(final Long errandId, final NoteDTO noteDTO) {
-		final var oldErrand = getErrand(errandId);
-		final var note = toNote(noteDTO);
+	public NoteDTO addNoteToErrand(final Long errandId, final String municipalityId, final NoteDTO noteDTO) {
+		final var oldErrand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
+		final var note = toNote(noteDTO, municipalityId);
 		note.setErrand(oldErrand);
 		oldErrand.getNotes().add(note);
 		final var updatedErrand = errandRepository.save(oldErrand);
@@ -283,9 +288,9 @@ public class ErrandService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public DecisionDTO addDecisionToErrand(final Long errandId, final DecisionDTO decisionDTO) {
-		final var oldErrand = getErrand(errandId);
-		final var decision = toDecision(decisionDTO);
+	public DecisionDTO addDecisionToErrand(final Long errandId, final String municipalityId, final DecisionDTO decisionDTO) {
+		final var oldErrand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
+		final var decision = toDecision(decisionDTO, municipalityId);
 		decision.setErrand(oldErrand);
 		oldErrand.getDecisions().add(decision);
 		final var updatedErrand = errandRepository.save(oldErrand);
@@ -294,9 +299,9 @@ public class ErrandService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public AppealDTO addAppealToErrand(final Long errandId, final AppealDTO appealDTO) {
-		final var oldErrand = getErrand(errandId);
-		final var appeal = toAppeal(appealDTO);
+	public AppealDTO addAppealToErrand(final Long errandId, final String municipalityId, final AppealDTO appealDTO) {
+		final var oldErrand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
+		final var appeal = toAppeal(appealDTO, municipalityId);
 		appeal.setErrand(oldErrand);
 
 		final var decision = oldErrand.getDecisions().stream()
@@ -312,10 +317,10 @@ public class ErrandService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public FacilityDTO updateFacilityOnErrand(final Long errandId, Long facilityId, final FacilityDTO facilityDTO) {
-		final var errand = getErrand(errandId);
-		final var facility = facilityRepository.findByIdAndErrandId(facilityId, errandId)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MessageFormat.format(FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, facilityId, errandId)));
+	public FacilityDTO updateFacilityOnErrand(final Long errandId, final String municipalityId, final Long facilityId, final FacilityDTO facilityDTO) {
+		final var errand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
+		final var facility = facilityRepository.findByIdAndErrandIdAndMunicipalityId(facilityId, errandId, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, facilityId, errandId)));
 
 		final var updatedFacility = patchFacility(facility, facilityDTO);
 		final var result = toFacilityDto(facilityRepository.save(updatedFacility));
@@ -329,18 +334,23 @@ public class ErrandService {
 	//////////////////////////////
 
 	@Retry(name = "OptimisticLocking")
-	public void replaceStatusesOnErrand(final Long id, final List<StatusDTO> dtos) {
-		final var oldErrand = getErrand(id);
+	public void replaceStatusesOnErrand(final Long errandId, final String municipalityId, final List<StatusDTO> dtos) {
+		final var oldErrand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
 		oldErrand.setStatuses(new ArrayList<>(dtos.stream().map(EntityMapper::toStatus).toList()));
 		final var updatedErrand = errandRepository.save(oldErrand);
 		processService.updateProcess(updatedErrand);
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void replaceFacilitiesOnErrand(final Long id, final List<FacilityDTO> dtos) {
-		final var oldErrand = getErrand(id);
+	public void replaceFacilitiesOnErrand(final Long errandId, final String municipalityId, final List<FacilityDTO> dtos) {
+		final var oldErrand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
 		final var facilitiesToChange = oldErrand.getFacilities().stream().filter(facility -> dtos.stream().map(FacilityDTO::getId).toList().contains(facility.getId())).toList();
-		final var newFacilities = dtos.stream().filter(dto -> !facilitiesToChange.stream().map(Facility::getId).toList().contains(dto.getId())).map(EntityMapper::toFacility).toList();
+		final var newFacilities = dtos.stream()
+			.filter(dto -> !facilitiesToChange.stream()
+				.map(Facility::getId)
+				.toList().contains(dto.getId()))
+			.map(facilityDTO -> toFacility(facilityDTO, municipalityId))
+			.toList();
 
 		oldErrand.getFacilities().clear();
 
@@ -357,10 +367,10 @@ public class ErrandService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void replaceStakeholdersOnErrand(final Long id, final List<StakeholderDTO> dtos) {
-		final var oldErrand = getErrand(id);
+	public void replaceStakeholdersOnErrand(final Long errandId, final String municipalityId, final List<StakeholderDTO> dtos) {
+		final var oldErrand = getErrandByIdAndMunicipalityId(errandId, municipalityId);
 		oldErrand.getStakeholders().clear();
-		oldErrand.getStakeholders().addAll(dtos.stream().map(EntityMapper::toStakeholder).toList());
+		oldErrand.getStakeholders().addAll(dtos.stream().map(stakeholderDTO -> toStakeholder(stakeholderDTO, municipalityId)).toList());
 		oldErrand.getStakeholders().forEach(stakeholder -> stakeholder.setErrand(oldErrand));
 		final var updatedErrand = errandRepository.save(oldErrand);
 		processService.updateProcess(updatedErrand);

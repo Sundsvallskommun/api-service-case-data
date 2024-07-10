@@ -8,6 +8,8 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
+import static se.sundsvall.casedata.TestUtil.createExtraParameters;
+import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -19,7 +21,6 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
@@ -51,12 +52,11 @@ class PatchErrandDTOTest {
 		final var caseTitleAddition = "abc";
 		final var diaryNumber = "abc";
 		final var phase = "Aktualisering";
-		final var municipalityId = "123";
 		final var startDate = LocalDate.now();
 		final var endDate = LocalDate.now();
 		final var applicationReceived = OffsetDateTime.now();
-		final var extraParameters = TestUtil.createExtraParameters();
-		final var facilities = List.of(TestUtil.createFacilityDTO());
+		final var extraParameters = createExtraParameters();
+		final var facilities = List.of(createFacilityDTO());
 
 		// Act
 		final var dto = PatchErrandDTO.builder()
@@ -67,7 +67,6 @@ class PatchErrandDTOTest {
 			.withCaseTitleAddition(caseTitleAddition)
 			.withDiaryNumber(diaryNumber)
 			.withPhase(phase)
-			.withMunicipalityId(municipalityId)
 			.withStartDate(startDate)
 			.withEndDate(endDate)
 			.withApplicationReceived(applicationReceived)
@@ -84,7 +83,6 @@ class PatchErrandDTOTest {
 		assertThat(dto.getCaseTitleAddition()).isEqualTo(caseTitleAddition);
 		assertThat(dto.getDiaryNumber()).isEqualTo(diaryNumber);
 		assertThat(dto.getPhase()).isEqualTo(phase);
-		assertThat(dto.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(dto.getStartDate()).isEqualTo(startDate);
 		assertThat(dto.getEndDate()).isEqualTo(endDate);
 		assertThat(dto.getApplicationReceived()).isEqualTo(applicationReceived);

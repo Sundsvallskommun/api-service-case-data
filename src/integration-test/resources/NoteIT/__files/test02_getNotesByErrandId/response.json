@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "version": 1,
+    "created": "2023-10-02T15:13:45.363+02:00",
+    "updated": "2023-10-02T15:13:45.363+02:00",
+    "title": "TITLE-1",
+    "text": "TEXT",
+    "createdBy": "UNKNOWN",
+    "updatedBy": "testUser",
+    "extraParameters": {}
+  }
+]

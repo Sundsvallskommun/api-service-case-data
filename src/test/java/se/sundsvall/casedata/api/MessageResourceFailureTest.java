@@ -6,6 +6,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import se.sundsvall.casedata.service.MessageService;
 @ActiveProfiles("junit")
 class MessageResourceFailureTest {
 
-	private static final String PATH = "messages";
+	private static final String PATH = "/{municipalityId}/messages";
 
 	@MockBean
 	private MessageService messageServiceMock;
@@ -34,7 +35,7 @@ class MessageResourceFailureTest {
 	void patchMessageWithNoBody() {
 		// Act
 		final var response = webTestClient.post()
-			.uri(PATH)
+			.uri(uriBuilder -> uriBuilder.path(PATH).build(MUNICIPALITY_ID))
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -48,6 +49,6 @@ class MessageResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
 		assertThat(response.getDetail()).isEqualTo("""
 			Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> \
-			se.sundsvall.casedata.api.MessageResource.patchErrandWithMessage(se.sundsvall.casedata.api.model.MessageRequest)""");
+			se.sundsvall.casedata.api.MessageResource.patchErrandWithMessage(java.lang.String,se.sundsvall.casedata.api.model.MessageRequest)""");
 	}
 }

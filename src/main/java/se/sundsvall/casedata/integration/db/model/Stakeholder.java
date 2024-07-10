@@ -15,10 +15,12 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -32,7 +34,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Entity(name = "stakeholder")
+@Entity
+@Table(name = "stakeholder",
+	indexes = {
+		@Index(name = "idx_stakeholder_municipality_id", columnList = "municipality_id")
+	})
 @EntityListeners(StakeholderListener.class)
 @Getter
 @Setter
@@ -49,6 +55,9 @@ public class Stakeholder extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type")
 	private StakeholderType type;
+
+	@Column(name = "municipality_id")
+	private String municipalityId;
 
 	@Column(name = "first_name")
 	private String firstName;
@@ -106,6 +115,7 @@ public class Stakeholder extends BaseEntity {
 		return "Stakeholder{" +
 			"errand.id=" + errandId +
 			", type=" + type +
+			", municipalityId='" + municipalityId + '\'' +
 			", firstName='" + firstName + '\'' +
 			", lastName='" + lastName + '\'' +
 			", personId='" + personId + '\'' +
@@ -125,12 +135,11 @@ public class Stakeholder extends BaseEntity {
 		if (this == o) return true;
 		if (!(o instanceof final Stakeholder that)) return false;
 		if (!super.equals(o)) return false;
-		return type == that.type && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(personId, that.personId) && Objects.equals(organizationName, that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber) && Objects.equals(authorizedSignatory, that.authorizedSignatory) && Objects.equals(adAccount, that.adAccount) && Objects.equals(roles, that.roles) && Objects.equals(addresses, that.addresses) && Objects.equals(contactInformation, that.contactInformation) && Objects.equals(extraParameters, that.extraParameters);
+		return type == that.type && Objects.equals(firstName, that.firstName) && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(lastName, that.lastName) && Objects.equals(personId, that.personId) && Objects.equals(organizationName, that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber) && Objects.equals(authorizedSignatory, that.authorizedSignatory) && Objects.equals(adAccount, that.adAccount) && Objects.equals(roles, that.roles) && Objects.equals(addresses, that.addresses) && Objects.equals(contactInformation, that.contactInformation) && Objects.equals(extraParameters, that.extraParameters);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), type, firstName, lastName, personId, organizationName, organizationNumber, authorizedSignatory, adAccount, roles, addresses, contactInformation, extraParameters);
+		return Objects.hash(super.hashCode(), type, firstName, lastName, personId, municipalityId, organizationName, organizationNumber, authorizedSignatory, adAccount, roles, addresses, contactInformation, extraParameters);
 	}
-
 }

@@ -1,11 +1,24 @@
 package se.sundsvall.casedata;
 
+import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.function.Consumer;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import org.apache.commons.lang3.RandomStringUtils;
+
 import se.sundsvall.casedata.api.model.AddressDTO;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
@@ -14,7 +27,6 @@ import se.sundsvall.casedata.api.model.CoordinatesDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.FacilityDTO;
-import se.sundsvall.casedata.api.model.GetParkingPermitDTO;
 import se.sundsvall.casedata.api.model.LawDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.api.model.PatchDecisionDTO;
@@ -47,24 +59,10 @@ import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
-import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitClient;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.function.Consumer;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 public class TestUtil {
+
+	public static final String MUNICIPALITY_ID = "2281";
 
 	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
 		.enable(SerializationFeature.INDENT_OUTPUT)
@@ -74,6 +72,7 @@ public class TestUtil {
 
 	public static ErrandDTO createErrandDTO() {
 		final var errandDTO = new ErrandDTO();
+		errandDTO.setId(new Random().nextLong(1, 100000));
 		errandDTO.setExternalCaseId(UUID.randomUUID().toString());
 		errandDTO.setCaseType(CaseType.PARKING_PERMIT.name());
 		errandDTO.setChannel(Channel.EMAIL);
@@ -83,7 +82,6 @@ public class TestUtil {
 		errandDTO.setCaseTitleAddition(RandomStringUtils.random(10, true, false));
 		errandDTO.setDiaryNumber(RandomStringUtils.random(10, true, true));
 		errandDTO.setPhase(RandomStringUtils.random(10, true, true));
-		errandDTO.setMunicipalityId(RandomStringUtils.random(10, false, true));
 		errandDTO.setStartDate(LocalDate.now().minusDays(3));
 		errandDTO.setEndDate(LocalDate.now().plusDays(10));
 		errandDTO.setApplicationReceived(getRandomOffsetDateTime());
@@ -142,7 +140,6 @@ public class TestUtil {
 		decisionDTO.setLaw(new ArrayList<>(List.of(createLawDTO())));
 		decisionDTO.setAttachments(new ArrayList<>(List.of(createAttachmentDTO(AttachmentCategory.POLICE_REPORT))));
 		decisionDTO.setExtraParameters(createExtraParameters());
-
 		return decisionDTO;
 	}
 
@@ -154,7 +151,6 @@ public class TestUtil {
 		appealDTO.setStatus(AppealStatus.COMPLETED.toString());
 		appealDTO.setTimelinessReview(TimelinessReview.NOT_RELEVANT.toString());
 		appealDTO.setDecisionId(123L);
-
 		return appealDTO;
 	}
 
@@ -174,6 +170,7 @@ public class TestUtil {
 
 	public static AttachmentDTO createAttachmentDTO(final AttachmentCategory category) {
 		final var attachmentDTO = new AttachmentDTO();
+		attachmentDTO.setId(new Random().nextLong(1, 100000));
 		attachmentDTO.setCategory(category.toString());
 		attachmentDTO.setName(RandomStringUtils.random(10, true, false) + ".pdf");
 		attachmentDTO.setNote(RandomStringUtils.random(20, true, false));
@@ -292,6 +289,7 @@ public class TestUtil {
 
 	public static NoteDTO createNoteDTO() {
 		final var noteDTO = new NoteDTO();
+		noteDTO.setId(new Random().nextLong(1, 100000));
 		noteDTO.setTitle(RandomStringUtils.random(10, true, false));
 		noteDTO.setText(RandomStringUtils.random(10, true, false));
 		noteDTO.setExtraParameters(createExtraParameters());
@@ -300,22 +298,6 @@ public class TestUtil {
 		noteDTO.setNoteType(NoteType.PUBLIC);
 
 		return noteDTO;
-	}
-
-	public static GetParkingPermitDTO createGetParkingPermitDTO() {
-		return GetParkingPermitDTO.builder()
-			.errandId(new Random().nextLong(1, 100000))
-			.artefactPermitNumber(RandomStringUtils.random(10, true, true))
-			.artefactPermitStatus(RandomStringUtils.random(10, true, false))
-			.errandDecision(createDecisionDTO())
-			.build();
-	}
-
-	public static void mockStartProcess(final ParkingPermitClient parkingPermitClientMock) {
-		final var response = new StartProcessResponse();
-		response.setProcessId(UUID.randomUUID().toString());
-
-		doReturn(response).when(parkingPermitClientMock).startProcess(any());
 	}
 
 	public static PatchErrandDTO createPatchErrandDto() {
@@ -327,7 +309,6 @@ public class TestUtil {
 			.withCaseTitleAddition("caseTitleAddition")
 			.withDiaryNumber("diaryNumber")
 			.withPhase("phase")
-			.withMunicipalityId("municipalityId")
 			.withStartDate(LocalDate.now())
 			.withEndDate(LocalDate.now())
 			.withApplicationReceived(getRandomOffsetDateTime())
@@ -415,6 +396,7 @@ public class TestUtil {
 			.withOrganizationName("organizationName")
 			.withOrganizationNumber("organizationNumber")
 			.withPersonId("personId")
+			.withMunicipalityId("2281")
 			.build();
 	}
 
@@ -466,6 +448,7 @@ public class TestUtil {
 
 	public static Appeal createAppeal() {
 		return Appeal.builder()
+			.withId(new Random().nextLong(1, 1000))
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
 			.withId(1L)
@@ -507,6 +490,7 @@ public class TestUtil {
 
 	public static Errand createErrand() {
 		return Errand.builder()
+			.withId(new Random().nextLong(1, 1000))
 			.withStatuses(new ArrayList<>(List.of(createStatus())))
 			.withNotes(new ArrayList<>(List.of(createNote())))
 			.withFacilities(new ArrayList<>(List.of(createFacility())))
@@ -526,6 +510,7 @@ public class TestUtil {
 			.withDescription("description")
 			.withMunicipalityId("municipalityId")
 			.withPhase("phase")
+			.withMunicipalityId("2281")
 			.withUpdated(getRandomOffsetDateTime())
 			.withCreated(getRandomOffsetDateTime())
 			.withApplicationReceived(getRandomOffsetDateTime())
