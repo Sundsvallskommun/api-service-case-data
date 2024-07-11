@@ -1,26 +1,44 @@
 openapi: 3.0.1
 info:
   title: pw-parking-permit
-  contact: {}
+  contact: { }
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: '1.0'
-
+  version: "2.0"
+servers:
+  - url: https://pw-parking-permit-af-pwparkingpermit.apps.ocp201.sundsvall.se
+    description: Generated server url
+tags:
+  - name: Camunda process endpoints
+    description: Endpoints for starting and updating camunda processes
 paths:
-  /process/update/{processInstanceId}:
+  /{municipalityId}/process/update/{processInstanceId}:
     post:
       tags:
         - Camunda process endpoints
       description: Update a process instance matching the provided processInstanceId
       operationId: updateProcess
       parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
         - name: processInstanceId
           in: path
           required: true
           schema:
             type: string
       responses:
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "202":
           description: Accepted
         "400":
@@ -29,33 +47,34 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
-  /process/start/{caseNumber}:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/process/start/{caseNumber}:
     post:
       tags:
         - Camunda process endpoints
       description: Start a new process instance for the provided caseNumber
       operationId: startProcess
       parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
         - name: caseNumber
           in: path
           required: true
@@ -63,41 +82,41 @@ paths:
             type: integer
             format: int64
       responses:
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "202":
           description: Accepted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StartProcessResponse'
+                $ref: "#/components/schemas/StartProcessResponse"
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/StartProcessResponse'
+                $ref: "#/components/schemas/StartProcessResponse"
         "400":
           description: Bad request
           content:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
   /api-docs:
     get:
       tags:
@@ -130,10 +149,10 @@ components:
           additionalProperties:
             type: object
         status:
-          $ref: '#/components/schemas/StatusType'
-        detail:
-          type: string
+          $ref: "#/components/schemas/StatusType"
         title:
+          type: string
+        detail:
           type: string
     StatusType:
       type: object
@@ -147,7 +166,7 @@ components:
       type: object
       properties:
         cause:
-          $ref: '#/components/schemas/ThrowableProblem'
+          $ref: "#/components/schemas/ThrowableProblem"
         stackTrace:
           type: array
           items:
@@ -166,19 +185,19 @@ components:
               lineNumber:
                 type: integer
                 format: int32
-              nativeMethod:
-                type: boolean
               className:
                 type: string
+              nativeMethod:
+                type: boolean
         type:
           type: string
           format: uri
         status:
-          $ref: '#/components/schemas/StatusType'
+          $ref: "#/components/schemas/StatusType"
         violations:
           type: array
           items:
-            $ref: '#/components/schemas/Violation'
+            $ref: "#/components/schemas/Violation"
         title:
           type: string
         message:
@@ -197,35 +216,6 @@ components:
           items:
             type: object
             properties:
-              cause:
-                type: object
-                properties:
-                  stackTrace:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        classLoaderName:
-                          type: string
-                        moduleName:
-                          type: string
-                        moduleVersion:
-                          type: string
-                        methodName:
-                          type: string
-                        fileName:
-                          type: string
-                        lineNumber:
-                          type: integer
-                          format: int32
-                        nativeMethod:
-                          type: boolean
-                        className:
-                          type: string
-                  message:
-                    type: string
-                  localizedMessage:
-                    type: string
               stackTrace:
                 type: array
                 items:
@@ -244,10 +234,10 @@ components:
                     lineNumber:
                       type: integer
                       format: int32
-                    nativeMethod:
-                      type: boolean
                     className:
                       type: string
+                    nativeMethod:
+                      type: boolean
               message:
                 type: string
               localizedMessage:
@@ -258,7 +248,7 @@ components:
       type: object
       properties:
         cause:
-          $ref: '#/components/schemas/ThrowableProblem'
+          $ref: "#/components/schemas/ThrowableProblem"
         stackTrace:
           type: array
           items:
@@ -277,10 +267,10 @@ components:
               lineNumber:
                 type: integer
                 format: int32
-              nativeMethod:
-                type: boolean
               className:
                 type: string
+              nativeMethod:
+                type: boolean
         message:
           type: string
         instance:
@@ -294,45 +284,16 @@ components:
           additionalProperties:
             type: object
         status:
-          $ref: '#/components/schemas/StatusType'
-        detail:
-          type: string
+          $ref: "#/components/schemas/StatusType"
         title:
+          type: string
+        detail:
           type: string
         suppressed:
           type: array
           items:
             type: object
             properties:
-              cause:
-                type: object
-                properties:
-                  stackTrace:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        classLoaderName:
-                          type: string
-                        moduleName:
-                          type: string
-                        moduleVersion:
-                          type: string
-                        methodName:
-                          type: string
-                        fileName:
-                          type: string
-                        lineNumber:
-                          type: integer
-                          format: int32
-                        nativeMethod:
-                          type: boolean
-                        className:
-                          type: string
-                  message:
-                    type: string
-                  localizedMessage:
-                    type: string
               stackTrace:
                 type: array
                 items:
@@ -351,10 +312,10 @@ components:
                     lineNumber:
                       type: integer
                       format: int32
-                    nativeMethod:
-                      type: boolean
                     className:
                       type: string
+                    nativeMethod:
+                      type: boolean
               message:
                 type: string
               localizedMessage:
@@ -377,3 +338,4 @@ components:
           readOnly: true
           example: "5"
       description: Start process response
+  securitySchemes: { }

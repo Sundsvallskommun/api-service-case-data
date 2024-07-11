@@ -1,6 +1,6 @@
 {
   "request": {
-    "urlPathPattern": "/parkingpermit/process/update/.*",
+    "urlPathPattern": "/parkingpermit/.*/process/update/.*",
     "method": "POST"
   },
   "response": {

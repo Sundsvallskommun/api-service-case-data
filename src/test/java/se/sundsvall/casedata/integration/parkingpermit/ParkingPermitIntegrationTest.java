@@ -30,18 +30,18 @@ class ParkingPermitIntegrationTest {
 	void startProcessTest() {
 		final var errand = createErrand();
 		final var response = new StartProcessResponse();
-		when(parkingPermitClient.startProcess(errand.getId())).thenReturn(response);
+		when(parkingPermitClient.startProcess(errand.getMunicipalityId(), errand.getId())).thenReturn(response);
 
 		final var result = parkingPermitIntegration.startProcess(errand);
 
 		assertThat(result).isEqualTo(response);
-		verify(parkingPermitClient).startProcess(errand.getId());
+		verify(parkingPermitClient).startProcess(errand.getMunicipalityId(), errand.getId());
 	}
 
 	@Test
 	void startProcess_whenThrowsTest() {
 		final var errand = createErrand();
-		when(parkingPermitClient.startProcess(errand.getId())).thenThrow(new AbstractThrowableProblem() {
+		when(parkingPermitClient.startProcess(errand.getMunicipalityId(), errand.getId())).thenThrow(new AbstractThrowableProblem() {
 			private static final long serialVersionUID = 1L;
 		});
 
@@ -50,7 +50,7 @@ class ParkingPermitIntegrationTest {
 			.hasMessage("Service Unavailable: Unexpected response from ProcessEngine API.")
 			.hasFieldOrPropertyWithValue("status", SERVICE_UNAVAILABLE);
 
-		verify(parkingPermitClient).startProcess(errand.getId());
+		verify(parkingPermitClient).startProcess(errand.getMunicipalityId(), errand.getId());
 	}
 
 	@Test
@@ -58,13 +58,13 @@ class ParkingPermitIntegrationTest {
 		final var errand = createErrand();
 		parkingPermitIntegration.updateProcess(errand);
 
-		verify(parkingPermitClient).updateProcess(errand.getProcessId());
+		verify(parkingPermitClient).updateProcess(errand.getMunicipalityId(), errand.getProcessId());
 	}
 
 	@Test
 	void updateProcess_whenThrowsTest() {
 		final var errand = createErrand();
-		when(parkingPermitClient.updateProcess(errand.getProcessId())).thenThrow(new AbstractThrowableProblem() {
+		when(parkingPermitClient.updateProcess(errand.getMunicipalityId(), errand.getProcessId())).thenThrow(new AbstractThrowableProblem() {
 			private static final long serialVersionUID = 1L;
 		});
 
@@ -73,7 +73,7 @@ class ParkingPermitIntegrationTest {
 			.hasMessage("Service Unavailable: Unexpected response from ProcessEngine API.")
 			.hasFieldOrPropertyWithValue("status", SERVICE_UNAVAILABLE);
 
-		verify(parkingPermitClient).updateProcess(errand.getProcessId());
+		verify(parkingPermitClient).updateProcess(errand.getMunicipalityId(), errand.getProcessId());
 	}
 
 }

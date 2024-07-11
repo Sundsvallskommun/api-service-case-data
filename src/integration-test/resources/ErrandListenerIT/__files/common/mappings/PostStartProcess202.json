@@ -1,6 +1,6 @@
 {
   "request": {
-    "urlPathPattern": "/parkingpermit/process/start/.*",
+    "urlPathPattern": "/parkingpermit/.*/process/start/.*",
     "method": "POST"
   },
   "response": {
