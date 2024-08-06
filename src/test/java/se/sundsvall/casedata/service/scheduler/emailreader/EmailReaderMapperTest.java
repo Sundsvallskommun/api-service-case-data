@@ -80,6 +80,7 @@ class EmailReaderMapperTest {
 	@Test
 	void toMessage() {
 		final var messageID = UUID.randomUUID().toString();
+		final var municipalityId = "someMunicipalityId";
 		final var email = new Email()
 			.id(messageID)
 			.subject("someSubject")
@@ -96,7 +97,7 @@ class EmailReaderMapperTest {
 				.content(Base64.getEncoder().encodeToString("someContent".getBytes()))
 				.contentType("someContentType")));
 
-		final var result = emailReaderMapper.toMessage(email);
+		final var result = emailReaderMapper.toMessage(email, municipalityId);
 
 		assertThat(result)
 			.isNotNull()
@@ -106,14 +107,16 @@ class EmailReaderMapperTest {
 				"subject",
 				"textmessage",
 				"messageType",
-				"email")
+				"email",
+				"municipalityId")
 			.containsExactlyInAnyOrder(
 				email.getId(),
 				INBOUND,
 				"someSubject",
 				"someMessage",
 				EMAIL.name(),
-				"someSender");
+				"someSender",
+				"someMunicipalityId");
 
 		assertThat(result.getHeaders()).hasSize(3).containsExactlyInAnyOrder(
 			EmailHeader.builder()
@@ -149,12 +152,13 @@ class EmailReaderMapperTest {
 
 	@Test
 	void toMessage_withNullEmail() {
-		assertThat(emailReaderMapper.toMessage(null)).isNull();
+		assertThat(emailReaderMapper.toMessage(null, null)).isNull();
 	}
 
 	@Test
 	void toMessage_withNullAttachments() {
 
+		final var municipalityId = "someMunicipalityId";
 		final var email = new Email()
 			.id(UUID.randomUUID().toString())
 			.subject("someSubject")
@@ -163,7 +167,7 @@ class EmailReaderMapperTest {
 			.message("someMessage")
 			.receivedAt(OffsetDateTime.now());
 
-		final var result = emailReaderMapper.toMessage(email);
+		final var result = emailReaderMapper.toMessage(email, municipalityId);
 
 		assertThat(result)
 			.isNotNull()
@@ -173,14 +177,16 @@ class EmailReaderMapperTest {
 				"subject",
 				"textmessage",
 				"messageType",
-				"email")
+				"email",
+				"municipalityId")
 			.containsExactlyInAnyOrder(
 				email.getId(),
 				INBOUND,
 				"someSubject",
 				"someMessage",
 				EMAIL.name(),
-				"someSender");
+				"someSender",
+				"someMunicipalityId");
 
 		assertThat(result.getSent())
 			.isEqualTo(email.getReceivedAt()
