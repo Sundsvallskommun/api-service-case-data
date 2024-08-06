@@ -38,7 +38,6 @@ class FacilityIT extends AbstractAppTest {
 	private static final String FACILITIES_PATH = "/{municipalityId}/errands/{id}/facilities";
 	private static final String FACILITY_PATH = "/{municipalityId}/errands/{id}/facilities/{facilityId}";
 
-
 	@Test
 	void test01_getFacilitiesByErrandId() {
 		setupCall()
@@ -83,7 +82,7 @@ class FacilityIT extends AbstractAppTest {
 			.getResponseHeaders().get(LOCATION).getFirst();
 
 		setupCall()
-			.withServicePath(location)
+			.withServicePath("/2281/" + location)
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)

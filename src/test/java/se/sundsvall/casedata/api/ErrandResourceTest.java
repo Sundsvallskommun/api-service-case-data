@@ -185,7 +185,8 @@ class ErrandResourceTest {
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/2281/errands/" + body.getId());
+			// .expectHeader().location("/2281/errands/" + body.getId());
+			.expectHeader().location("/errands/" + body.getId());
 
 		verify(errandServiceMock).createErrand(body, MUNICIPALITY_ID);
 	}
@@ -206,7 +207,8 @@ class ErrandResourceTest {
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/2281/errands/" + errandId + "/facilities/" + facilityDTO.getId());
+			// .expectHeader().location("/2281/errands/" + errandId + "/facilities/" + facilityDTO.getId());
+			.expectHeader().location("/errands/" + errandId + "/facilities/" + facilityDTO.getId());
 
 		verify(errandServiceMock).createFacility(errandId, MUNICIPALITY_ID, facilityDTO);
 	}
@@ -269,7 +271,8 @@ class ErrandResourceTest {
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/2281/appeals/" + appealId);
+			// .expectHeader().location("/2281/appeals/" + appealId);
+			.expectHeader().location("/appeals/" + appealId);
 
 		verify(errandServiceMock).addAppealToErrand(errandId, MUNICIPALITY_ID, body);
 	}

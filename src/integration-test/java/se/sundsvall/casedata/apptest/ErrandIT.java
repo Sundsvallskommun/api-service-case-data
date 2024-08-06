@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,6 +45,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.DecisionDTO;
@@ -97,7 +98,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testPostErrand(final String municipalityId) {
 		final ErrandDTO inputErrandDTO = createErrandDTO();
 		inputErrandDTO.setCaseType(PARKING_PERMIT.name());
@@ -122,7 +123,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testPostMinimalErrand(final String municipalityId) {
 		final ErrandDTO inputErrandDTO = new ErrandDTO();
 		inputErrandDTO.setCaseType(PARKING_PERMIT.name());
@@ -146,7 +147,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testPatchErrand(final String municipalityId) {
 		final ErrandDTO inputPostErrandDTO = createErrandDTO();
 		final String id = postErrand(inputPostErrandDTO, municipalityId);
@@ -198,7 +199,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithOneQueryParam(final String municipalityId) {
 
 		final ErrandDTO inputPostErrandDTO = createErrandDTO();
@@ -207,10 +208,10 @@ class ErrandIT extends CustomAbstractAppTest {
 		postErrand(inputPostErrandDTO, municipalityId);
 
 		final Page<ErrandDTO> resultList = webTestClient.get().uri(
-				uriBuilder -> uriBuilder
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrandDTO.getExternalCaseId()))
-					.build())
+			uriBuilder -> uriBuilder
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrandDTO.getExternalCaseId()))
+				.build())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -235,7 +236,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithExtraParameter(final String municipalityId) {
 		final ErrandDTO inputPostErrandDTO = createErrandDTO();
 		inputPostErrandDTO.setCaseType(PARKING_PERMIT_RENEWAL.name());
@@ -247,11 +248,11 @@ class ErrandIT extends CustomAbstractAppTest {
 		postErrand(inputPostErrandDTO, municipalityId);
 
 		final Page<ErrandDTO> resultList = webTestClient.get().uri(
-				uriBuilder -> uriBuilder
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("extraParameters[key 1]", "value 1")
-					.queryParam("extraParameters[key 2]", "value 2")
-					.build())
+			uriBuilder -> uriBuilder
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("extraParameters[key 1]", "value 1")
+				.queryParam("extraParameters[key 2]", "value 2")
+				.build())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -274,7 +275,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithExtraParameterMismatch(final String municipalityId) {
 		final ErrandDTO inputPostErrandDTO = createErrandDTO();
 		final Map<String, String> extraParameters = new HashMap<>();
@@ -285,18 +286,18 @@ class ErrandIT extends CustomAbstractAppTest {
 		postErrand(inputPostErrandDTO, municipalityId);
 
 		webTestClient.get().uri(
-				uriBuilder -> uriBuilder
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("extraParameters[key 1]", "value 1")
-					// One of the extra parameters is wrong
-					.queryParam("extraParameters[key 2]", "value 3")
-					.build())
+			uriBuilder -> uriBuilder
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("extraParameters[key 1]", "value 1")
+				// One of the extra parameters is wrong
+				.queryParam("extraParameters[key 2]", "value 3")
+				.build())
 			.exchange()
 			.expectStatus().isNotFound();
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithExtraParameterAndFilterMismatch(final String municipalityId) {
 		final ErrandDTO inputPostErrandDTO = createErrandDTO();
 		final Map<String, String> extraParameters = new HashMap<>();
@@ -307,18 +308,18 @@ class ErrandIT extends CustomAbstractAppTest {
 		postErrand(inputPostErrandDTO, municipalityId);
 
 		webTestClient.get().uri(
-				uriBuilder -> uriBuilder
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("extraParameters[key 1]", "value 1")
-					// Filter is wrong
-					.queryParam("filter", "externalCaseId:'%s'".formatted(RandomStringUtils.randomNumeric(10)))
-					.build())
+			uriBuilder -> uriBuilder
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("extraParameters[key 1]", "value 1")
+				// Filter is wrong
+				.queryParam("filter", "externalCaseId:'%s'".formatted(RandomStringUtils.randomNumeric(10)))
+				.build())
 			.exchange()
 			.expectStatus().isNotFound();
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithFilterPageableAndExtraParameters(final String municipalityId) {
 		final ErrandDTO inputPostErrandDTO = createErrandDTO();
 		inputPostErrandDTO.setCaseType(LOST_PARKING_PERMIT.name());
@@ -329,14 +330,14 @@ class ErrandIT extends CustomAbstractAppTest {
 		postErrand(inputPostErrandDTO, municipalityId);
 
 		final Page<ErrandDTO> resultList = webTestClient.get().uri(
-				uriBuilder -> uriBuilder
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrandDTO.getExternalCaseId()))
-					.queryParam("extraParameters[key 1]", "value 1")
-					.queryParam("page", "0")
-					.queryParam("size", "10")
-					.queryParam("sort", "id,desc")
-					.build())
+			uriBuilder -> uriBuilder
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrandDTO.getExternalCaseId()))
+				.queryParam("extraParameters[key 1]", "value 1")
+				.queryParam("page", "0")
+				.queryParam("size", "10")
+				.queryParam("sort", "id,desc")
+				.build())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -359,7 +360,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithQueryParamTextContains(final String municipalityId) {
 
 		final String NAME_PREFIX = "abc";
@@ -374,10 +375,10 @@ class ErrandIT extends CustomAbstractAppTest {
 		postErrand(anotherErrandWithSameFirstName, municipalityId);
 
 		final Page<ErrandDTO> resultPage = webTestClient.get().uri(
-				uriBuilder -> uriBuilder
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("filter", "stakeholders.firstName ~ '*%s*'".formatted(WORD_IN_THE_MIDDLE))
-					.build())
+			uriBuilder -> uriBuilder
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("filter", "stakeholders.firstName ~ '*%s*'".formatted(WORD_IN_THE_MIDDLE))
+				.build())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -404,20 +405,20 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithOneQueryParam404(final String municipalityId) {
 		webTestClient.get().uri(
-				uriBuilder -> uriBuilder
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("filter", "externalCaseId:'%s'".formatted(UUID.randomUUID()))
-					.build())
+			uriBuilder -> uriBuilder
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("filter", "externalCaseId:'%s'".formatted(UUID.randomUUID()))
+				.build())
 			.exchange()
 			.expectStatus().isNotFound()
 			.expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithMultipleQueryParams(final String municipalityId) {
 		final ErrandDTO inputPostErrandDTO_1 = createErrandDTO();
 		inputPostErrandDTO_1.setCaseType(LOST_PARKING_PERMIT.name());
@@ -431,24 +432,24 @@ class ErrandIT extends CustomAbstractAppTest {
 
 		// Get only the first one with query params
 		final Page<ErrandDTO> resultList = webTestClient.get().uri(
-				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrandDTO_1.getExternalCaseId()) +
-						"and " +
-						"caseType:'%s'".formatted(inputPostErrandDTO_1.getCaseType()) +
-						"and " +
-						"priority:'%s'".formatted(inputPostErrandDTO_1.getPriority()) +
-						"and " +
-						"description:'%s'".formatted(inputPostErrandDTO_1.getDescription()) +
-						"and " +
-						"caseTitleAddition:'%s'".formatted(inputPostErrandDTO_1.getCaseTitleAddition()) +
-						"and " +
-						"applicationReceived:'%s'".formatted("{applicationReceived}") +
-						"and " +
-						"created:'%s'".formatted("{created}"))
-					.encode()
-					.buildAndExpand(inputPostErrandDTO_1.getApplicationReceived(), requireNonNull(resultPostErrandDTO_1).getCreated())
-					.toUri())
+			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrandDTO_1.getExternalCaseId()) +
+					"and " +
+					"caseType:'%s'".formatted(inputPostErrandDTO_1.getCaseType()) +
+					"and " +
+					"priority:'%s'".formatted(inputPostErrandDTO_1.getPriority()) +
+					"and " +
+					"description:'%s'".formatted(inputPostErrandDTO_1.getDescription()) +
+					"and " +
+					"caseTitleAddition:'%s'".formatted(inputPostErrandDTO_1.getCaseTitleAddition()) +
+					"and " +
+					"applicationReceived:'%s'".formatted("{applicationReceived}") +
+					"and " +
+					"created:'%s'".formatted("{created}"))
+				.encode()
+				.buildAndExpand(inputPostErrandDTO_1.getApplicationReceived(), requireNonNull(resultPostErrandDTO_1).getCreated())
+				.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -473,7 +474,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	 * One of the fields is wrong, but an errand should be found anyway.
 	 */
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithMultipleQueryParams2(final String municipalityId) {
 
 		final ErrandDTO inputPostErrandDTO_1 = createErrandDTO();
@@ -487,25 +488,25 @@ class ErrandIT extends CustomAbstractAppTest {
 			.expectBody(ErrandDTO.class).returnResult().getResponseBody();
 
 		final Page<ErrandDTO> resultList = webTestClient.get().uri(
-				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("filter", // Random UUID = no match, but uses operator "or" and should find an errand anyway.
-						"externalCaseId:'%s'".formatted(UUID.randomUUID()) +
-							"or " +
-							"caseType:'%s'".formatted(inputPostErrandDTO_1.getCaseType()) +
-							"and " +
-							"priority:'%s'".formatted(inputPostErrandDTO_1.getPriority()) +
-							"and " +
-							"description:'%s'".formatted(inputPostErrandDTO_1.getDescription()) +
-							"and " +
-							"caseTitleAddition:'%s'".formatted(inputPostErrandDTO_1.getCaseTitleAddition()) +
-							"and " +
-							"applicationReceived:'%s'".formatted("{applicationReceived}") +
-							"and " +
-							"created:'%s'".formatted("{created}"))
-					.encode()
-					.buildAndExpand(inputPostErrandDTO_1.getApplicationReceived(), requireNonNull(resultPostErrandDTO_1).getCreated())
-					.toUri())
+			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("filter", // Random UUID = no match, but uses operator "or" and should find an errand anyway.
+					"externalCaseId:'%s'".formatted(UUID.randomUUID()) +
+						"or " +
+						"caseType:'%s'".formatted(inputPostErrandDTO_1.getCaseType()) +
+						"and " +
+						"priority:'%s'".formatted(inputPostErrandDTO_1.getPriority()) +
+						"and " +
+						"description:'%s'".formatted(inputPostErrandDTO_1.getDescription()) +
+						"and " +
+						"caseTitleAddition:'%s'".formatted(inputPostErrandDTO_1.getCaseTitleAddition()) +
+						"and " +
+						"applicationReceived:'%s'".formatted("{applicationReceived}") +
+						"and " +
+						"created:'%s'".formatted("{created}"))
+				.encode()
+				.buildAndExpand(inputPostErrandDTO_1.getApplicationReceived(), requireNonNull(resultPostErrandDTO_1).getCreated())
+				.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -527,7 +528,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithStakeholderQueryParams(final String municipalityId) {
 		final ErrandDTO inputPostErrandDTO_1 = createErrandDTO();
 		postErrand(inputPostErrandDTO_1, municipalityId);
@@ -536,16 +537,16 @@ class ErrandIT extends CustomAbstractAppTest {
 
 		// Get only the first one with query params
 		final Page<ErrandDTO> resultList = webTestClient.get().uri(
-				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("filter", "stakeholders.firstName:'%s'".formatted(person.getFirstName()) +
-						"and " +
-						"stakeholders.lastName:'%s'".formatted(person.getLastName()) +
-						"and " +
-						"stakeholders.personId:'%s'".formatted(person.getPersonId()))
-					.encode()
-					.build()
-					.toUri())
+			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("filter", "stakeholders.firstName:'%s'".formatted(person.getFirstName()) +
+					"and " +
+					"stakeholders.lastName:'%s'".formatted(person.getLastName()) +
+					"and " +
+					"stakeholders.personId:'%s'".formatted(person.getPersonId()))
+				.encode()
+				.build()
+				.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -566,7 +567,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithStakeholderAddressQueryParams(final String municipalityId) {
 		final ErrandDTO inputPostErrandDTO_1 = createErrandDTO();
 		postErrand(inputPostErrandDTO_1, municipalityId);
@@ -575,14 +576,14 @@ class ErrandIT extends CustomAbstractAppTest {
 
 		// Get only the first one with query params
 		final Page<ErrandDTO> resultList = webTestClient.get().uri(
-				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("filter", "stakeholders.addresses.street:'%s'".formatted(person.getAddresses().getFirst().getStreet()) +
-						"and " +
-						"stakeholders.addresses.houseNumber:'%s'".formatted(person.getAddresses().getFirst().getHouseNumber()))
-					.encode()
-					.build()
-					.toUri())
+			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("filter", "stakeholders.addresses.street:'%s'".formatted(person.getAddresses().getFirst().getStreet()) +
+					"and " +
+					"stakeholders.addresses.houseNumber:'%s'".formatted(person.getAddresses().getFirst().getHouseNumber()))
+				.encode()
+				.build()
+				.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -603,7 +604,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetWithStakeholderQueryParams404(final String municipalityId) {
 		final ErrandDTO inputPostErrandDTO_1 = createErrandDTO();
 		postErrand(inputPostErrandDTO_1, municipalityId);
@@ -611,23 +612,23 @@ class ErrandIT extends CustomAbstractAppTest {
 		final StakeholderDTO person = inputPostErrandDTO_1.getStakeholders().stream().filter(stakeholderDTO -> StakeholderType.PERSON.equals(stakeholderDTO.getType())).findFirst().orElseThrow();
 
 		webTestClient.get().uri(
-				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("filter", "stakeholders.firstName:'%s'".formatted(person.getFirstName()) +
-						"and " +
-						"stakeholders.lastName:'%s'".formatted(person.getLastName()) +
-						"and " +
-						"stakeholders.personId:'%s'".formatted(UUID.randomUUID()))
-					.encode()
-					.build()
-					.toUri())
+			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("filter", "stakeholders.firstName:'%s'".formatted(person.getFirstName()) +
+					"and " +
+					"stakeholders.lastName:'%s'".formatted(person.getLastName()) +
+					"and " +
+					"stakeholders.personId:'%s'".formatted(UUID.randomUUID()))
+				.encode()
+				.build()
+				.toUri())
 			.exchange()
 			.expectStatus().isNotFound()
 			.expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetErrandsWithPersonId(final String municipalityId) {
 		final ErrandDTO inputPostErrandDTO_1 = createErrandDTO();
 		postErrand(inputPostErrandDTO_1, municipalityId);
@@ -635,12 +636,12 @@ class ErrandIT extends CustomAbstractAppTest {
 		final StakeholderDTO person = inputPostErrandDTO_1.getStakeholders().stream().filter(stakeholderDTO -> StakeholderType.PERSON.equals(stakeholderDTO.getType())).findFirst().orElseThrow();
 		// Get only the first one with query params
 		final Page<ErrandDTO> resultList = webTestClient.get().uri(
-				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("filter", "stakeholders.personId:'%s'".formatted(person.getPersonId()))
-					.encode()
-					.build()
-					.toUri())
+			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("filter", "stakeholders.personId:'%s'".formatted(person.getPersonId()))
+				.encode()
+				.build()
+				.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -661,7 +662,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testGetErrandsWithOrganizationNumber(final String municipalityId) {
 		final var errandDto = createErrandDTO();
 		postErrand(errandDto, municipalityId);
@@ -671,12 +672,12 @@ class ErrandIT extends CustomAbstractAppTest {
 			.findFirst().orElseThrow();
 		// Get only the first one with query params
 		final Page<ErrandDTO> resultList = webTestClient.get().uri(
-				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-					.path(format("/{0}/errands", municipalityId))
-					.queryParam("filter", "stakeholders.organizationNumber:'%s'".formatted(organization.getOrganizationNumber()))
-					.encode()
-					.build()
-					.toUri())
+			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+				.path(format("/{0}/errands", municipalityId))
+				.queryParam("filter", "stakeholders.organizationNumber:'%s'".formatted(organization.getOrganizationNumber()))
+				.encode()
+				.build()
+				.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -697,7 +698,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testPatchErrandWithNote(final String municipalityId) throws JsonProcessingException {
 		final var errandDto = createErrandDTO();
 		final var errandId = postErrand(errandDto, municipalityId);
@@ -709,12 +710,12 @@ class ErrandIT extends CustomAbstractAppTest {
 			.withServicePath(format("/{0}/errands/{1}/notes", municipalityId, errandId))
 			.withRequest(OBJECT_MAPPER.writeValueAsString(noteDTO))
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of(format("/{0}/notes/(.*)$", municipalityId)))
+			.withExpectedResponseHeader(LOCATION, List.of(format("/notes/(.*)$", municipalityId)))
 			.sendRequestAndVerifyResponse();
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testPatchErrandWithStakeholders(final String municipalityId) throws JsonProcessingException {
 		final var errandDto = createErrandDTO();
 		final var errandId = postErrand(errandDto, municipalityId);
@@ -726,12 +727,12 @@ class ErrandIT extends CustomAbstractAppTest {
 			.withServicePath(format("/{0}/errands/{1}/stakeholders", municipalityId, errandId))
 			.withRequest(OBJECT_MAPPER.writeValueAsString(stakeholderDTO))
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of(format("/{0}/stakeholders/(.*)$", municipalityId)))
+			.withExpectedResponseHeader(LOCATION, List.of(format("/stakeholders/(.*)$", municipalityId)))
 			.sendRequestAndVerifyResponse();
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testPatchErrandWithDecision(final String municipalityId) throws JsonProcessingException {
 		final var errandDto = createErrandDTO();
 		final var errandId = postErrand(errandDto, municipalityId);
@@ -743,12 +744,12 @@ class ErrandIT extends CustomAbstractAppTest {
 			.withServicePath(format(format("/{0}/errands/{1}/decisions", municipalityId, errandId)))
 			.withRequest(OBJECT_MAPPER.writeValueAsString(decisionDTO))
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of(format("/{0}/decisions/(.*)$", municipalityId)))
+			.withExpectedResponseHeader(LOCATION, List.of(format("/decisions/(.*)$", municipalityId)))
 			.sendRequestAndVerifyResponse();
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testPatchErrandWithStatus(final String municipalityId) {
 		final var errandDto = createErrandDTO();
 		final var errandId = postErrand(errandDto, municipalityId);
@@ -773,7 +774,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testPutErrandWithStatuses(final String municipalityId) {
 		final var errandDto = createErrandDTO();
 		final var errandId = postErrand(errandDto, municipalityId);
@@ -796,7 +797,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testDelete(final String municipalityId) {
 
 		final ErrandDTO inputErrandDTO = createErrandDTO();
@@ -808,7 +809,7 @@ class ErrandIT extends CustomAbstractAppTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"2281", "2061", "2062"})
+	@ValueSource(strings = { "2281", "2061", "2062" })
 	void testDeleteWhenNotFound(final String municipalityId) {
 
 		final var nonExistingId = 666L;

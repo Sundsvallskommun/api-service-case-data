@@ -131,7 +131,7 @@ class AttachmentIT extends AbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(location)
+			.withServicePath("/2281/" + location)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
