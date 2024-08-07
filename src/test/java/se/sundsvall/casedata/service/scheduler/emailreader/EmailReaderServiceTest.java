@@ -64,30 +64,35 @@ class EmailReaderServiceTest {
 	@Test
 	void getAndProcessEmails() {
 
+		//Arrange
+		final var email = new Email()
+			.id("someId")
+			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.recipients(List.of("someRecipient"))
+			.sender("someSender")
+			.message("someMessage")
+			.receivedAt(OffsetDateTime.now())
+			.attachments(List.of(new EmailAttachment()
+				.name("someName")
+				.content("someContent")
+				.contentType("someContentType")
+			));
+
 		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
-			.thenReturn(List.of(new Email()
-				.id("someId")
-				.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
-				.recipients(List.of("someRecipient"))
-				.sender("someSender")
-				.message("someMessage")
-				.receivedAt(OffsetDateTime.now())
-				.attachments(List.of(new EmailAttachment()
-					.name("someName")
-					.content("someContent")
-					.contentType("someContentType")
-				))));
+			.thenReturn(List.of(email));
 
 		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(Errand.builder().build()));
-		when(emailReaderMapperMock.toMessage(any())).thenReturn(messageMock);
+		when(emailReaderMapperMock.toMessage(email, "someMunicipalityId")).thenReturn(messageMock);
 		when(messageRepositoryMock.existsById("someId")).thenReturn(false);
 
+		//Act
 		emailReaderService.getAndProcessEmails();
 
+		//Assert
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
 		verify(errandRepositoryMock).findByErrandNumber("PRH-2022-01");
 		verify(messageRepositoryMock).existsById("someId");
-		verify(emailReaderMapperMock).toMessage(any());
+		verify(emailReaderMapperMock).toMessage(email, "someMunicipalityId");
 		verify(emailReaderMapperMock).toAttachments(any());
 		verify(messageRepositoryMock).save(any());
 		verify(attachmentRepositoryMock).saveAll(any());
@@ -121,7 +126,7 @@ class EmailReaderServiceTest {
 		verify(errandRepositoryMock).findByErrandNumber("PRH-2022-01");
 		verify(messageRepositoryMock).existsById("someId");
 		verify(emailReaderClientMock).deleteEmail("someId");
-		verifyNoInteractions(emailReaderMapperMock,attachmentRepositoryMock);
+		verifyNoInteractions(emailReaderMapperMock, attachmentRepositoryMock);
 		verifyNoMoreInteractions(emailReaderClientMock, messageRepositoryMock);
 	}
 

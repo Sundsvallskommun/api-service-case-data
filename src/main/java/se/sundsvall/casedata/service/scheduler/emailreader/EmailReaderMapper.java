@@ -46,7 +46,7 @@ public class EmailReaderMapper {
 			.toList();
 	}
 
-	Message toMessage(final Email email) {
+	Message toMessage(final Email email, final String municipalityId) {
 		if (email == null) {
 			return null;
 		}
@@ -55,6 +55,7 @@ public class EmailReaderMapper {
 			.withDirection(Direction.INBOUND)
 			.withFamilyID("")
 			.withExternalCaseID("")
+			.withMunicipalityId(municipalityId)
 			.withSubject(email.getSubject())
 			.withTextmessage(email.getMessage())
 			.withSent(email.getReceivedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
