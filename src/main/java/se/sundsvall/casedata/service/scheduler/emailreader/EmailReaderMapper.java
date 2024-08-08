@@ -61,7 +61,7 @@ public class EmailReaderMapper {
 			.withSent(email.getReceivedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
 			.withMessageType(MessageType.EMAIL.name())
 			.withEmail(email.getSender())
-			.withAttachments(toMessageAttachments(email))
+			.withAttachments(toMessageAttachments(email, municipalityId))
 			.withHeaders(toEmailHeaders(email.getHeaders()))
 			.build();
 	}
@@ -75,7 +75,7 @@ public class EmailReaderMapper {
 			.toList();
 	}
 
-	private List<MessageAttachment> toMessageAttachments(final Email email) {
+	private List<MessageAttachment> toMessageAttachments(final Email email, final String municipalityId) {
 
 		return Optional.ofNullable(email.getAttachments()).orElse(Collections.emptyList()).stream()
 			.map(attachment -> MessageAttachment.builder()
@@ -84,6 +84,7 @@ public class EmailReaderMapper {
 				.withMessageID(email.getId())
 				.withAttachmentData(toMessageAttachmentData(attachment))
 				.withContentType(attachment.getContentType())
+				.withMunicipalityId(municipalityId)
 				.build())
 			.toList();
 	}

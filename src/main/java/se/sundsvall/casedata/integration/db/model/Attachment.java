@@ -63,6 +63,7 @@ public class Attachment extends BaseEntity {
 	@Column(name = "errand_number")
 	private String errandNumber;
 
+	@With
 	@Column(name = "municipality_id")
 	private String municipalityId;
 
