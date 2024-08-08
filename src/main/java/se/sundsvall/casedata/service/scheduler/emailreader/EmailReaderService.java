@@ -68,7 +68,7 @@ public class EmailReaderService {
 				.ifPresent(errand -> {
 					messageRepository.save(emailReaderMapper.toMessage(email, emailReaderProperties.municipalityId()).withErrandNumber(errandNumber));
 					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email).stream()
-						.map(attachment -> attachment.withErrandNumber(errandNumber))
+						.map(attachment -> attachment.withErrandNumber(errandNumber).withMunicipalityId(emailReaderProperties.municipalityId()))
 						.toList());
 				});
 
