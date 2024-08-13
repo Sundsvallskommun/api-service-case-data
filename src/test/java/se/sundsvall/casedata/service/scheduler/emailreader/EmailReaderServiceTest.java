@@ -96,7 +96,7 @@ class EmailReaderServiceTest {
 		verify(emailReaderMapperMock).toAttachments(any());
 		verify(messageRepositoryMock).save(any());
 		verify(attachmentRepositoryMock).saveAll(any());
-		verify(emailReaderClientMock).deleteEmail("someId");
+		verify(emailReaderClientMock).deleteEmail("someMunicipalityId", "someId");
 		verifyNoMoreInteractions(emailReaderClientMock, messageRepositoryMock, attachmentRepositoryMock);
 	}
 
@@ -125,7 +125,7 @@ class EmailReaderServiceTest {
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
 		verify(errandRepositoryMock).findByErrandNumber("PRH-2022-01");
 		verify(messageRepositoryMock).existsById("someId");
-		verify(emailReaderClientMock).deleteEmail("someId");
+		verify(emailReaderClientMock).deleteEmail("someMunicipalityId", "someId");
 		verifyNoInteractions(emailReaderMapperMock, attachmentRepositoryMock);
 		verifyNoMoreInteractions(emailReaderClientMock, messageRepositoryMock);
 	}
@@ -150,7 +150,7 @@ class EmailReaderServiceTest {
 		emailReaderService.getAndProcessEmails();
 
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
-		verify(emailReaderClientMock).deleteEmail("someId");
+		verify(emailReaderClientMock).deleteEmail("someMunicipalityId", "someId");
 		verifyNoMoreInteractions(emailReaderClientMock);
 		verifyNoInteractions(messageRepositoryMock, attachmentRepositoryMock);
 	}
