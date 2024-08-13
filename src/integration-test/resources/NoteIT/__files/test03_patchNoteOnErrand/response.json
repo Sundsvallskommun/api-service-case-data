@@ -5,7 +5,6 @@
   "updated": "${json-unit.any-string}",
   "title": "hawk-tuah",
   "text": "Det här är en text",
-  "municipalityId": "2281",
   "createdBy": "Skaparmannen",
   "updatedBy": "Hi my name is AD_USER",
   "extraParameters": {}

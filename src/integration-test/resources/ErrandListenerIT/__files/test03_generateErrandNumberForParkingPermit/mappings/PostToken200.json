@@ -5,7 +5,7 @@
   },
   "response": {
     "status": 200,
-    "bodyFileName": "test01_500rollback/response/PostToken200.json",
+    "bodyFileName": "common/response/PostToken200.json",
     "headers": {
       "Content-Type": "application/json"
     }

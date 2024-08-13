@@ -1,47 +1,46 @@
 package se.sundsvall.casedata.apptest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
-import static se.sundsvall.casedata.TestUtil.createErrandDTO;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
-
-import java.util.List;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
+
 @WireMockAppTestSuite(files = "classpath:/RollbackIT", classes = Application.class)
-class RollbackIT extends CustomAbstractAppTest {
+@Sql({
+	"/db/script/truncate.sql"
+})
+class RollbackIT extends AbstractAppTest {
+
+	private static final String REQUEST_FILE = "request.json";
+	private static final String EXPECTED_FILE = "expected.json";
 
 	@Autowired
 	private ErrandRepository errandRepository;
 
-	// Simulate HTTP 500 response from POST /start-process to ProcessEngine. No errand should be persisted.
+	// Simulate HTTP 500 response from POST for starting process to ParkingPermit. No errand should be persisted.
 	@Test
-	void test01_500rollback() throws JsonProcessingException {
-
-		final List<Errand> listBefore = errandRepository.findAll();
-		final var errandDTO = createErrandDTO();
-		errandDTO.setCaseType(PARKING_PERMIT.name());
+	void test01_500rollback() {
 
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath("/2281/errands")
-			.withRequest(OBJECT_MAPPER.writeValueAsString(errandDTO))
-			.withExpectedResponseStatus(INTERNAL_SERVER_ERROR)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(SERVICE_UNAVAILABLE)
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequest();
+
+		setupCall()
+			.withHttpMethod(GET)
+			.withServicePath("/2281/errands/1")
+			.withExpectedResponseStatus(NOT_FOUND)
 			.sendRequestAndVerifyResponse();
-
-		final List<Errand> listAfter = errandRepository.findAll();
-
-		// Verify that no errand was persisted
-		assertThat(listBefore).hasSameSizeAs(listAfter);
 	}
 }
