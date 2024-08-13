@@ -72,7 +72,7 @@ public class EmailReaderService {
 						.toList());
 				});
 
-			emailReaderClient.deleteEmail(email.getId());
+			emailReaderClient.deleteEmail(emailReaderProperties.municipalityId(), email.getId());
 		} catch (final Exception e) {
 			LOG.error("Error when processing email with subject: {}", email.getSubject(), e);
 		}
