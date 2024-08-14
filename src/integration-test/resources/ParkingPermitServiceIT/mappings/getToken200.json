@@ -5,7 +5,7 @@
   },
   "response": {
     "status": 200,
-    "bodyFileName": "test06_putStakeholders/response/PostToken200.json",
+    "bodyFileName": "postToken200.json",
     "headers": {
       "Content-Type": "application/json"
     }

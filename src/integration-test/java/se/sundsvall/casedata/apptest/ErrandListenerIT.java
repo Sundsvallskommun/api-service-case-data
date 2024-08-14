@@ -1,10 +1,8 @@
 package se.sundsvall.casedata.apptest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -17,6 +15,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
 @WireMockAppTestSuite(files = "classpath:/ErrandListenerIT", classes = Application.class)
@@ -26,8 +25,8 @@ import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADE
 })
 class ErrandListenerIT extends AbstractAppTest {
 
-	private static final Long ERRAND_ID = 3L;
-	private static final Long PATCH_ERRAND_ID = 2L;
+	private static final int ERRAND_ID = 3;
+	private static final int PATCH_ERRAND_ID = 2;
 	private static final String PATH = format("/{0}/errands", MUNICIPALITY_ID);
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
@@ -55,7 +54,7 @@ class ErrandListenerIT extends AbstractAppTest {
 			.withHttpMethod(PATCH)
 			.withServicePath(PATH + "/" + PATCH_ERRAND_ID)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(Constants.AD_USER_HEADER_KEY, "PatchUser")
+			.withHeader(AD_USER_HEADER_KEY, "PatchUser")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
