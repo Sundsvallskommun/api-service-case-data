@@ -40,3 +40,12 @@ scheduler:
     enabled: false
   emailreader:
     enabled: false
+
+#----------------------------------------
+# Retry settings
+#----------------------------------------
+resilience4j:
+  retry:
+    instances:
+      parkingpermit:
+        max-attempts: 1
