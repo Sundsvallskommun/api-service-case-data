@@ -50,6 +50,12 @@ public enum StakeholderRole {
 	//Ombud
 	DELEGATE,
 	// Nyttjanderättshavare
-	USUFRUCTUARY
+	USUFRUCTUARY,
+	// Person
+	PERSON,
+	// Företag
+	ORGANIZATION,
+	// Rättighetshavare
+	RIGHTS_HOLDER
 
 }
