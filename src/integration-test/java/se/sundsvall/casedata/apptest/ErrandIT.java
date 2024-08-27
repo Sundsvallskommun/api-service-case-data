@@ -1,35 +1,5 @@
 package se.sundsvall.casedata.apptest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.util.UriComponentsBuilder;
-import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.DecisionDTO;
-import se.sundsvall.casedata.api.model.ErrandDTO;
-import se.sundsvall.casedata.api.model.NoteDTO;
-import se.sundsvall.casedata.api.model.PatchErrandDTO;
-import se.sundsvall.casedata.api.model.StakeholderDTO;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-import se.sundsvall.casedata.service.util.Constants;
-import se.sundsvall.dept44.test.AbstractAppTest;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
-
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
@@ -58,6 +28,37 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.PARKING_PERMIT_START_URL;
 import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.DecisionDTO;
+import se.sundsvall.casedata.api.model.ErrandDTO;
+import se.sundsvall.casedata.api.model.NoteDTO;
+import se.sundsvall.casedata.api.model.PatchErrandDTO;
+import se.sundsvall.casedata.api.model.StakeholderDTO;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import se.sundsvall.casedata.service.util.Constants;
+import se.sundsvall.dept44.test.AbstractAppTest;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/ErrandIT", classes = Application.class)
 class ErrandIT extends AbstractAppTest {
@@ -292,7 +293,7 @@ class ErrandIT extends AbstractAppTest {
 					.queryParam("extraParameters[key 2]", "value 3")
 					.build())
 			.exchange()
-			.expectStatus().isNotFound();
+			.expectStatus().isOk();
 	}
 
 	@ParameterizedTest
@@ -314,7 +315,7 @@ class ErrandIT extends AbstractAppTest {
 					.queryParam("filter", "externalCaseId:'%s'".formatted(RandomStringUtils.randomNumeric(10)))
 					.build())
 			.exchange()
-			.expectStatus().isNotFound();
+			.expectStatus().isOk();
 	}
 
 	@ParameterizedTest
@@ -412,8 +413,8 @@ class ErrandIT extends AbstractAppTest {
 					.queryParam("filter", "externalCaseId:'%s'".formatted(UUID.randomUUID()))
 					.build())
 			.exchange()
-			.expectStatus().isNotFound()
-			.expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON_VALUE);
 	}
 
 	@ParameterizedTest
@@ -622,8 +623,8 @@ class ErrandIT extends AbstractAppTest {
 					.build()
 					.toUri())
 			.exchange()
-			.expectStatus().isNotFound()
-			.expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON_VALUE);
 	}
 
 	@ParameterizedTest
