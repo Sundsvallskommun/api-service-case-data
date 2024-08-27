@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
 
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.GetParkingPermitDTO;
@@ -37,10 +35,6 @@ public class ParkingPermitErrandService {
 			.filter(errand -> errand.getExtraParameters().containsKey(PERMIT_NUMBER_EXTRA_PARAMETER_KEY))
 			.map(EntityMapper::toErrandDto)
 			.toList();
-
-		if (allErrandsWithPrh.isEmpty()) {
-			throw Problem.valueOf(Status.NOT_FOUND, "No parking permits found");
-		}
 
 		allErrandsWithPrh.forEach(errand -> parkingPermitsDTOList.add(GetParkingPermitDTO.builder()
 			.withArtefactPermitNumber(errand.getExtraParameters().get(PERMIT_NUMBER_EXTRA_PARAMETER_KEY))

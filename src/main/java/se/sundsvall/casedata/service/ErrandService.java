@@ -130,14 +130,8 @@ public class ErrandService {
 			.distinct()
 			.toList();
 
-		// Get errands without duplicates
-		final Page<ErrandDTO> errandDTOPage = errandRepository.findAllByIdInAndMunicipalityId(allIds, municipalityId, pageable)
+		return errandRepository.findAllByIdInAndMunicipalityId(allIds, municipalityId, pageable)
 			.map(EntityMapper::toErrandDto);
-
-		if (errandDTOPage.isEmpty()) {
-			throw ERRAND_NOT_FOUND_PROBLEM;
-		}
-		return errandDTOPage;
 	}
 
 	private boolean hashmapContainsAllKeyAndValues(final Map<String, String> map, final Map<String, String> mapToCheck) {
