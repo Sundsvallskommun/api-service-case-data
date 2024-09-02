@@ -21,7 +21,7 @@
         <!-- Dependencies -->
         <javers.version>7.6.1</javers.version>
         <spring-filter.version>3.1.7</spring-filter.version>
-        <shedlock.version>5.15.0</shedlock.version>
+        <shedlock.version>5.15.1</shedlock.version>
         <!-- Jenkins pipeline -->
     </properties>
     <dependencies>
