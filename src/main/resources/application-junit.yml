@@ -34,8 +34,9 @@ spring:
 integration:
   web-message-collector:
     family-ids:
-      internal:
-        - 123
+      2281:
+        internal:
+          - 123
 config:
   web-message-collector:
     base-url: http://localhost:8080
