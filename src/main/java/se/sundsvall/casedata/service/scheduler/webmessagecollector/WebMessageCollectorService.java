@@ -3,7 +3,9 @@ package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 import static java.util.Collections.emptyMap;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -55,18 +57,18 @@ public class WebMessageCollectorService {
 	@SchedulerLock(name = "message-collector", lockAtMostFor = "${scheduler.message-collector.shedlock-lock-at-most-for}")
 	void getAndProcessMessages() {
 
-		final var handledIds = getMessages().stream()
-			.map(messageDTO -> {
-				processMessage(messageDTO).ifPresent(processedMessage -> {
-					for (final var messageAttachment : messageDTO.getAttachments()) {
-						processAttachment(messageAttachment, processedMessage.getMessageID(), processedMessage.getErrandNumber());
-					}
-				});
-				return messageDTO.getId();
-			})
-			.toList();
+		getMessages().forEach((municipalityId, messageDTOs) -> {
+			final var handledIds = messageDTOs.stream()
+				.map(messageDTO -> {
+					processMessage(messageDTO)
+						.ifPresent(processedMessage -> messageDTO.getAttachments()
+							.forEach(messageAttachment -> processAttachment(messageAttachment, processedMessage.getMessageID(), processedMessage.getErrandNumber(), municipalityId)));
+					return messageDTO.getId();
+				})
+				.toList();
 
-		deleteMessages(handledIds);
+			deleteMessages(municipalityId, handledIds);
+		});
 	}
 
 	private Optional<Message> processMessage(final MessageDTO messageDTO) {
@@ -78,31 +80,34 @@ public class WebMessageCollectorService {
 		});
 	}
 
-	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId, final String errandNumber) {
+	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId, final String errandNumber, final String municipalityId) {
 		final var attachmentId = attachment.getAttachmentId();
 		// Map the attachment
 		final var messageAttachment = messageMapper.toAttachmentEntity(attachment, messageId);
 		// Fetch the data
-		final var data = webMessageCollectorClient.getAttachment(attachmentId);
+		final var data = webMessageCollectorClient.getAttachment(municipalityId, attachmentId);
 		messageAttachment.setAttachmentData(messageMapper.toMessageAttachmentData(data));
 		// Save the attachment
 		messageAttachmentRepository.saveAndFlush(messageAttachment);
 		attachmentRepository.saveAndFlush(messageMapper.toAttachment(messageAttachment).withErrandNumber(errandNumber));
 	}
 
-	private List<MessageDTO> getMessages() {
-
+	private Map<String, List<MessageDTO>> getMessages() {
 		return Optional.ofNullable(webMessageCollectorProperties.familyIds())
 			.orElse(emptyMap())
 			.entrySet().stream()
-			.flatMap(entry -> entry.getValue().stream()
-				.flatMap(familyId -> webMessageCollectorClient.getMessages(familyId, entry.getKey())
-					.stream()))
-			.toList();
+			.collect(Collectors.toMap(
+				Map.Entry::getKey,
+				municipalityIdEntry -> municipalityIdEntry.getValue().entrySet().stream()
+					.flatMap(instanceEntry -> instanceEntry.getValue().stream()
+						.flatMap(familyId -> webMessageCollectorClient.getMessages(municipalityIdEntry.getKey(), familyId, instanceEntry.getKey()).stream()))
+					.toList()
+			));
 	}
 
-	private void deleteMessages(final List<Integer> ids) {
-		webMessageCollectorClient.deleteMessages(ids);
+
+	private void deleteMessages(final String municipalityId, final List<Integer> ids) {
+		webMessageCollectorClient.deleteMessages(municipalityId, ids);
 	}
 
 }

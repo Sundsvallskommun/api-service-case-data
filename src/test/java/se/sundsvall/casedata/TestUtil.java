@@ -60,7 +60,7 @@ import se.sundsvall.casedata.integration.db.model.enums.Priority;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
-public class TestUtil {
+public final class TestUtil {
 
 	public static final String MUNICIPALITY_ID = "2281";
 

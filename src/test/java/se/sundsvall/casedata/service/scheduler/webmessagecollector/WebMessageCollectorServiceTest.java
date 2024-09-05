@@ -106,16 +106,16 @@ class WebMessageCollectorServiceTest {
 		final var blob = new SerialBlob(bytes);
 		final var attachmentData = MessageAttachmentData.builder().withFile(blob).build();
 
-		when(webMessageCollectorClientMock.getMessages(familyId, instance)).thenReturn(messageDTOs);
+		when(webMessageCollectorClientMock.getMessages(MUNICIPALITY_ID, familyId, instance)).thenReturn(messageDTOs);
 
 		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(Errand.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).withMunicipalityId(MUNICIPALITY_ID).build()));
-		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(instance, List.of(familyId)));
+		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(MUNICIPALITY_ID, Map.of(instance, List.of(familyId))));
 		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID)).thenReturn(message);
 		when(messageRepositoryMock.saveAndFlush(any(Message.class))).thenReturn(message);
 
 		when(messageMapperMock.toAttachmentEntity(any(generated.se.sundsvall.webmessagecollector.MessageAttachment.class), any(String.class))).thenReturn(createAttachment());
 
-		when(webMessageCollectorClientMock.getAttachment(anyInt())).thenReturn(bytes);
+		when(webMessageCollectorClientMock.getAttachment(any(String.class), anyInt())).thenReturn(bytes);
 		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(attachmentData);
 
 		when(messageMapperMock.toAttachment(any(MessageAttachment.class))).thenReturn(Attachment.builder().withName("fileName").build());
@@ -124,12 +124,12 @@ class WebMessageCollectorServiceTest {
 		webMessageCollectorService.getAndProcessMessages();
 
 		// Assert
-		verify(webMessageCollectorClientMock).getMessages(familyId, instance);
-		verify(webMessageCollectorClientMock).deleteMessages(any());
+		verify(webMessageCollectorClientMock).getMessages(MUNICIPALITY_ID, familyId, instance);
+		verify(webMessageCollectorClientMock).deleteMessages(any(), any());
 		verify(messageRepositoryMock).saveAndFlush(messageCaptor.capture());
 		assertThat(messageCaptor.getValue()).satisfies(WebMessageCollectorServiceTest::assertSavedMessageHasCorrectValues);
 
-		verify(webMessageCollectorClientMock).getAttachment(1);
+		verify(webMessageCollectorClientMock).getAttachment(MUNICIPALITY_ID, 1);
 		verify(messageMapperMock).toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID);
 
 		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachmentCaptor.capture());
@@ -151,15 +151,15 @@ class WebMessageCollectorServiceTest {
 		// Arrange
 		final var familyId = "123";
 		final var instance = "instance";
-		when(webMessageCollectorClientMock.getMessages(familyId, instance)).thenReturn(createMessages());
-		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(instance, List.of(familyId)));
+		when(webMessageCollectorClientMock.getMessages(MUNICIPALITY_ID, familyId, instance)).thenReturn(createMessages());
+		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(MUNICIPALITY_ID, Map.of(instance, List.of(familyId))));
 
 		// Act
 		webMessageCollectorService.getAndProcessMessages();
 
 		// Assert
-		verify(webMessageCollectorClientMock).getMessages(familyId, instance);
-		verify(webMessageCollectorClientMock).deleteMessages(any());
+		verify(webMessageCollectorClientMock).getMessages(MUNICIPALITY_ID, familyId, instance);
+		verify(webMessageCollectorClientMock).deleteMessages(any(), any());
 		verify(messageRepositoryMock, never()).saveAndFlush(any());
 		verify(messageMapperMock, never()).toMessageEntity(any(), any());
 	}
