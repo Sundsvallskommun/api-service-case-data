@@ -8,7 +8,6 @@ import org.hibernate.annotations.TimeZoneStorageType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,8 +36,12 @@ public class Status {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof final Status status)) return false;
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof final Status status)) {
+			return false;
+		}
 		return Objects.equals(statusType, status.statusType) && Objects.equals(description, status.description) && Objects.equals(dateTime, status.dateTime);
 	}
 
@@ -46,5 +49,4 @@ public class Status {
 	public int hashCode() {
 		return Objects.hash(statusType, description, dateTime);
 	}
-
 }

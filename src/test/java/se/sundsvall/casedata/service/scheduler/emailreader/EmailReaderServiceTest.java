@@ -15,7 +15,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import generated.se.sundsvall.emailreader.Email;
+import generated.se.sundsvall.emailreader.EmailAttachment;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
@@ -24,10 +27,7 @@ import se.sundsvall.casedata.integration.db.model.Message;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
 
-import generated.se.sundsvall.emailreader.Email;
-import generated.se.sundsvall.emailreader.EmailAttachment;
-
-@ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class)
+@ExtendWith(MockitoExtension.class)
 class EmailReaderServiceTest {
 
 	@Mock
@@ -54,7 +54,6 @@ class EmailReaderServiceTest {
 	@InjectMocks
 	private EmailReaderService emailReaderService;
 
-
 	@BeforeEach
 	void setUp() {
 		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
@@ -64,7 +63,7 @@ class EmailReaderServiceTest {
 	@Test
 	void getAndProcessEmails() {
 
-		//Arrange
+		// Arrange
 		final var email = new Email()
 			.id("someId")
 			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
@@ -75,8 +74,7 @@ class EmailReaderServiceTest {
 			.attachments(List.of(new EmailAttachment()
 				.name("someName")
 				.content("someContent")
-				.contentType("someContentType")
-			));
+				.contentType("someContentType")));
 
 		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
 			.thenReturn(List.of(email));
@@ -85,10 +83,10 @@ class EmailReaderServiceTest {
 		when(emailReaderMapperMock.toMessage(email, "someMunicipalityId")).thenReturn(messageMock);
 		when(messageRepositoryMock.existsById("someId")).thenReturn(false);
 
-		//Act
+		// Act
 		emailReaderService.getAndProcessEmails();
 
-		//Assert
+		// Assert
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
 		verify(errandRepositoryMock).findByErrandNumber("PRH-2022-01");
 		verify(messageRepositoryMock).existsById("someId");
@@ -114,8 +112,7 @@ class EmailReaderServiceTest {
 				.attachments(List.of(new EmailAttachment()
 					.name("someName")
 					.content("someContent")
-					.contentType("someContentType")
-				))));
+					.contentType("someContentType")))));
 
 		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(Errand.builder().build()));
 		when(messageRepositoryMock.existsById("someId")).thenReturn(true);
@@ -144,8 +141,7 @@ class EmailReaderServiceTest {
 				.attachments(List.of(new EmailAttachment()
 					.name("someName")
 					.content("someContent")
-					.contentType("someContentType")
-				))));
+					.contentType("someContentType")))));
 
 		emailReaderService.getAndProcessEmails();
 

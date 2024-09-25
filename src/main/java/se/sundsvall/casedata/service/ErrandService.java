@@ -23,15 +23,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import jakarta.transaction.Transactional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
-import org.zalando.problem.ThrowableProblem;
 
+import io.github.resilience4j.retry.annotation.Retry;
+import jakarta.transaction.Transactional;
 import se.sundsvall.casedata.api.model.AppealDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
@@ -49,8 +48,6 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
 import se.sundsvall.casedata.service.util.mappers.PutMapper;
 
-import io.github.resilience4j.retry.annotation.Retry;
-
 @Service
 public class ErrandService {
 
@@ -61,7 +58,6 @@ public class ErrandService {
 	private static final String APPEAL_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Appeal with id: {0} was not found on errand with id: {1}";
 	private static final String NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Note with id: {0} was not found on errand with id: {1}";
 	private static final String STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Stakeholder with id: {0} was not found on errand with id: {1}";
-	private static final ThrowableProblem ERRAND_NOT_FOUND_PROBLEM = Problem.valueOf(NOT_FOUND, ERRAND_WAS_NOT_FOUND);
 
 	private final ErrandRepository errandRepository;
 
@@ -74,7 +70,7 @@ public class ErrandService {
 		this.processService = processService;
 	}
 
-	//////////////////////////////f
+	////////////////////////////// f
 	// GET operations
 	//////////////////////////////
 

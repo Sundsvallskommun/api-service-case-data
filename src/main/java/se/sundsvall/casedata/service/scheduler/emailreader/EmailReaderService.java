@@ -9,14 +9,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import generated.se.sundsvall.emailreader.Email;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
-
-import generated.se.sundsvall.emailreader.Email;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Component
 @ConditionalOnProperty(prefix = "scheduler.emailreader", name = "enabled", havingValue = "true", matchIfMissing = true)
@@ -77,5 +76,4 @@ public class EmailReaderService {
 			LOG.error("Error when processing email with subject: {}", email.getSubject(), e);
 		}
 	}
-
 }

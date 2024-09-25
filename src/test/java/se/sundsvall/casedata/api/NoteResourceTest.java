@@ -42,7 +42,7 @@ class NoteResourceTest {
 		final var dto = createNoteDTO();
 		when(mockService.getNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID)).thenReturn(dto);
 
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_URL + "/{id}").build(Map.of("municipalityId", MUNICIPALITY_ID, "id", id)))
 			.exchange()
 			.expectStatus().isOk()
@@ -62,7 +62,7 @@ class NoteResourceTest {
 		final var dto2 = createNoteDTO();
 		when(mockService.getNotesByErrandIdAndMunicipalityIdAndNoteType(errandId, MUNICIPALITY_ID, noteType)).thenReturn(List.of(dto1, dto2));
 
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_URL + "/errand/{errandId}")
 				.queryParam("noteType", noteType)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId)))
@@ -107,5 +107,4 @@ class NoteResourceTest {
 
 		verify(mockService).updateNote(id, MUNICIPALITY_ID, dto);
 	}
-
 }

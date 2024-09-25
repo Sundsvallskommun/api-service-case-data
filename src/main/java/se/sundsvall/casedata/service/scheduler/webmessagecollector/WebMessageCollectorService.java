@@ -11,6 +11,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
@@ -20,13 +22,9 @@ import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollector
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 
-import generated.se.sundsvall.webmessagecollector.MessageDTO;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
-
 @Component
 @ConditionalOnProperty(prefix = "scheduler.message-collector", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class WebMessageCollectorService {
-
 
 	private final MessageRepository messageRepository;
 
@@ -42,7 +40,8 @@ public class WebMessageCollectorService {
 
 	private final WebMessageCollectorProperties webMessageCollectorProperties;
 
-	public WebMessageCollectorService(final MessageRepository messageRepository, final WebMessageCollectorClient webMessageCollectorClient, final MessageAttachmentRepository messageAttachmentRepository, final ErrandRepository errandRepository, final AttachmentRepository attachmentRepository, final MessageMapper messageMapper,
+	public WebMessageCollectorService(final MessageRepository messageRepository, final WebMessageCollectorClient webMessageCollectorClient, final MessageAttachmentRepository messageAttachmentRepository, final ErrandRepository errandRepository,
+		final AttachmentRepository attachmentRepository, final MessageMapper messageMapper,
 		final WebMessageCollectorProperties webMessageCollectorProperties) {
 		this.messageRepository = messageRepository;
 		this.webMessageCollectorClient = webMessageCollectorClient;
@@ -101,13 +100,10 @@ public class WebMessageCollectorService {
 				municipalityIdEntry -> municipalityIdEntry.getValue().entrySet().stream()
 					.flatMap(instanceEntry -> instanceEntry.getValue().stream()
 						.flatMap(familyId -> webMessageCollectorClient.getMessages(municipalityIdEntry.getKey(), familyId, instanceEntry.getKey()).stream()))
-					.toList()
-			));
+					.toList()));
 	}
-
 
 	private void deleteMessages(final String municipalityId, final List<Integer> ids) {
 		webMessageCollectorClient.deleteMessages(municipalityId, ids);
 	}
-
 }

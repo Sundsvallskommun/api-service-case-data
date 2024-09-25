@@ -16,9 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
-
-import se.sundsvall.casedata.integration.db.model.enums.Header;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +24,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import se.sundsvall.casedata.integration.db.model.enums.Header;
 
 @Entity
 @Table(name = "email_header")
@@ -47,7 +45,8 @@ public class EmailHeader {
 	private Header header;
 
 	@ElementCollection
-	@CollectionTable(name = "email_header_values", joinColumns = @JoinColumn(name = "email_header_id"),
+	@CollectionTable(name = "email_header_values",
+		joinColumns = @JoinColumn(name = "email_header_id"),
 		foreignKey = @ForeignKey(name = "fk_email_header_values_email_header_id"))
 	@Column(name = "value")
 	@OrderColumn(name = "value_index")

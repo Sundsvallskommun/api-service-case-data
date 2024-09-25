@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 
 import java.nio.charset.StandardCharsets;
@@ -17,9 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
-import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 
+import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import generated.se.sundsvall.webmessagecollector.MessageDTO.DirectionEnum;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.MessageRequest.AttachmentRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
@@ -33,10 +35,7 @@ import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.dept44.common.validators.annotation.impl.ValidUuidConstraintValidator;
 
-import generated.se.sundsvall.webmessagecollector.MessageDTO;
-import generated.se.sundsvall.webmessagecollector.MessageDTO.DirectionEnum;
-
-@SpringBootTest(classes = {Application.class}, webEnvironment = MOCK)
+@SpringBootTest(classes = { Application.class }, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class MessageMapperTest {
 
@@ -192,7 +191,7 @@ class MessageMapperTest {
 	void testToAttachmentDtoWithException() {
 		final var e = assertThrows(ThrowableProblem.class, () -> messageMapper.toAttachmentDto(null));
 
-		assertThat(e.getStatus()).isEqualTo(Status.INTERNAL_SERVER_ERROR);
+		assertThat(e.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR);
 		assertThat(e.getMessage()).isEqualTo("Internal Server Error: Failed to convert binary stream to base64 representation");
 	}
 
@@ -367,8 +366,7 @@ class MessageMapperTest {
 			EmailHeader.builder()
 				.withHeader(Header.IN_REPLY_TO)
 				.withValues(List.of("<Test@Test>"))
-				.build()
-		);
+				.build());
 		final var direction = Direction.INBOUND;
 		final var email = "email";
 		final var errandNumber = "errandNumber";
@@ -406,5 +404,4 @@ class MessageMapperTest {
 			.withHeaders(headers)
 			.build();
 	}
-
 }

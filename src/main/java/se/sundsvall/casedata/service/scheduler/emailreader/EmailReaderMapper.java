@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
+import generated.se.sundsvall.emailreader.Email;
+import generated.se.sundsvall.emailreader.EmailAttachment;
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.integration.db.model.EmailHeader;
@@ -18,9 +20,6 @@ import se.sundsvall.casedata.integration.db.model.MessageAttachmentData;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.casedata.service.util.BlobBuilder;
-
-import generated.se.sundsvall.emailreader.Email;
-import generated.se.sundsvall.emailreader.EmailAttachment;
 
 @Component
 public class EmailReaderMapper {
@@ -37,12 +36,11 @@ public class EmailReaderMapper {
 		}
 		return Optional.ofNullable(email.getAttachments()).orElse(List.of())
 			.stream()
-			.map(emailAttachment ->
-				(Attachment) Attachment.builder()
-					.withFile(emailAttachment.getContent())
-					.withName(emailAttachment.getName())
-					.withMimeType(emailAttachment.getContentType())
-					.build())
+			.map(emailAttachment -> (Attachment) Attachment.builder()
+				.withFile(emailAttachment.getContent())
+				.withName(emailAttachment.getName())
+				.withMimeType(emailAttachment.getContentType())
+				.build())
 			.toList();
 	}
 
@@ -76,7 +74,6 @@ public class EmailReaderMapper {
 	}
 
 	private List<MessageAttachment> toMessageAttachments(final Email email, final String municipalityId) {
-
 		return Optional.ofNullable(email.getAttachments()).orElse(Collections.emptyList()).stream()
 			.map(attachment -> MessageAttachment.builder()
 				.withAttachmentID(UUID.randomUUID().toString())
@@ -94,5 +91,4 @@ public class EmailReaderMapper {
 			.withFile(blobBuilder.createBlob(attachment.getContent()))
 			.build();
 	}
-
 }

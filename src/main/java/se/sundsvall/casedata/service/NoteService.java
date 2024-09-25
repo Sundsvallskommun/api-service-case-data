@@ -12,13 +12,12 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import se.sundsvall.casedata.api.model.NoteDTO;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.NoteRepository;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 public class NoteService {
@@ -68,12 +67,12 @@ public class NoteService {
 			.filter(note -> note.getNoteType() == type)
 			.map(EntityMapper::toNoteDto)
 			.toList()).orElseGet(() -> errand.getNotes().stream()
-			.map(EntityMapper::toNoteDto)
-			.toList());
+				.map(EntityMapper::toNoteDto)
+				.toList());
 	}
 
 	public void deleteNoteByIdAndMunicipalityId(final Long noteId, final String municipalityId) {
-		var note = noteRepository.findByIdAndMunicipalityId(noteId, municipalityId)
+		final var note = noteRepository.findByIdAndMunicipalityId(noteId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WAS_NOT_FOUND));
 
 		if (note.getNoteType() == NoteType.PUBLIC) {

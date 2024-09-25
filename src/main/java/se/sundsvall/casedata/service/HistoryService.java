@@ -104,7 +104,7 @@ public class HistoryService {
 	}
 
 	public String findStakeholderHistory(final Long id, final String municipalityId) {
-		var stakeholder = stakeholderRepository.findByIdAndMunicipalityId(id, municipalityId)
+		final var stakeholder = stakeholderRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> STAKEHOLDER_NOT_FOUND_PROBLEM);
 		final Changes changes = javers.findChanges(byInstance(stakeholder).withChildValueObjects().build());
 
@@ -113,5 +113,4 @@ public class HistoryService {
 		}
 		return javers.getJsonConverter().toJson(changes);
 	}
-
 }

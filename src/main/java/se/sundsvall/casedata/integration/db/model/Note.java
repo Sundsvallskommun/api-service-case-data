@@ -3,6 +3,10 @@ package se.sundsvall.casedata.integration.db.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.javers.core.metamodel.annotation.DiffIgnore;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -17,13 +21,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.javers.core.metamodel.annotation.DiffIgnore;
-
-import se.sundsvall.casedata.integration.db.listeners.NoteListener;
-import se.sundsvall.casedata.integration.db.model.enums.NoteType;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -32,6 +29,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import se.sundsvall.casedata.integration.db.listeners.NoteListener;
+import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 
 @Entity
 @Table(name = "note",
@@ -81,5 +80,4 @@ public class Note extends BaseEntity {
 	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
-
 }

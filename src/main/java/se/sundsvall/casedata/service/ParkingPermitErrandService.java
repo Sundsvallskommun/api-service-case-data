@@ -47,8 +47,8 @@ public class ParkingPermitErrandService {
 	}
 
 	/**
-	 * @param personId of the applicant
-	 * @return all errands with stakeholder who has the role APPLICANT and matching personId
+	 * @param  personId of the applicant
+	 * @return          all errands with stakeholder who has the role APPLICANT and matching personId
 	 */
 	private List<Errand> findAllErrandsWithApplicant(final String personId, final String municipalityId) {
 		return errandRepository.findAllByMunicipalityId(municipalityId).stream()
@@ -57,5 +57,4 @@ public class ParkingPermitErrandService {
 				.anyMatch(stakeholder -> stakeholder.getPersonId().equals(personId) && stakeholder.getRoles().contains(StakeholderRole.APPLICANT.name())))
 			.toList();
 	}
-
 }

@@ -1,11 +1,10 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
+import org.springframework.stereotype.Component;
+
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
-
-import org.springframework.stereotype.Component;
-
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.model.Note;
 
@@ -33,5 +32,4 @@ public class NoteListener {
 		note.setUpdatedBy(incomingRequestFilter.getAdUser());
 		errandListener.updateErrandFields(note.getErrand());
 	}
-
 }

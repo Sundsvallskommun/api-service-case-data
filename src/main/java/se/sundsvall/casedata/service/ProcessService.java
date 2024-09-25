@@ -9,12 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
-
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 
 @Service
 public class ProcessService {
@@ -34,7 +33,8 @@ public class ProcessService {
 	public StartProcessResponse startProcess(final Errand errand) {
 		if (PARKING_PERMIT_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType()))) {
 			return parkingPermitIntegration.startProcess(errand);
-		} else if (MEX_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType()))) {
+		}
+		if (MEX_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType()))) {
 			return landAndExploitationIntegration.startProcess(errand);
 		}
 		LOGGER.info("No camunda process found for caseType: {}", errand.getCaseType());
@@ -42,7 +42,7 @@ public class ProcessService {
 	}
 
 	public void updateProcess(final Errand errand) {
-		if (errand.getUpdatedByClient().equals(CAMUNDA_USER)) {
+		if (CAMUNDA_USER.equals(errand.getUpdatedByClient())) {
 			LOGGER.warn("Errand with id: {} was updated by camunda user, no need to update process", errand.getId());
 			return;
 		}

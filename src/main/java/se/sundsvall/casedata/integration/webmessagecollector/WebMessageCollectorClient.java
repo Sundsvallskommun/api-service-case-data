@@ -9,15 +9,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorConfiguration;
-
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorConfiguration;
 
 @FeignClient(
 	name = CLIENT_ID,
 	url = "${integration.web-message-collector.base-url}",
-	configuration = WebMessageCollectorConfiguration.class
-)
+	configuration = WebMessageCollectorConfiguration.class)
 public interface WebMessageCollectorClient {
 
 	@GetMapping("/{municipalityId}/messages/{familyid}/{instance}")
@@ -33,5 +31,4 @@ public interface WebMessageCollectorClient {
 	byte[] getAttachment(
 		@PathVariable(name = "municipalityId") String municipalityId,
 		@PathVariable(name = "attachmentId") int attachmentId);
-
 }

@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.service;
 
+import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachmentDto;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchAttachment;
@@ -7,18 +8,15 @@ import static se.sundsvall.casedata.service.util.mappers.PutMapper.putAttachment
 
 import java.util.List;
 
-import jakarta.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
 
+import io.github.resilience4j.retry.annotation.Retry;
+import jakarta.transaction.Transactional;
 import se.sundsvall.casedata.api.model.AttachmentDTO;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.model.Attachment;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 @Transactional
@@ -70,6 +68,6 @@ public class AttachmentService {
 	}
 
 	private Attachment getAttachmentById(final Long id, final String municipalityId) {
-		return attachmentRepository.findByIdAndMunicipalityId(id, municipalityId).orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, ATTACHMENT_NOT_FOUND));
+		return attachmentRepository.findByIdAndMunicipalityId(id, municipalityId).orElseThrow(() -> Problem.valueOf(NOT_FOUND, ATTACHMENT_NOT_FOUND));
 	}
 }

@@ -35,5 +35,4 @@ public class MessageAttachmentData {
 	@Column(columnDefinition = "longblob")
 	@Lob
 	private Blob file;
-
 }

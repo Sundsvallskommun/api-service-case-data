@@ -8,6 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -25,15 +30,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-
-import se.sundsvall.casedata.integration.db.listeners.DecisionListener;
-import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
-import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -42,6 +38,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import se.sundsvall.casedata.integration.db.listeners.DecisionListener;
+import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
+import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 
 @Entity
 @Table(name = "decision",
@@ -112,5 +111,4 @@ public class Decision extends BaseEntity {
 	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
-
 }
