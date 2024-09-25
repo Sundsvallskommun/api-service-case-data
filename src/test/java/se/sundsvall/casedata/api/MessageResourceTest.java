@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 
@@ -74,7 +75,7 @@ class MessageResourceTest {
 			.bodyValue(request)
 			.exchange()
 			.expectStatus().isNoContent()
-			.expectHeader().doesNotExist(CONTENT_TYPE)
+			.expectHeader().contentType(ALL_VALUE)
 			.expectBody().isEmpty();
 
 		// Assert
@@ -96,7 +97,7 @@ class MessageResourceTest {
 					"isViewed", isViewed)))
 			.exchange()
 			.expectStatus().isNoContent()
-			.expectHeader().doesNotExist(CONTENT_TYPE)
+			.expectHeader().contentType(ALL_VALUE)
 			.expectBody().isEmpty();
 
 		// Assert

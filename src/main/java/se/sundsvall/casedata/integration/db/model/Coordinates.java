@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,8 +28,12 @@ public class Coordinates {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof final Coordinates that)) return false;
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof final Coordinates that)) {
+			return false;
+		}
 		return Objects.equals(latitude, that.latitude) && Objects.equals(longitude, that.longitude);
 	}
 
@@ -38,5 +41,4 @@ public class Coordinates {
 	public int hashCode() {
 		return Objects.hash(latitude, longitude);
 	}
-
 }

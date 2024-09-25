@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.scheduler;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 
 import java.util.Base64;
 import java.util.List;
@@ -9,8 +10,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
 
+import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import se.sundsvall.casedata.api.model.EmailHeaderDTO;
 import se.sundsvall.casedata.api.model.MessageAttachmentDTO;
 import se.sundsvall.casedata.api.model.MessageRequest;
@@ -23,8 +24,6 @@ import se.sundsvall.casedata.integration.db.model.MessageAttachment;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentData;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.service.util.BlobBuilder;
-
-import generated.se.sundsvall.webmessagecollector.MessageDTO;
 
 @Component
 public class MessageMapper {
@@ -53,7 +52,6 @@ public class MessageMapper {
 			.withMessageType(MessageType.WEBMESSAGE.name())
 			.build();
 	}
-
 
 	public Message toMessageEntity(final MessageRequest request, final String municipalityId) {
 		final var entity = Message.builder()
@@ -162,10 +160,9 @@ public class MessageMapper {
 				.withMimeType(attachment.getContentType())
 				.build();
 		} catch (final Exception e) {
-			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
 		}
 	}
-
 
 	public List<MessageAttachment> toAttachmentEntities(final List<MessageRequest.AttachmentRequest> attachmentRequests, final String messageID) {
 		return attachmentRequests.stream()
@@ -212,7 +209,7 @@ public class MessageMapper {
 				.withContentType(attachment.getContentType())
 				.build();
 		} catch (final Exception e) {
-			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
 		}
 	}
 
@@ -221,5 +218,4 @@ public class MessageMapper {
 			.withFile(blobBuilder.createBlob(result))
 			.build();
 	}
-
 }

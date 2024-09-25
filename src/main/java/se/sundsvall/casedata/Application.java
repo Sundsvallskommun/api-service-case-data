@@ -15,7 +15,6 @@ import se.sundsvall.dept44.util.jacoco.ExcludeFromJacocoGeneratedCoverageReport;
 @EnableSchedulerLock(defaultLockAtMostFor = "PT10M")
 @ExcludeFromJacocoGeneratedCoverageReport
 public class Application {
-
 	public static void main(final String... args) {
 		run(Application.class, args);
 	}

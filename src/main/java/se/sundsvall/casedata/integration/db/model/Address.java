@@ -7,15 +7,13 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-
-import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
 
 @Getter
 @Setter
@@ -68,14 +66,19 @@ public class Address {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof final Address address)) return false;
-		return addressCategory == address.addressCategory && Objects.equals(street, address.street) && Objects.equals(houseNumber, address.houseNumber) && Objects.equals(postalCode, address.postalCode) && Objects.equals(city, address.city) && Objects.equals(country, address.country) && Objects.equals(careOf, address.careOf) && Objects.equals(attention, address.attention) && Objects.equals(propertyDesignation, address.propertyDesignation) && Objects.equals(apartmentNumber, address.apartmentNumber) && Objects.equals(isZoningPlanArea, address.isZoningPlanArea) && Objects.equals(invoiceMarking, address.invoiceMarking) && Objects.equals(location, address.location);
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof final Address address)) {
+			return false;
+		}
+		return (addressCategory == address.addressCategory) && Objects.equals(street, address.street) && Objects.equals(houseNumber, address.houseNumber) && Objects.equals(postalCode, address.postalCode) && Objects.equals(city, address.city) && Objects
+			.equals(country, address.country) && Objects.equals(careOf, address.careOf) && Objects.equals(attention, address.attention) && Objects.equals(propertyDesignation, address.propertyDesignation) && Objects.equals(apartmentNumber,
+				address.apartmentNumber) && Objects.equals(isZoningPlanArea, address.isZoningPlanArea) && Objects.equals(invoiceMarking, address.invoiceMarking) && Objects.equals(location, address.location);
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(addressCategory, street, houseNumber, postalCode, city, country, careOf, attention, propertyDesignation, apartmentNumber, isZoningPlanArea, invoiceMarking, location);
 	}
-
 }

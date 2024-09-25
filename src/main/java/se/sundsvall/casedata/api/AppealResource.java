@@ -1,11 +1,11 @@
 package se.sundsvall.casedata.api;
 
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
-
-import jakarta.validation.Valid;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,22 +20,22 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.AppealDTO;
-import se.sundsvall.casedata.api.model.PatchAppealDTO;
-import se.sundsvall.casedata.service.AppealService;
-import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import se.sundsvall.casedata.api.model.AppealDTO;
+import se.sundsvall.casedata.api.model.PatchAppealDTO;
+import se.sundsvall.casedata.service.AppealService;
+import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
 @Validated
 @RequestMapping("/{municipalityId}/appeals")
 @Tag(name = "Appeals", description = "Appeal operations")
-@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
+@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = { Problem.class, ConstraintViolationProblem.class })))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 class AppealResource {
@@ -47,7 +47,7 @@ class AppealResource {
 	}
 
 	@Operation(description = "Get appeal by ID")
-	@GetMapping(path = "/{appealId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@GetMapping(path = "/{appealId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<AppealDTO> getAppealById(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -57,7 +57,7 @@ class AppealResource {
 	}
 
 	@Operation(description = "Update appeal")
-	@PatchMapping(path = "/{appealId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
+	@PatchMapping(path = "/{appealId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchAppeal(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -65,11 +65,13 @@ class AppealResource {
 		@RequestBody @Valid final PatchAppealDTO patchAppealDTO) {
 
 		appealService.updateAppeal(appealId, municipalityId, patchAppealDTO);
-		return noContent().build();
+		return noContent()
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
 	}
 
 	@Operation(description = "Replace appeal")
-	@PutMapping(path = "/{appealId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
+	@PutMapping(path = "/{appealId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = { APPLICATION_PROBLEM_JSON_VALUE })
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putAppeal(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -77,6 +79,8 @@ class AppealResource {
 		@RequestBody @Valid final AppealDTO appealDTO) {
 
 		appealService.replaceAppeal(appealId, municipalityId, appealDTO);
-		return noContent().build();
+		return noContent()
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
 	}
 }

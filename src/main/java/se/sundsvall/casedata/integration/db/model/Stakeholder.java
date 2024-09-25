@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -21,18 +23,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import se.sundsvall.casedata.integration.db.listeners.StakeholderListener;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import se.sundsvall.casedata.integration.db.listeners.StakeholderListener;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 @Entity
 @Table(name = "stakeholder",
@@ -132,10 +130,18 @@ public class Stakeholder extends BaseEntity {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof final Stakeholder that)) return false;
-		if (!super.equals(o)) return false;
-		return type == that.type && Objects.equals(firstName, that.firstName) && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(lastName, that.lastName) && Objects.equals(personId, that.personId) && Objects.equals(organizationName, that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber) && Objects.equals(authorizedSignatory, that.authorizedSignatory) && Objects.equals(adAccount, that.adAccount) && Objects.equals(roles, that.roles) && Objects.equals(addresses, that.addresses) && Objects.equals(contactInformation, that.contactInformation) && Objects.equals(extraParameters, that.extraParameters);
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof final Stakeholder that)) {
+			return false;
+		}
+		if (!super.equals(o)) {
+			return false;
+		}
+		return (type == that.type) && Objects.equals(firstName, that.firstName) && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(lastName, that.lastName) && Objects.equals(personId, that.personId) && Objects.equals(organizationName,
+			that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber) && Objects.equals(authorizedSignatory, that.authorizedSignatory) && Objects.equals(adAccount, that.adAccount) && Objects.equals(roles, that.roles) && Objects
+				.equals(addresses, that.addresses) && Objects.equals(contactInformation, that.contactInformation) && Objects.equals(extraParameters, that.extraParameters);
 	}
 
 	@Override

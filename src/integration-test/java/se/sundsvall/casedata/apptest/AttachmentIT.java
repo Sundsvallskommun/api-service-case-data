@@ -157,4 +157,21 @@ class AttachmentIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
+
+	@Test
+	void test10_patchAttachment() {
+		setupCall()
+			.withHttpMethod(PATCH)
+			.withServicePath(format("/{0}/attachments/{1}", MUNICIPALITY_ID, "1"))
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(NO_CONTENT)
+			.sendRequestAndVerifyResponse();
+
+		setupCall()
+			.withHttpMethod(GET)
+			.withServicePath(format("/{0}/attachments/{1}", MUNICIPALITY_ID, "1"))
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
 }

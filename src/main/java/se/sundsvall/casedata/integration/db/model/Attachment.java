@@ -15,7 +15,6 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -74,5 +73,4 @@ public class Attachment extends BaseEntity {
 	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
-
 }

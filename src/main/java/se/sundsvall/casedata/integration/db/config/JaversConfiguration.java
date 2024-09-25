@@ -16,18 +16,17 @@ public class JaversConfiguration {
 	}
 
 	@Bean
-	public AuthorProvider provideJaversAuthor() {
+	AuthorProvider provideJaversAuthor() {
 		return new SimpleAuthorProvider(incomingRequestFilter);
 	}
 
-	private record SimpleAuthorProvider(
-		IncomingRequestFilter incomingRequestFilter) implements AuthorProvider {
+	private record SimpleAuthorProvider(IncomingRequestFilter incomingRequestFilter)
+		implements
+		AuthorProvider {
 
 		@Override
 		public String provide() {
 			return incomingRequestFilter.getAdUser();
 		}
-
 	}
-
 }

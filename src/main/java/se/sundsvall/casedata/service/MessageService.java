@@ -8,13 +8,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
+import jakarta.servlet.http.HttpServletResponse;
 import se.sundsvall.casedata.api.model.MessageAttachmentDTO;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
@@ -49,7 +48,7 @@ public class MessageService {
 	public void updateViewedStatus(final String messageId, final String municipalityId, final boolean isViewed) {
 		final var message = messageRepository
 			.findByMessageIDAndMunicipalityId(messageId, municipalityId)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Message with id %s not found" .formatted(messageId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Message with id %s not found".formatted(messageId)));
 
 		message.setViewed(isViewed);
 		messageRepository.save(message);
@@ -73,7 +72,7 @@ public class MessageService {
 			response.setContentLength((int) file.length());
 			StreamUtils.copy(file.getBinaryStream(), response.getOutputStream());
 		} catch (IOException | SQLException e) {
-			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "%s occurred when copying file with attachment id '%s' to response: %s" .formatted(e.getClass().getSimpleName(), attachmentId, e.getMessage()));
+			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "%s occurred when copying file with attachment id '%s' to response: %s".formatted(e.getClass().getSimpleName(), attachmentId, e.getMessage()));
 		}
 	}
 }

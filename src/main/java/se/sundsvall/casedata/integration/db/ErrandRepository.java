@@ -9,9 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import se.sundsvall.casedata.integration.db.model.Errand;
-
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import se.sundsvall.casedata.integration.db.model.Errand;
 
 @JaversSpringDataAuditable
 @CircuitBreaker(name = "errandRepository")
@@ -32,5 +31,4 @@ public interface ErrandRepository extends JpaRepository<Errand, Long>, JpaSpecif
 	boolean existsByIdAndMunicipalityId(final Long id, final String municipalityId);
 
 	void deleteByIdAndMunicipalityId(final Long id, final String municipalityId);
-
 }

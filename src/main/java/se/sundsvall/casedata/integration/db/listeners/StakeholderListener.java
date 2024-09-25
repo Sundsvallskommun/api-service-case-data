@@ -1,12 +1,13 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
+import java.time.OffsetDateTime;
+
+import org.springframework.stereotype.Component;
+
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
-import org.springframework.stereotype.Component;
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
-
-import java.time.OffsetDateTime;
 
 @Component
 public class StakeholderListener {

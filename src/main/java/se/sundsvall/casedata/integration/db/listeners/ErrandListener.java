@@ -1,19 +1,20 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.Optional;
-
-import jakarta.persistence.PostPersist;
-import jakarta.persistence.PostUpdate;
-import jakarta.persistence.PrePersist;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostUpdate;
+import jakarta.persistence.PrePersist;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -63,13 +64,13 @@ public class ErrandListener {
 	}
 
 	private String generateErrandNumber(final String caseType) {
-		// Get the latest errand with an errandNumber and only the ones within the same year. If this year i different, a new sequenceNumber begins.
+		// Get the latest errand with an errandNumber and only the ones within the same year. If this year i different, a new
+		// sequenceNumber begins.
 		final var abbreviation = CaseType.valueOf(caseType).getAbbreviation();
 		final Optional<Errand> latestErrand = errandRepository.findAllByErrandNumberStartingWith(abbreviation)
 			.stream()
-			.filter(errand -> errand.getErrandNumber() != null
-				&& !errand.getErrandNumber().isBlank()
-				&& LocalDate.now().getYear() == Integer.parseInt(errand.getErrandNumber().substring(errand.getErrandNumber().lastIndexOf(DELIMITER) - 4, errand.getErrandNumber().lastIndexOf(DELIMITER))))
+			.filter(errand -> isNotBlank(errand.getErrandNumber()))
+			.filter(errand -> LocalDate.now().getYear() == extractYearFromErrandNumber(errand))
 			.max(Comparator.comparing(Errand::getCreated));
 
 		// Default start value = 1
@@ -86,4 +87,7 @@ public class ErrandListener {
 			String.format("%06d", nextSequenceNumber);
 	}
 
+	private int extractYearFromErrandNumber(Errand errand) {
+		return Integer.parseInt(errand.getErrandNumber().substring(errand.getErrandNumber().lastIndexOf(DELIMITER) - 4, errand.getErrandNumber().lastIndexOf(DELIMITER)));
+	}
 }
