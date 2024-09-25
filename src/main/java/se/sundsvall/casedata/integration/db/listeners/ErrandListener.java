@@ -1,5 +1,7 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Comparator;
@@ -67,9 +69,8 @@ public class ErrandListener {
 		final var abbreviation = CaseType.valueOf(caseType).getAbbreviation();
 		final Optional<Errand> latestErrand = errandRepository.findAllByErrandNumberStartingWith(abbreviation)
 			.stream()
-			.filter(errand -> (errand.getErrandNumber() != null)
-				&& !errand.getErrandNumber().isBlank()
-				&& (LocalDate.now().getYear() == Integer.parseInt(errand.getErrandNumber().substring(errand.getErrandNumber().lastIndexOf(DELIMITER) - 4, errand.getErrandNumber().lastIndexOf(DELIMITER)))))
+			.filter(errand -> isNotBlank(errand.getErrandNumber()))
+			.filter(errand -> LocalDate.now().getYear() == extractYearFromErrandNumber(errand))
 			.max(Comparator.comparing(Errand::getCreated));
 
 		// Default start value = 1
@@ -84,5 +85,9 @@ public class ErrandListener {
 		return abbreviation + DELIMITER +
 			LocalDate.now().getYear() + DELIMITER +
 			String.format("%06d", nextSequenceNumber);
+	}
+
+	private int extractYearFromErrandNumber(Errand errand) {
+		return Integer.parseInt(errand.getErrandNumber().substring(errand.getErrandNumber().lastIndexOf(DELIMITER) - 4, errand.getErrandNumber().lastIndexOf(DELIMITER)));
 	}
 }
