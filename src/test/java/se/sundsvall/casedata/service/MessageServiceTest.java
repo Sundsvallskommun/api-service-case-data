@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -89,13 +90,13 @@ class MessageServiceTest {
 			.withAttachments(List.of(MessageAttachment.builder().build()))
 			.build());
 
-		when(messageRepositoryMock.findAllByErrandNumberAndMunicipalityId(anyString(), eq(MUNICIPALITY_ID))).thenReturn(messages);
+		when(messageRepositoryMock.findAllByErrandNumberAndMunicipalityIdAndNamespace(anyString(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(messages);
 
 		final var messageId = randomAlphabetic(10);
 
-		messageService.getMessagesByErrandNumber(messageId, MUNICIPALITY_ID);
+		messageService.getMessagesByErrandNumber(messageId, MUNICIPALITY_ID, NAMESPACE);
 
-		verify(messageRepositoryMock).findAllByErrandNumberAndMunicipalityId(messageId, MUNICIPALITY_ID);
+		verify(messageRepositoryMock).findAllByErrandNumberAndMunicipalityIdAndNamespace(messageId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageMapperMock).toMessageResponses(any());
 		verifyNoMoreInteractions(messageMapperMock);
 		verifyNoMoreInteractions(messageRepositoryMock);
@@ -104,11 +105,11 @@ class MessageServiceTest {
 	@Test
 	void getMessageAttachment() {
 		final var attachmentId = "attachmentId";
-		when(messageAttachmentRepositoryMock.findByAttachmentIDAndMunicipalityId(any(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(messageAttachmentMock));
+		when(messageAttachmentRepositoryMock.findByAttachmentIDAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(messageAttachmentMock));
 
-		messageService.getMessageAttachment(attachmentId, MUNICIPALITY_ID);
+		messageService.getMessageAttachment(attachmentId, MUNICIPALITY_ID, NAMESPACE);
 
-		verify(messageAttachmentRepositoryMock).findByAttachmentIDAndMunicipalityId(attachmentId, MUNICIPALITY_ID);
+		verify(messageAttachmentRepositoryMock).findByAttachmentIDAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageMapperMock).toAttachmentDto(messageAttachmentMock);
 	}
 
@@ -116,11 +117,11 @@ class MessageServiceTest {
 	void getNonExistingMessageAttachment() {
 		final var attachmentId = "attachmentId";
 
-		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.getMessageAttachment(attachmentId, MUNICIPALITY_ID));
+		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.getMessageAttachment(attachmentId, MUNICIPALITY_ID, NAMESPACE));
 
 		assertThat(exception.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(exception.getMessage()).isEqualTo("Not Found: MessageAttachment not found");
-		verify(messageAttachmentRepositoryMock).findByAttachmentIDAndMunicipalityId(attachmentId, MUNICIPALITY_ID);
+		verify(messageAttachmentRepositoryMock).findByAttachmentIDAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageMapperMock, never()).toAttachmentDto(any());
 	}
 
@@ -132,7 +133,7 @@ class MessageServiceTest {
 		final var fileName = "fileName";
 		final var inputStream = IOUtils.toInputStream(content, UTF_8);
 
-		when(messageAttachmentRepositoryMock.findByAttachmentIDAndMunicipalityId(any(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(messageAttachmentMock));
+		when(messageAttachmentRepositoryMock.findByAttachmentIDAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(messageAttachmentMock));
 		when(messageAttachmentMock.getContentType()).thenReturn(contentType);
 		when(messageAttachmentMock.getName()).thenReturn(fileName);
 		when(messageAttachmentMock.getAttachmentData()).thenReturn(messageAttachmentDataMock);
@@ -141,9 +142,9 @@ class MessageServiceTest {
 		when(blobMock.getBinaryStream()).thenReturn(inputStream);
 		when(servletResponseMock.getOutputStream()).thenReturn(servletOutputStreamMock);
 
-		messageService.getMessageAttachmentStreamed(attachmentId, MUNICIPALITY_ID, servletResponseMock);
+		messageService.getMessageAttachmentStreamed(attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock);
 
-		verify(messageAttachmentRepositoryMock).findByAttachmentIDAndMunicipalityId(attachmentId, MUNICIPALITY_ID);
+		verify(messageAttachmentRepositoryMock).findByAttachmentIDAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageAttachmentMock).getAttachmentData();
 		verify(messageAttachmentDataMock).getFile();
 		verify(blobMock).length();
@@ -160,18 +161,18 @@ class MessageServiceTest {
 		final var contentType = "contentType";
 		final var fileName = "fileName";
 
-		when(messageAttachmentRepositoryMock.findByAttachmentIDAndMunicipalityId(any(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(messageAttachmentMock));
+		when(messageAttachmentRepositoryMock.findByAttachmentIDAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(messageAttachmentMock));
 		when(messageAttachmentMock.getContentType()).thenReturn(contentType);
 		when(messageAttachmentMock.getName()).thenReturn(fileName);
 		when(messageAttachmentMock.getAttachmentData()).thenReturn(messageAttachmentDataMock);
 		when(messageAttachmentDataMock.getFile()).thenReturn(blobMock);
 		when(blobMock.length()).thenThrow(new SQLException("testException"));
 
-		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.getMessageAttachmentStreamed(attachmentId, MUNICIPALITY_ID, servletResponseMock));
+		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.getMessageAttachmentStreamed(attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock));
 
 		assertThat(exception.getStatus()).isEqualTo(Status.INTERNAL_SERVER_ERROR);
 		assertThat(exception.getMessage()).isEqualTo("Internal Server Error: SQLException occurred when copying file with attachment id 'attachmentId' to response: testException");
-		verify(messageAttachmentRepositoryMock).findByAttachmentIDAndMunicipalityId(attachmentId, MUNICIPALITY_ID);
+		verify(messageAttachmentRepositoryMock).findByAttachmentIDAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageAttachmentMock).getAttachmentData();
 		verify(messageAttachmentDataMock).getFile();
 		verify(servletResponseMock).addHeader(CONTENT_TYPE, contentType);
@@ -184,11 +185,11 @@ class MessageServiceTest {
 	void getNonExistingMessageAttachmentStreamed() {
 		final var attachmentId = "attachmentId";
 
-		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.getMessageAttachmentStreamed(attachmentId, MUNICIPALITY_ID, servletResponseMock));
+		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.getMessageAttachmentStreamed(attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock));
 
 		assertThat(exception.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(exception.getMessage()).isEqualTo("Not Found: MessageAttachment not found");
-		verify(messageAttachmentRepositoryMock).findByAttachmentIDAndMunicipalityId(attachmentId, MUNICIPALITY_ID);
+		verify(messageAttachmentRepositoryMock).findByAttachmentIDAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(messageAttachmentMock, servletResponseMock);
 	}
 
@@ -196,9 +197,9 @@ class MessageServiceTest {
 	void saveMessage() {
 		final var request = MessageRequest.builder().build();
 
-		messageService.saveMessage(request, MUNICIPALITY_ID);
+		messageService.saveMessage(request, MUNICIPALITY_ID, NAMESPACE);
 
-		verify(messageMapperMock).toMessageEntity(request, MUNICIPALITY_ID);
+		verify(messageMapperMock).toMessageEntity(request, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageRepositoryMock).save(any());
 		verifyNoMoreInteractions(messageRepositoryMock, messageMapperMock);
 	}
@@ -208,11 +209,11 @@ class MessageServiceTest {
 	void updateViewedStatusOnExistingMessage(final boolean viewed) {
 		final var messageId = randomAlphabetic(10);
 
-		when(messageRepositoryMock.findByMessageIDAndMunicipalityId(messageId, MUNICIPALITY_ID)).thenReturn(Optional.of(messageMock));
+		when(messageRepositoryMock.findByMessageIDAndMunicipalityIdAndNamespace(messageId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(messageMock));
 
-		messageService.updateViewedStatus(messageId, MUNICIPALITY_ID, viewed);
+		messageService.updateViewedStatus(messageId, MUNICIPALITY_ID, NAMESPACE, viewed);
 
-		verify(messageRepositoryMock).findByMessageIDAndMunicipalityId(messageId, MUNICIPALITY_ID);
+		verify(messageRepositoryMock).findByMessageIDAndMunicipalityIdAndNamespace(messageId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageMock).setViewed(viewed);
 		verify(messageRepositoryMock).save(messageMock);
 	}
@@ -222,13 +223,14 @@ class MessageServiceTest {
 
 		final var messageId = randomAlphabetic(10);
 
-		assertThatThrownBy(() -> messageService.updateViewedStatus(messageId, MUNICIPALITY_ID, true))
+		assertThatThrownBy(() -> messageService.updateViewedStatus(messageId, MUNICIPALITY_ID, NAMESPACE, true))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
-			.hasFieldOrPropertyWithValue("message", "Not Found: Message with id %s not found" .formatted(messageId));
+			.hasFieldOrPropertyWithValue("message", "Not Found: Message with id %s not found".formatted(messageId));
 
-		verify(messageRepositoryMock).findByMessageIDAndMunicipalityId(messageId, MUNICIPALITY_ID);
+		verify(messageRepositoryMock).findByMessageIDAndMunicipalityIdAndNamespace(messageId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageRepositoryMock, never()).save(any());
 		verifyNoInteractions(messageMock);
 	}
+
 }

@@ -30,6 +30,7 @@ class MessageAttachmentTest {
 		final var contentType = "contentType";
 		final var messageID = "messageID";
 		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
 		final var name = "name";
 
 		final var bean = MessageAttachment.builder()
@@ -37,6 +38,7 @@ class MessageAttachmentTest {
 			.withAttachmentID(attachmentID)
 			.withContentType(contentType)
 			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.withMessageID(messageID)
 			.withName(name)
 			.build();
@@ -48,6 +50,7 @@ class MessageAttachmentTest {
 		assertThat(bean.getMessageID()).isEqualTo(messageID);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getName()).isEqualTo(name);
+		assertThat(bean.getNamespace()).isEqualTo(namespace);
 	}
 
 	@Test
@@ -55,4 +58,5 @@ class MessageAttachmentTest {
 		assertThat(MessageAttachment.builder().build()).hasAllNullFieldsOrProperties();
 		assertThat(new MessageAttachment()).hasAllNullFieldsOrProperties();
 	}
+
 }

@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.Assertions.within;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -52,7 +53,7 @@ class AttachmentRepositoryTest {
 		final var errandNumber = "ERRAND-NUMBER-2";
 
 		// Act
-		final var result = attachmentRepository.findAllByErrandNumberAndMunicipalityId(errandNumber, MUNICIPALITY_ID);
+		final var result = attachmentRepository.findAllByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result)
@@ -71,7 +72,7 @@ class AttachmentRepositoryTest {
 		final var errandNumber = "NON-EXISTING";
 
 		// Act
-		final var result = attachmentRepository.findAllByErrandNumberAndMunicipalityId(errandNumber, MUNICIPALITY_ID);
+		final var result = attachmentRepository.findAllByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -84,7 +85,7 @@ class AttachmentRepositoryTest {
 		final var id = 1L;
 
 		// Act
-		final var result = attachmentRepository.findByIdAndMunicipalityId(id, MUNICIPALITY_ID).orElseThrow();
+		final var result = attachmentRepository.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
 
 		// Assert
 		assertThat(result.getCategory()).isEqualTo("MEDICAL_CONFIRMATION");
@@ -106,7 +107,7 @@ class AttachmentRepositoryTest {
 		final var id = 666L;
 
 		// Act
-		final var result = attachmentRepository.findByIdAndMunicipalityId(id, MUNICIPALITY_ID);
+		final var result = attachmentRepository.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -117,13 +118,13 @@ class AttachmentRepositoryTest {
 
 		// Arrange
 		final var id = 1L;
-		assertThat(attachmentRepository.existsByIdAndMunicipalityId(id, MUNICIPALITY_ID)).isTrue();
+		assertThat(attachmentRepository.existsByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).isTrue();
 
 		// Act
-		attachmentRepository.deleteByIdAndMunicipalityId(id, MUNICIPALITY_ID);
+		attachmentRepository.deleteByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		assertThat(attachmentRepository.existsByIdAndMunicipalityId(id, MUNICIPALITY_ID)).isFalse();
+		assertThat(attachmentRepository.existsByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).isFalse();
 	}
 
 	@Test
@@ -172,4 +173,5 @@ class AttachmentRepositoryTest {
 		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 		assertThat(result.getVersion()).isEqualTo(version);
 	}
+
 }

@@ -15,9 +15,10 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 @CircuitBreaker(name = "stakeholderRepository")
 public interface StakeholderRepository extends JpaRepository<Stakeholder, Long>, JpaSpecificationExecutor<Stakeholder> {
 
-	List<Stakeholder> findByRolesAndMunicipalityId(final String stakeholderRole, final String municipalityId);
+	List<Stakeholder> findByRolesAndMunicipalityIdAndNamespace(final String stakeholderRole, final String municipalityId, final String namespace);
 
-	Optional<Stakeholder> findByIdAndMunicipalityId(final Long id, final String municipalityId);
+	Optional<Stakeholder> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
 
-	List<Stakeholder> findAllByMunicipalityId(final String municipalityId);
+	List<Stakeholder> findAllByMunicipalityIdAndNamespace(final String municipalityId, final String namespace);
+
 }

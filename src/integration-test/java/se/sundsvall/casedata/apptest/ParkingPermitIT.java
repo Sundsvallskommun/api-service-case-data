@@ -2,6 +2,8 @@ package se.sundsvall.casedata.apptest;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.OK;
+import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,7 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class ParkingPermitIT extends AbstractAppTest {
 
-	private static final String PATH = "/2281/parking-permits";
+	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/parking-permits";
 
 	@Test
 	void test01_getAllParkingPermits() {
@@ -39,4 +41,5 @@ class ParkingPermitIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse();
 	}
+
 }

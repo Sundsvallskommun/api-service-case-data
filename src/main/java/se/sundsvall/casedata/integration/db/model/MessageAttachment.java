@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,8 @@ import lombok.ToString;
 @Entity
 @Table(name = "message_attachment",
 	indexes = {
-		@Index(name = "idx_message_attachment_municipality_id", columnList = "municipality_id")
+		@Index(name = "idx_message_attachment_municipality_id", columnList = "municipality_id"),
+		@Index(name = "idx_message_attachment_namespace", columnList = "namespace")
 	},
 	uniqueConstraints = {
 		@UniqueConstraint(name = "UK_message_attachment_data_id",
@@ -48,6 +50,9 @@ public class MessageAttachment {
 	@Column(name = "municipality_id")
 	private String municipalityId;
 
+	@Column(name = "namespace")
+	private String namespace;
+
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "message_attachment_data_id", nullable = false, foreignKey = @ForeignKey(name = "fk_message_attachment_data_message_attachment"))
 	private MessageAttachmentData attachmentData;
@@ -55,4 +60,5 @@ public class MessageAttachment {
 	private String name;
 
 	private String contentType;
+
 }

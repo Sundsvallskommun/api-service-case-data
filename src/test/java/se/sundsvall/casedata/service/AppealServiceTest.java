@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAppeal;
 import static se.sundsvall.casedata.TestUtil.createAppealDTO;
 import static se.sundsvall.casedata.TestUtil.createDecision;
@@ -45,17 +46,23 @@ class AppealServiceTest {
 	@Captor
 	private ArgumentCaptor<Appeal> appealCaptor;
 
+	private static Stream<Arguments> decisionProvider() {
+		return Stream.of(
+			Arguments.of(2L, 2L),
+			Arguments.of(999L, null));
+	}
+
 	@Test
 	void getAppealById() {
 		final Appeal appeal = createAppeal();
 
-		when(appealRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(appeal));
+		when(appealRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(appeal));
 
-		var result = appealService.findByIdAndMunicipalityId(appeal.getId(), MUNICIPALITY_ID);
+		var result = appealService.findByIdAndMunicipalityIdAndNamespace(appeal.getId(), MUNICIPALITY_ID, NAMESPACE);
 
 		assertThat(result).isNotNull();
 
-		verify(appealRepositoryMock).findByIdAndMunicipalityId(appeal.getId(), MUNICIPALITY_ID);
+		verify(appealRepositoryMock).findByIdAndMunicipalityIdAndNamespace(appeal.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(appealRepositoryMock);
 	}
 
@@ -64,14 +71,14 @@ class AppealServiceTest {
 		final Appeal appeal = createAppeal();
 		appeal.setId(new Random().nextLong());
 
-		doReturn(Optional.of(appeal)).when(appealRepositoryMock).findByIdAndMunicipalityId(appeal.getId(), MUNICIPALITY_ID);
+		doReturn(Optional.of(appeal)).when(appealRepositoryMock).findByIdAndMunicipalityIdAndNamespace(appeal.getId(), MUNICIPALITY_ID, NAMESPACE);
 
 		final PatchAppealDTO patch = new PatchAppealDTO();
 		patch.setDescription("New description");
 		patch.setStatus(AppealStatus.REJECTED.name());
 		patch.setTimelinessReview(TimelinessReview.REJECTED.name());
 
-		appealService.updateAppeal(appeal.getId(), MUNICIPALITY_ID, patch);
+		appealService.updateAppeal(appeal.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
 
 		verify(appealRepositoryMock).save(appealCaptor.capture());
 
@@ -92,9 +99,9 @@ class AppealServiceTest {
 		final var entity = createAppeal();
 		entity.setErrand(createErrand());
 
-		when(appealRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
+		when(appealRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
 
-		appealService.replaceAppeal(1L, MUNICIPALITY_ID, dto);
+		appealService.replaceAppeal(1L, MUNICIPALITY_ID, NAMESPACE, dto);
 
 		verify(appealRepositoryMock).save(appealCaptor.capture());
 
@@ -104,7 +111,7 @@ class AppealServiceTest {
 		assertThat(savedAppeal.getStatus()).isEqualTo(AppealStatus.REJECTED);
 		assertThat(savedAppeal.getTimelinessReview()).isEqualTo(TimelinessReview.REJECTED);
 
-		verify(appealRepositoryMock).findByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
+		verify(appealRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verify(appealRepositoryMock).save(entity);
 		verifyNoMoreInteractions(appealRepositoryMock);
 	}
@@ -130,9 +137,9 @@ class AppealServiceTest {
 		errand.setDecisions(List.of(currentDecision, newDecision));
 		entity.setErrand(errand);
 
-		when(appealRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
+		when(appealRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
 
-		appealService.replaceAppeal(1L, MUNICIPALITY_ID, dto);
+		appealService.replaceAppeal(1L, MUNICIPALITY_ID, NAMESPACE, dto);
 
 		verify(appealRepositoryMock).save(appealCaptor.capture());
 
@@ -145,14 +152,9 @@ class AppealServiceTest {
 		if (expectedDecisionId == null) {
 			assertThat(savedAppeal.getDecision()).isNull();
 		}
-		verify(appealRepositoryMock).findByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
+		verify(appealRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verify(appealRepositoryMock).save(entity);
 		verifyNoMoreInteractions(appealRepositoryMock);
 	}
 
-	private static Stream<Arguments> decisionProvider() {
-		return Stream.of(
-			Arguments.of(2L, 2L),
-			Arguments.of(999L, null));
-	}
 }

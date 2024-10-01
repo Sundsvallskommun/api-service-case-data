@@ -11,7 +11,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 
-import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import se.sundsvall.casedata.api.model.EmailHeaderDTO;
 import se.sundsvall.casedata.api.model.MessageAttachmentDTO;
 import se.sundsvall.casedata.api.model.MessageRequest;
@@ -25,6 +24,8 @@ import se.sundsvall.casedata.integration.db.model.MessageAttachmentData;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.service.util.BlobBuilder;
 
+import generated.se.sundsvall.webmessagecollector.MessageDTO;
+
 @Component
 public class MessageMapper {
 
@@ -34,7 +35,7 @@ public class MessageMapper {
 		this.blobBuilder = blobBuilder;
 	}
 
-	public Message toMessageEntity(final String errandNumber, final MessageDTO dto, final String municipalityId) {
+	public Message toMessageEntity(final String errandNumber, final MessageDTO dto, final String municipalityId, final String namespace) {
 		return Message.builder()
 			.withMessageID(UUID.randomUUID().toString())
 			.withErrandNumber(errandNumber)
@@ -49,11 +50,12 @@ public class MessageMapper {
 			.withUserID(dto.getUserId())
 			.withUsername(dto.getUsername())
 			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.withMessageType(MessageType.WEBMESSAGE.name())
 			.build();
 	}
 
-	public Message toMessageEntity(final MessageRequest request, final String municipalityId) {
+	public Message toMessageEntity(final MessageRequest request, final String municipalityId, final String namespace) {
 		final var entity = Message.builder()
 			.withMessageID(request.getMessageID())
 			.withErrandNumber(request.getErrandNumber())
@@ -70,6 +72,7 @@ public class MessageMapper {
 			.withEmail(request.getEmail())
 			.withUserID(request.getUserID())
 			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.withClassification(request.getClassification())
 			.withUsername(request.getUsername());
 
@@ -218,4 +221,5 @@ public class MessageMapper {
 			.withFile(blobBuilder.createBlob(result))
 			.build();
 	}
+
 }

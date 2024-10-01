@@ -16,7 +16,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
+
+import se.sundsvall.casedata.integration.db.model.enums.Header;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -24,12 +26,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import se.sundsvall.casedata.integration.db.model.enums.Header;
 
 @Entity
 @Table(name = "email_header")
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 @Setter
 @Builder(setterPrefix = "with")
@@ -51,4 +52,5 @@ public class EmailHeader {
 	@Column(name = "value")
 	@OrderColumn(name = "value_index")
 	private List<String> values;
+
 }

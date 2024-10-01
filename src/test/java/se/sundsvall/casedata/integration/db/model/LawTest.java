@@ -7,6 +7,7 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.time.OffsetDateTime;
@@ -32,4 +33,37 @@ class LawTest {
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
 	}
+	
+	@Test
+	void builder() {
+		// Arrange
+		var heading = "heading";
+		var sfs = "sfs";
+		var chapter = "chapter";
+		var article = "article";
+
+		// Act
+		var bean = Law.builder()
+			.withHeading(heading)
+			.withSfs(sfs)
+			.withChapter(chapter)
+			.withArticle(article)
+			.build();
+
+		// Assert
+		assertThat(bean).hasNoNullFieldsOrProperties();
+		assertThat(bean.getHeading()).isEqualTo(heading);
+		assertThat(bean.getSfs()).isEqualTo(sfs);
+		assertThat(bean.getChapter()).isEqualTo(chapter);
+		assertThat(bean.getArticle()).isEqualTo(article);
+
+	}
+
+
+	@Test
+	void testNoDirtOnCreatedBean() {
+		assertThat(Law.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new Law()).hasAllNullFieldsOrProperties();
+	}
+
 }

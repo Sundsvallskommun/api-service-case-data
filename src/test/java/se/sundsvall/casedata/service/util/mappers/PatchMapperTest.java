@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
 import static se.sundsvall.casedata.TestUtil.createDecision;
@@ -52,7 +53,7 @@ class PatchMapperTest {
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
 			assertThat(e.getApplicationReceived()).isEqualTo(patch.getApplicationReceived());
 			assertThat(e.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
-			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(facilityDTO -> toFacility(facilityDTO, MUNICIPALITY_ID)).toList());
+			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(facilityDTO -> toFacility(facilityDTO, MUNICIPALITY_ID, NAMESPACE)).toList());
 		});
 	}
 
@@ -165,4 +166,5 @@ class PatchMapperTest {
 			assertThat(f.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
 		});
 	}
+
 }

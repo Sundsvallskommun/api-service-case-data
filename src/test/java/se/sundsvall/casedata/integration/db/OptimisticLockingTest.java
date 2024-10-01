@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
 
@@ -40,10 +41,10 @@ class OptimisticLockingTest {
 	void patchErrandWithStakeholderOptimisticLockingFailureException() {
 		final var errand = createErrand();
 		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()));
-		when(errandRepositoryMock.findByIdAndMunicipalityId(any(Long.class), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		doThrow(OptimisticLockingFailureException.class).when(errandRepositoryMock).save(any());
 
-		assertThatThrownBy(() -> errandService.addStakeholderToErrand(123L, MUNICIPALITY_ID, stakeholderDto))
+		assertThatThrownBy(() -> errandService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
 			.isInstanceOf(OptimisticLockingFailureException.class);
 
 		//5 invocations because @Retry.
@@ -54,10 +55,10 @@ class OptimisticLockingTest {
 	void patchErrandWithStakeholderOtherException() {
 		final var errand = createErrand();
 		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()));
-		when(errandRepositoryMock.findByIdAndMunicipalityId(any(Long.class), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		doThrow(RuntimeException.class).when(errandRepositoryMock).save(any());
 
-		assertThatThrownBy(() -> errandService.addStakeholderToErrand(123L, MUNICIPALITY_ID, stakeholderDto))
+		assertThatThrownBy(() -> errandService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
 			.isInstanceOf(RuntimeException.class);
 
 		//Only 1 invocation, not retrying because it's not an OptimisticLockingFailureException.

@@ -11,8 +11,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import generated.se.sundsvall.webmessagecollector.MessageDTO;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
@@ -21,6 +19,9 @@ import se.sundsvall.casedata.integration.db.model.Message;
 import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollectorClient;
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
+
+import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Component
 @ConditionalOnProperty(prefix = "scheduler.message-collector", name = "enabled", havingValue = "true", matchIfMissing = true)
@@ -74,7 +75,8 @@ public class WebMessageCollectorService {
 		return errandRepository.findByExternalCaseId(messageDTO.getExternalCaseId()).map(errand -> {
 			final var errandNumber = errand.getErrandNumber();
 			final var municipalityId = errand.getMunicipalityId();
-			final var message = messageMapper.toMessageEntity(errandNumber, messageDTO, municipalityId);
+			final var namespace = errand.getNamespace();
+			final var message = messageMapper.toMessageEntity(errandNumber, messageDTO, municipalityId, namespace);
 			return messageRepository.saveAndFlush(message);
 		});
 	}
@@ -106,4 +108,5 @@ public class WebMessageCollectorService {
 	private void deleteMessages(final String municipalityId, final List<Integer> ids) {
 		webMessageCollectorClient.deleteMessages(municipalityId, ids);
 	}
+
 }

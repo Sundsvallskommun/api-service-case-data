@@ -47,5 +47,7 @@ class EmailHeaderTest {
 	@Test
 	void noDirtOnEmptyBean() {
 		assertThat(EmailHeader.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new EmailHeader()).hasAllNullFieldsOrProperties();
 	}
+
 }

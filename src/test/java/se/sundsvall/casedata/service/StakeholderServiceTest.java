@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.DRIVER;
@@ -49,25 +50,25 @@ class StakeholderServiceTest {
 	@Test
 	void findAllStakeholdersByMunicipalityId() {
 		final List<Stakeholder> stakeholders = List.of(createStakeholder(), createStakeholder());
-		when(stakeholderRepository.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(stakeholders);
+		when(stakeholderRepository.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE)).thenReturn(stakeholders);
 
-		final var result = stakeholderService.findAllStakeholdersByMunicipalityId(MUNICIPALITY_ID);
+		final var result = stakeholderService.findAllStakeholdersByMunicipalityId(MUNICIPALITY_ID, NAMESPACE);
 
 		assertThat(result).hasSize(2);
 
-		verify(stakeholderRepository).findAllByMunicipalityId(MUNICIPALITY_ID);
+		verify(stakeholderRepository).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(stakeholderRepository);
 	}
 
 	@Test
 	void findAllStakeholdersByMunicipalityId404() {
-		when(stakeholderRepository.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(List.of());
+		when(stakeholderRepository.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of());
 
-		assertThatThrownBy(() -> stakeholderService.findAllStakeholdersByMunicipalityId(MUNICIPALITY_ID))
+		assertThatThrownBy(() -> stakeholderService.findAllStakeholdersByMunicipalityId(MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND);
 
-		verify(stakeholderRepository).findAllByMunicipalityId(MUNICIPALITY_ID);
+		verify(stakeholderRepository).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(stakeholderRepository);
 	}
 
@@ -76,52 +77,53 @@ class StakeholderServiceTest {
 		final List<Stakeholder> stakeholders = Stream.of(
 				createStakeholderDTO(ORGANIZATION, List.of(DRIVER.name())),
 				createStakeholderDTO(PERSON, List.of(DRIVER.name(), OPERATOR.name())))
-			.map(stakeholderDTO -> toStakeholder(stakeholderDTO, MUNICIPALITY_ID))
+			.map(stakeholderDTO -> toStakeholder(stakeholderDTO, MUNICIPALITY_ID, NAMESPACE))
 			.toList();
-		when(stakeholderRepository.findByRolesAndMunicipalityId(DRIVER.name(), MUNICIPALITY_ID)).thenReturn(stakeholders);
+		when(stakeholderRepository.findByRolesAndMunicipalityIdAndNamespace(DRIVER.name(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(stakeholders);
 
-		final var result = stakeholderService.findStakeholdersByRoleAndMunicipalityId(DRIVER.name(), MUNICIPALITY_ID);
+		final var result = stakeholderService.findStakeholdersByRoleAndMunicipalityId(DRIVER.name(), MUNICIPALITY_ID, NAMESPACE);
 
 		assertThat(result).hasSize(2);
 
-		verify(stakeholderRepository).findByRolesAndMunicipalityId(DRIVER.name(), MUNICIPALITY_ID);
+		verify(stakeholderRepository).findByRolesAndMunicipalityIdAndNamespace(DRIVER.name(), MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(stakeholderRepository);
 	}
 
 	@Test
 	void findStakeholdersByRoleAndMunicipalityId404() {
-		when(stakeholderRepository.findByRolesAndMunicipalityId(DRIVER.name(), MUNICIPALITY_ID)).thenReturn(List.of());
+		when(stakeholderRepository.findByRolesAndMunicipalityIdAndNamespace(DRIVER.name(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of());
 
-		assertThatThrownBy(() -> stakeholderService.findStakeholdersByRoleAndMunicipalityId(DRIVER.name(), MUNICIPALITY_ID))
+		var driverName = DRIVER.name();
+		assertThatThrownBy(() -> stakeholderService.findStakeholdersByRoleAndMunicipalityId(driverName, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND);
 
-		verify(stakeholderRepository).findByRolesAndMunicipalityId(DRIVER.name(), MUNICIPALITY_ID);
+		verify(stakeholderRepository).findByRolesAndMunicipalityIdAndNamespace(DRIVER.name(), MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(stakeholderRepository);
 	}
 
 	@Test
 	void testFindByIdAndMunicipalityId() {
-		final var stakeholder = toStakeholder(createStakeholderDTO(PERSON, List.of(StakeholderRole.APPLICANT.name())), MUNICIPALITY_ID);
-		when(stakeholderRepository.findByIdAndMunicipalityId(anyLong(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(stakeholder));
+		final var stakeholder = toStakeholder(createStakeholderDTO(PERSON, List.of(StakeholderRole.APPLICANT.name())), MUNICIPALITY_ID, NAMESPACE);
+		when(stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(stakeholder));
 
-		final var result = stakeholderService.findByIdAndMunicipalityId(5L, MUNICIPALITY_ID);
+		final var result = stakeholderService.findByIdAndMunicipalityId(5L, MUNICIPALITY_ID, NAMESPACE);
 
 		assertThat(result).isEqualTo(toStakeholderDto(stakeholder));
 
-		verify(stakeholderRepository).findByIdAndMunicipalityId(5L, MUNICIPALITY_ID);
+		verify(stakeholderRepository).findByIdAndMunicipalityIdAndNamespace(5L, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(stakeholderRepository);
 	}
 
 	@Test
 	void testFindByIdAndMunicipalityIdNotFound() {
-		when(stakeholderRepository.findByIdAndMunicipalityId(anyLong(), eq(MUNICIPALITY_ID))).thenReturn(Optional.empty());
+		when(stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> stakeholderService.findByIdAndMunicipalityId(3L, MUNICIPALITY_ID))
+		assertThatThrownBy(() -> stakeholderService.findByIdAndMunicipalityId(3L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND);
 
-		verify(stakeholderRepository).findByIdAndMunicipalityId(3L, MUNICIPALITY_ID);
+		verify(stakeholderRepository).findByIdAndMunicipalityIdAndNamespace(3L, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(stakeholderRepository);
 	}
 
@@ -130,9 +132,9 @@ class StakeholderServiceTest {
 		final var stakeholder = createStakeholder();
 		final var stakeholderDto = createStakeholderDTO(PERSON, List.of(StakeholderRole.APPLICANT.name()));
 
-		when(stakeholderRepository.findByIdAndMunicipalityId(any(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(stakeholder));
+		when(stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(stakeholder));
 
-		stakeholderService.put(stakeholder.getId(), MUNICIPALITY_ID, stakeholderDto);
+		stakeholderService.put(stakeholder.getId(), MUNICIPALITY_ID, NAMESPACE, stakeholderDto);
 
 		assertThat(stakeholder).satisfies(s -> {
 			assertThat(s.getExtraParameters()).isEqualTo(stakeholderDto.getExtraParameters());
@@ -149,7 +151,7 @@ class StakeholderServiceTest {
 			assertThat(s.getContactInformation()).isEqualTo(stakeholderDto.getContactInformation().stream().map(EntityMapper::toContactInformation).toList());
 		});
 
-		verify(stakeholderRepository).findByIdAndMunicipalityId(stakeholder.getId(), MUNICIPALITY_ID);
+		verify(stakeholderRepository).findByIdAndMunicipalityIdAndNamespace(stakeholder.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(stakeholderRepository).save(stakeholder);
 		verifyNoMoreInteractions(stakeholderRepository);
 	}
@@ -158,11 +160,11 @@ class StakeholderServiceTest {
 	void testPatch() {
 		final StakeholderDTO stakeholderDTO = new StakeholderDTO();
 		final Stakeholder entity = new Stakeholder();
-		when(stakeholderRepository.findByIdAndMunicipalityId(anyLong(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(entity));
+		when(stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(entity));
 
-		stakeholderService.patch(1L, MUNICIPALITY_ID, stakeholderDTO);
+		stakeholderService.patch(1L, MUNICIPALITY_ID, NAMESPACE, stakeholderDTO);
 
-		verify(stakeholderRepository).findByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
+		verify(stakeholderRepository).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verify(stakeholderRepository).save(entity);
 		verifyNoMoreInteractions(stakeholderRepository);
 	}

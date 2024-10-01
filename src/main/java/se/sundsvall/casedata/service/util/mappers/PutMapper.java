@@ -63,10 +63,10 @@ public final class PutMapper {
 			oldDecision.setDecidedAt(newDecision.getDecidedAt());
 			oldDecision.setValidFrom(newDecision.getValidFrom());
 			oldDecision.setValidTo(newDecision.getValidTo());
-			oldDecision.setDecidedBy(EntityMapper.toStakeholder(newDecision.getDecidedBy(), oldDecision.getMunicipalityId()));
+			oldDecision.setDecidedBy(EntityMapper.toStakeholder(newDecision.getDecidedBy(), oldDecision.getMunicipalityId(), oldDecision.getNamespace()));
 			oldDecision.setLaw(new ArrayList<>(newDecision.getLaw().stream().map(EntityMapper::toLaw).toList()));
 			oldDecision.getAttachments().clear();
-			newDecision.getAttachments().forEach(attachment -> oldDecision.getAttachments().add(EntityMapper.toAttachment(attachment, oldDecision.getMunicipalityId())));
+			newDecision.getAttachments().forEach(attachment -> oldDecision.getAttachments().add(EntityMapper.toAttachment(attachment, oldDecision.getMunicipalityId(), oldDecision.getNamespace())));
 		});
 		return oldDecision;
 	}
@@ -103,4 +103,5 @@ public final class PutMapper {
 		});
 		return oldFacility;
 	}
+
 }

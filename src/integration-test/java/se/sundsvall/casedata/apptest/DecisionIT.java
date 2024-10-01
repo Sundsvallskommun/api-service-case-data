@@ -9,6 +9,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
@@ -31,12 +32,15 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 class DecisionIT extends AbstractAppTest {
 
 	private static final String DECISION_ID = "1";
+
 	private static final String ERRAND_ID = "1";
+
+	private static final String PATH = "/{0}/{1}/decisions/{2}";
 
 	@Test
 	void test01_getDecisionById() {
 		setupCall()
-			.withServicePath(format("/{0}/decisions/{1}", MUNICIPALITY_ID, DECISION_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, DECISION_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -46,7 +50,7 @@ class DecisionIT extends AbstractAppTest {
 	@Test
 	void test02_patchDecision() {
 		setupCall()
-			.withServicePath(format("/{0}/decisions/{1}", MUNICIPALITY_ID, DECISION_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, DECISION_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PATCH)
@@ -56,7 +60,7 @@ class DecisionIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath(format("/{0}/errands/{1}", MUNICIPALITY_ID, ERRAND_ID))
+			.withServicePath(format("/{0}/{1}/errands/{2}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -66,7 +70,7 @@ class DecisionIT extends AbstractAppTest {
 	@Test
 	void test03_putDecision() {
 		setupCall()
-			.withServicePath(format("/{0}/decisions/{1}", MUNICIPALITY_ID, DECISION_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, DECISION_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PUT)
@@ -76,10 +80,11 @@ class DecisionIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath(format("/{0}/errands/{1}", MUNICIPALITY_ID, ERRAND_ID))
+			.withServicePath(format("/{0}/{1}/errands/{2}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
+
 }

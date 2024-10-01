@@ -6,7 +6,9 @@ import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 public final class Constants {
 
-	private Constants() {}
+	public static final String NAMESPACE_REGEXP = "[\\w|\\.|\\-]+";
+
+	public static final String NAMESPACE_VALIDATION_MESSAGE = "can only contain A-Z, a-z, 0-9, -, _ and .";
 
 	public static final String PROCESS_ENGINE_PROBLEM_DETAIL = "Unexpected response from ProcessEngine API.";
 
@@ -29,4 +31,9 @@ public final class Constants {
 	public static final List<CaseType> PARKING_PERMIT_CASE_TYPES = CaseType.getValuesByAbbreviation("PRH");
 
 	public static final List<CaseType> MEX_CASE_TYPES = CaseType.getValuesByAbbreviation("MEX");
+
+	private Constants() {
+		// Prevent instantiation
+	}
+
 }

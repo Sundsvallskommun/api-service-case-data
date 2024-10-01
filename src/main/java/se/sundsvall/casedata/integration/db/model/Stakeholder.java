@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -23,19 +21,24 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import se.sundsvall.casedata.integration.db.listeners.StakeholderListener;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import se.sundsvall.casedata.integration.db.listeners.StakeholderListener;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 @Entity
 @Table(name = "stakeholder",
 	indexes = {
-		@Index(name = "idx_stakeholder_municipality_id", columnList = "municipality_id")
+		@Index(name = "idx_stakeholder_municipality_id", columnList = "municipality_id"),
+		@Index(name = "idx_stakeholder_namespace", columnList = "namespace")
 	})
 @EntityListeners(StakeholderListener.class)
 @Getter
@@ -56,6 +59,9 @@ public class Stakeholder extends BaseEntity {
 
 	@Column(name = "municipality_id")
 	private String municipalityId;
+
+	@Column(name = "namespace")
+	private String namespace;
 
 	@Column(name = "first_name")
 	private String firstName;
@@ -114,6 +120,7 @@ public class Stakeholder extends BaseEntity {
 			"errand.id=" + errandId +
 			", type=" + type +
 			", municipalityId='" + municipalityId + '\'' +
+			", namespace='" + namespace + '\'' +
 			", firstName='" + firstName + '\'' +
 			", lastName='" + lastName + '\'' +
 			", personId='" + personId + '\'' +
@@ -130,22 +137,16 @@ public class Stakeholder extends BaseEntity {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof final Stakeholder that)) {
-			return false;
-		}
-		if (!super.equals(o)) {
-			return false;
-		}
-		return (type == that.type) && Objects.equals(firstName, that.firstName) && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(lastName, that.lastName) && Objects.equals(personId, that.personId) && Objects.equals(organizationName,
-			that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber) && Objects.equals(authorizedSignatory, that.authorizedSignatory) && Objects.equals(adAccount, that.adAccount) && Objects.equals(roles, that.roles) && Objects
-				.equals(addresses, that.addresses) && Objects.equals(contactInformation, that.contactInformation) && Objects.equals(extraParameters, that.extraParameters);
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		final Stakeholder that = (Stakeholder) o;
+		return Objects.equals(errand, that.errand) && type == that.type && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(namespace, that.namespace) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(personId, that.personId) && Objects.equals(organizationName, that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber) && Objects.equals(authorizedSignatory, that.authorizedSignatory) && Objects.equals(adAccount, that.adAccount) && Objects.equals(roles, that.roles) && Objects.equals(addresses, that.addresses) && Objects.equals(contactInformation, that.contactInformation) && Objects.equals(extraParameters, that.extraParameters);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), type, firstName, lastName, personId, municipalityId, organizationName, organizationNumber, authorizedSignatory, adAccount, roles, addresses, contactInformation, extraParameters);
+		return Objects.hash(super.hashCode(), errand, type, municipalityId, namespace, firstName, lastName, personId, organizationName, organizationNumber, authorizedSignatory, adAccount, roles, addresses, contactInformation, extraParameters);
 	}
+
 }

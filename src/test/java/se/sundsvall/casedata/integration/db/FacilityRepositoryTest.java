@@ -3,6 +3,8 @@ package se.sundsvall.casedata.integration.db;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 import java.time.OffsetDateTime;
 
@@ -44,10 +46,9 @@ class FacilityRepositoryTest {
 		// Arrange
 		final var id = 1L;
 		final var errandId = 1L;
-		final var municipalityId = "2281";
 
 		// Act
-		final var result = facilityRepository.findByIdAndErrandIdAndMunicipalityId(id, errandId, municipalityId).orElseThrow();
+		final var result = facilityRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
 
 		// Assert
 		assertThat(result.getId()).isEqualTo(id);
@@ -61,12 +62,12 @@ class FacilityRepositoryTest {
 		// Arrange
 		final var id = 666L;
 		final var errandId = 666L;
-		final var municipalityId = "2281";
 
 		// Act
-		final var result = facilityRepository.findByIdAndErrandIdAndMunicipalityId(id, errandId, municipalityId);
+		final var result = facilityRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
 	}
+
 }

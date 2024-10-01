@@ -5,6 +5,7 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import org.hamcrest.MatcherAssert;
@@ -21,4 +22,30 @@ class CoordinatesTest {
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
 	}
+
+	@Test
+	void builder() {
+		// Arrange
+		var latitude = 1.0;
+		var longitude = 2.0;
+
+		// Act
+		var bean = Coordinates.builder()
+			.withLatitude(latitude)
+			.withLongitude(longitude)
+			.build();
+
+		// Assert
+		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(bean.getLatitude()).isEqualTo(latitude);
+		assertThat(bean.getLongitude()).isEqualTo(longitude);
+	}
+
+
+	@Test
+	void testNoDirtOnCreatedBean() {
+		assertThat(Coordinates.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new Coordinates()).hasAllNullFieldsOrProperties();
+	}
+
 }

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
@@ -51,23 +52,23 @@ class DecisionServiceTest {
 
 	@Test
 	void patchDecisionOnErrand() throws JsonProcessingException {
-		final Errand errand = toErrand(createErrandDTO(), MUNICIPALITY_ID);
+		final Errand errand = toErrand(createErrandDTO(), MUNICIPALITY_ID, NAMESPACE);
 		errand.setId(new Random().nextLong(1, 1000));
-		final Decision decision = toDecision(createDecisionDTO(), MUNICIPALITY_ID);
+		final Decision decision = toDecision(createDecisionDTO(), MUNICIPALITY_ID, NAMESPACE);
 		decision.setId(new Random().nextLong());
 		errand.setDecisions(List.of(decision));
 
 
 		final var mockDecision = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(decision), Decision.class);
 		mockDecision.setErrand(errand);
-		doReturn(Optional.of(mockDecision)).when(decisionRepository).findByIdAndMunicipalityId(decision.getId(), MUNICIPALITY_ID);
+		doReturn(Optional.of(mockDecision)).when(decisionRepository).findByIdAndMunicipalityIdAndNamespace(decision.getId(), MUNICIPALITY_ID, NAMESPACE);
 
 		final PatchDecisionDTO patch = new PatchDecisionDTO();
 		patch.setDecisionOutcome(DecisionOutcome.CANCELLATION);
 		patch.setDescription(RandomStringUtils.random(10, true, false));
 		patch.setExtraParameters(createExtraParameters());
 
-		decisionService.updateDecision(decision.getId(), MUNICIPALITY_ID, patch);
+		decisionService.updateDecision(decision.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
 		Mockito.verify(decisionRepository).save(decisionCaptor.capture());
 		final Decision persistedDecision = decisionCaptor.getValue();
 
@@ -86,9 +87,9 @@ class DecisionServiceTest {
 		final var dto = new PatchDecisionDTO();
 		final var entity = new Decision();
 
-		when(decisionRepository.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
+		when(decisionRepository.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
 
-		decisionService.updateDecision(1L, MUNICIPALITY_ID, dto);
+		decisionService.updateDecision(1L, MUNICIPALITY_ID, NAMESPACE, dto);
 
 		verify(decisionRepository, times(1)).save(entity);
 		verifyNoMoreInteractions(decisionRepository);

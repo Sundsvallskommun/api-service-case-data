@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createNoteDTO;
 
 import java.util.List;
@@ -28,7 +29,7 @@ import se.sundsvall.casedata.service.NoteService;
 @ActiveProfiles("junit")
 class NoteResourceTest {
 
-	private static final String BASE_URL = "/{municipalityId}/notes";
+	private static final String BASE_URL = "/{municipalityId}/{namespace}/notes";
 
 	@MockBean
 	private NoteService mockService;
@@ -40,10 +41,10 @@ class NoteResourceTest {
 	void getNoteByIdTest() {
 		final var id = 153L;
 		final var dto = createNoteDTO();
-		when(mockService.getNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID)).thenReturn(dto);
+		when(mockService.getNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(dto);
 
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_URL + "/{id}").build(Map.of("municipalityId", MUNICIPALITY_ID, "id", id)))
+			.uri(builder -> builder.path(BASE_URL + "/{id}").build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "id", id)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(NoteDTO.class)
@@ -51,7 +52,7 @@ class NoteResourceTest {
 			.getResponseBody();
 
 		assertThat(response).isEqualTo(dto);
-		verify(mockService).getNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID);
+		verify(mockService).getNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 	@Test
@@ -60,12 +61,12 @@ class NoteResourceTest {
 		final Optional<NoteType> noteType = Optional.empty();
 		final var dto1 = createNoteDTO();
 		final var dto2 = createNoteDTO();
-		when(mockService.getNotesByErrandIdAndMunicipalityIdAndNoteType(errandId, MUNICIPALITY_ID, noteType)).thenReturn(List.of(dto1, dto2));
+		when(mockService.getNotesByErrandIdAndMunicipalityIdAndNoteType(errandId, MUNICIPALITY_ID, NAMESPACE, noteType)).thenReturn(List.of(dto1, dto2));
 
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_URL + "/errand/{errandId}")
 				.queryParam("noteType", noteType)
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandId", errandId)))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBodyList(NoteDTO.class)
@@ -73,38 +74,39 @@ class NoteResourceTest {
 			.getResponseBody();
 
 		assertThat(response).containsExactly(dto1, dto2).hasSize(2);
-		verify(mockService).getNotesByErrandIdAndMunicipalityIdAndNoteType(errandId, MUNICIPALITY_ID, noteType);
+		verify(mockService).getNotesByErrandIdAndMunicipalityIdAndNoteType(errandId, MUNICIPALITY_ID, NAMESPACE, noteType);
 	}
 
 	@Test
 	void deleteNoteByIdTest() {
 		final var id = 153L;
-		doNothing().when(mockService).deleteNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID);
+		doNothing().when(mockService).deleteNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID, NAMESPACE);
 
 		webTestClient.delete()
 			.uri(builder -> builder.path(BASE_URL + "/{id}")
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "id", id)))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "id", id)))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(mockService).deleteNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID);
+		verify(mockService).deleteNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 	@Test
 	void patchNoteOnErrand() {
 		final var id = 153L;
 		final var dto = createNoteDTO();
-		doNothing().when(mockService).updateNote(id, MUNICIPALITY_ID, dto);
+		doNothing().when(mockService).updateNote(id, MUNICIPALITY_ID, NAMESPACE, dto);
 
 		webTestClient.patch()
 			.uri(builder -> builder.path(BASE_URL + "/{id}")
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "id", id)))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "id", id)))
 			.bodyValue(dto)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(mockService).updateNote(id, MUNICIPALITY_ID, dto);
+		verify(mockService).updateNote(id, MUNICIPALITY_ID, NAMESPACE, dto);
 	}
+
 }

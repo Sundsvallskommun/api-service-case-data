@@ -20,17 +20,27 @@ import se.sundsvall.casedata.integration.db.StakeholderRepository;
 public class HistoryService {
 
 	private static final ThrowableProblem ATTACHMENT_NOT_FOUND_PROBLEM = Problem.valueOf(NOT_FOUND, "Attachment not found");
+
 	private static final ThrowableProblem DECISION_NOT_FOUND_PROBLEM = Problem.valueOf(NOT_FOUND, "Decision not found");
+
 	private static final ThrowableProblem ERRAND_NOT_FOUND_PROBLEM = Problem.valueOf(NOT_FOUND, "Errand not found");
+
 	private static final ThrowableProblem FACILITY_NOT_FOUND_PROBLEM = Problem.valueOf(NOT_FOUND, "Facility not found");
+
 	private static final ThrowableProblem NOTE_NOT_FOUND_PROBLEM = Problem.valueOf(NOT_FOUND, "Note not found");
+
 	private static final ThrowableProblem STAKEHOLDER_NOT_FOUND_PROBLEM = Problem.valueOf(NOT_FOUND, "Stakeholder not found");
 
 	private final ErrandRepository errandRepository;
+
 	private final DecisionRepository decisionRepository;
+
 	private final AttachmentRepository attachmentRepository;
+
 	private final FacilityRepository facilityRepository;
+
 	private final NoteRepository noteRepository;
+
 	private final StakeholderRepository stakeholderRepository;
 
 	private final Javers javers;
@@ -48,8 +58,8 @@ public class HistoryService {
 		this.stakeholderRepository = stakeholderRepository;
 	}
 
-	public String findAttachmentHistory(final Long id, final String municipalityId) {
-		final var attachment = attachmentRepository.findByIdAndMunicipalityId(id, municipalityId)
+	public String findAttachmentHistory(final Long id, final String municipalityId, final String namespace) {
+		final var attachment = attachmentRepository.findByIdAndMunicipalityIdAndNamespace(id, municipalityId, namespace)
 			.orElseThrow(() -> ATTACHMENT_NOT_FOUND_PROBLEM);
 		final Changes changes = javers.findChanges(byInstance(attachment).withChildValueObjects().build());
 
@@ -59,8 +69,8 @@ public class HistoryService {
 		return javers.getJsonConverter().toJson(changes);
 	}
 
-	public String findDecisionHistory(final Long id, final String municipalityId) {
-		final var decision = decisionRepository.findByIdAndMunicipalityId(id, municipalityId)
+	public String findDecisionHistory(final Long id, final String municipalityId, final String namespace) {
+		final var decision = decisionRepository.findByIdAndMunicipalityIdAndNamespace(id, municipalityId, namespace)
 			.orElseThrow(() -> DECISION_NOT_FOUND_PROBLEM);
 		final Changes changes = javers.findChanges(byInstance(decision).withChildValueObjects().build());
 
@@ -70,8 +80,8 @@ public class HistoryService {
 		return javers.getJsonConverter().toJson(changes);
 	}
 
-	public String findErrandHistory(final Long id, final String municipalityId) {
-		final var errand = errandRepository.findByIdAndMunicipalityId(id, municipalityId)
+	public String findErrandHistory(final Long id, final String municipalityId, final String namespace) {
+		final var errand = errandRepository.findByIdAndMunicipalityIdAndNamespace(id, municipalityId, namespace)
 			.orElseThrow(() -> ERRAND_NOT_FOUND_PROBLEM);
 		final Changes changes = javers.findChanges(byInstance(errand).withChildValueObjects().build());
 
@@ -81,8 +91,8 @@ public class HistoryService {
 		return javers.getJsonConverter().toJson(changes);
 	}
 
-	public String findFacilityHistory(final Long id, final String municipalityId) {
-		final var facility = facilityRepository.findByIdAndMunicipalityId(id, municipalityId)
+	public String findFacilityHistory(final Long id, final String municipalityId, final String namespace) {
+		final var facility = facilityRepository.findByIdAndMunicipalityIdAndNamespace(id, municipalityId, namespace)
 			.orElseThrow(() -> FACILITY_NOT_FOUND_PROBLEM);
 		final Changes changes = javers.findChanges(byInstance(facility).withChildValueObjects().build());
 
@@ -92,8 +102,8 @@ public class HistoryService {
 		return javers.getJsonConverter().toJson(changes);
 	}
 
-	public String findNoteHistory(final Long id, final String municipalityId) {
-		final var note = noteRepository.findByIdAndMunicipalityId(id, municipalityId)
+	public String findNoteHistory(final Long id, final String municipalityId, final String namespace) {
+		final var note = noteRepository.findByIdAndMunicipalityIdAndNamespace(id, municipalityId, namespace)
 			.orElseThrow(() -> NOTE_NOT_FOUND_PROBLEM);
 		final Changes changes = javers.findChanges(byInstance(note).withChildValueObjects().build());
 
@@ -103,8 +113,8 @@ public class HistoryService {
 		return javers.getJsonConverter().toJson(changes);
 	}
 
-	public String findStakeholderHistory(final Long id, final String municipalityId) {
-		final var stakeholder = stakeholderRepository.findByIdAndMunicipalityId(id, municipalityId)
+	public String findStakeholderHistory(final Long id, final String municipalityId, final String namespace) {
+		final var stakeholder = stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(id, municipalityId, namespace)
 			.orElseThrow(() -> STAKEHOLDER_NOT_FOUND_PROBLEM);
 		final Changes changes = javers.findChanges(byInstance(stakeholder).withChildValueObjects().build());
 
@@ -113,4 +123,5 @@ public class HistoryService {
 		}
 		return javers.getJsonConverter().toJson(changes);
 	}
+
 }

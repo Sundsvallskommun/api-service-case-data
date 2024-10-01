@@ -8,6 +8,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ import se.sundsvall.casedata.service.MessageService;
 @ActiveProfiles("junit")
 class MessageResourceTest {
 
-	private static final String BASE_URL = "/{municipalityId}/messages";
+	private static final String BASE_URL = "/{municipalityId}/{namespace}/messages";
 
 	@MockBean
 	private MessageService messageServiceMock;
@@ -45,12 +46,12 @@ class MessageResourceTest {
 		final var errandNumber = RandomStringUtils.randomAlphanumeric(10);
 		final var messages = List.of(MessageResponse.builder().build());
 
-		when(messageServiceMock.getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID)).thenReturn(messages);
+		when(messageServiceMock.getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
 
 		// Act
 		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandNumber}")
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandNumber", errandNumber)))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandNumber", errandNumber)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -60,7 +61,7 @@ class MessageResourceTest {
 
 		// Assert
 		assertThat(response).isEqualTo(messages);
-		verify(messageServiceMock).getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID);
+		verify(messageServiceMock).getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 	@Test
@@ -70,7 +71,7 @@ class MessageResourceTest {
 
 		// Act
 		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.bodyValue(request)
 			.exchange()
@@ -79,7 +80,7 @@ class MessageResourceTest {
 			.expectBody().isEmpty();
 
 		// Assert
-		verify(messageServiceMock).saveMessage(request, MUNICIPALITY_ID);
+		verify(messageServiceMock).saveMessage(request, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 	@Test
@@ -93,6 +94,7 @@ class MessageResourceTest {
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{messageID}/viewed/{isViewed}")
 				.build(Map.of(
 					"municipalityId", MUNICIPALITY_ID,
+					"namespace", NAMESPACE,
 					"messageID", messageID,
 					"isViewed", isViewed)))
 			.exchange()
@@ -101,6 +103,7 @@ class MessageResourceTest {
 			.expectBody().isEmpty();
 
 		// Assert
-		verify(messageServiceMock).updateViewedStatus(messageID, MUNICIPALITY_ID, isViewed);
+		verify(messageServiceMock).updateViewedStatus(messageID, MUNICIPALITY_ID, NAMESPACE, isViewed);
 	}
+
 }

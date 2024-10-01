@@ -7,6 +7,7 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.time.OffsetDateTime;
@@ -32,4 +33,33 @@ class StatusTest {
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
 	}
+	
+	@Test
+	void builder() {
+		// Arrange
+		var statusType = "statusType";
+		var description = "description";
+		var dateTime = now().plusDays(new Random().nextInt());
+
+		// Act
+		var bean = Status.builder()
+			.withStatusType(statusType)
+			.withDescription(description)
+			.withDateTime(dateTime)
+			.build();
+
+		// Assert
+		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(bean.getStatusType()).isEqualTo(statusType);
+		assertThat(bean.getDescription()).isEqualTo(description);
+		assertThat(bean.getDateTime()).isEqualTo(dateTime);
+
+	}
+
+	@Test
+	void testNoDirtOnCreatedBean() {
+		assertThat(Status.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new Status()).hasAllNullFieldsOrProperties();
+	}
+
 }

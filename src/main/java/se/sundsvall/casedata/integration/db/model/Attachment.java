@@ -15,6 +15,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -29,7 +30,8 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "attachment",
 	indexes = {
 		@Index(name = "attachment_errand_number_idx", columnList = "errand_number"),
-		@Index(name = "idx_attachment_municipality_id", columnList = "municipality_id")
+		@Index(name = "idx_attachment_municipality_id", columnList = "municipality_id"),
+		@Index(name = "idx_attachment_namespace", columnList = "namespace")
 	})
 @Getter
 @Setter
@@ -66,6 +68,10 @@ public class Attachment extends BaseEntity {
 	@Column(name = "municipality_id")
 	private String municipalityId;
 
+	@With
+	@Column(name = "namespace")
+	private String namespace;
+
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "attachment_extra_parameters",
 		joinColumns = @JoinColumn(name = "attachment_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_attachment_extra_parameters_attachment_id")))
@@ -73,4 +79,5 @@ public class Attachment extends BaseEntity {
 	@Column(name = "extra_parameter_value", length = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
+
 }

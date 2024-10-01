@@ -47,6 +47,7 @@ class MessageTest {
 		final var subject = "subject";
 		final var textmessage = "textmessage";
 		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
 		final var userID = "userID";
 		final var username = "username";
 		final var viewed = true;
@@ -64,6 +65,7 @@ class MessageTest {
 			.withExternalCaseID(externalCaseID)
 			.withFamilyID(familyID)
 			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.withFirstName(firstName)
 			.withLastName(lastName)
 			.withMessageID(messageID)
@@ -82,6 +84,7 @@ class MessageTest {
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(bean.getAttachments()).isEqualTo(attachments);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
+		assertThat(bean.getNamespace()).isEqualTo(namespace);
 		assertThat(bean.getDirection()).isEqualTo(direction);
 		assertThat(bean.getEmail()).isEqualTo(email);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);

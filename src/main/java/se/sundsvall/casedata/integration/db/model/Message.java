@@ -32,7 +32,8 @@ import lombok.With;
 @Entity
 @Table(name = "message",
 	indexes = {
-		@Index(name = "idx_message_municipality_id", columnList = "municipality_id")
+		@Index(name = "idx_message_municipality_id", columnList = "municipality_id"),
+		@Index(name = "idx_message_namespace", columnList = "namespace")
 	})
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -51,6 +52,9 @@ public class Message {
 
 	@Column(name = "municipality_id")
 	private String municipalityId;
+
+	@Column(name = "namespace")
+	private String namespace;
 
 	@Enumerated(EnumType.STRING)
 	private Direction direction;

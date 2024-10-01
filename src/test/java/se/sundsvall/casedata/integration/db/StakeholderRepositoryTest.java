@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.integration.db.model.enums.AddressCategory.POSTAL_ADDRESS;
 import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
 import static se.sundsvall.casedata.integration.db.model.enums.StakeholderType.PERSON;
@@ -57,7 +58,7 @@ class StakeholderRepositoryTest {
 		final var id = 1L;
 
 		// Act
-		final var result = stakeholderRepository.findByIdAndMunicipalityId(id, MUNICIPALITY_ID).orElseThrow();
+		final var result = stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
 
 		// Assert
 		assertThat(result.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
@@ -67,6 +68,8 @@ class StakeholderRepositoryTest {
 		assertThat(result.getLastName()).isEqualTo("LAST-NAME-1");
 		assertThat(result.getPersonId()).isEqualTo("d7af5f83-166a-468b-ab86-da8ca30ea97c");
 		assertThat(result.getType()).isEqualTo(PERSON);
+		assertThat(result.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+		assertThat(result.getNamespace()).isEqualTo(NAMESPACE);
 	}
 
 	@Test
@@ -89,7 +92,7 @@ class StakeholderRepositoryTest {
 		final var role = "ADMINISTRATOR";
 
 		// Act
-		final var result = stakeholderRepository.findByRolesAndMunicipalityId(role, MUNICIPALITY_ID);
+		final var result = stakeholderRepository.findByRolesAndMunicipalityIdAndNamespace(role, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result)
@@ -102,6 +105,8 @@ class StakeholderRepositoryTest {
 				assertThat(obj.getLastName()).isEqualTo("LAST-NAME-1");
 				assertThat(obj.getPersonId()).isEqualTo("d7af5f83-166a-468b-ab86-da8ca30ea97c");
 				assertThat(obj.getType()).isEqualTo(PERSON);
+				assertThat(obj.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+				assertThat(obj.getNamespace()).isEqualTo(NAMESPACE);
 			});
 	}
 
@@ -112,7 +117,7 @@ class StakeholderRepositoryTest {
 		final var role = "NON-EXISTING";
 
 		// Act
-		final var result = stakeholderRepository.findByRolesAndMunicipalityId(role, MUNICIPALITY_ID);
+		final var result = stakeholderRepository.findByRolesAndMunicipalityIdAndNamespace(role, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -152,6 +157,8 @@ class StakeholderRepositoryTest {
 			.withRoles(List.of(role))
 			.withType(PERSON)
 			.withVersion(version)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.build();
 
 		// Act
@@ -171,5 +178,8 @@ class StakeholderRepositoryTest {
 		assertThat(result.getType()).isEqualTo(PERSON);
 		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 		assertThat(result.getVersion()).isEqualTo(version);
+		assertThat(result.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+		assertThat(result.getNamespace()).isEqualTo(NAMESPACE);
 	}
+
 }

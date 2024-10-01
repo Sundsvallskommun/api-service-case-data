@@ -9,6 +9,7 @@
         registered_at datetime(6),
         updated datetime(6),
         municipality_id varchar(255),
+        namespace varchar(255),
         description text,
         status varchar(255),
         timeliness_review varchar(255),
@@ -28,6 +29,7 @@
         mime_type varchar(255),
         municipality_id varchar(255),
         name varchar(255),
+        namespace varchar(255),
         file longtext,
         primary key (id)
     ) engine=InnoDB;
@@ -50,6 +52,7 @@
         valid_from datetime(6),
         valid_to datetime(6),
         municipality_id varchar(255),
+        namespace varchar(255),
         description text,
         decision_outcome enum ('APPROVAL','CANCELLATION','DISMISSAL','REJECTION'),
         decision_type enum ('FINAL','PROPOSED','RECOMMENDED'),
@@ -105,6 +108,7 @@
         errand_number varchar(255) not null,
         external_case_id varchar(255),
         municipality_id varchar(255),
+        namespace varchar(255),
         phase varchar(255),
         process_id varchar(255),
         updated_by_client varchar(255),
@@ -150,6 +154,7 @@
         house_number varchar(255),
         invoice_marking varchar(255),
         municipality_id varchar(255),
+        namespace varchar(255),
         postal_code varchar(255),
         property_designation varchar(255),
         street varchar(255),
@@ -176,6 +181,7 @@
         messageid varchar(255) not null,
         mobile_number varchar(255),
         municipality_id varchar(255),
+        namespace varchar(255),
         sent varchar(255),
         subject varchar(255),
         userid varchar(255),
@@ -193,6 +199,7 @@
         messageid varchar(255),
         municipality_id varchar(255),
         name varchar(255),
+        namespace varchar(255),
         primary key (attachmentid)
     ) engine=InnoDB;
 
@@ -212,6 +219,7 @@
         updated_by varchar(36),
         text varchar(10000),
         municipality_id varchar(255),
+        namespace varchar(255),
         title varchar(255),
         note_type enum ('INTERNAL','PUBLIC'),
         primary key (id)
@@ -235,6 +243,7 @@
         first_name varchar(255),
         last_name varchar(255),
         municipality_id varchar(255),
+        namespace varchar(255),
         organization_name varchar(255),
         organization_number varchar(255),
         person_id varchar(255),
@@ -287,17 +296,32 @@
     create index idx_appeal_municipality_id 
        on appeal (municipality_id);
 
+    create index idx_appeal_namespace 
+       on appeal (namespace);
+
     create index attachment_errand_number_idx 
        on attachment (errand_number);
 
     create index idx_attachment_municipality_id 
        on attachment (municipality_id);
 
+    create index idx_attachment_namespace 
+       on attachment (namespace);
+
     create index idx_decision_municipality_id 
        on decision (municipality_id);
 
+    create index idx_decision_namespace 
+       on decision (namespace);
+
     alter table if exists decision 
        add constraint UKj00sxiyx1fhmcdofxuugumdon unique (decided_by_id);
+
+    create index idx_errand_municipality_id 
+       on errand (municipality_id);
+
+    create index idx_errand_namespace 
+       on errand (namespace);
 
     alter table if exists errand 
        add constraint UK_errand_errand_number unique (errand_number);
@@ -305,11 +329,20 @@
     create index idx_facility_municipality_id 
        on facility (municipality_id);
 
+    create index idx_facility_namespace 
+       on facility (namespace);
+
     create index idx_message_municipality_id 
        on message (municipality_id);
 
+    create index idx_message_namespace 
+       on message (namespace);
+
     create index idx_message_attachment_municipality_id 
        on message_attachment (municipality_id);
+
+    create index idx_message_attachment_namespace 
+       on message_attachment (namespace);
 
     alter table if exists message_attachment 
        add constraint UK_message_attachment_data_id unique (message_attachment_data_id);
@@ -317,8 +350,14 @@
     create index idx_note_municipality_id 
        on note (municipality_id);
 
+    create index idx_note_namespace 
+       on note (namespace);
+
     create index idx_stakeholder_municipality_id 
        on stakeholder (municipality_id);
+
+    create index idx_stakeholder_namespace 
+       on stakeholder (namespace);
 
     alter table if exists appeal 
        add constraint FK_appeal_decision_id 

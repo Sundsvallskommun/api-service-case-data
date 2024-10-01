@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -20,8 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
 import org.zalando.problem.ThrowableProblem;
 
-import generated.se.sundsvall.webmessagecollector.MessageDTO;
-import generated.se.sundsvall.webmessagecollector.MessageDTO.DirectionEnum;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.MessageRequest.AttachmentRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
@@ -35,7 +34,10 @@ import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.dept44.common.validators.annotation.impl.ValidUuidConstraintValidator;
 
-@SpringBootTest(classes = { Application.class }, webEnvironment = MOCK)
+import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import generated.se.sundsvall.webmessagecollector.MessageDTO.DirectionEnum;
+
+@SpringBootTest(classes = {Application.class}, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class MessageMapperTest {
 
@@ -282,7 +284,7 @@ class MessageMapperTest {
 			.username(username)
 			.attachments(attachments);
 
-		final var bean = messageMapper.toMessageEntity(errandNumber, dto, MUNICIPALITY_ID);
+		final var bean = messageMapper.toMessageEntity(errandNumber, dto, MUNICIPALITY_ID, NAMESPACE);
 
 		assertThat(bean.getDirection()).isEqualTo(Direction.OUTBOUND);
 		assertThat(bean.getEmail()).isEqualTo(email);
@@ -404,4 +406,5 @@ class MessageMapperTest {
 			.withHeaders(headers)
 			.build();
 	}
+
 }

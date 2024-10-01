@@ -16,6 +16,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OneToMany;
@@ -43,7 +44,12 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Entity(name = "errand")
-@Table(uniqueConstraints = {@UniqueConstraint(name = "UK_errand_errand_number", columnNames = {"errand_number"})})
+@Table(
+	indexes = {
+		@Index(name = "idx_errand_municipality_id", columnList = "municipality_id"),
+		@Index(name = "idx_errand_namespace", columnList = "namespace")
+	},
+	uniqueConstraints = {@UniqueConstraint(name = "UK_errand_errand_number", columnNames = {"errand_number"})})
 @EntityListeners(ErrandListener.class)
 @Getter
 @Setter
@@ -56,6 +62,12 @@ public class Errand extends BaseEntity {
 
 	@Column(name = "errand_number", nullable = false)
 	private String errandNumber;
+
+	@Column(name = "municipality_id")
+	private String municipalityId;
+
+	@Column(name = "namespace")
+	private String namespace;
 
 	@Column(name = "external_case_id")
 	private String externalCaseId;
@@ -89,9 +101,6 @@ public class Errand extends BaseEntity {
 	@OrderColumn(name = "status_order")
 	@Builder.Default
 	private List<Status> statuses = new ArrayList<>();
-
-	@Column(name = "municipality_id")
-	private String municipalityId;
 
 	@Column(name = "start_date")
 	private LocalDate startDate;

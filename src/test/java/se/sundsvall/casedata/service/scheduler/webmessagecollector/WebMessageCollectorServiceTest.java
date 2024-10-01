@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
 
 import java.sql.SQLException;
@@ -108,9 +109,9 @@ class WebMessageCollectorServiceTest {
 
 		when(webMessageCollectorClientMock.getMessages(MUNICIPALITY_ID, familyId, instance)).thenReturn(messageDTOs);
 
-		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(Errand.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).withMunicipalityId(MUNICIPALITY_ID).build()));
+		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(Errand.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).withMunicipalityId(MUNICIPALITY_ID).withNamespace(NAMESPACE).build()));
 		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(MUNICIPALITY_ID, Map.of(instance, List.of(familyId))));
-		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID)).thenReturn(message);
+		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(message);
 		when(messageRepositoryMock.saveAndFlush(any(Message.class))).thenReturn(message);
 
 		when(messageMapperMock.toAttachmentEntity(any(generated.se.sundsvall.webmessagecollector.MessageAttachment.class), any(String.class))).thenReturn(createAttachment());
@@ -130,7 +131,7 @@ class WebMessageCollectorServiceTest {
 		assertThat(messageCaptor.getValue()).satisfies(WebMessageCollectorServiceTest::assertSavedMessageHasCorrectValues);
 
 		verify(webMessageCollectorClientMock).getAttachment(MUNICIPALITY_ID, 1);
-		verify(messageMapperMock).toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID);
+		verify(messageMapperMock).toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE);
 
 		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachmentCaptor.capture());
 		assertThat(messageAttachmentCaptor.getValue()).satisfies(attachment -> {
@@ -161,7 +162,7 @@ class WebMessageCollectorServiceTest {
 		verify(webMessageCollectorClientMock).getMessages(MUNICIPALITY_ID, familyId, instance);
 		verify(webMessageCollectorClientMock).deleteMessages(any(), any());
 		verify(messageRepositoryMock, never()).saveAndFlush(any());
-		verify(messageMapperMock, never()).toMessageEntity(any(), any());
+		verify(messageMapperMock, never()).toMessageEntity(any(), any(), any());
 	}
 
 

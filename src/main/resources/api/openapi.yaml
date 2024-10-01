@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "8.0"
+  version: "9.0"
 servers:
-  - url: http://localhost:55022
+  - url: http://localhost:64159
     description: Generated server url
 tags:
   - name: MessageAttachments
@@ -31,7 +31,7 @@ tags:
   - name: Attachments
     description: Attachment operations
 paths:
-  /{municipalityId}/stakeholders/{stakeholderId}:
+  /{municipalityId}/{namespace}/stakeholders/{stakeholderId}:
     get:
       tags:
         - Stakeholders
@@ -43,6 +43,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: stakeholderId
           in: path
           required: true
@@ -58,14 +66,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -90,6 +98,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: stakeholderId
           in: path
           required: true
@@ -111,16 +127,16 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -136,6 +152,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: stakeholderId
           in: path
           required: true
@@ -157,21 +181,21 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/messages/{messageId}/viewed/{isViewed}:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/messages/{messageId}/viewed/{isViewed}:
     put:
       tags:
         - Messages
@@ -183,6 +207,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: messageId
           in: path
           required: true
@@ -202,15 +234,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}/statuses:
+        "204":
+          description: No content - Successful operation
+  /{municipalityId}/{namespace}/errands/{errandId}/statuses:
     put:
       tags:
         - Errands
@@ -222,6 +254,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -245,16 +285,16 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -270,6 +310,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -291,21 +339,21 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}/stakeholders:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/stakeholders:
     put:
       tags:
         - Errands
@@ -317,6 +365,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -340,16 +396,16 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -365,6 +421,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -386,8 +450,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
@@ -398,13 +462,13 @@ paths:
             Location:
               description: Location of the created resource.
               style: simple
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}/facilities:
+  /{municipalityId}/{namespace}/errands/{errandId}/facilities:
     get:
       tags:
         - Errands
@@ -416,6 +480,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -431,14 +503,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -467,6 +539,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -490,16 +570,16 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -515,6 +595,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -536,12 +624,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "201":
           description: Created - Successful operation
           headers:
@@ -555,7 +637,13 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/decisions/{decisionId}:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/decisions/{decisionId}:
     get:
       tags:
         - Decisions
@@ -567,6 +655,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: decisionId
           in: path
           required: true
@@ -582,12 +678,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "200":
           description: OK - Successful operation
           content:
@@ -603,6 +693,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     put:
       tags:
         - Decisions
@@ -614,6 +710,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: decisionId
           in: path
           required: true
@@ -637,14 +741,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -660,6 +764,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: decisionId
           in: path
           required: true
@@ -683,19 +795,19 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/attachments/{attachmentId}:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/attachments/{attachmentId}:
     get:
       tags:
         - Attachments
@@ -707,6 +819,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: attachmentId
           in: path
           required: true
@@ -722,14 +842,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -754,6 +874,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: attachmentId
           in: path
           required: true
@@ -775,16 +903,16 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -799,6 +927,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: attachmentId
           in: path
           required: true
@@ -814,16 +950,16 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -838,6 +974,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: attachmentId
           in: path
           required: true
@@ -859,21 +1003,21 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/appeals/{appealId}:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/appeals/{appealId}:
     get:
       tags:
         - Appeals
@@ -885,6 +1029,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: appealId
           in: path
           required: true
@@ -900,14 +1052,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -932,6 +1084,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: appealId
           in: path
           required: true
@@ -953,16 +1113,16 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -978,6 +1138,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: appealId
           in: path
           required: true
@@ -999,21 +1167,21 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/messages:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/messages:
     post:
       tags:
         - Messages
@@ -1025,6 +1193,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
       requestBody:
         content:
           application/json:
@@ -1040,15 +1216,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands:
+        "204":
+          description: No content - Successful operation
+  /{municipalityId}/{namespace}/errands:
     get:
       tags:
         - Errands
@@ -1061,6 +1237,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: filter
           in: query
           description: "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)"
@@ -1109,14 +1293,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -1142,6 +1326,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
       requestBody:
         content:
           application/json:
@@ -1157,12 +1349,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "201":
           description: Created - Successful operation
           headers:
@@ -1176,7 +1362,13 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/attachments:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/attachments:
     post:
       tags:
         - Attachments
@@ -1188,6 +1380,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
       requestBody:
         content:
           application/json:
@@ -1203,8 +1403,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
@@ -1215,13 +1415,13 @@ paths:
             Location:
               description: Location of the created resource.
               style: simple
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/notes/{noteId}:
+  /{municipalityId}/{namespace}/notes/{noteId}:
     get:
       tags:
         - Notes
@@ -1233,6 +1433,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: noteId
           in: path
           required: true
@@ -1248,14 +1456,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -1280,6 +1488,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: noteId
           in: path
           required: true
@@ -1299,14 +1515,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -1322,6 +1538,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: noteId
           in: path
           required: true
@@ -1343,21 +1567,21 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}:
     get:
       tags:
         - Errands
@@ -1369,6 +1593,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -1384,14 +1616,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -1416,6 +1648,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -1437,21 +1677,21 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}/notes:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/notes:
     patch:
       tags:
         - Errands
@@ -1463,6 +1703,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -1484,8 +1732,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
@@ -1496,13 +1744,13 @@ paths:
             Location:
               description: Location of the created resource.
               style: simple
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}/facilities/{facilityId}:
+  /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}:
     get:
       tags:
         - Errands
@@ -1514,6 +1762,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -1535,14 +1791,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -1567,6 +1823,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -1588,16 +1852,16 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -1613,6 +1877,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -1640,21 +1912,21 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}/decisions:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/decisions:
     get:
       tags:
         - Errands
@@ -1666,6 +1938,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -1681,14 +1961,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -1717,6 +1997,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -1738,8 +2026,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
@@ -1750,13 +2038,13 @@ paths:
             Location:
               description: Location of the created resource.
               style: simple
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}/appeals:
+  /{municipalityId}/{namespace}/errands/{errandId}/appeals:
     patch:
       tags:
         - Errands
@@ -1768,6 +2056,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -1789,8 +2085,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
@@ -1801,13 +2097,13 @@ paths:
             Location:
               description: Location of the created resource.
               style: simple
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/stakeholders:
+  /{municipalityId}/{namespace}/stakeholders:
     get:
       tags:
         - Stakeholders
@@ -1818,6 +2114,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: stakeholderRole
           in: query
           required: false
@@ -1832,14 +2136,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -1857,7 +2161,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/StakeholderDTO"
-  /{municipalityId}/stakeholders/{stakeholderId}/history:
+  /{municipalityId}/{namespace}/stakeholders/{stakeholderId}/history:
     get:
       tags:
         - History
@@ -1869,6 +2173,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: stakeholderId
           in: path
           required: true
@@ -1876,14 +2188,6 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
-          description: OK - Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HistoryDTO"
         "400":
           description: Bad request
           content:
@@ -1892,19 +2196,27 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "200":
+          description: OK - Successful operation
           content:
-            application/problem+json:
+            application/json:
               schema:
-                $ref: "#/components/schemas/Problem"
+                type: array
+                items:
+                  $ref: "#/components/schemas/HistoryDTO"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/parking-permits:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/parking-permits:
     get:
       tags:
         - Parking permit
@@ -1916,6 +2228,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: personId
           in: query
           description: personId of the applicant
@@ -1931,14 +2251,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -1956,7 +2276,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/GetParkingPermitDTO"
-  /{municipalityId}/notes/{noteId}/history:
+  /{municipalityId}/{namespace}/notes/{noteId}/history:
     get:
       tags:
         - History
@@ -1968,6 +2288,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: noteId
           in: path
           required: true
@@ -1975,14 +2303,6 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
-          description: OK - Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HistoryDTO"
         "400":
           description: Bad request
           content:
@@ -1991,19 +2311,27 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "200":
+          description: OK - Successful operation
           content:
-            application/problem+json:
+            application/json:
               schema:
-                $ref: "#/components/schemas/Problem"
+                type: array
+                items:
+                  $ref: "#/components/schemas/HistoryDTO"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/notes/errand/{errandId}:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/notes/errand/{errandId}:
     get:
       tags:
         - Notes
@@ -2015,6 +2343,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -2035,14 +2371,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -2060,7 +2396,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/NoteDTO"
-  /{municipalityId}/messages/{errandNumber}:
+  /{municipalityId}/{namespace}/messages/{errandNumber}:
     get:
       tags:
         - Messages
@@ -2072,6 +2408,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandNumber
           in: path
           required: true
@@ -2105,7 +2449,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/MessageResponse"
-  /{municipalityId}/messageattachments/{attachmentId}:
+  /{municipalityId}/{namespace}/messageattachments/{attachmentId}:
     get:
       tags:
         - MessageAttachments
@@ -2118,18 +2462,20 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: attachmentId
           in: path
           required: true
           schema:
             type: string
       responses:
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2138,6 +2484,12 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "200":
           description: OK - Successful operation
           content:
@@ -2148,7 +2500,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/MessageAttachmentDTO"
       deprecated: true
-  /{municipalityId}/messageattachments/{attachmentId}/streamed:
+  /{municipalityId}/{namespace}/messageattachments/{attachmentId}/streamed:
     get:
       tags:
         - MessageAttachments
@@ -2162,14 +2514,22 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: attachmentId
           in: path
           required: true
           schema:
             type: string
       responses:
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -2182,15 +2542,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "200":
           description: OK - Successful operation
-  /{municipalityId}/facilities/{facilityId}/history:
+  /{municipalityId}/{namespace}/facilities/{facilityId}/history:
     get:
       tags:
         - History
@@ -2202,6 +2562,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: facilityId
           in: path
           required: true
@@ -2209,14 +2577,6 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
-          description: OK - Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HistoryDTO"
         "400":
           description: Bad request
           content:
@@ -2225,19 +2585,27 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "200":
+          description: OK - Successful operation
           content:
-            application/problem+json:
+            application/json:
               schema:
-                $ref: "#/components/schemas/Problem"
+                type: array
+                items:
+                  $ref: "#/components/schemas/HistoryDTO"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}/history:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/history:
     get:
       tags:
         - History
@@ -2249,6 +2617,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -2256,14 +2632,6 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
-          description: OK - Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HistoryDTO"
         "400":
           description: Bad request
           content:
@@ -2272,19 +2640,27 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "200":
+          description: OK - Successful operation
           content:
-            application/problem+json:
+            application/json:
               schema:
-                $ref: "#/components/schemas/Problem"
+                type: array
+                items:
+                  $ref: "#/components/schemas/HistoryDTO"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/decisions/{decisionId}/history:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/decisions/{decisionId}/history:
     get:
       tags:
         - History
@@ -2296,6 +2672,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: decisionId
           in: path
           required: true
@@ -2303,14 +2687,6 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
-          description: OK - Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HistoryDTO"
         "400":
           description: Bad request
           content:
@@ -2319,19 +2695,27 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "200":
+          description: OK - Successful operation
           content:
-            application/problem+json:
+            application/json:
               schema:
-                $ref: "#/components/schemas/Problem"
+                type: array
+                items:
+                  $ref: "#/components/schemas/HistoryDTO"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/attachments/{attachmentId}/history:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/attachments/{attachmentId}/history:
     get:
       tags:
         - History
@@ -2343,6 +2727,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: attachmentId
           in: path
           required: true
@@ -2350,14 +2742,6 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
-          description: OK - Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HistoryDTO"
         "400":
           description: Bad request
           content:
@@ -2366,19 +2750,27 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "200":
+          description: OK - Successful operation
           content:
-            application/problem+json:
+            application/json:
               schema:
-                $ref: "#/components/schemas/Problem"
+                type: array
+                items:
+                  $ref: "#/components/schemas/HistoryDTO"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/attachments/errand/{errandNumber}:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/attachments/errand/{errandNumber}:
     get:
       tags:
         - Attachments
@@ -2390,6 +2782,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandNumber
           in: path
           required: true
@@ -2404,14 +2804,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -2445,7 +2845,7 @@ paths:
       x-auth-type: None
       x-throttling-tier: Unlimited
       x-wso2-mutual-ssl: Optional
-  /{municipalityId}/errands/{errandId}/stakeholders/{stakeholderId}:
+  /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}:
     delete:
       tags:
         - Errands
@@ -2457,6 +2857,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -2478,21 +2886,21 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}/notes/{noteId}:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}:
     delete:
       tags:
         - Errands
@@ -2504,6 +2912,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -2525,21 +2941,21 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}/decisions/{decisionId}:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}:
     delete:
       tags:
         - Errands
@@ -2551,6 +2967,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -2572,21 +2996,21 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/errands/{errandId}/appeals/{appealId}:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}:
     delete:
       tags:
         - Errands
@@ -2598,6 +3022,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
         - name: errandId
           in: path
           required: true
@@ -2619,16 +3051,16 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
-        "500":
-          description: Internal Server error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -2822,20 +3254,20 @@ components:
           type: object
           additionalProperties:
             type: object
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
     StatusType:
       type: object
       properties:
+        reasonPhrase:
+          type: string
         statusCode:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -2957,12 +3389,12 @@ components:
           type: object
           additionalProperties:
             type: object
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
         suppressed:
           type: array
           items:
@@ -3962,6 +4394,10 @@ components:
         totalPages:
           type: integer
           format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
         size:
           type: integer
           format: int32
@@ -3979,10 +4415,6 @@ components:
         numberOfElements:
           type: integer
           format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
         pageable:
           $ref: "#/components/schemas/PageableObject"
         empty:
@@ -3997,16 +4429,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
-        pageSize:
-          type: integer
-          format: int32
+        unpaged:
+          type: boolean
+        paged:
+          type: boolean
         pageNumber:
           type: integer
           format: int32
-        paged:
-          type: boolean
-        unpaged:
-          type: boolean
+        pageSize:
+          type: integer
+          format: int32
     SortObject:
       type: object
       properties:

@@ -40,7 +40,7 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getStartDate()).ifPresent(errand::setStartDate);
 		Optional.ofNullable(patch.getEndDate()).ifPresent(errand::setEndDate);
 		Optional.ofNullable(patch.getApplicationReceived()).ifPresent(errand::setApplicationReceived);
-		Optional.ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(patch.getFacilities().stream().map(facilityDTO -> toFacility(facilityDTO, errand.getMunicipalityId())).toList()));
+		Optional.ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(patch.getFacilities().stream().map(facilityDTO -> toFacility(facilityDTO, errand.getMunicipalityId(), errand.getNamespace())).toList()));
 		return errand;
 	}
 
@@ -113,4 +113,5 @@ public final class PatchMapper {
 		Optional.of(patch.isMainFacility()).ifPresent(facility::setMainFacility);
 		return facility;
 	}
+
 }

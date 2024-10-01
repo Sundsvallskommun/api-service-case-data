@@ -14,7 +14,8 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 @CircuitBreaker(name = "facilityRepository")
 public interface FacilityRepository extends JpaRepository<Facility, Long>, JpaSpecificationExecutor<Facility> {
 
-	Optional<Facility> findByIdAndErrandIdAndMunicipalityId(final Long id, final Long errandId, final String municipalityId);
+	Optional<Facility> findByIdAndErrandIdAndMunicipalityIdAndNamespace(final Long id, final Long errandId, final String municipalityId, final String namespace);
 
-	Optional<Facility> findByIdAndMunicipalityId(final Long id, final String municipalityId);
+	Optional<Facility> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
+
 }

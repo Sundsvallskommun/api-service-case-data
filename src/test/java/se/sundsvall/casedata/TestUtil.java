@@ -64,6 +64,8 @@ public final class TestUtil {
 
 	public static final String MUNICIPALITY_ID = "2281";
 
+	public static final String NAMESPACE = "my.namespace";
+
 	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
 		.enable(SerializationFeature.INDENT_OUTPUT)
 		.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
@@ -396,7 +398,8 @@ public final class TestUtil {
 			.withOrganizationName("organizationName")
 			.withOrganizationNumber("organizationNumber")
 			.withPersonId("personId")
-			.withMunicipalityId("2281")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.build();
 	}
 
@@ -508,9 +511,9 @@ public final class TestUtil {
 			.withCaseTitleAddition("caseTitleAddition")
 			.withDiaryNumber("diaryNumber")
 			.withDescription("description")
-			.withMunicipalityId("municipalityId")
 			.withPhase("phase")
-			.withMunicipalityId("2281")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.withUpdated(getRandomOffsetDateTime())
 			.withCreated(getRandomOffsetDateTime())
 			.withApplicationReceived(getRandomOffsetDateTime())

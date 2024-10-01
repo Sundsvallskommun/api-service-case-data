@@ -70,7 +70,7 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static Errand toErrand(final ErrandDTO dto, final String municipalityId) {
+	public static Errand toErrand(final ErrandDTO dto, final String municipalityId, final String namespace) {
 		final var errand = Optional.ofNullable(dto)
 			.map(errand1 -> Errand.builder()
 				.withId(dto.getId())
@@ -95,14 +95,15 @@ public final class EntityMapper {
 				.withUpdatedByClient(dto.getUpdatedByClient())
 				.withCreatedBy(dto.getCreatedBy())
 				.withMunicipalityId(municipalityId)
+				.withNamespace(namespace)
 				.withUpdatedBy(dto.getUpdatedBy())
 				.withExtraParameters(Optional.of(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.withStatuses(new ArrayList<>(dto.getStatuses().stream().map(EntityMapper::toStatus).toList()))
-				.withStakeholders(new ArrayList<>(dto.getStakeholders().stream().map(stakeholderDTO -> toStakeholder(stakeholderDTO, municipalityId)).toList()))
-				.withFacilities(new ArrayList<>(dto.getFacilities().stream().map(facilityDTO -> toFacility(facilityDTO, municipalityId)).toList()))
-				.withDecisions(new ArrayList<>(dto.getDecisions().stream().map(decisionDTO -> toDecision(decisionDTO, municipalityId)).toList()))
-				.withNotes(new ArrayList<>(dto.getNotes().stream().map(notesDTO -> toNote(notesDTO, municipalityId)).toList()))
-				.withAppeals(new ArrayList<>(dto.getAppeals().stream().map(appealsDTO -> toAppeal(appealsDTO, municipalityId)).toList()))
+				.withStakeholders(new ArrayList<>(dto.getStakeholders().stream().map(stakeholderDTO -> toStakeholder(stakeholderDTO, municipalityId, namespace)).toList()))
+				.withFacilities(new ArrayList<>(dto.getFacilities().stream().map(facilityDTO -> toFacility(facilityDTO, municipalityId, namespace)).toList()))
+				.withDecisions(new ArrayList<>(dto.getDecisions().stream().map(decisionDTO -> toDecision(decisionDTO, municipalityId, namespace)).toList()))
+				.withNotes(new ArrayList<>(dto.getNotes().stream().map(notesDTO -> toNote(notesDTO, municipalityId, namespace)).toList()))
+				.withAppeals(new ArrayList<>(dto.getAppeals().stream().map(appealsDTO -> toAppeal(appealsDTO, municipalityId, namespace)).toList()))
 				.build());
 
 		errand.ifPresent(errand1 -> {
@@ -116,7 +117,7 @@ public final class EntityMapper {
 		return errand.orElse(null);
 	}
 
-	public static Stakeholder toStakeholder(final StakeholderDTO dto, final String municipalityId) {
+	public static Stakeholder toStakeholder(final StakeholderDTO dto, final String municipalityId, final String namespace) {
 		return Optional.ofNullable(dto)
 			.map(stakeholder -> Stakeholder.builder()
 				.withId(dto.getId())
@@ -132,6 +133,7 @@ public final class EntityMapper {
 				.withAuthorizedSignatory(dto.getAuthorizedSignatory())
 				.withAdAccount(dto.getAdAccount())
 				.withMunicipalityId(municipalityId)
+				.withNamespace(namespace)
 				.withAddresses(new ArrayList<>(dto.getAddresses().stream().map(EntityMapper::toAddress).toList()))
 				.withContactInformation(new ArrayList<>(dto.getContactInformation().stream().map(EntityMapper::toContactInformation).toList()))
 				.withRoles(dto.getRoles())
@@ -162,7 +164,7 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static Attachment toAttachment(final AttachmentDTO dto, final String municipalityId) {
+	public static Attachment toAttachment(final AttachmentDTO dto, final String municipalityId, final String namespace) {
 		return Optional.ofNullable(dto).map(attachment -> Attachment.builder()
 				.withId(dto.getId())
 				.withVersion(dto.getVersion())
@@ -174,6 +176,7 @@ public final class EntityMapper {
 				.withExtension(dto.getExtension())
 				.withErrandNumber(dto.getErrandNumber())
 				.withMunicipalityId(municipalityId)
+				.withNamespace(namespace)
 				.withMimeType(dto.getMimeType())
 				.withFile(dto.getFile())
 				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
@@ -199,7 +202,7 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static Decision toDecision(final DecisionDTO dto, final String municipalityId) {
+	public static Decision toDecision(final DecisionDTO dto, final String municipalityId, final String namespace) {
 		return Optional.ofNullable(dto).map(decision -> Decision.builder()
 				.withId(dto.getId())
 				.withVersion(dto.getVersion())
@@ -208,13 +211,13 @@ public final class EntityMapper {
 				.withDecisionType(dto.getDecisionType())
 				.withDecisionOutcome(dto.getDecisionOutcome())
 				.withDescription(dto.getDescription())
-				.withDecidedBy(toStakeholder(dto.getDecidedBy(), municipalityId))
+				.withDecidedBy(toStakeholder(dto.getDecidedBy(), municipalityId, namespace))
 				.withDecidedAt(dto.getDecidedAt())
 				.withValidFrom(dto.getValidFrom())
 				.withValidTo(dto.getValidTo())
 				.withMunicipalityId(municipalityId)
 				.withLaw(new ArrayList<>(dto.getLaw().stream().map(EntityMapper::toLaw).toList()))
-				.withAttachments(new ArrayList<>(dto.getAttachments().stream().map(e -> toAttachment(e, municipalityId)).toList()))
+				.withAttachments(new ArrayList<>(dto.getAttachments().stream().map(e -> toAttachment(e, municipalityId, namespace)).toList()))
 				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -257,7 +260,7 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static Note toNote(final NoteDTO dto, final String municipalityId) {
+	public static Note toNote(final NoteDTO dto, final String municipalityId, final String namespace) {
 		return Optional.of(dto).map(note -> Note.builder()
 				.withId(dto.getId())
 				.withVersion(dto.getVersion())
@@ -270,12 +273,13 @@ public final class EntityMapper {
 				.withUpdatedBy(dto.getUpdatedBy())
 				.withNoteType(dto.getNoteType())
 				.withMunicipalityId(municipalityId)
+				.withNamespace(namespace)
 				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
 	}
 
-	public static Appeal toAppeal(final AppealDTO dto, final String municipalityId) {
+	public static Appeal toAppeal(final AppealDTO dto, final String municipalityId, final String namespace) {
 		return Optional.ofNullable(dto).map(appeal -> Appeal.builder()
 				.withId(dto.getId())
 				.withVersion(dto.getVersion())
@@ -284,6 +288,7 @@ public final class EntityMapper {
 				.withDescription(dto.getDescription())
 				.withRegisteredAt(dto.getRegisteredAt())
 				.withMunicipalityId(municipalityId)
+				.withNamespace(namespace)
 				.withStatus(AppealStatus.valueOf(dto.getStatus()))
 				.withAppealConcernCommunicatedAt(dto.getAppealConcernCommunicatedAt())
 				.withTimelinessReview(TimelinessReview.valueOf(dto.getTimelinessReview()))
@@ -332,7 +337,7 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static Facility toFacility(final FacilityDTO dto, final String municipalityId) {
+	public static Facility toFacility(final FacilityDTO dto, final String municipalityId, final String namespace) {
 		return Optional.ofNullable(dto).map(facility -> Facility.builder()
 				.withId(dto.getId())
 				.withVersion(dto.getVersion())
@@ -344,6 +349,7 @@ public final class EntityMapper {
 				.withMainFacility(dto.isMainFacility())
 				.withFacilityType(dto.getFacilityType())
 				.withMunicipalityId(municipalityId)
+				.withNamespace(namespace)
 				.withExtraParameters(Optional.ofNullable(dto.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -446,4 +452,5 @@ public final class EntityMapper {
 				.build())
 			.orElse(null);
 	}
+
 }

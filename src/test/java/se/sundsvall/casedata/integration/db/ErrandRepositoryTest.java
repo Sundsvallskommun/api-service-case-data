@@ -8,6 +8,8 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.Assertions.within;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 import static org.springframework.data.domain.Sort.Direction.ASC;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.integration.db.model.enums.NoteType.INTERNAL;
 
 import java.time.OffsetDateTime;
@@ -34,7 +36,7 @@ import se.sundsvall.casedata.integration.db.model.enums.Priority;
 /**
  * ErrandRepository tests.
  *
- * @see /src/test/resources/db/testdata-junit.sql for data setup.
+ * @see <a href="/src/test/resources/db/testdata-junit.sql">/src/test/resources/db/testdata-junit.sql</a> for data setup.
  */
 @DataJpaTest
 @Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
@@ -56,10 +58,9 @@ class ErrandRepositoryTest {
 		// Arrange
 		final var idList = List.of(2L, 3L);
 		final var pageRequest = PageRequest.of(0, 10, Sort.by(ASC, "priority"));
-		final var municipalityId = "2281";
 
 		// Act
-		final var result = errandRepository.findAllByIdInAndMunicipalityId(idList, municipalityId, pageRequest);
+		final var result = errandRepository.findAllByIdInAndMunicipalityIdAndNamespace(idList, MUNICIPALITY_ID, NAMESPACE, pageRequest);
 
 		// Assert
 		assertThat(result)
@@ -76,10 +77,9 @@ class ErrandRepositoryTest {
 		// Arrange
 		final var idList = List.of(666L, 777L);
 		final var pageRequest = PageRequest.of(0, 10, Sort.by(ASC, "priority"));
-		final var municipalityId = "2281";
 
 		// Act
-		final var result = errandRepository.findAllByIdInAndMunicipalityId(idList, municipalityId, pageRequest);
+		final var result = errandRepository.findAllByIdInAndMunicipalityIdAndNamespace(idList, MUNICIPALITY_ID, NAMESPACE, pageRequest);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -256,4 +256,5 @@ class ErrandRepositoryTest {
 		assertThat(updatedErrand.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
 		assertThat(updatedErrand.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 	}
+
 }
