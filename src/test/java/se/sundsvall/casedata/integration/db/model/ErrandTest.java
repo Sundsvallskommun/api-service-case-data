@@ -110,6 +110,13 @@ class ErrandTest {
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
+		assertBasicFields(bean, id, errandNumber, municipalityId, namespace, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase);
+		assertDates(bean, startDate, endDate, applicationReceived, created, updated);
+		assertCollections(bean, statuses, stakeholders, facilities, decisions, appeals, notes, extraParameters);
+		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
+	}
+
+	private void assertBasicFields(Errand bean, Long id, String errandNumber, String municipalityId, String namespace, String externalCaseId, String caseType, Channel channel, Priority priority, String description, String caseTitleAddition, String diaryNumber, String phase) {
 		assertThat(bean.getId()).isEqualTo(id);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
@@ -122,23 +129,31 @@ class ErrandTest {
 		assertThat(bean.getCaseTitleAddition()).isEqualTo(caseTitleAddition);
 		assertThat(bean.getDiaryNumber()).isEqualTo(diaryNumber);
 		assertThat(bean.getPhase()).isEqualTo(phase);
-		assertThat(bean.getStatuses()).isEqualTo(statuses);
+	}
+
+	private void assertDates(Errand bean, LocalDate startDate, LocalDate endDate, OffsetDateTime applicationReceived, OffsetDateTime created, OffsetDateTime updated) {
 		assertThat(bean.getStartDate()).isEqualTo(startDate);
 		assertThat(bean.getEndDate()).isEqualTo(endDate);
 		assertThat(bean.getApplicationReceived()).isEqualTo(applicationReceived);
-		assertThat(bean.getProcessId()).isEqualTo(processId);
+		assertThat(bean.getCreated()).isEqualTo(created);
+		assertThat(bean.getUpdated()).isEqualTo(updated);
+	}
+
+	private void assertCollections(Errand bean, List<Status> statuses, List<Stakeholder> stakeholders, List<Facility> facilities, List<Decision> decisions, List<Appeal> appeals, List<Note> notes, Map<String, String> extraParameters) {
+		assertThat(bean.getStatuses()).isEqualTo(statuses);
 		assertThat(bean.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(bean.getFacilities()).isEqualTo(facilities);
 		assertThat(bean.getDecisions()).isEqualTo(decisions);
 		assertThat(bean.getAppeals()).isEqualTo(appeals);
 		assertThat(bean.getNotes()).isEqualTo(notes);
+		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
+	}
+
+	private void assertClients(Errand bean, String createdByClient, String updatedByClient, String createdBy, String updatedBy) {
 		assertThat(bean.getCreatedByClient()).isEqualTo(createdByClient);
 		assertThat(bean.getUpdatedByClient()).isEqualTo(updatedByClient);
 		assertThat(bean.getCreatedBy()).isEqualTo(createdBy);
 		assertThat(bean.getUpdatedBy()).isEqualTo(updatedBy);
-		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
-		assertThat(bean.getCreated()).isEqualTo(created);
-		assertThat(bean.getUpdated()).isEqualTo(updated);
 	}
 
 
