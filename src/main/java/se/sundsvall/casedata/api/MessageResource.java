@@ -52,7 +52,7 @@ class MessageResource {
 		this.service = service;
 	}
 
-	@Operation(description = "Get all messages for an errand.")
+	@Operation(description = "Get all messages for an errand")
 	@GetMapping(path = "/{errandNumber}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<List<MessageResponse>> getMessagesOnErrand(
@@ -64,7 +64,7 @@ class MessageResource {
 		return ok(service.getMessagesByErrandNumber(errandNumber, municipalityId, namespace));
 	}
 
-	@Operation(description = "Save a message.")
+	@Operation(description = "Save a message on an errand")
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchErrandWithMessage(
@@ -79,7 +79,7 @@ class MessageResource {
 			.build();
 	}
 
-	@Operation(description = "Set viewed status for message.")
+	@Operation(description = "Set viewed status for message")
 	@PutMapping(path = "/{messageId}/viewed/{isViewed}", produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> updateViewedStatus(

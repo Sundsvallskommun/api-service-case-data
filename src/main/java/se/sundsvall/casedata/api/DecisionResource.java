@@ -59,7 +59,7 @@ class DecisionResource {
 		this.decisionService = decisionService;
 	}
 
-	@Operation(description = "Get decision by decision id.")
+	@Operation(description = "Get decision on errand by decision id.")
 	@GetMapping(path = "/{decisionId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation")
 	ResponseEntity<DecisionDTO> getDecisionById(
@@ -71,7 +71,7 @@ class DecisionResource {
 		return ok(decisionService.findByIdAndMunicipalityIdAndNamespace(decisionId, municipalityId, namespace));
 	}
 
-	@Operation(description = "Update decision.")
+	@Operation(description = "Update decision on errand.")
 	@PatchMapping(path = "/{decisionId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation")
 	ResponseEntity<Void> patchDecision(
@@ -87,7 +87,7 @@ class DecisionResource {
 			.build();
 	}
 
-	@Operation(description = "Replace decision.")
+	@Operation(description = "Replace decision on errand.")
 	@PutMapping(path = "/{decisionId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation")
 	ResponseEntity<Void> putDecision(

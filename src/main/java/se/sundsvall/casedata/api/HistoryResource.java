@@ -45,7 +45,7 @@ class HistoryResource {
 		this.historyService = historyService;
 	}
 
-	@Operation(description = "Get attachment history.")
+	@Operation(description = "Get attachment history for an errand")
 	@GetMapping(path = "/attachments/{attachmentId}/history", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<String> getAttachmentHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -56,7 +56,7 @@ class HistoryResource {
 		return ok(historyService.findAttachmentHistory(attachmentId, municipalityId, namespace));
 	}
 
-	@Operation(description = "Get decision history.")
+	@Operation(description = "Get decision history for an errand")
 	@GetMapping(path = "/decisions/{decisionId}/history", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<String> getDecisionHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -67,7 +67,7 @@ class HistoryResource {
 		return ok(historyService.findDecisionHistory(decisionId, municipalityId, namespace));
 	}
 
-	@Operation(description = "Get errand history.")
+	@Operation(description = "Get errand history for an errand")
 	@GetMapping(path = "/history", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<String> getErrandHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -77,7 +77,7 @@ class HistoryResource {
 		return ok(historyService.findErrandHistory(errandId, municipalityId, namespace));
 	}
 
-	@Operation(description = "Get facility history.")
+	@Operation(description = "Get facility history for an errand")
 	@GetMapping(path = "/facilities/{facilityId}/history", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<String> getFacilityHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -88,7 +88,7 @@ class HistoryResource {
 		return ok(historyService.findFacilityHistory(facilityId, municipalityId, namespace));
 	}
 
-	@Operation(description = "Get note history.")
+	@Operation(description = "Get note history for an errand")
 	@GetMapping(path = "/notes/{noteId}/history", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<String> getNoteHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -99,7 +99,7 @@ class HistoryResource {
 		return ok(historyService.findNoteHistory(noteId, municipalityId, namespace));
 	}
 
-	@Operation(description = "Get stakeholder history.")
+	@Operation(description = "Get stakeholder history for an errand")
 	@GetMapping(path = "stakeholders/{stakeholderId}/history", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<String> getStakeholderHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,

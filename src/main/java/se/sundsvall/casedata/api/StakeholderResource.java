@@ -60,7 +60,7 @@ class StakeholderResource {
 		this.stakeholderService = stakeholderService;
 	}
 
-	@Operation(description = "Get stakeholder by ID.")
+	@Operation(description = "Get stakeholder on errand by stakeholder id.")
 	@GetMapping(path = "/{stakeholderId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<StakeholderDTO> getStakeholders(
@@ -72,6 +72,7 @@ class StakeholderResource {
 		return ok(stakeholderService.findByIdAndMunicipalityIdAndNamespace(stakeholderId, municipalityId, namespace));
 	}
 
+	@Operation(description = "Get all stakeholders on errand.")
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<List<StakeholderDTO>> getStakeholders(
@@ -84,7 +85,7 @@ class StakeholderResource {
 			.orElseGet(() -> ok(stakeholderService.findAllStakeholdersByMunicipalityIdAndNamespace(municipalityId, namespace)));
 	}
 
-	@Operation(description = "Update stakeholder.")
+	@Operation(description = "Update stakeholder on errand by stakeholder id.")
 	@PatchMapping(path = "/{stakeholderId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchStakeholder(
@@ -100,7 +101,7 @@ class StakeholderResource {
 			.build();
 	}
 
-	@Operation(description = "Replace stakeholder.")
+	@Operation(description = "Replace stakeholder on errand by stakeholder id.")
 	@PutMapping(path = "/{stakeholderId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putStakeholder(
@@ -146,7 +147,7 @@ class StakeholderResource {
 			.build();
 	}
 
-	@Operation(description = "Delete stakeholder on errand.")
+	@Operation(description = "Delete stakeholder on errand by stakeholder id.")
 	@DeleteMapping(path = "/{stakeholderId}", produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> deleteStakeholder(

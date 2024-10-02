@@ -60,7 +60,7 @@ class AttachmentResource {
 		this.attachmentService = attachmentService;
 	}
 
-	@Operation(description = "Get attachment by attachment id.")
+	@Operation(description = "Get attachment on errand by attachment id.")
 	@GetMapping(path = "/errands/{errandId}/attachments/{attachmentId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<AttachmentDTO> getAttachments(
@@ -83,7 +83,7 @@ class AttachmentResource {
 		return ok(attachmentService.findByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, municipalityId, namespace));
 	}
 
-	@Operation(description = "Create attachment")
+	@Operation(description = "Create attachment on errand.")
 	@PostMapping(path = "/errands/{errandId}/attachments", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
 	ResponseEntity<Void> postAttachment(
@@ -98,7 +98,7 @@ class AttachmentResource {
 			.build();
 	}
 
-	@Operation(description = "Replace attachment.")
+	@Operation(description = "Replace attachment on errand.")
 	@PutMapping(path = "/errands/{errandId}/attachments/{attachmentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putAttachmentOnErrand(
@@ -114,7 +114,7 @@ class AttachmentResource {
 			.build();
 	}
 
-	@Operation
+	@Operation(description = "Update attachment on errand.")
 	@PatchMapping(path = "/errands/{errandId}/attachments/{attachmentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchAttachment(
@@ -130,7 +130,7 @@ class AttachmentResource {
 			.build();
 	}
 
-	@Operation
+	@Operation(description = "Delete attachment on errand.")
 	@DeleteMapping(path = "/errands/{errandId}/attachments/{attachmentId}")
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> deleteAttachment(

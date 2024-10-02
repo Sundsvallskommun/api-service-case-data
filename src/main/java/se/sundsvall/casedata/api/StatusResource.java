@@ -43,13 +43,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
-public class StatusResource {
+class StatusResource {
 
 	private final StatusService statusService;
 
-	public StatusResource(final StatusService statusService) {this.statusService = statusService;}
+	StatusResource(final StatusService statusService) {this.statusService = statusService;}
 
-	@Operation(description = "Add status to errand.")
+	@Operation(description = "Add status to errand")
 	@PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchErrandWithStatus(
@@ -64,7 +64,7 @@ public class StatusResource {
 			.build();
 	}
 
-	@Operation(description = "Add/replace status on errand.")
+	@Operation(description = "Add/replace status on errand")
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putStatusOnErrand(

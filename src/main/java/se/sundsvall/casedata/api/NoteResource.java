@@ -60,7 +60,7 @@ class NoteResource {
 		this.noteService = noteService;
 	}
 
-	@Operation(description = "Get note by id")
+	@Operation(description = "Get note on errand by note id")
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	@GetMapping(path = "/{noteId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<NoteDTO> getNoteById(
@@ -84,7 +84,7 @@ class NoteResource {
 		return ok(noteService.getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType(errandId, municipalityId, namespace, noteType));
 	}
 
-	@Operation(description = "Update note")
+	@Operation(description = "Update note on errand by note id")
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	@PatchMapping(path = "/{noteId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<Void> patchNoteOnErrand(
@@ -100,7 +100,7 @@ class NoteResource {
 			.build();
 	}
 
-	@Operation(description = "Delete note on errand.")
+	@Operation(description = "Delete note on errand by note id")
 	@DeleteMapping(path = "/{noteId}", produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> deleteNote(
@@ -115,8 +115,8 @@ class NoteResource {
 			.build();
 	}
 
-	@Operation(description = "Create and add note to errand.")
-	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
+	@Operation(description = "Create and add note to errand")
+	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource"), useReturnTypeSchema = true)
 	@PatchMapping(consumes = APPLICATION_JSON_VALUE, produces = {ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<Void> patchErrandWithNote(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,

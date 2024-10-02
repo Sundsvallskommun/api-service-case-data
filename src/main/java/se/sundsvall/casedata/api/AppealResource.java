@@ -60,7 +60,7 @@ class AppealResource {
 	}
 
 
-	@Operation(description = "Get appeals by errand ID")
+	@Operation(description = "Get all appeals for errand")
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<List<AppealDTO>> getAppealById(
@@ -71,7 +71,7 @@ class AppealResource {
 		return ok(appealService.findByErrandIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace));
 	}
 
-	@Operation(description = "Get appeal by ID")
+	@Operation(description = "Get appeal on errand by appeal id.")
 	@GetMapping(path = "/{appealId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<AppealDTO> getAppealById(
@@ -98,7 +98,7 @@ class AppealResource {
 			.build();
 	}
 
-	@Operation(description = "Update appeal")
+	@Operation(description = "Update appeal on errand.")
 	@PatchMapping(path = "/{appealId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchAppeal(
@@ -114,7 +114,7 @@ class AppealResource {
 			.build();
 	}
 
-	@Operation(description = "Replace appeal")
+	@Operation(description = "Replace appeal on errand.")
 	@PutMapping(path = "/{appealId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putAppeal(

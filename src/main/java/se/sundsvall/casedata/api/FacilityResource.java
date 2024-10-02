@@ -51,13 +51,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
-public class FacilityResource {
+class FacilityResource {
 
 	private final FacilityService facilityService;
 
-	public FacilityResource(final FacilityService facilityService) {this.facilityService = facilityService;}
+	FacilityResource(final FacilityService facilityService) {this.facilityService = facilityService;}
 
-	@Operation(description = "Create errand facility.")
+	@Operation(description = "Create errand facility")
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = {ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
 	ResponseEntity<Void> postErrandFacility(
@@ -75,7 +75,7 @@ public class FacilityResource {
 			.build();
 	}
 
-	@Operation(description = "Get all facilities on errand.")
+	@Operation(description = "Get all facilities on errand")
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<List<FacilityDTO>> getFacilities(
@@ -86,7 +86,7 @@ public class FacilityResource {
 		return ok(facilityService.findFacilitiesOnErrand(errandId, municipalityId, namespace));
 	}
 
-	@Operation(description = "Get a specific facility on errand.")
+	@Operation(description = "Get a specific facility on errand")
 	@GetMapping(path = "/{facilityId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<FacilityDTO> getFacility(
@@ -98,7 +98,7 @@ public class FacilityResource {
 		return ok(facilityService.findFacilityOnErrand(errandId, facilityId, municipalityId, namespace));
 	}
 
-	@Operation(description = "Update errand facility")
+	@Operation(description = "Update errand facility by facility id")
 	@PatchMapping(path = "/{facilityId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchErrandFacility(
@@ -114,7 +114,7 @@ public class FacilityResource {
 			.build();
 	}
 
-	@Operation(description = "Add/replace facility on errand.")
+	@Operation(description = "Add/replace facility on errand")
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putFacilitiesOnErrand(
@@ -129,7 +129,7 @@ public class FacilityResource {
 			.build();
 	}
 
-	@Operation(description = "Delete facility on errand.")
+	@Operation(description = "Delete facility on errand")
 	@DeleteMapping(path = "/{facilityId}", produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> deleteFacility(
