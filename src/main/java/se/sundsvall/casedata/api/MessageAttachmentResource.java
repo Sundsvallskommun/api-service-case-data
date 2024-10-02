@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Validated
-@RequestMapping("/{municipalityId}/{namespace}/messageattachments")
+@RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/messageattachments")
 @Tag(name = "MessageAttachments", description = "MessageAttachment operations")
 @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
@@ -54,6 +54,7 @@ class MessageAttachmentResource {
 	ResponseEntity<MessageAttachmentDTO> getMessageAttachment(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final String attachmentId) {
 
 		return ok(service.getMessageAttachment(attachmentId, municipalityId, namespace));
@@ -68,6 +69,7 @@ class MessageAttachmentResource {
 	void getMessageAttachmentStreamed(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final String attachmentId,
 		final HttpServletResponse response) {
 

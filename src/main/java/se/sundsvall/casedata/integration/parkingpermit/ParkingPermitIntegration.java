@@ -17,7 +17,9 @@ import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 public class ParkingPermitIntegration {
 
 	private static final String COULD_NOT_START_PROCESS = "Could not start process for errand with casetype: %s and errandId: %s, with error: %s";
+
 	private static final String COULD_NOT_UPDATE_PROCESS = "Could not update process for errand with casetype: %s and processId: %s, with error: %s";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ParkingPermitIntegration.class);
 
 	private final ParkingPermitClient parkingPermitClient;
@@ -43,4 +45,5 @@ public class ParkingPermitIntegration {
 			throw Problem.valueOf(SERVICE_UNAVAILABLE, PROCESS_ENGINE_PROBLEM_DETAIL);
 		}
 	}
+
 }

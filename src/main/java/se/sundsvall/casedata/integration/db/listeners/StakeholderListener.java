@@ -2,11 +2,12 @@ package se.sundsvall.casedata.integration.db.listeners;
 
 import java.time.OffsetDateTime;
 
-import org.springframework.stereotype.Component;
-
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
+
+import org.springframework.stereotype.Component;
+
 import se.sundsvall.casedata.integration.db.model.Stakeholder;
 
 @Component
@@ -31,4 +32,5 @@ public class StakeholderListener {
 		}
 		errandListener.updateErrandFields(stakeholder.getErrand());
 	}
+
 }

@@ -132,7 +132,7 @@ class AttachmentServiceTest {
 		attachment.setErrandNumber("someErrandNumber");
 		doReturn(List.of(attachment)).when(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 
-		final var result = attachmentService.findByErrandNumberAndMunicipalityId("someErrandNumber", MUNICIPALITY_ID, NAMESPACE);
+		final var result = attachmentService.findByErrandNumberAndMunicipalityIdAndNamespace("someErrandNumber", MUNICIPALITY_ID, NAMESPACE);
 		assertEquals(List.of(toAttachmentDto(attachment)), result);
 
 		verify(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
@@ -145,7 +145,7 @@ class AttachmentServiceTest {
 
 		doReturn(List.of()).when(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 
-		final var result = attachmentService.findByErrandNumberAndMunicipalityId("someErrandNumber", MUNICIPALITY_ID, NAMESPACE);
+		final var result = attachmentService.findByErrandNumberAndMunicipalityIdAndNamespace("someErrandNumber", MUNICIPALITY_ID, NAMESPACE);
 		assertEquals(List.of(), result);
 
 		verify(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));

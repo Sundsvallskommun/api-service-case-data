@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Validated
-@RequestMapping("/{municipalityId}/{namespace}")
+@RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}")
 @Tag(name = "History", description = "History operations")
 @ApiResponse(responseCode = "200", description = "OK - Successful operation", content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = HistoryDTO.class))))
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
@@ -50,6 +50,7 @@ class HistoryResource {
 	ResponseEntity<String> getAttachmentHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final Long attachmentId) {
 
 		return ok(historyService.findAttachmentHistory(attachmentId, municipalityId, namespace));
@@ -60,13 +61,14 @@ class HistoryResource {
 	ResponseEntity<String> getDecisionHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "decisionId") final Long decisionId) {
 
 		return ok(historyService.findDecisionHistory(decisionId, municipalityId, namespace));
 	}
 
 	@Operation(description = "Get errand history.")
-	@GetMapping(path = "/errands/{errandId}/history", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@GetMapping(path = "/history", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	ResponseEntity<String> getErrandHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -80,6 +82,7 @@ class HistoryResource {
 	ResponseEntity<String> getFacilityHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "facilityId") final Long facilityId) {
 
 		return ok(historyService.findFacilityHistory(facilityId, municipalityId, namespace));
@@ -90,6 +93,7 @@ class HistoryResource {
 	ResponseEntity<String> getNoteHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "noteId") final Long noteId) {
 
 		return ok(historyService.findNoteHistory(noteId, municipalityId, namespace));
@@ -100,6 +104,7 @@ class HistoryResource {
 	ResponseEntity<String> getStakeholderHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId) {
 
 		return ok(historyService.findStakeholderHistory(stakeholderId, municipalityId, namespace));

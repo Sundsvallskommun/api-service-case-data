@@ -1,16 +1,17 @@
 package se.sundsvall.casedata.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createNoteDTO;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -22,91 +23,115 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.NoteDTO;
-import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.service.NoteService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class NoteResourceTest {
 
-	private static final String BASE_URL = "/{municipalityId}/{namespace}/notes";
+	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands/{errandId}/notes";
 
 	@MockBean
-	private NoteService mockService;
+	private NoteService noteServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
 
 	@Test
-	void getNoteByIdTest() {
-		final var id = 153L;
-		final var dto = createNoteDTO();
-		when(mockService.getNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(dto);
+	void getNoteById() {
+		final var errandId = 123L;
+		final var noteId = 456L;
+		final var noteDTO = createNoteDTO();
 
-		final var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_URL + "/{id}").build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "id", id)))
+		when(noteServiceMock.getNoteByIdAndMunicipalityIdAndNamespace(noteId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(noteDTO);
+
+		var response = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{noteId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, noteId))
 			.exchange()
 			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON)
 			.expectBody(NoteDTO.class)
 			.returnResult()
 			.getResponseBody();
 
-		assertThat(response).isEqualTo(dto);
-		verify(mockService).getNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID, NAMESPACE);
+		assertThat(response).isNotNull();
+		verify(noteServiceMock).getNoteByIdAndMunicipalityIdAndNamespace(noteId, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoMoreInteractions(noteServiceMock);
 	}
 
 	@Test
-	void getNotesByErrandIdTest() {
-		final var errandId = 146L;
-		final Optional<NoteType> noteType = Optional.empty();
-		final var dto1 = createNoteDTO();
-		final var dto2 = createNoteDTO();
-		when(mockService.getNotesByErrandIdAndMunicipalityIdAndNoteType(errandId, MUNICIPALITY_ID, NAMESPACE, noteType)).thenReturn(List.of(dto1, dto2));
+	void getNotesByErrandId() {
+		final var errandId = 123L;
+		final var noteDTO = createNoteDTO();
 
-		final var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_URL + "/errand/{errandId}")
-				.queryParam("noteType", noteType)
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId)))
+		when(noteServiceMock.getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType(errandId, MUNICIPALITY_ID, NAMESPACE, Optional.empty())).thenReturn(List.of(noteDTO));
+
+		var response = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.exchange()
 			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON)
 			.expectBodyList(NoteDTO.class)
 			.returnResult()
 			.getResponseBody();
 
-		assertThat(response).containsExactly(dto1, dto2).hasSize(2);
-		verify(mockService).getNotesByErrandIdAndMunicipalityIdAndNoteType(errandId, MUNICIPALITY_ID, NAMESPACE, noteType);
-	}
-
-	@Test
-	void deleteNoteByIdTest() {
-		final var id = 153L;
-		doNothing().when(mockService).deleteNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID, NAMESPACE);
-
-		webTestClient.delete()
-			.uri(builder -> builder.path(BASE_URL + "/{id}")
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "id", id)))
-			.exchange()
-			.expectStatus().isNoContent()
-			.expectBody().isEmpty();
-
-		verify(mockService).deleteNoteByIdAndMunicipalityId(id, MUNICIPALITY_ID, NAMESPACE);
+		assertThat(response).hasSize(1);
+		verify(noteServiceMock).getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType(errandId, MUNICIPALITY_ID, NAMESPACE, Optional.empty());
+		verifyNoMoreInteractions(noteServiceMock);
 	}
 
 	@Test
 	void patchNoteOnErrand() {
-		final var id = 153L;
-		final var dto = createNoteDTO();
-		doNothing().when(mockService).updateNote(id, MUNICIPALITY_ID, NAMESPACE, dto);
+		final var errandId = 123L;
+		final var noteId = 456L;
+		final var noteDTO = createNoteDTO();
 
 		webTestClient.patch()
-			.uri(builder -> builder.path(BASE_URL + "/{id}")
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "id", id)))
-			.bodyValue(dto)
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{noteId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, noteId))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(noteDTO)
 			.exchange()
 			.expectStatus().isNoContent()
-			.expectBody().isEmpty();
+			.expectHeader().contentType(ALL_VALUE);
 
-		verify(mockService).updateNote(id, MUNICIPALITY_ID, NAMESPACE, dto);
+		verify(noteServiceMock).updateNote(noteId, MUNICIPALITY_ID, NAMESPACE, noteDTO);
+		verifyNoMoreInteractions(noteServiceMock);
+	}
+
+	@Test
+	void deleteNote() {
+		final var errandId = 123L;
+		final var noteId = 456L;
+
+		webTestClient.delete()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{noteId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, noteId))
+			.exchange()
+			.expectStatus().isNoContent()
+			.expectHeader().contentType(ALL_VALUE);
+
+		verify(noteServiceMock).deleteNoteOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, noteId);
+		verifyNoMoreInteractions(noteServiceMock);
+	}
+
+	@Test
+	void patchErrandWithNote() {
+		final var errandId = 123L;
+		final var noteId = 456L;
+		final var noteDTO = createNoteDTO();
+		noteDTO.setId(noteId);
+
+		when(noteServiceMock.addNoteToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, noteDTO)).thenReturn(noteDTO);
+
+		webTestClient.patch()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(noteDTO)
+			.exchange()
+			.expectStatus().isCreated()
+			.expectHeader().contentType(ALL_VALUE)
+			.expectHeader().location("/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/notes/" + noteId);
+
+		verify(noteServiceMock).addNoteToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, noteDTO);
 	}
 
 }

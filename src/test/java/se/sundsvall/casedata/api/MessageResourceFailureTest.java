@@ -24,7 +24,7 @@ import se.sundsvall.casedata.service.MessageService;
 @ActiveProfiles("junit")
 class MessageResourceFailureTest {
 
-	private static final String PATH = "/{municipalityId}/{namespace}/messages";
+	private static final String PATH = "/{municipalityId}/{namespace}/errands/{errandId}/messages";
 
 	@MockBean
 	private MessageService messageServiceMock;
@@ -36,7 +36,7 @@ class MessageResourceFailureTest {
 	void patchMessageWithNoBody() {
 		// Act
 		final var response = webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path(PATH).build(MUNICIPALITY_ID, NAMESPACE))
+			.uri(uriBuilder -> uriBuilder.path(PATH).build(MUNICIPALITY_ID, NAMESPACE, 1L))
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -49,9 +49,7 @@ class MessageResourceFailureTest {
 		verifyNoInteractions(messageServiceMock);
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
 		assertThat(response.getDetail()).isEqualTo("""
-			Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> \
-			se.sundsvall.casedata.api.MessageResource.patchErrandWithMessage(java.lang.String,java.lang.String,\
-			se.sundsvall.casedata.api.model.MessageRequest)""");
+			Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.MessageResource.patchErrandWithMessage(java.lang.String,java.lang.String,java.lang.Long,se.sundsvall.casedata.api.model.MessageRequest)""");
 	}
 
 }

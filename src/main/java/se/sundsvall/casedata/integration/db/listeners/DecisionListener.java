@@ -1,10 +1,11 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
-import org.springframework.stereotype.Component;
-
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
+
+import org.springframework.stereotype.Component;
+
 import se.sundsvall.casedata.integration.db.model.Decision;
 
 @Component
@@ -26,4 +27,5 @@ public class DecisionListener {
 	private void preUpdate(final Decision decision) {
 		errandListener.updateErrandFields(decision.getErrand());
 	}
+
 }

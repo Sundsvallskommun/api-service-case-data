@@ -33,7 +33,9 @@ class MessageIT extends AbstractAppTest {
 
 	private static final String ERRAND_NUMBER = "ERRAND-NUMBER-1";
 
-	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/messages";
+	private static final Long ERRAND_ID = 1L;
+
+	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + ERRAND_ID + "/messages";
 
 
 	@Autowired

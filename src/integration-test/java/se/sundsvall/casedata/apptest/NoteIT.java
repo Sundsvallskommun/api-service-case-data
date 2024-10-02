@@ -29,11 +29,13 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class NoteIT extends AbstractAppTest {
 
+	private static final String PATH = "/{0}/{1}/errands/{2}/notes";
+
 	@Test
 	void test01_getNoteById() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format("/{0}/{1}/notes/{2}", MUNICIPALITY_ID, NAMESPACE, 1L))
+			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, 1L, 1L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -43,7 +45,7 @@ class NoteIT extends AbstractAppTest {
 	void test02_getNotesByErrandId() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format("/{0}/{1}/notes/errand/{2}", MUNICIPALITY_ID, NAMESPACE, 1L))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, 1L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -54,7 +56,7 @@ class NoteIT extends AbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(PATCH)
-			.withServicePath(format("/{0}/{1}/notes/{2}", MUNICIPALITY_ID, NAMESPACE, 1L))
+			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, 1L, 1L))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withRequest(REQUEST_FILE)
@@ -63,7 +65,7 @@ class NoteIT extends AbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format("/{0}/{1}/notes/{2}", MUNICIPALITY_ID, NAMESPACE, 1L))
+			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, 1L, 1L))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withExpectedResponseStatus(OK)
@@ -76,7 +78,9 @@ class NoteIT extends AbstractAppTest {
 	void test04_deleteNoteById() {
 		setupCall()
 			.withHttpMethod(DELETE)
-			.withServicePath(format("/{0}/{1}/notes/{2}", MUNICIPALITY_ID, NAMESPACE, 1L))
+			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
+			.withHeader(AD_USER_HEADER_KEY, AD_USER)
+			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, 1L, 1L))
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 	}

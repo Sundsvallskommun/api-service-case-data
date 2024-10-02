@@ -1,6 +1,10 @@
 package se.sundsvall.casedata.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -10,11 +14,14 @@ import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
+import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.TestUtil.createExtraParameters;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecision;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +38,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.zalando.problem.ThrowableProblem;
 
 import se.sundsvall.casedata.api.model.PatchDecisionDTO;
 import se.sundsvall.casedata.integration.db.DecisionRepository;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
 class DecisionServiceTest {
@@ -49,6 +59,13 @@ class DecisionServiceTest {
 
 	@Captor
 	private ArgumentCaptor<Decision> decisionCaptor;
+
+	@Mock
+	private ErrandRepository errandRepositoryMock;
+
+
+	@Mock
+	private ProcessService processServiceMock;
 
 	@Test
 	void patchDecisionOnErrand() throws JsonProcessingException {
@@ -65,7 +82,7 @@ class DecisionServiceTest {
 
 		final PatchDecisionDTO patch = new PatchDecisionDTO();
 		patch.setDecisionOutcome(DecisionOutcome.CANCELLATION);
-		patch.setDescription(RandomStringUtils.random(10, true, false));
+		patch.setDescription(RandomStringUtils.secure().next(10, true, false));
 		patch.setExtraParameters(createExtraParameters());
 
 		decisionService.updateDecision(decision.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
@@ -94,5 +111,90 @@ class DecisionServiceTest {
 		verify(decisionRepository, times(1)).save(entity);
 		verifyNoMoreInteractions(decisionRepository);
 	}
+
+
+	@Test
+	void deleteDecisionOnErrand() {
+
+		// Arrange
+		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID, NAMESPACE);
+		errand.setCaseType(PARKING_PERMIT_RENEWAL.name());
+
+		// Set ID on every decision
+		errand.getDecisions().forEach(d -> d.setId(new Random().nextLong()));
+
+		final var errandId = new Random().nextLong(1, 1000);
+		final var decision = errand.getDecisions().getFirst();
+
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+
+		// Act
+		decisionService.deleteDecisionOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, decision.getId());
+
+		// Assert
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).save(errand);
+		verify(processServiceMock).updateProcess(errand);
+		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
+	}
+
+
+	private Errand mockErrandFindByIdAndMunicipalityIdAndNamespace() {
+		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID, NAMESPACE);
+		errand.setId(new Random().nextLong(1, 1000));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
+		return errand;
+	}
+
+	@Test
+	void getDecisionsOnErrand() {
+
+		// Arrange
+		final var errand = mockErrandFindByIdAndMunicipalityIdAndNamespace();
+
+		// Act
+		final var result = decisionService.findDecisionsOnErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
+		assertThat(result).isEqualTo(errand.getDecisions().stream().map(EntityMapper::toDecisionDto).toList());
+	}
+
+	@Test
+	void getDecisionsOnErrandNotFound() {
+
+		// Arrange
+		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID, NAMESPACE);
+		errand.setId(new Random().nextLong(1, 1000));
+		errand.setDecisions(new ArrayList<>());
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
+
+		final var id = errand.getId();
+
+		// Act/Assert
+		assertThrows(ThrowableProblem.class, () -> decisionService.findDecisionsOnErrand(id, MUNICIPALITY_ID, NAMESPACE));
+	}
+
+
+	@Test
+	void addDecisionToErrandTest() {
+
+		// Arrange
+		final var errand = createErrand();
+		final var newDecision = createDecisionDTO();
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+		// Act
+		final var decisionDTO = decisionService.addDecisionToErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, newDecision);
+
+		// Assert
+		assertThat(decisionDTO).isEqualTo(newDecision);
+		assertThat(errand.getDecisions()).isNotEmpty().hasSize(2);
+
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).save(errand);
+		verify(processServiceMock).updateProcess(errand);
+	}
+
 
 }

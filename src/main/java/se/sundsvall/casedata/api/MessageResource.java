@@ -40,7 +40,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Validated
-@RequestMapping("/{municipalityId}/{namespace}/messages")
+@RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/messages")
 @Tag(name = "Messages", description = "Message operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
@@ -58,6 +58,7 @@ class MessageResource {
 	ResponseEntity<List<MessageResponse>> getMessagesOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "errandNumber") final String errandNumber) {
 
 		return ok(service.getMessagesByErrandNumber(errandNumber, municipalityId, namespace));
@@ -69,6 +70,7 @@ class MessageResource {
 	ResponseEntity<Void> patchErrandWithMessage(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody final MessageRequest request) {
 
 		service.saveMessage(request, municipalityId, namespace);
@@ -83,6 +85,7 @@ class MessageResource {
 	ResponseEntity<Void> updateViewedStatus(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "messageId") final String messageId,
 		@PathVariable(name = "isViewed") final boolean isViewed) {
 

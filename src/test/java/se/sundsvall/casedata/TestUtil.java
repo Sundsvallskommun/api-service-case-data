@@ -27,8 +27,10 @@ import se.sundsvall.casedata.api.model.CoordinatesDTO;
 import se.sundsvall.casedata.api.model.DecisionDTO;
 import se.sundsvall.casedata.api.model.ErrandDTO;
 import se.sundsvall.casedata.api.model.FacilityDTO;
+import se.sundsvall.casedata.api.model.GetParkingPermitDTO;
 import se.sundsvall.casedata.api.model.LawDTO;
 import se.sundsvall.casedata.api.model.NoteDTO;
+import se.sundsvall.casedata.api.model.PatchAppealDTO;
 import se.sundsvall.casedata.api.model.PatchDecisionDTO;
 import se.sundsvall.casedata.api.model.PatchErrandDTO;
 import se.sundsvall.casedata.api.model.StakeholderDTO;
@@ -79,11 +81,11 @@ public final class TestUtil {
 		errandDTO.setCaseType(CaseType.PARKING_PERMIT.name());
 		errandDTO.setChannel(Channel.EMAIL);
 		errandDTO.setPriority(Priority.HIGH);
-		errandDTO.setErrandNumber(RandomStringUtils.random(10, true, true));
-		errandDTO.setDescription(RandomStringUtils.random(20, true, false));
-		errandDTO.setCaseTitleAddition(RandomStringUtils.random(10, true, false));
-		errandDTO.setDiaryNumber(RandomStringUtils.random(10, true, true));
-		errandDTO.setPhase(RandomStringUtils.random(10, true, true));
+		errandDTO.setErrandNumber(RandomStringUtils.secure().next(10, true, true));
+		errandDTO.setDescription(RandomStringUtils.secure().next(20, true, false));
+		errandDTO.setCaseTitleAddition(RandomStringUtils.secure().next(10, true, false));
+		errandDTO.setDiaryNumber(RandomStringUtils.secure().next(10, true, true));
+		errandDTO.setPhase(RandomStringUtils.secure().next(10, true, true));
 		errandDTO.setStartDate(LocalDate.now().minusDays(3));
 		errandDTO.setEndDate(LocalDate.now().plusDays(10));
 		errandDTO.setApplicationReceived(getRandomOffsetDateTime());
@@ -96,9 +98,9 @@ public final class TestUtil {
 			createStakeholderDTO(StakeholderType.PERSON, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole()))),
 			createStakeholderDTO(StakeholderType.ORGANIZATION, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole()))))));
 		errandDTO.setMessageIds(new ArrayList<>(List.of(
-			RandomStringUtils.random(10, true, true),
-			RandomStringUtils.random(10, true, true),
-			RandomStringUtils.random(10, true, true))));
+			RandomStringUtils.secure().next(10, true, true),
+			RandomStringUtils.secure().next(10, true, true),
+			RandomStringUtils.secure().next(10, true, true))));
 
 		errandDTO.setExtraParameters(createExtraParameters());
 
@@ -123,8 +125,8 @@ public final class TestUtil {
 
 	public static StatusDTO createStatusDTO() {
 		final var statusDTO = new StatusDTO();
-		statusDTO.setStatusType(RandomStringUtils.random(10, true, false));
-		statusDTO.setDescription(RandomStringUtils.random(20, true, false));
+		statusDTO.setStatusType(RandomStringUtils.secure().next(10, true, false));
+		statusDTO.setDescription(RandomStringUtils.secure().next(20, true, false));
 		statusDTO.setDateTime(getRandomOffsetDateTime());
 
 		return statusDTO;
@@ -134,7 +136,7 @@ public final class TestUtil {
 		final var decisionDTO = new DecisionDTO();
 		decisionDTO.setDecisionType(getRandomDecisionType());
 		decisionDTO.setDecisionOutcome(DecisionOutcome.CANCELLATION);
-		decisionDTO.setDescription(RandomStringUtils.random(30, true, false));
+		decisionDTO.setDescription(RandomStringUtils.secure().next(30, true, false));
 		decisionDTO.setDecidedBy(createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name())));
 		decisionDTO.setDecidedAt(getRandomOffsetDateTime());
 		decisionDTO.setValidFrom(getRandomOffsetDateTime());
@@ -156,6 +158,15 @@ public final class TestUtil {
 		return appealDTO;
 	}
 
+
+	public static PatchAppealDTO createPatchAppealDTO() {
+		final var appealDTO = new PatchAppealDTO();
+		appealDTO.setDescription("Appeal Patch description");
+		appealDTO.setStatus(AppealStatus.COMPLETED.toString());
+		appealDTO.setTimelinessReview(TimelinessReview.NOT_RELEVANT.toString());
+		return appealDTO;
+	}
+
 	public static FacilityDTO createFacilityDTO() {
 		return FacilityDTO.builder()
 			.withDescription("description")
@@ -174,8 +185,8 @@ public final class TestUtil {
 		final var attachmentDTO = new AttachmentDTO();
 		attachmentDTO.setId(new Random().nextLong(1, 100000));
 		attachmentDTO.setCategory(category.toString());
-		attachmentDTO.setName(RandomStringUtils.random(10, true, false) + ".pdf");
-		attachmentDTO.setNote(RandomStringUtils.random(20, true, false));
+		attachmentDTO.setName(RandomStringUtils.secure().next(10, true, false) + ".pdf");
+		attachmentDTO.setNote(RandomStringUtils.secure().next(20, true, false));
 		attachmentDTO.setExtension(".pdf");
 		attachmentDTO.setMimeType("application/pdf");
 		attachmentDTO.setFile("dGVzdA==");
@@ -186,10 +197,10 @@ public final class TestUtil {
 
 	public static LawDTO createLawDTO() {
 		final var lawDTO = new LawDTO();
-		lawDTO.setHeading(RandomStringUtils.random(10, true, false));
-		lawDTO.setSfs(RandomStringUtils.random(10, true, false));
-		lawDTO.setChapter(RandomStringUtils.random(10, true, false));
-		lawDTO.setArticle(RandomStringUtils.random(10, true, false));
+		lawDTO.setHeading(RandomStringUtils.secure().next(10, true, false));
+		lawDTO.setSfs(RandomStringUtils.secure().next(10, true, false));
+		lawDTO.setChapter(RandomStringUtils.secure().next(10, true, false));
+		lawDTO.setArticle(RandomStringUtils.secure().next(10, true, false));
 
 		return lawDTO;
 	}
@@ -201,13 +212,13 @@ public final class TestUtil {
 			final FacilityDTO facilityDTO = new FacilityDTO();
 			facilityDTO.setFacilityType(facilityType.name());
 			facilityDTO.setMainFacility(oneMainFacility && facilityList.isEmpty());
-			facilityDTO.setDescription(RandomStringUtils.random(20, true, false));
-			facilityDTO.setFacilityCollectionName(RandomStringUtils.random(10, true, false));
+			facilityDTO.setDescription(RandomStringUtils.secure().next(20, true, false));
+			facilityDTO.setFacilityCollectionName(RandomStringUtils.secure().next(10, true, false));
 
 			final AddressDTO address = new AddressDTO();
 			address.setAddressCategory(AddressCategory.VISITING_ADDRESS);
 			final Random random = new Random();
-			address.setPropertyDesignation(RandomStringUtils.random(20, true, false).toUpperCase() + " " + random.nextInt(99) + ":" + random.nextInt(999));
+			address.setPropertyDesignation(RandomStringUtils.secure().next(20, true, false).toUpperCase() + " " + random.nextInt(99) + ":" + random.nextInt(999));
 			facilityDTO.setAddress(address);
 
 			facilityList.add(facilityDTO);
@@ -218,9 +229,9 @@ public final class TestUtil {
 
 	public static Map<String, String> createExtraParameters() {
 		final var extraParams = new HashMap<String, String>();
-		extraParams.put(RandomStringUtils.random(10, true, false), RandomStringUtils.random(20, true, false));
-		extraParams.put(RandomStringUtils.random(10, true, false), RandomStringUtils.random(20, true, false));
-		extraParams.put(RandomStringUtils.random(10, true, false), RandomStringUtils.random(20, true, false));
+		extraParams.put(RandomStringUtils.secure().next(10, true, false), RandomStringUtils.secure().next(20, true, false));
+		extraParams.put(RandomStringUtils.secure().next(10, true, false), RandomStringUtils.secure().next(20, true, false));
+		extraParams.put(RandomStringUtils.secure().next(10, true, false), RandomStringUtils.secure().next(20, true, false));
 
 		return extraParams;
 	}
@@ -230,9 +241,9 @@ public final class TestUtil {
 			final var person = new StakeholderDTO();
 			person.setType(StakeholderType.PERSON);
 			person.setPersonId(UUID.randomUUID().toString());
-			person.setAdAccount(RandomStringUtils.random(10, true, false));
-			person.setFirstName(RandomStringUtils.random(10, true, false));
-			person.setLastName(RandomStringUtils.random(10, true, false));
+			person.setAdAccount(RandomStringUtils.secure().next(10, true, false));
+			person.setFirstName(RandomStringUtils.secure().next(10, true, false));
+			person.setLastName(RandomStringUtils.secure().next(10, true, false));
 			person.setRoles(stakeholderRoles);
 			person.setContactInformation(List.of(createContactInformationDTO(ContactType.EMAIL), createContactInformationDTO(ContactType.PHONE), createContactInformationDTO(ContactType.CELLPHONE)));
 			person.setAddresses(List.of(createAddressDTO(AddressCategory.VISITING_ADDRESS)));
@@ -242,13 +253,13 @@ public final class TestUtil {
 			final var organization = new StakeholderDTO();
 			organization.setType(StakeholderType.ORGANIZATION);
 			organization.setOrganizationNumber((new Random().nextInt(999999 - 111111) + 111111) + "-" + (new Random().nextInt(9999 - 1111) + 1111));
-			organization.setOrganizationName(RandomStringUtils.random(20, true, false));
+			organization.setOrganizationName(RandomStringUtils.secure().next(20, true, false));
 			organization.setRoles(stakeholderRoles);
 			organization.setContactInformation(List.of(createContactInformationDTO(ContactType.EMAIL), createContactInformationDTO(ContactType.PHONE), createContactInformationDTO(ContactType.CELLPHONE)));
 			organization.setAddresses(List.of(createAddressDTO(AddressCategory.VISITING_ADDRESS)));
 			organization.setExtraParameters(createExtraParameters());
-			organization.setAuthorizedSignatory(RandomStringUtils.random(10, true, false));
-			organization.setAdAccount(RandomStringUtils.random(10, true, false));
+			organization.setAuthorizedSignatory(RandomStringUtils.secure().next(10, true, false));
+			organization.setAdAccount(RandomStringUtils.secure().next(10, true, false));
 			return organization;
 		}
 	}
@@ -256,7 +267,7 @@ public final class TestUtil {
 	public static ContactInformationDTO createContactInformationDTO(final ContactType contactType) {
 		final var contactInformationDTO = new ContactInformationDTO();
 		contactInformationDTO.setContactType(contactType);
-		contactInformationDTO.setValue(RandomStringUtils.random(10, false, true));
+		contactInformationDTO.setValue(RandomStringUtils.secure().next(10, false, true));
 
 		return contactInformationDTO;
 	}
@@ -264,16 +275,16 @@ public final class TestUtil {
 	public static AddressDTO createAddressDTO(final AddressCategory addressCategory) {
 		final var address = new AddressDTO();
 		address.setAddressCategory(addressCategory);
-		address.setCity(RandomStringUtils.random(10, true, false));
+		address.setCity(RandomStringUtils.secure().next(10, true, false));
 		address.setCountry("Sverige");
-		address.setPropertyDesignation(RandomStringUtils.random(10, true, false));
-		address.setStreet(RandomStringUtils.random(10, true, false));
-		address.setHouseNumber(RandomStringUtils.random(10, true, false));
-		address.setCareOf(RandomStringUtils.random(10, true, false));
-		address.setPostalCode(RandomStringUtils.random(10, true, false));
-		address.setApartmentNumber(RandomStringUtils.random(10, true, false));
-		address.setAttention(RandomStringUtils.random(10, true, false));
-		address.setInvoiceMarking(RandomStringUtils.random(10, true, false));
+		address.setPropertyDesignation(RandomStringUtils.secure().next(10, true, false));
+		address.setStreet(RandomStringUtils.secure().next(10, true, false));
+		address.setHouseNumber(RandomStringUtils.secure().next(10, true, false));
+		address.setCareOf(RandomStringUtils.secure().next(10, true, false));
+		address.setPostalCode(RandomStringUtils.secure().next(10, true, false));
+		address.setApartmentNumber(RandomStringUtils.secure().next(10, true, false));
+		address.setAttention(RandomStringUtils.secure().next(10, true, false));
+		address.setInvoiceMarking(RandomStringUtils.secure().next(10, true, false));
 		address.setIsZoningPlanArea(false);
 		final CoordinatesDTO coordinates = createCoordinatesDTO();
 		address.setLocation(coordinates);
@@ -292,11 +303,11 @@ public final class TestUtil {
 	public static NoteDTO createNoteDTO() {
 		final var noteDTO = new NoteDTO();
 		noteDTO.setId(new Random().nextLong(1, 100000));
-		noteDTO.setTitle(RandomStringUtils.random(10, true, false));
-		noteDTO.setText(RandomStringUtils.random(10, true, false));
+		noteDTO.setTitle(RandomStringUtils.secure().next(10, true, false));
+		noteDTO.setText(RandomStringUtils.secure().next(10, true, false));
 		noteDTO.setExtraParameters(createExtraParameters());
-		noteDTO.setCreatedBy(RandomStringUtils.random(10, true, false));
-		noteDTO.setUpdatedBy(RandomStringUtils.random(10, true, false));
+		noteDTO.setCreatedBy(RandomStringUtils.secure().next(10, true, false));
+		noteDTO.setUpdatedBy(RandomStringUtils.secure().next(10, true, false));
 		noteDTO.setNoteType(NoteType.PUBLIC);
 
 		return noteDTO;
@@ -524,6 +535,15 @@ public final class TestUtil {
 			.withPriority(Priority.HIGH)
 			.withChannel(Channel.EMAIL)
 			.withCaseType(CaseType.PARKING_PERMIT.name())
+			.build();
+	}
+
+	public static GetParkingPermitDTO createGetParkingPermitDTO() {
+		return GetParkingPermitDTO.builder()
+			.withArtefactPermitNumber("123")
+			.withArtefactPermitStatus("status")
+			.withErrandId(1L)
+			.withErrandDecision(createDecisionDTO())
 			.build();
 	}
 
