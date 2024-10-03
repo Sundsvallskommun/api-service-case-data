@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -11,6 +12,8 @@ import static se.sundsvall.casedata.TestUtil.createAppeal;
 import static se.sundsvall.casedata.TestUtil.createAppealDTO;
 import static se.sundsvall.casedata.TestUtil.createDecision;
 import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createErrandDTO;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +33,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import se.sundsvall.casedata.api.model.PatchAppealDTO;
 import se.sundsvall.casedata.integration.db.AppealRepository;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.Appeal;
+import se.sundsvall.casedata.integration.db.model.Decision;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
@@ -42,6 +47,12 @@ class AppealServiceTest {
 
 	@Mock
 	private AppealRepository appealRepositoryMock;
+
+	@Mock
+	private ErrandRepository errandRepositoryMock;
+
+	@Mock
+	private ProcessService processServiceMock;
 
 	@Captor
 	private ArgumentCaptor<Appeal> appealCaptor;
@@ -155,6 +166,50 @@ class AppealServiceTest {
 		verify(appealRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verify(appealRepositoryMock).save(entity);
 		verifyNoMoreInteractions(appealRepositoryMock);
+	}
+
+	@Test
+	void addAppealToErrandTest() {
+
+		// Arrange
+		final var errand = createErrand();
+		errand.getDecisions().add(Decision.builder().withId(123L).build());
+		final var newAppeal = createAppealDTO();
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+		// Act
+		final var appealDTO = appealService.addAppealToErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, newAppeal);
+
+		// Assert
+		assertThat(appealDTO).isEqualTo(newAppeal);
+		assertThat(errand.getDecisions()).isNotEmpty().hasSize(2);
+
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).save(errand);
+	}
+
+	@Test
+	void deleteAppealOnErrand() {
+
+		// Arrange
+		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID, NAMESPACE);
+		// Set ID on every decision
+		errand.getDecisions().forEach(d -> d.setId(new Random().nextLong()));
+
+		final var errandId = new Random().nextLong(1, 1000);
+		final var appeal = errand.getAppeals().getFirst();
+		appeal.setId(new Random().nextLong());
+
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+
+		// Act
+		appealService.deleteAppealOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, appeal.getId());
+
+		// Assert
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).save(errand);
+		verify(processServiceMock).updateProcess(errand);
 	}
 
 }

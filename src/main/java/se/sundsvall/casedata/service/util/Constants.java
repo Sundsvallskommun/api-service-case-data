@@ -6,6 +6,9 @@ import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 public final class Constants {
 
+
+	public static final String ERRAND_WAS_NOT_FOUND = "Errand with id: {0} was not found";
+
 	public static final String NAMESPACE_REGEXP = "[\\w|\\.|\\-]+";
 
 	public static final String NAMESPACE_VALIDATION_MESSAGE = "can only contain A-Z, a-z, 0-9, -, _ and .";

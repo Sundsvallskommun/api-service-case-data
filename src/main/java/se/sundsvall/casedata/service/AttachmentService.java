@@ -36,7 +36,7 @@ public class AttachmentService {
 		return toAttachmentDto(getAttachmentByIdAndMunicipalityIdAndNamespace(attachmentId, municipalityId, namespace));
 	}
 
-	public List<AttachmentDTO> findByErrandNumberAndMunicipalityId(final String errandNumber, final String municipalityId, final String namespace) {
+	public List<AttachmentDTO> findByErrandNumberAndMunicipalityIdAndNamespace(final String errandNumber, final String municipalityId, final String namespace) {
 		return attachmentRepository.findAllByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, municipalityId, namespace).stream()
 			.map(EntityMapper::toAttachmentDto)
 			.toList();

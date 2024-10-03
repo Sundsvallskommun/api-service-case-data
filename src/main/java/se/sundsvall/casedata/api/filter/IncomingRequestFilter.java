@@ -8,28 +8,27 @@ import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADE
 import java.io.IOException;
 import java.util.Base64;
 
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import lombok.Getter;
 
+@Getter
 @Component
 public class IncomingRequestFilter extends OncePerRequestFilter {
 
 	// WSO2-subscriber
-	@Getter
 	private String subscriber;
 
 	// AD-user
-	@Getter
 	private String adUser;
 
 	@Override

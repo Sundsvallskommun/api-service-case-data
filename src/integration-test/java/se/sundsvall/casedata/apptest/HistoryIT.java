@@ -21,11 +21,15 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class HistoryIT extends AbstractAppTest {
 
+	private static final String PATH = "/{0}/{1}/errands/{2}/";
+
+	private static final long ERRAND_ID = 1L;
+
 	@Test
 	void test01_getErrandHistory() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format("/{0}/{1}/errands/{2}/history", MUNICIPALITY_ID, NAMESPACE, 1L))
+			.withServicePath(format(PATH + "history", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -35,7 +39,7 @@ class HistoryIT extends AbstractAppTest {
 	void test02_getAttachmentHistory() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format("/{0}/{1}/attachments/{2}/history", MUNICIPALITY_ID, NAMESPACE, 2L))
+			.withServicePath(format(PATH + "/attachments/{3}/history", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, 2L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -45,7 +49,7 @@ class HistoryIT extends AbstractAppTest {
 	void test03_getDecisionHistory() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format("/{0}/{1}/decisions/{2}/history", MUNICIPALITY_ID, NAMESPACE, 3L))
+			.withServicePath(format(PATH + "decisions/{3}/history", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, 3L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -55,7 +59,7 @@ class HistoryIT extends AbstractAppTest {
 	void test04_getFacilitiesHistory() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format("/{0}/{1}/facilities/{2}/history", MUNICIPALITY_ID, NAMESPACE, 4L))
+			.withServicePath(format(PATH + "/facilities/{3}/history", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, 4L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -65,7 +69,7 @@ class HistoryIT extends AbstractAppTest {
 	void test05_getNotesHistory() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format("/{0}/{1}/notes/{2}/history", MUNICIPALITY_ID, NAMESPACE, 5L))
+			.withServicePath(format(PATH + "/notes/{3}/history", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, 5L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -75,7 +79,7 @@ class HistoryIT extends AbstractAppTest {
 	void test06_getStakeholdersHistory() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format("/{0}/{1}/stakeholders/{2}/history", MUNICIPALITY_ID, NAMESPACE, 6L))
+			.withServicePath(format(PATH + "/stakeholders/{3}/history", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, 6L))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();

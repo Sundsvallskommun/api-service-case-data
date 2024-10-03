@@ -18,6 +18,7 @@ import static se.sundsvall.casedata.TestUtil.createErrandDTO;
 import static se.sundsvall.casedata.TestUtil.createExtraParameters;
 import static se.sundsvall.casedata.TestUtil.createNote;
 import static se.sundsvall.casedata.TestUtil.createNoteDTO;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ATTEFALL;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteDto;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -52,13 +54,13 @@ import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 class NoteServiceTest {
 
 	@Mock
-	private NoteRepository noteRepository;
+	private NoteRepository noteRepositoryMock;
 
 	@Mock
-	private ErrandRepository errandRepository;
+	private ErrandRepository errandRepositoryMock;
 
 	@Mock
-	private ProcessService processService;
+	private ProcessService processServiceMock;
 
 	@InjectMocks
 	private NoteService noteService;
@@ -74,17 +76,17 @@ class NoteServiceTest {
 
 		final var mockNote = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(note), Note.class);
 		mockNote.setErrand(errand);
-		when(noteRepository.findByIdAndMunicipalityIdAndNamespace(note.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(mockNote));
+		when(noteRepositoryMock.findByIdAndMunicipalityIdAndNamespace(note.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(mockNote));
 
 		final NoteDTO patch = new NoteDTO();
-		patch.setTitle(RandomStringUtils.random(10, true, false));
-		patch.setText(RandomStringUtils.random(10, true, false));
+		patch.setTitle(RandomStringUtils.secure().next(10, true, false));
+		patch.setText(RandomStringUtils.secure().next(10, true, false));
 		patch.setExtraParameters(createExtraParameters());
-		patch.setCreatedBy(RandomStringUtils.random(10, true, false));
-		patch.setUpdatedBy(RandomStringUtils.random(10, true, false));
+		patch.setCreatedBy(RandomStringUtils.secure().next(10, true, false));
+		patch.setUpdatedBy(RandomStringUtils.secure().next(10, true, false));
 
 		noteService.updateNote(note.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
-		verify(noteRepository).save(noteCaptor.capture());
+		verify(noteRepositoryMock).save(noteCaptor.capture());
 		final Note persistedNote = noteCaptor.getValue();
 
 		assertThat(persistedNote.getTitle()).isEqualTo(patch.getTitle());
@@ -117,15 +119,15 @@ class NoteServiceTest {
 
 		final var mockNote = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(note), Note.class);
 		mockNote.setErrand(errand);
-		when(noteRepository.findByIdAndMunicipalityIdAndNamespace(note.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(mockNote));
+		when(noteRepositoryMock.findByIdAndMunicipalityIdAndNamespace(note.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(mockNote));
 
 		final NoteDTO putDTO = new NoteDTO();
-		putDTO.setTitle(RandomStringUtils.random(10, true, false));
-		putDTO.setText(RandomStringUtils.random(10, true, false));
+		putDTO.setTitle(RandomStringUtils.secure().next(10, true, false));
+		putDTO.setText(RandomStringUtils.secure().next(10, true, false));
 		putDTO.setNoteType(NoteType.PUBLIC);
 
 		noteService.replaceNote(note.getId(), MUNICIPALITY_ID, NAMESPACE, putDTO);
-		Mockito.verify(noteRepository).save(noteCaptor.capture());
+		Mockito.verify(noteRepositoryMock).save(noteCaptor.capture());
 		final Note persistedNote = noteCaptor.getValue();
 
 		assertThat(putDTO)
@@ -141,102 +143,147 @@ class NoteServiceTest {
 		final var dto = new NoteDTO();
 		final var entity = new Note();
 		entity.setErrand(new Errand());
-		when(noteRepository.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
+		when(noteRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
 
 		noteService.updateNote(1L, MUNICIPALITY_ID, NAMESPACE, dto);
 
-		verify(noteRepository).save(entity);
-		verifyNoMoreInteractions(noteRepository);
+		verify(noteRepositoryMock).save(entity);
+		verifyNoMoreInteractions(noteRepositoryMock);
 	}
 
 	@Test
-	void testGetNotesByErrandIdAndMunicipalityIdAndNoteType() {
+	void testGetNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType() {
 		final var errand = createErrand();
 		final var list = List.of(createNote(c -> c.setNoteType(NoteType.INTERNAL)), createNote(c -> c.setNoteType(NoteType.PUBLIC)));
 		errand.setNotes(list);
-		when(errandRepository.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
-		final var result = noteService.getNotesByErrandIdAndMunicipalityIdAndNoteType(errand.getId(), MUNICIPALITY_ID, NAMESPACE, Optional.of(NoteType.PUBLIC));
+		final var result = noteService.getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType(errand.getId(), MUNICIPALITY_ID, NAMESPACE, Optional.of(NoteType.PUBLIC));
 
 		assertThat(result).isNotEmpty().hasSize(1);
 	}
 
 	@Test
-	void getNotesByErrandIdAndMunicipalityIdAndNoteType_EmptyOptional_Test() {
+	void getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType_EmptyOptional_Test() {
 		final var errand = createErrand();
 		final var list = List.of(createNote(c -> c.setNoteType(NoteType.INTERNAL)), createNote(c -> c.setNoteType(NoteType.PUBLIC)));
 		errand.setNotes(list);
-		when(errandRepository.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
-		final var result = noteService.getNotesByErrandIdAndMunicipalityIdAndNoteType(errand.getId(), MUNICIPALITY_ID, NAMESPACE, Optional.empty());
+		final var result = noteService.getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType(errand.getId(), MUNICIPALITY_ID, NAMESPACE, Optional.empty());
 
 		assertThat(result).isNotEmpty().hasSize(2);
 	}
 
 	@Test
-	void getNotesByErrandIdAndMunicipalityIdAndNoteType_NotFound_Test() {
+	void getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType_NotFound_Test() {
 		final var noteType = Optional.of(NoteType.PUBLIC);
-		when(errandRepository.findByIdAndMunicipalityIdAndNamespace(3213L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(3213L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> noteService.getNotesByErrandIdAndMunicipalityIdAndNoteType(3213L, MUNICIPALITY_ID, NAMESPACE, noteType))
+		assertThatThrownBy(() -> noteService.getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType(3213L, MUNICIPALITY_ID, NAMESPACE, noteType))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
-			.hasFieldOrPropertyWithValue("detail", "Errand was not found");
+			.hasFieldOrPropertyWithValue("detail", "Errand with id: 3,213 was not found");
 	}
 
 	@ParameterizedTest
 	@EnumSource(NoteType.class)
-	void getNotesByErrandIdAndMunicipalityIdAndNoteType_PublicNoteType_Test(final NoteType enumValue) {
+	void getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType_PublicNoteType_Test(final NoteType enumValue) {
 		final var errand = createErrand();
 		final var list = List.of(createNote(c -> c.setNoteType(NoteType.INTERNAL)), createNote(c -> c.setNoteType(NoteType.PUBLIC)));
 		errand.setNotes(list);
 		final var noteType = Optional.of(enumValue);
-		when(errandRepository.findByIdAndMunicipalityIdAndNamespace(3213L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(3213L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
-		final var result = noteService.getNotesByErrandIdAndMunicipalityIdAndNoteType(3213L, MUNICIPALITY_ID, NAMESPACE, noteType);
+		final var result = noteService.getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType(3213L, MUNICIPALITY_ID, NAMESPACE, noteType);
 
 		assertThat(result).isNotEmpty().hasSize(1).allSatisfy(n -> assertThat(n.getNoteType()).isEqualTo(enumValue));
-		verify(errandRepository).findByIdAndMunicipalityIdAndNamespace(3213L, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(3213L, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 	@Test
 	void deleteNoteById_PublicNote_TestIdAndMunicipality() {
 		final var note = createNote();
 		note.setNoteType(NoteType.PUBLIC);
-		when(noteRepository.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(note));
+		when(noteRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(note));
 
-		assertThatThrownBy(() -> noteService.deleteNoteByIdAndMunicipalityId(5L, MUNICIPALITY_ID, NAMESPACE))
+		assertThatThrownBy(() -> noteService.deleteNoteByIdAndMunicipalityIdAndNamespace(5L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", FORBIDDEN)
 			.hasFieldOrPropertyWithValue("detail", "Public notes can not be deleted");
 
-		verify(noteRepository).findByIdAndMunicipalityIdAndNamespace(5L, MUNICIPALITY_ID, NAMESPACE);
-		verify(noteRepository, never()).delete(any(Note.class));
+		verify(noteRepositoryMock).findByIdAndMunicipalityIdAndNamespace(5L, MUNICIPALITY_ID, NAMESPACE);
+		verify(noteRepositoryMock, never()).delete(any(Note.class));
 	}
 
 	@Test
 	void deleteNoteById_InternalNote_TestIdAndMunicipality() {
 		final var note = createNote();
 		note.setNoteType(NoteType.INTERNAL);
-		when(noteRepository.findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(note));
+		when(noteRepositoryMock.findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(note));
 
-		noteService.deleteNoteByIdAndMunicipalityId(123L, MUNICIPALITY_ID, NAMESPACE);
+		noteService.deleteNoteByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE);
 
-		verify(noteRepository).findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE);
-		verify(noteRepository).delete(note);
+		verify(noteRepositoryMock).findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE);
+		verify(noteRepositoryMock).delete(note);
 	}
 
 	@Test
 	void deleteNoteByIdAndMunicipalityId_NotFound_Test() {
-		when(noteRepository.findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
+		when(noteRepositoryMock.findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> noteService.deleteNoteByIdAndMunicipalityId(123L, MUNICIPALITY_ID, NAMESPACE))
+		assertThatThrownBy(() -> noteService.deleteNoteByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Note was not found");
 
-		verify(noteRepository).findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE);
-		verify(noteRepository, never()).delete(any(Note.class));
+		verify(noteRepositoryMock).findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE);
+		verify(noteRepositoryMock, never()).delete(any(Note.class));
+	}
+
+	@Test
+	void deleteNoteOnErrand() {
+		// Arrange
+		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID, NAMESPACE);
+		errand.setCaseType(ANMALAN_ATTEFALL.name());
+		// Set ID on every note
+		errand.getNotes().forEach(note -> note.setId(new Random().nextLong()));
+
+		final var errandId = new Random().nextLong(1, 1000);
+		final var note = errand.getNotes().getFirst();
+
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+
+		// Act
+		noteService.deleteNoteOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, note.getId());
+
+		// Assert
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).save(errand);
+		verify(processServiceMock).updateProcess(errand);
+		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
+	}
+
+
+	@Test
+	void addNoteToErrandTest() {
+
+		// Arrange
+		final var errand = createErrand();
+		final var newNote = createNoteDTO();
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+		// Act
+		final var note = noteService.addNoteToErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, newNote);
+
+		// Assert
+		assertThat(note).isEqualTo(newNote);
+		assertThat(errand.getNotes()).isNotEmpty().hasSize(2);
+
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).save(errand);
+		verify(processServiceMock).updateProcess(errand);
 	}
 
 }

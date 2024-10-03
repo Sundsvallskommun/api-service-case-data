@@ -25,7 +25,9 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class MessageAttachmentIT extends AbstractAppTest {
 
-	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/messageattachments/";
+	private static final Long ERRAND_ID = 1L;
+
+	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + ERRAND_ID + "/messageattachments/";
 
 	@Test
 	void test01_getMessageAttachmentNotFound() {

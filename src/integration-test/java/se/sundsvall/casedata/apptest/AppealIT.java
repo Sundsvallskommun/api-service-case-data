@@ -33,12 +33,14 @@ class AppealIT extends AbstractAppTest {
 
 	private static final String APPEAL_ID = "1";
 
-	private static final String PATH = "/{0}/{1}/appeals/{2}";
+	private static final Long ERRAND_ID = 1L;
+
+	private static final String PATH = "/{0}/{1}/errands/{2}/appeals/{3}";
 
 	@Test
 	void test01_getAppealById() {
 		setupCall()
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, APPEAL_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, APPEAL_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -48,7 +50,7 @@ class AppealIT extends AbstractAppTest {
 	@Test
 	void test02_patchAppeal() {
 		setupCall()
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, APPEAL_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, APPEAL_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PATCH)
@@ -58,7 +60,7 @@ class AppealIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, APPEAL_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, APPEAL_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -68,7 +70,7 @@ class AppealIT extends AbstractAppTest {
 	@Test
 	void test03_putAppeal() {
 		setupCall()
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, APPEAL_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, APPEAL_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PUT)
@@ -78,7 +80,7 @@ class AppealIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, APPEAL_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, APPEAL_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)

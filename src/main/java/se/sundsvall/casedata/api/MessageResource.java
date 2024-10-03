@@ -40,7 +40,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Validated
-@RequestMapping("/{municipalityId}/{namespace}/messages")
+@RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/messages")
 @Tag(name = "Messages", description = "Message operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
@@ -52,23 +52,25 @@ class MessageResource {
 		this.service = service;
 	}
 
-	@Operation(description = "Get all messages for an errand.")
+	@Operation(description = "Get all messages for an errand")
 	@GetMapping(path = "/{errandNumber}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<List<MessageResponse>> getMessagesOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "errandNumber") final String errandNumber) {
 
 		return ok(service.getMessagesByErrandNumber(errandNumber, municipalityId, namespace));
 	}
 
-	@Operation(description = "Save a message.")
+	@Operation(description = "Save a message on an errand")
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchErrandWithMessage(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody final MessageRequest request) {
 
 		service.saveMessage(request, municipalityId, namespace);
@@ -77,12 +79,13 @@ class MessageResource {
 			.build();
 	}
 
-	@Operation(description = "Set viewed status for message.")
+	@Operation(description = "Set viewed status for message")
 	@PutMapping(path = "/{messageId}/viewed/{isViewed}", produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> updateViewedStatus(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "messageId") final String messageId,
 		@PathVariable(name = "isViewed") final boolean isViewed) {
 

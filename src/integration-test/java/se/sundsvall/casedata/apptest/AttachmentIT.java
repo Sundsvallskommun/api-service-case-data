@@ -34,13 +34,15 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class AttachmentIT extends AbstractAppTest {
 
-	private static final String PATH = "/{0}/{1}/attachments/{2}";
+	private static final Long ERRAND_ID = 1L;
+
+	private static final String PATH = "/{0}/{1}/errands/{2}/attachments/{3}";
 
 	@Test
 	void test01_GetAttachment() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "1"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -50,7 +52,7 @@ class AttachmentIT extends AbstractAppTest {
 	void test02_GetAttachmentNotFound() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "1000"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1000"))
 			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -60,7 +62,7 @@ class AttachmentIT extends AbstractAppTest {
 	void test03_PutAttachment() {
 		setupCall()
 			.withHttpMethod(HttpMethod.PUT)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "1"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withRequest(REQUEST_FILE)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(Constants.AD_USER_HEADER_KEY, AD_USER)
@@ -69,7 +71,7 @@ class AttachmentIT extends AbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "1"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -79,7 +81,7 @@ class AttachmentIT extends AbstractAppTest {
 	void test04_PutAttachmentNotFound() {
 		setupCall()
 			.withHttpMethod(HttpMethod.PUT)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "10"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "10"))
 			.withRequest(REQUEST_FILE)
 			.withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 			.withExpectedResponseStatus(NOT_FOUND)
@@ -92,13 +94,13 @@ class AttachmentIT extends AbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "3"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "3"))
 			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
 			.withHttpMethod(HttpMethod.DELETE)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "3"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "3"))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(Constants.AD_USER_HEADER_KEY, AD_USER)
 			.withExpectedResponseStatus(NO_CONTENT)
@@ -106,7 +108,7 @@ class AttachmentIT extends AbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "3"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "3"))
 			.withExpectedResponseStatus(NOT_FOUND)
 			.sendRequestAndVerifyResponse();
 	}
@@ -115,7 +117,7 @@ class AttachmentIT extends AbstractAppTest {
 	void test06_DeleteAttachmentOnErrandNotFound() {
 		setupCall()
 			.withHttpMethod(HttpMethod.DELETE)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "10"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "10"))
 			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
@@ -125,7 +127,7 @@ class AttachmentIT extends AbstractAppTest {
 	void test07_createAttachment() {
 		final var location = setupCall()
 			.withHttpMethod(POST)
-			.withServicePath(format("/{0}/{1}/attachments", MUNICIPALITY_ID, NAMESPACE))
+			.withServicePath(format("/{0}/{1}/errands/{2}/attachments", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseBodyIsNull()
@@ -144,7 +146,7 @@ class AttachmentIT extends AbstractAppTest {
 	void test08_patchAttachmentNotFound() {
 		setupCall()
 			.withHttpMethod(PATCH)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "1000"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1000"))
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -165,14 +167,14 @@ class AttachmentIT extends AbstractAppTest {
 	void test10_patchAttachment() {
 		setupCall()
 			.withHttpMethod(PATCH)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "1"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, "1"))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();

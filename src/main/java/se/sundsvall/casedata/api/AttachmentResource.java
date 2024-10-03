@@ -47,7 +47,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Validated
-@RequestMapping("/{municipalityId}/{namespace}/attachments")
+@RequestMapping("/{municipalityId}/{namespace}")
 @Tag(name = "Attachments", description = "Attachment operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
@@ -60,49 +60,51 @@ class AttachmentResource {
 		this.attachmentService = attachmentService;
 	}
 
-	@Operation(description = "Get attachment by attachment id.")
-	@GetMapping(path = "/{attachmentId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@Operation(description = "Get attachment on errand by attachment id.")
+	@GetMapping(path = "/errands/{errandId}/attachments/{attachmentId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<AttachmentDTO> getAttachments(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final Long attachmentId) {
 
 		return ok(attachmentService.findByIdAndMunicipalityIdAndNamespace(attachmentId, municipalityId, namespace));
 	}
 
-	@Operation(description = "Get attachment by errandnumber.")
-	@GetMapping(path = "/errand/{errandNumber}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@Operation(description = "Get attachment by errand number.")
+	@GetMapping(path = "/attachments/errand/{errandNumber}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<List<AttachmentDTO>> getAttachmentsByErrandNumber(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable("errandNumber") final String errandNumber) {
 
-		return ok(attachmentService.findByErrandNumberAndMunicipalityId(errandNumber, municipalityId, namespace));
+		return ok(attachmentService.findByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, municipalityId, namespace));
 	}
 
-	@Operation(description = "Create attachment")
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
+	@Operation(description = "Create attachment on errand.")
+	@PostMapping(path = "/errands/{errandId}/attachments", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
 	ResponseEntity<Void> postAttachment(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
 
 		final var result = attachmentService.createAttachment(attachmentDTO, municipalityId, namespace);
-		return created(fromPath("/{municipalityId}/{namespace}/attachments/{id}").buildAndExpand(municipalityId, namespace, result.getId()).toUri())
+		return created(fromPath("/{municipalityId}/{namespace}/errands/{errandId}/attachments/{id}").buildAndExpand(municipalityId, namespace, errandId, result.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
 
-	@Operation(description = "Replace attachment.")
-	@PutMapping(path = "/{attachmentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
+	@Operation(description = "Replace attachment on errand.")
+	@PutMapping(path = "/errands/{errandId}/attachments/{attachmentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putAttachmentOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final Long attachmentId,
 		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
 
@@ -112,12 +114,13 @@ class AttachmentResource {
 			.build();
 	}
 
-	@Operation
-	@PatchMapping(path = "/{attachmentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
+	@Operation(description = "Update attachment on errand.")
+	@PatchMapping(path = "/errands/{errandId}/attachments/{attachmentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchAttachment(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final Long attachmentId,
 		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
 
@@ -127,12 +130,13 @@ class AttachmentResource {
 			.build();
 	}
 
-	@Operation
-	@DeleteMapping(path = "/{attachmentId}")
+	@Operation(description = "Delete attachment on errand.")
+	@DeleteMapping(path = "/errands/{errandId}/attachments/{attachmentId}")
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> deleteAttachment(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final Long attachmentId) {
 
 		if (attachmentService.deleteAttachment(attachmentId, municipalityId, namespace)) {

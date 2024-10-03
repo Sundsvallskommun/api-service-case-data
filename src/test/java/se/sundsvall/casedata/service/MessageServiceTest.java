@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.service;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,6 +27,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -92,7 +92,7 @@ class MessageServiceTest {
 
 		when(messageRepositoryMock.findAllByErrandNumberAndMunicipalityIdAndNamespace(anyString(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(messages);
 
-		final var messageId = randomAlphabetic(10);
+		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
 
 		messageService.getMessagesByErrandNumber(messageId, MUNICIPALITY_ID, NAMESPACE);
 
@@ -207,7 +207,7 @@ class MessageServiceTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
 	void updateViewedStatusOnExistingMessage(final boolean viewed) {
-		final var messageId = randomAlphabetic(10);
+		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
 
 		when(messageRepositoryMock.findByMessageIDAndMunicipalityIdAndNamespace(messageId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(messageMock));
 
@@ -221,7 +221,7 @@ class MessageServiceTest {
 	@Test
 	void updateViewedStatusOnNonExistingMessage() {
 
-		final var messageId = randomAlphabetic(10);
+		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
 
 		assertThatThrownBy(() -> messageService.updateViewedStatus(messageId, MUNICIPALITY_ID, NAMESPACE, true))
 			.isInstanceOf(ThrowableProblem.class)

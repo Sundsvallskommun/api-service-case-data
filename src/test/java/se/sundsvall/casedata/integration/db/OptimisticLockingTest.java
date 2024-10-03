@@ -25,7 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.Errand;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-import se.sundsvall.casedata.service.ErrandService;
+import se.sundsvall.casedata.service.StakeholderService;
 
 @SpringBootTest
 @ActiveProfiles("junit")
@@ -35,7 +35,7 @@ class OptimisticLockingTest {
 	private ErrandRepository errandRepositoryMock;
 
 	@Autowired
-	private ErrandService errandService;
+	private StakeholderService stakeholderService;
 
 	@Test
 	void patchErrandWithStakeholderOptimisticLockingFailureException() {
@@ -44,7 +44,7 @@ class OptimisticLockingTest {
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		doThrow(OptimisticLockingFailureException.class).when(errandRepositoryMock).save(any());
 
-		assertThatThrownBy(() -> errandService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
+		assertThatThrownBy(() -> stakeholderService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
 			.isInstanceOf(OptimisticLockingFailureException.class);
 
 		//5 invocations because @Retry.
@@ -58,7 +58,7 @@ class OptimisticLockingTest {
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		doThrow(RuntimeException.class).when(errandRepositoryMock).save(any());
 
-		assertThatThrownBy(() -> errandService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
+		assertThatThrownBy(() -> stakeholderService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
 			.isInstanceOf(RuntimeException.class);
 
 		//Only 1 invocation, not retrying because it's not an OptimisticLockingFailureException.

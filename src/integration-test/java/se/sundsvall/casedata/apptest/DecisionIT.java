@@ -35,12 +35,12 @@ class DecisionIT extends AbstractAppTest {
 
 	private static final String ERRAND_ID = "1";
 
-	private static final String PATH = "/{0}/{1}/decisions/{2}";
+	private static final String PATH = "/{0}/{1}/errands/{2}/decisions/{3}";
 
 	@Test
 	void test01_getDecisionById() {
 		setupCall()
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, DECISION_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, DECISION_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -50,7 +50,7 @@ class DecisionIT extends AbstractAppTest {
 	@Test
 	void test02_patchDecision() {
 		setupCall()
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, DECISION_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, DECISION_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PATCH)
@@ -70,7 +70,7 @@ class DecisionIT extends AbstractAppTest {
 	@Test
 	void test03_putDecision() {
 		setupCall()
-			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, DECISION_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, DECISION_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PUT)
