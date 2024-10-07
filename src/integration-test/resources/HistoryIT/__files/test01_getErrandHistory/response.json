@@ -10,7 +10,7 @@
     },
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     }
   },
   {
@@ -24,7 +24,7 @@
     },
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "left": null,
     "property": "errandNumber",
@@ -42,7 +42,7 @@
     },
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "left": null,
     "property": "caseType",
@@ -60,7 +60,7 @@
     },
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "left": null,
     "property": "priority",
@@ -78,7 +78,7 @@
     },
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "left": null,
     "property": "description",
@@ -96,7 +96,7 @@
     },
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "left": null,
     "property": "caseTitleAddition",
@@ -114,7 +114,7 @@
     },
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "left": null,
     "property": "diaryNumber",
@@ -132,7 +132,7 @@
     },
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "left": null,
     "property": "phase",
@@ -156,15 +156,15 @@
           "fragment": "statuses/0",
           "ownerId": {
             "cdoId": 1,
-            "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+            "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
           },
-          "valueObject": "se.sundsvall.casedata.integration.db.model.Status"
+          "valueObject": "se.sundsvall.casedata.integration.db.model.StatusEntity"
         }
       }
     ],
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "property": "statuses",
     "propertyChangeType": "PROPERTY_VALUE_CHANGED"
@@ -180,7 +180,7 @@
     },
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "left": null,
     "property": "municipalityId",
@@ -202,13 +202,13 @@
         "index": 0,
         "value": {
           "cdoId": 1,
-          "entity": "se.sundsvall.casedata.integration.db.model.Stakeholder"
+          "entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
         }
       }
     ],
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "property": "stakeholders",
     "propertyChangeType": "PROPERTY_VALUE_CHANGED"
@@ -296,7 +296,7 @@
     ],
     "globalId": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "property": "extraParameters",
     "propertyChangeType": "PROPERTY_VALUE_CHANGED"

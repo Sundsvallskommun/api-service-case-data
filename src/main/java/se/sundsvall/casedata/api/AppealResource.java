@@ -31,8 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.AppealDTO;
-import se.sundsvall.casedata.api.model.PatchAppealDTO;
+import se.sundsvall.casedata.api.model.Appeal;
+import se.sundsvall.casedata.api.model.PatchAppeal;
 import se.sundsvall.casedata.service.AppealService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -47,7 +47,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/appeals")
-@Tag(name = "Appeals", description = "Appeal operations")
+@Tag(name = "Appeals", description = "AppealEntity operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
@@ -63,37 +63,37 @@ class AppealResource {
 	@Operation(description = "Get all appeals for errand")
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<List<AppealDTO>> getAppealById(
+	ResponseEntity<List<Appeal>> getAppealById(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId) {
 
-		return ok(appealService.findByErrandIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace));
+		return ok(appealService.findAllAppealsOnErrand(errandId, municipalityId, namespace));
 	}
 
 	@Operation(description = "Get appeal on errand by appeal id.")
 	@GetMapping(path = "/{appealId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<AppealDTO> getAppealById(
+	ResponseEntity<Appeal> getAppealById(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "appealId") final Long appealId) {
 
-		return ok(appealService.findByIdAndMunicipalityIdAndNamespace(appealId, municipalityId, namespace));
+		return ok(appealService.findAppealOnErrand(errandId, appealId, municipalityId, namespace));
 	}
 
 	@Operation(description = "Create and add appeal to errand.")
 	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
 	@PatchMapping(consumes = APPLICATION_JSON_VALUE, produces = {ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-	ResponseEntity<Void> patchErrandWithAppeal(
+	ResponseEntity<Void> updateErrandWithAppeal(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final AppealDTO appealDTO) {
+		@RequestBody @Valid final Appeal appeal) {
 
-		final var appeal = appealService.addAppealToErrand(errandId, municipalityId, namespace, appealDTO);
-		return created(fromPath("/{municipalityId}/{namespace}/appeals/{appealId}").buildAndExpand(municipalityId, namespace, appeal.getId()).toUri())
+		final var result = appealService.addAppealToErrand(errandId, municipalityId, namespace, appeal);
+		return created(fromPath("/{municipalityId}/{namespace}/appeals/{appealId}").buildAndExpand(municipalityId, namespace, result.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
@@ -101,14 +101,14 @@ class AppealResource {
 	@Operation(description = "Update appeal on errand.")
 	@PatchMapping(path = "/{appealId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> patchAppeal(
+	ResponseEntity<Void> updateAppeal(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "appealId") final Long appealId,
-		@RequestBody @Valid final PatchAppealDTO patchAppealDTO) {
+		@RequestBody @Valid final PatchAppeal patchAppeal) {
 
-		appealService.updateAppeal(appealId, municipalityId, namespace, patchAppealDTO);
+		appealService.updateAppeal(errandId, appealId, municipalityId, namespace, patchAppeal);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -117,14 +117,14 @@ class AppealResource {
 	@Operation(description = "Replace appeal on errand.")
 	@PutMapping(path = "/{appealId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> putAppeal(
+	ResponseEntity<Void> replaceAppeal(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "appealId") final Long appealId,
-		@RequestBody @Valid final AppealDTO appealDTO) {
+		@RequestBody @Valid final Appeal appeal) {
 
-		appealService.replaceAppeal(appealId, municipalityId, namespace, appealDTO);
+		appealService.replaceAppeal(errandId, appealId, municipalityId, namespace, appeal);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

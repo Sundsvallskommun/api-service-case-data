@@ -1,11 +1,11 @@
 package se.sundsvall.casedata.service;
 
 import static java.text.MessageFormat.format;
-import static org.zalando.problem.Status.FORBIDDEN;
+import static java.util.Collections.emptyList;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteEntity;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNote;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putNote;
 
@@ -15,10 +15,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 
-import se.sundsvall.casedata.api.model.NoteDTO;
+import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.NoteRepository;
-import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
@@ -29,8 +29,6 @@ public class NoteService {
 
 
 	private static final String NOTE_WAS_NOT_FOUND = "Note was not found";
-
-	private static final String PUBLIC_NOTE_CANNOT_BE_DELETED = "Public notes can not be deleted";
 
 	private static final String NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Note with id: {0} was not found on errand with id: {1}";
 
@@ -50,45 +48,49 @@ public class NoteService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void updateNote(final Long noteId, final String municipalityId, final String namespace, final NoteDTO noteDTO) {
-		final var note = noteRepository.findByIdAndMunicipalityIdAndNamespace(noteId, municipalityId, namespace).orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WAS_NOT_FOUND));
-		patchNote(note, noteDTO);
-		noteRepository.save(note);
-		processService.updateProcess(note.getErrand());
+	public void updateNoteOnErrand(final Long errandId, final Long noteId, final String municipalityId, final String namespace, final Note updatedNote) {
+		final var errandEntity = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
+
+		final var noteEntity = Optional.ofNullable(errandEntity.getNotes())
+			.orElse(emptyList())
+			.stream()
+			.filter(note -> note.getId().equals(noteId))
+			.findAny()
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, noteId, errandId)));
+
+		patchNote(noteEntity, updatedNote);
+		noteRepository.save(noteEntity);
+		processService.updateProcess(noteEntity.getErrand());
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void replaceNote(final Long noteId, final String municipalityId, final String namespace, final NoteDTO dto) {
-		final var note = noteRepository.findByIdAndMunicipalityIdAndNamespace(noteId, municipalityId, namespace).orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WAS_NOT_FOUND));
-		putNote(note, dto);
-		noteRepository.save(note);
-		processService.updateProcess(note.getErrand());
+	public void replaceNoteOnErrand(final Long noteId, final String municipalityId, final String namespace, final Note note) {
+		final var noteEntity = noteRepository.findByIdAndMunicipalityIdAndNamespace(noteId, municipalityId, namespace).orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WAS_NOT_FOUND));
+		putNote(noteEntity, note);
+		noteRepository.save(noteEntity);
+		processService.updateProcess(noteEntity.getErrand());
 	}
 
-	public NoteDTO getNoteByIdAndMunicipalityIdAndNamespace(final Long noteId, final String municipalityId, final String namespace) {
-		final var note = noteRepository.findByIdAndMunicipalityIdAndNamespace(noteId, municipalityId, namespace).orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WAS_NOT_FOUND));
-		return toNoteDto(note);
+	public Note getNoteOnErrand(final Long errandId, final Long noteId, final String municipalityId, final String namespace) {
+		final var errandEntity = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
+
+		final var noteEntity = errandEntity.getNotes().stream()
+			.filter(note -> note.getId().equals(noteId))
+			.findAny()
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, noteId, errandId)));
+
+		return toNote(noteEntity);
 	}
 
-	public List<NoteDTO> getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType(final Long errandId, final String municipalityId, final String namespace, final Optional<NoteType> noteType) {
+	public List<Note> getAllNotesOnErrand(final Long errandId, final String municipalityId, final String namespace, final Optional<NoteType> noteType) {
 		final var errand = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace).orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(ERRAND_WAS_NOT_FOUND, errandId)));
 
 		return noteType.map(type -> errand.getNotes().stream()
 			.filter(note -> note.getNoteType() == type)
-			.map(EntityMapper::toNoteDto)
+			.map(EntityMapper::toNote)
 			.toList()).orElseGet(() -> errand.getNotes().stream()
-			.map(EntityMapper::toNoteDto)
+			.map(EntityMapper::toNote)
 			.toList());
-	}
-
-	public void deleteNoteByIdAndMunicipalityIdAndNamespace(final Long noteId, final String municipalityId, final String namespace) {
-		final var note = noteRepository.findByIdAndMunicipalityIdAndNamespace(noteId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WAS_NOT_FOUND));
-
-		if (note.getNoteType() == NoteType.PUBLIC) {
-			throw Problem.valueOf(FORBIDDEN, PUBLIC_NOTE_CANNOT_BE_DELETED);
-		}
-		noteRepository.delete(note);
 	}
 
 	@Retry(name = "OptimisticLocking")
@@ -104,17 +106,17 @@ public class NoteService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public NoteDTO addNoteToErrand(final Long errandId, final String municipalityId, final String namespace, final NoteDTO noteDTO) {
+	public Note addNoteToErrand(final Long errandId, final String municipalityId, final String namespace, final Note note) {
 		final var oldErrand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
-		final var note = toNote(noteDTO, municipalityId, namespace);
-		note.setErrand(oldErrand);
-		oldErrand.getNotes().add(note);
+		final var noteEntity = toNoteEntity(note, municipalityId, namespace);
+		noteEntity.setErrand(oldErrand);
+		oldErrand.getNotes().add(noteEntity);
 		final var updatedErrand = errandRepository.save(oldErrand);
 		processService.updateProcess(updatedErrand);
-		return toNoteDto(note);
+		return toNote(noteEntity);
 	}
 
-	public Errand getErrandByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
+	public ErrandEntity getErrandByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
 		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
 				format(ERRAND_WAS_NOT_FOUND, errandId)));

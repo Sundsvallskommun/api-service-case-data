@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.zalando.problem.Status.SERVICE_UNAVAILABLE;
-import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,7 @@ class ParkingPermitIntegrationTest {
 
 	@Test
 	void startProcessTest() {
-		final var errand = createErrand();
+		final var errand = createErrandEntity();
 		final var response = new StartProcessResponse();
 		when(parkingPermitClient.startProcess(errand.getMunicipalityId(), errand.getId())).thenReturn(response);
 
@@ -40,8 +40,9 @@ class ParkingPermitIntegrationTest {
 
 	@Test
 	void startProcess_whenThrowsTest() {
-		final var errand = createErrand();
+		final var errand = createErrandEntity();
 		when(parkingPermitClient.startProcess(errand.getMunicipalityId(), errand.getId())).thenThrow(new AbstractThrowableProblem() {
+
 			private static final long serialVersionUID = 1L;
 		});
 
@@ -55,7 +56,7 @@ class ParkingPermitIntegrationTest {
 
 	@Test
 	void updateProcessTest() {
-		final var errand = createErrand();
+		final var errand = createErrandEntity();
 		parkingPermitIntegration.updateProcess(errand);
 
 		verify(parkingPermitClient).updateProcess(errand.getMunicipalityId(), errand.getProcessId());
@@ -63,8 +64,9 @@ class ParkingPermitIntegrationTest {
 
 	@Test
 	void updateProcess_whenThrowsTest() {
-		final var errand = createErrand();
+		final var errand = createErrandEntity();
 		when(parkingPermitClient.updateProcess(errand.getMunicipalityId(), errand.getProcessId())).thenThrow(new AbstractThrowableProblem() {
+
 			private static final long serialVersionUID = 1L;
 		});
 

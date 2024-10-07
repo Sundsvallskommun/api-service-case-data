@@ -7,7 +7,7 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createStatusDTO;
+import static se.sundsvall.casedata.TestUtil.createStatus;
 
 import java.util.List;
 
@@ -37,39 +37,39 @@ class StatusResourceTest {
 	void patchErrandWithStatus() {
 		// Arrange
 		final var errandId = 123L;
-		final var statusDTO = createStatusDTO();
+		final var status = createStatus();
 
 		// Act
 		webTestClient.patch()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.contentType(APPLICATION_JSON)
-			.bodyValue(statusDTO)
+			.bodyValue(status)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(statusServiceMock).addStatusToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, statusDTO);
+		verify(statusServiceMock).addStatusToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, status);
 		verifyNoMoreInteractions(statusServiceMock);
 	}
 
 	@Test
-	void putStatusOnErrand() {
+	void replaceStatusOnErrand() {
 		// Arrange
 		final var errandId = 123L;
-		final var statusDTOList = List.of(createStatusDTO());
+		final var statusList = List.of(createStatus());
 
 		// Act
 		webTestClient.put()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.contentType(APPLICATION_JSON)
-			.bodyValue(statusDTOList)
+			.bodyValue(statusList)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(statusServiceMock).replaceStatusesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, statusDTOList);
+		verify(statusServiceMock).replaceStatusesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, statusList);
 		verifyNoMoreInteractions(statusServiceMock);
 	}
 

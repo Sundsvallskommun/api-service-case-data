@@ -7,8 +7,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createErrand;
-import static se.sundsvall.casedata.TestUtil.createStatusDTO;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.TestUtil.createStatus;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -39,8 +39,8 @@ class StatusServiceTest {
 	void replaceStatusesOnErrandTest() {
 
 		// Arrange
-		final var errand = createErrand();
-		final var statuses = List.of(createStatusDTO(), createStatusDTO(), createStatusDTO());
+		final var errand = createErrandEntity();
+		final var statuses = List.of(createStatus(), createStatus(), createStatus());
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -63,8 +63,8 @@ class StatusServiceTest {
 	void addStatusToErrandTest() {
 
 		// Arrange
-		final var errand = createErrand();
-		final var newStatus = createStatusDTO();
+		final var errand = createErrandEntity();
+		final var newStatus = createStatus();
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 

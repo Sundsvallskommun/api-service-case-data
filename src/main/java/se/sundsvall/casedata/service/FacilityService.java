@@ -4,7 +4,7 @@ import static java.text.MessageFormat.format;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacility;
 
 import java.util.List;
@@ -12,11 +12,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 
-import se.sundsvall.casedata.api.model.FacilityDTO;
+import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.Facility;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PutMapper;
 
@@ -40,62 +40,59 @@ public class FacilityService {
 		this.processService = processService;
 	}
 
-
-	public List<FacilityDTO> findFacilitiesOnErrand(final Long errandId, final String municipalityId, final String namespace) {
+	public List<Facility> findFacilitiesOnErrand(final Long errandId, final String municipalityId, final String namespace) {
 		return getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace).getFacilities().stream()
-			.map(EntityMapper::toFacilityDto)
+			.map(EntityMapper::toFacility)
 			.toList();
 	}
 
-	public FacilityDTO findFacilityOnErrand(final Long errandId, final Long facilityId, final String municipalityId, final String namespace) {
-		return toFacilityDto(facilityRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, municipalityId, namespace)
+	public Facility findFacilityOnErrand(final Long errandId, final Long facilityId, final String municipalityId, final String namespace) {
+		return toFacility(facilityRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, facilityId, errandId))));
 	}
 
-
 	@Retry(name = "OptimisticLocking")
-	public FacilityDTO createFacility(final Long errandId, final String municipalityId, final String namespace, final FacilityDTO facilityDTO) {
+	public Facility createFacilityOnErrand(final Long errandId, final String municipalityId, final String namespace, final Facility facility) {
 		final var errand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
-		final var facility = toFacility(facilityDTO, municipalityId, namespace);
-		facility.setErrand(errand);
+		final var entity = toFacilityEntity(facility, municipalityId, namespace);
+		entity.setErrand(errand);
 
-		final var facilityDto = toFacilityDto(facilityRepository.save(facility));
+		final var createdFacility = toFacility(facilityRepository.save(entity));
 
 		processService.updateProcess(errand);
 
-		return facilityDto;
+		return createdFacility;
 	}
 
-
 	@Retry(name = "OptimisticLocking")
-	public FacilityDTO updateFacilityOnErrand(final Long errandId, final String municipalityId, final String namespace, final Long facilityId, final FacilityDTO facilityDTO) {
+	public Facility updateFacilityOnErrand(final Long errandId, final String municipalityId, final String namespace, final Long facilityId, final Facility facility) {
 		final var errand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
-		final var facility = facilityRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, municipalityId, namespace)
+		final var facilityEntity = facilityRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, facilityId, errandId)));
 
-		final var updatedFacility = patchFacility(facility, facilityDTO);
-		final var result = toFacilityDto(facilityRepository.save(updatedFacility));
+		final var updatedFacility = patchFacility(facilityEntity, facility);
+		final var result = toFacility(facilityRepository.save(updatedFacility));
 		processService.updateProcess(errand);
 
 		return result;
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void replaceFacilitiesOnErrand(final Long errandId, final String municipalityId, final String namespace, final List<FacilityDTO> dtos) {
+	public void replaceFacilitiesOnErrand(final Long errandId, final String municipalityId, final String namespace, final List<Facility> dtos) {
 		final var oldErrand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
-		final var facilitiesToChange = oldErrand.getFacilities().stream().filter(facility -> dtos.stream().map(FacilityDTO::getId).toList().contains(facility.getId())).toList();
+		final var facilitiesToChange = oldErrand.getFacilities().stream().filter(facility -> dtos.stream().map(Facility::getId).toList().contains(facility.getId())).toList();
 		final var newFacilities = dtos.stream()
 			.filter(dto -> !facilitiesToChange.stream()
-				.map(Facility::getId)
+				.map(FacilityEntity::getId)
 				.toList().contains(dto.getId()))
-			.map(facilityDTO -> toFacility(facilityDTO, municipalityId, namespace))
+			.map(facilityDTO -> toFacilityEntity(facilityDTO, municipalityId, namespace))
 			.toList();
 
 		oldErrand.getFacilities().clear();
 
 		oldErrand.getFacilities().addAll(dtos.stream()
 			.filter(dto -> facilitiesToChange.stream()
-				.map(Facility::getId).toList().contains(dto.getId()))
+				.map(FacilityEntity::getId).toList().contains(dto.getId()))
 			.map(dto -> PutMapper.putFacility(facilitiesToChange.stream().
 				filter(facility -> facility.getId().equals(dto.getId())).findFirst().orElse(null), dto)).toList());
 
@@ -107,7 +104,6 @@ public class FacilityService {
 		final var updatedErrand = errandRepository.save(oldErrand);
 		processService.updateProcess(updatedErrand);
 	}
-
 
 	@Retry(name = "OptimisticLocking")
 	public void deleteFacilityOnErrand(final Long errandId, final String municipalityId, final String namespace, final Long facilityId) {
@@ -122,11 +118,10 @@ public class FacilityService {
 		processService.updateProcess(errand);
 	}
 
-	public Errand getErrandByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
+	public ErrandEntity getErrandByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
 		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
 				format(ERRAND_WAS_NOT_FOUND, errandId)));
 	}
-
 
 }

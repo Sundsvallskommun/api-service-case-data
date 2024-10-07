@@ -9,8 +9,8 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createAppealDTO;
-import static se.sundsvall.casedata.TestUtil.createPatchAppealDTO;
+import static se.sundsvall.casedata.TestUtil.createAppeal;
+import static se.sundsvall.casedata.TestUtil.createPatchAppeal;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.AppealDTO;
+import se.sundsvall.casedata.api.model.Appeal;
 import se.sundsvall.casedata.service.AppealService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -43,8 +43,8 @@ class AppealResourceTest {
 	void getErrandAppeals() {
 		// Arrange
 		final var errandId = 123L;
-		final var appealDTO = createAppealDTO();
-		when(appealServiceMock.findByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(appealDTO));
+		final var appealDTO = createAppeal();
+		when(appealServiceMock.findAllAppealsOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(appealDTO));
 
 		// Act
 		var response = webTestClient.get()
@@ -52,13 +52,13 @@ class AppealResourceTest {
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBodyList(AppealDTO.class)
+			.expectBodyList(Appeal.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert
 		assertThat(response).hasSize(1);
-		verify(appealServiceMock).findByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(appealServiceMock).findAllAppealsOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(appealServiceMock);
 	}
 
@@ -67,8 +67,8 @@ class AppealResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var appealId = 456L;
-		final var appealDTO = createAppealDTO();
-		when(appealServiceMock.findByIdAndMunicipalityIdAndNamespace(appealId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(appealDTO);
+		final var appealDTO = createAppeal();
+		when(appealServiceMock.findAppealOnErrand(errandId, appealId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(appealDTO);
 
 		// Act
 		var response = webTestClient.get()
@@ -76,22 +76,22 @@ class AppealResourceTest {
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(AppealDTO.class)
+			.expectBody(Appeal.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(appealServiceMock).findByIdAndMunicipalityIdAndNamespace(appealId, MUNICIPALITY_ID, NAMESPACE);
+		verify(appealServiceMock).findAppealOnErrand(errandId, appealId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(appealServiceMock);
 	}
 
 	@Test
-	void patchErrandWithAppeal() {
+	void updateErrandWithAppeal() {
 		// Arrange
 		final var errandId = 123L;
 		final var appealId = 456L;
-		final var body = createAppealDTO();
+		final var body = createAppeal();
 		body.setId(appealId);
 
 		when(appealServiceMock.addAppealToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, body)).thenReturn(body);
@@ -115,8 +115,7 @@ class AppealResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var appealId = 456L;
-		final var body = createPatchAppealDTO();
-		body.setId(appealId);
+		final var body = createPatchAppeal();
 
 		// Act
 		webTestClient.patch()
@@ -128,7 +127,7 @@ class AppealResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(appealServiceMock).updateAppeal(appealId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(appealServiceMock).updateAppeal(errandId, appealId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 
@@ -137,7 +136,7 @@ class AppealResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var appealId = 456L;
-		final var body = createAppealDTO();
+		final var body = createAppeal();
 		body.setId(appealId);
 
 		// Act
@@ -150,7 +149,7 @@ class AppealResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(appealServiceMock).replaceAppeal(appealId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(appealServiceMock).replaceAppeal(errandId, appealId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 

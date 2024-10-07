@@ -9,7 +9,7 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
+import static se.sundsvall.casedata.TestUtil.createFacility;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.FacilityDTO;
+import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.service.FacilityService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -37,23 +37,24 @@ class FacilityResourceTest {
 	@Autowired
 	private WebTestClient webTestClient;
 
-
 	@Test
 	void getFacilities() {
+		// Arrange
 		final var errandId = 123L;
-		final var facilityDto = createFacilityDTO();
+		final var facility = createFacility();
+		when(facilityServiceMock.findFacilitiesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(facility));
 
-		when(facilityServiceMock.findFacilitiesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(facilityDto));
-
+		// Act
 		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities")
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId)))
 			.exchange()
 			.expectStatus().isOk()
-			.expectBodyList(FacilityDTO.class)
+			.expectBodyList(Facility.class)
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(response).hasSize(1);
 		verify(facilityServiceMock).findFacilitiesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(facilityServiceMock);
@@ -61,21 +62,23 @@ class FacilityResourceTest {
 
 	@Test
 	void getFacilitity() {
+		// Arrange
 		final var errandId = 123L;
 		final var facilityId = 456L;
-		final var facilityDto = createFacilityDTO();
+		final var facility = createFacility();
+		when(facilityServiceMock.findFacilityOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(facility);
 
-		when(facilityServiceMock.findFacilityOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(facilityDto);
-
+		// Act
 		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities/{facilityId}")
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId, "facilityId", facilityId)))
 			.exchange()
 			.expectStatus().isOk()
-			.expectBody(FacilityDTO.class)
+			.expectBody(Facility.class)
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(response).isNotNull();
 		verify(facilityServiceMock).findFacilityOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(facilityServiceMock);
@@ -83,82 +86,89 @@ class FacilityResourceTest {
 
 	@Test
 	void deleteFacility() {
+		// Arrange
 		final var errandId = 123L;
 		final var facilityId = 456L;
 
+		// Act
 		webTestClient.delete()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities/{facilityId}")
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId, "facilityId", facilityId)))
 			.exchange()
 			.expectStatus().isNoContent();
 
+		// Assert
 		verify(facilityServiceMock).deleteFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId);
 		verifyNoMoreInteractions(facilityServiceMock);
 	}
 
 	@Test
 	void postErrandFacility() {
+		// Arrange
 		final var errandId = 123L;
-		final var facilityDTO = createFacilityDTO();
-		facilityDTO.setId(456L);
+		final var facility = createFacility();
+		facility.setId(456L);
+		when(facilityServiceMock.createFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facility)).thenReturn(facility);
 
-		when(facilityServiceMock.createFacility(errandId, MUNICIPALITY_ID, NAMESPACE, facilityDTO)).thenReturn(facilityDTO);
-
+		// Act
 		webTestClient.post()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities")
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId)))
 			.contentType(APPLICATION_JSON)
-			.bodyValue(facilityDTO)
+			.bodyValue(facility)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/2281/my.namespace/errands/" + errandId + "/facilities/" + facilityDTO.getId());
+			.expectHeader().location("/2281/my.namespace/errands/" + errandId + "/facilities/" + facility.getId());
 
-		verify(facilityServiceMock).createFacility(errandId, MUNICIPALITY_ID, NAMESPACE, facilityDTO);
+		// Assert
+		verify(facilityServiceMock).createFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facility);
 	}
-
 
 	@Test
 	void patchErrandFacility() {
+		// Arrange
 		final var errandId = 123L;
 		final var facilityId = 456L;
-		final var facilityDTO = createFacilityDTO();
+		final var facility = createFacility();
+		when(facilityServiceMock.updateFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, facility)).thenReturn(facility);
 
-		when(facilityServiceMock.updateFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, facilityDTO)).thenReturn(facilityDTO);
-
+		// Act
 		webTestClient.patch()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities/{facilityId}")
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId, "facilityId", facilityId)))
 			.contentType(APPLICATION_JSON)
-			.bodyValue(facilityDTO)
+			.bodyValue(facility)
 			.exchange()
 			.expectStatus().isNoContent();
 
-		verify(facilityServiceMock).updateFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, facilityDTO);
+		// Assert
+		verify(facilityServiceMock).updateFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, facility);
 	}
 
 	@Test
 	void putErrandFacilities() {
+		// Arrange
 		final var errandId = 123L;
 		final var facilityId1 = 456L;
-		final var facilityDTO1 = createFacilityDTO();
-		facilityDTO1.setId(facilityId1);
+		final var facility1 = createFacility();
+		facility1.setId(facilityId1);
 		final var facilityId2 = 789L;
-		final var facilityDTO2 = createFacilityDTO();
-		facilityDTO2.setId(facilityId2);
+		final var facility2 = createFacility();
+		facility2.setId(facilityId2);
+		final var facilities = List.of(facility1, facility2);
 
-		final var facilityDTOs = List.of(facilityDTO1, facilityDTO2);
-
+		// Act
 		webTestClient.put()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities")
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId)))
 			.contentType(APPLICATION_JSON)
-			.bodyValue(facilityDTOs)
+			.bodyValue(facilities)
 			.exchange()
 			.expectStatus().isNoContent();
 
-		verify(facilityServiceMock).replaceFacilitiesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityDTOs);
+		// Assert
+		verify(facilityServiceMock).replaceFacilitiesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilities);
 	}
-
 
 }

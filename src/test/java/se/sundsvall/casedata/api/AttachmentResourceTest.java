@@ -10,7 +10,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
-import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
+import static se.sundsvall.casedata.TestUtil.createAttachmentEntity;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.AttachmentDTO;
+import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.service.AttachmentService;
 
@@ -43,8 +43,8 @@ class AttachmentResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-		final var attachmentDTO = createAttachmentDTO(AttachmentCategory.SIGNATURE);
-		when(attachmentServiceMock.findByIdAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachmentDTO);
+		final var attachment = createAttachment(AttachmentCategory.SIGNATURE);
+		when(attachmentServiceMock.findByIdAndMunicipalityIdAndNamespace(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachment);
 
 		// Act
 		var response = webTestClient.get()
@@ -52,13 +52,13 @@ class AttachmentResourceTest {
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(AttachmentDTO.class)
+			.expectBody(Attachment.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(attachmentServiceMock).findByIdAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentServiceMock).findByIdAndMunicipalityIdAndNamespace(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(attachmentServiceMock);
 	}
 
@@ -66,8 +66,8 @@ class AttachmentResourceTest {
 	void getAttachmentsByErrandNumber() {
 		// Arrange
 		final var errandNumber = "12345";
-		final var attachmentDTO = createAttachmentDTO(AttachmentCategory.NOTIFICATION);
-		when(attachmentServiceMock.findByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(attachmentDTO));
+		final var attachment = createAttachment(AttachmentCategory.NOTIFICATION);
+		when(attachmentServiceMock.findByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(attachment));
 
 		// Act
 		var response = webTestClient.get()
@@ -75,7 +75,7 @@ class AttachmentResourceTest {
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBodyList(AttachmentDTO.class)
+			.expectBodyList(Attachment.class)
 			.returnResult()
 			.getResponseBody();
 
@@ -90,8 +90,8 @@ class AttachmentResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-		final var body = createAttachmentDTO(AttachmentCategory.PO_IT);
-		final var attachment = createAttachment();
+		final var body = createAttachment(AttachmentCategory.PO_IT);
+		final var attachment = createAttachmentEntity();
 		attachment.setId(attachmentId);
 		body.setId(attachmentId);
 
@@ -116,7 +116,7 @@ class AttachmentResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-		final var body = createAttachmentDTO(AttachmentCategory.ADDRESS_SHEET);
+		final var body = createAttachment(AttachmentCategory.ADDRESS_SHEET);
 		body.setId(attachmentId);
 
 		// Act
@@ -129,7 +129,7 @@ class AttachmentResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(attachmentServiceMock).replaceAttachment(attachmentId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(attachmentServiceMock).replaceAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 	@Test
@@ -137,7 +137,7 @@ class AttachmentResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-		final var body = createAttachmentDTO(AttachmentCategory.AIRFLOW_PROTOCOL);
+		final var body = createAttachment(AttachmentCategory.AIRFLOW_PROTOCOL);
 		body.setId(attachmentId);
 
 		// Act
@@ -150,7 +150,7 @@ class AttachmentResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(attachmentServiceMock).updateAttachment(attachmentId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(attachmentServiceMock).updateAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 	@Test
@@ -159,7 +159,7 @@ class AttachmentResourceTest {
 		final var errandId = 123L;
 		final var attachmentId = 456L;
 
-		when(attachmentServiceMock.deleteAttachment(attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(attachmentServiceMock.deleteAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
 
 		// Act
 		webTestClient.delete()
@@ -169,7 +169,7 @@ class AttachmentResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(attachmentServiceMock).deleteAttachment(attachmentId, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentServiceMock).deleteAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 }

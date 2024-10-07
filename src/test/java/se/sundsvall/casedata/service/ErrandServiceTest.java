@@ -14,12 +14,12 @@ import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createErrand;
-import static se.sundsvall.casedata.TestUtil.createErrandDTO;
-import static se.sundsvall.casedata.TestUtil.createPatchErrandDto;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.TestUtil.createPatchErrand;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ATTEFALL;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,10 +44,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.zalando.problem.ThrowableProblem;
 
-import se.sundsvall.casedata.api.model.PatchErrandDTO;
+import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
@@ -74,10 +74,10 @@ class ErrandServiceTest {
 	private ArgumentCaptor<List<Long>> idListCapture;
 
 	@Captor
-	private ArgumentCaptor<Errand> errandCaptor;
+	private ArgumentCaptor<ErrandEntity> errandCaptor;
 
-	private Errand mockErrandFindByIdAndMunicipalityIdAndNamespace() {
-		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID, NAMESPACE);
+	private ErrandEntity mockErrandFindByIdAndMunicipalityIdAndNamespace() {
+		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		errand.setId(new Random().nextLong(1, 1000));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		return errand;
@@ -86,9 +86,9 @@ class ErrandServiceTest {
 	@Test
 	void postWhenParkingPermit() {
 		// Arrange
-		final var inputErrandDTO = createErrandDTO();
+		final var inputErrandDTO = createErrand();
 		inputErrandDTO.setCaseType(PARKING_PERMIT.name());
-		final var inputErrand = toErrand(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
+		final var inputErrand = toErrandEntity(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
 		inputErrand.setId(new Random().nextLong(1, 1000));
 
 		when(errandRepositoryMock.save(any())).thenReturn(inputErrand);
@@ -108,9 +108,9 @@ class ErrandServiceTest {
 	@Test
 	void postWhenAnmalanAttefall() {
 		// Arrange
-		final var inputErrandDTO = createErrandDTO();
+		final var inputErrandDTO = createErrand();
 		inputErrandDTO.setCaseType(ANMALAN_ATTEFALL.name());
-		final var inputErrand = toErrand(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
+		final var inputErrand = toErrandEntity(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
 		inputErrand.setId(new Random().nextLong(1, 1000));
 
 		when(errandRepositoryMock.save(any())).thenReturn(inputErrand);
@@ -142,8 +142,8 @@ class ErrandServiceTest {
 	void findByIdAndMunicipalityIdAndNamespaceNotFound() {
 
 		// Arrange
-		final var errandDTO = createErrandDTO();
-		final var errand = toErrand(errandDTO, MUNICIPALITY_ID, NAMESPACE);
+		final var errandDTO = createErrand();
+		final var errand = toErrandEntity(errandDTO, MUNICIPALITY_ID, NAMESPACE);
 		errand.setId(new Random().nextLong(1, 1000));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.empty());
 
@@ -195,8 +195,8 @@ class ErrandServiceTest {
 	void updateErrandTest() {
 
 		// Arrange
-		final var errand = createErrand();
-		final var patch = createPatchErrandDto();
+		final var errand = createErrandEntity();
+		final var patch = createPatchErrand();
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act
@@ -226,15 +226,15 @@ class ErrandServiceTest {
 	void findAllWithoutDuplicates() {
 
 		// Arrange
-		final var errandDTO = createErrandDTO();
+		final var errandDTO = createErrand();
 		final var returnErrands = Stream.of(errandDTO, errandDTO, errandDTO, errandDTO, errandDTO)
-			.map(dto -> EntityMapper.toErrand(dto, MUNICIPALITY_ID, NAMESPACE))
+			.map(dto -> EntityMapper.toErrandEntity(dto, MUNICIPALITY_ID, NAMESPACE))
 			.toList();
 
-		when(errandRepositoryMock.findAll(ArgumentMatchers.<Specification<Errand>>any())).thenReturn(returnErrands);
+		when(errandRepositoryMock.findAll(ArgumentMatchers.<Specification<ErrandEntity>>any())).thenReturn(returnErrands);
 		when(errandRepositoryMock.findAllByIdInAndMunicipalityIdAndNamespace(anyList(), eq(MUNICIPALITY_ID), eq(NAMESPACE), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(returnErrands.getFirst())));
 
-		final Specification<Errand> filterSpecification = filterSpecificationConverterSpy.convert("stakeholders.firstName '*kim*' or stakeholders.lastName ~ '*kim*' or stakeholders.contactInformation.value ~ '*kim*'");
+		final Specification<ErrandEntity> filterSpecification = filterSpecificationConverterSpy.convert("stakeholders.firstName '*kim*' or stakeholders.lastName ~ '*kim*' or stakeholders.contactInformation.value ~ '*kim*'");
 		final Pageable pageable = PageRequest.of(0, 20);
 
 		// Act
@@ -252,8 +252,8 @@ class ErrandServiceTest {
 	void testPatch() {
 
 		// Arrange
-		final var dto = new PatchErrandDTO();
-		final var entity = new Errand();
+		final var dto = new PatchErrand();
+		final var entity = new ErrandEntity();
 		entity.setCaseType(PARKING_PERMIT_RENEWAL.name());
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
 		when(errandRepositoryMock.save(entity)).thenReturn(entity);

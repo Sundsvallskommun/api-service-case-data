@@ -9,12 +9,12 @@ import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createErrand;
-import static se.sundsvall.casedata.TestUtil.createErrandDTO;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createFacility;
-import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
+import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -30,8 +30,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.Address;
-import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.AddressEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,31 +51,31 @@ class FacilityServiceTest {
 	private ProcessService processServiceMock;
 
 
-	private Errand mockErrandFindByIdAndMunicipalityIdAndNamespace() {
-		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID, NAMESPACE);
+	private ErrandEntity mockErrandFindByIdAndMunicipalityIdAndNamespace() {
+		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		errand.setId(new Random().nextLong(1, 1000));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		return errand;
 	}
 
 	@Test
-	void createFacilityTest() {
+	void createFacilityOnErrandTest() {
 
 
 		// Arrange
-		final var errand = createErrand();
+		final var errand = createErrandEntity();
 		final var errandId = errand.getId();
-		final var facilityDto = createFacilityDTO();
-		final var facility = toFacility(facilityDto, MUNICIPALITY_ID, NAMESPACE);
+		final var facility = createFacility();
+		final var facilityEntity = toFacilityEntity(facility, MUNICIPALITY_ID, NAMESPACE);
 
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		when(facilityRepositoryMock.save(any())).thenReturn(facility);
+		when(facilityRepositoryMock.save(any())).thenReturn(facilityEntity);
 
 		// Act
-		final var result = facilityService.createFacility(errandId, MUNICIPALITY_ID, NAMESPACE, facilityDto);
+		final var result = facilityService.createFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facility);
 
 		// Assert
-		assertThat(result).isEqualTo(facilityDto);
+		assertThat(result).isEqualTo(facility);
 		verify(processServiceMock).updateProcess(errand);
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(facilityRepositoryMock).save(any());
@@ -89,14 +89,14 @@ class FacilityServiceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var facilityId = 456L;
-		final var facility = createFacility();
+		final var facility = createFacilityEntity();
 		when(facilityRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(facility));
 
 		// Act
 		final var result = facilityService.findFacilityOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		assertThat(result).isEqualTo(toFacilityDto(facility));
+		assertThat(result).isEqualTo(toFacility(facility));
 		verify(facilityRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandRepositoryMock, facilityRepositoryMock);
 	}
@@ -111,7 +111,7 @@ class FacilityServiceTest {
 		final var result = facilityService.findFacilitiesOnErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		assertThat(errand.getFacilities().stream().map(EntityMapper::toFacilityDto).toList()).isEqualTo(result);
+		assertThat(errand.getFacilities().stream().map(EntityMapper::toFacility).toList()).isEqualTo(result);
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandRepositoryMock, facilityRepositoryMock);
 	}
@@ -123,17 +123,17 @@ class FacilityServiceTest {
 		final var errandId = 123L;
 		final var facilityId_1 = 456L;
 		final var facilityId_2 = 789L;
-		final var errand = createErrand(); // Errand with one facility
-		errand.getFacilities().add(createFacility()); // Add another facility to the errand. This will be removed
+		final var errand = createErrandEntity(); // Errand with one facility
+		errand.getFacilities().add(createFacilityEntity()); // Add another facility to the errand. This will be removed
 
 		errand.getFacilities().getFirst().setId(facilityId_1);
 
-		final var facilityDTO1 = createFacilityDTO();
-		facilityDTO1.setId(facilityId_1);
-		final var facilityDTO2 = createFacilityDTO();
-		facilityDTO2.setId(facilityId_2);
+		final var facility1 = createFacility();
+		facility1.setId(facilityId_1);
+		final var facility2 = createFacility();
+		facility2.setId(facilityId_2);
 
-		final var facilities = List.of(facilityDTO1, facilityDTO2, createFacilityDTO());
+		final var facilities = List.of(facility1, facility2, createFacility());
 
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -146,7 +146,7 @@ class FacilityServiceTest {
 			assertThat(facility.getFacilityType()).isInstanceOf(String.class).isNotNull();
 			assertThat(facility.isMainFacility()).isInstanceOf(Boolean.class).isNotNull();
 			assertThat(facility.getDescription()).isInstanceOf(String.class).isNotBlank();
-			assertThat(facility.getAddress()).isInstanceOf(Address.class).isNotNull();
+			assertThat(facility.getAddressEntity()).isInstanceOf(AddressEntity.class).isNotNull();
 			assertThat(facility.getExtraParameters()).isInstanceOf(HashMap.class).isNotNull();
 			assertThat(facility.getFacilityCollectionName()).isInstanceOf(String.class).isNotBlank();
 			assertThat(facility.getVersion()).isInstanceOf(Integer.class).isNotNull();
@@ -164,9 +164,9 @@ class FacilityServiceTest {
 	void deleteFacilityOnErrand() {
 
 		// Arrange
-		final var errand = createErrand();
+		final var errand = createErrandEntity();
 		final var errandId = errand.getId();
-		final var facility = createFacility();
+		final var facility = createFacilityEntity();
 		final var facilityId = facility.getId();
 
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
@@ -184,11 +184,11 @@ class FacilityServiceTest {
 	void updateFacilityOnErrand() {
 
 		// Arrange
-		final var errand = createErrand();
+		final var errand = createErrandEntity();
 		final var errandId = errand.getId();
-		final var facility = createFacility();
+		final var facility = createFacilityEntity();
 		final var facilityId = facility.getId();
-		final var patch = createFacilityDTO();
+		final var patch = createFacility();
 
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(facilityRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(facility));

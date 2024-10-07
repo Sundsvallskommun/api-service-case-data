@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.NoteDTO;
+import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.service.NoteService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
@@ -48,7 +48,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/notes")
-@Tag(name = "Notes", description = "Note operations")
+@Tag(name = "Notes", description = "NoteEntity operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
@@ -63,38 +63,38 @@ class NoteResource {
 	@Operation(description = "Get note on errand by note id")
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	@GetMapping(path = "/{noteId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-	ResponseEntity<NoteDTO> getNoteById(
+	ResponseEntity<Note> getNoteById(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "noteId") final Long noteId) {
 
-		return ok(noteService.getNoteByIdAndMunicipalityIdAndNamespace(noteId, municipalityId, namespace));
+		return ok(noteService.getNoteOnErrand(errandId, noteId, municipalityId, namespace));
 	}
 
 	@Operation(description = "Get notes for a specific errand, possible to filter by note type")
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-	ResponseEntity<List<NoteDTO>> getNotesByErrandId(
+	ResponseEntity<List<Note>> getNotesByErrandId(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestParam final Optional<NoteType> noteType) {
 
-		return ok(noteService.getNotesByErrandIdAndMunicipalityIdAndNamespaceAndNoteType(errandId, municipalityId, namespace, noteType));
+		return ok(noteService.getAllNotesOnErrand(errandId, municipalityId, namespace, noteType));
 	}
 
 	@Operation(description = "Update note on errand by note id")
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	@PatchMapping(path = "/{noteId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
-	ResponseEntity<Void> patchNoteOnErrand(
+	ResponseEntity<Void> updateNoteOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "noteId") final Long noteId,
-		@RequestBody @Valid final NoteDTO noteDTO) {
+		@RequestBody @Valid final Note note) {
 
-		noteService.updateNote(noteId, municipalityId, namespace, noteDTO);
+		noteService.updateNoteOnErrand(errandId, noteId, municipalityId, namespace, note);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -103,7 +103,7 @@ class NoteResource {
 	@Operation(description = "Delete note on errand by note id")
 	@DeleteMapping(path = "/{noteId}", produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> deleteNote(
+	ResponseEntity<Void> deleteNoteOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
@@ -118,14 +118,14 @@ class NoteResource {
 	@Operation(description = "Create and add note to errand")
 	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource"), useReturnTypeSchema = true)
 	@PatchMapping(consumes = APPLICATION_JSON_VALUE, produces = {ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-	ResponseEntity<Void> patchErrandWithNote(
+	ResponseEntity<Void> updateErrandWithNote(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final NoteDTO noteDTO) {
+		@RequestBody @Valid final Note note) {
 
-		final var note = noteService.addNoteToErrand(errandId, municipalityId, namespace, noteDTO);
-		return created(fromPath("/{municipalityId}/{namespace}/notes/{noteId}").buildAndExpand(municipalityId, namespace, note.getId()).toUri())
+		final var result = noteService.addNoteToErrand(errandId, municipalityId, namespace, note);
+		return created(fromPath("/{municipalityId}/{namespace}/notes/{noteId}").buildAndExpand(municipalityId, namespace, result.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}

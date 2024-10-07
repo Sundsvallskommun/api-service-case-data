@@ -40,68 +40,71 @@ class MessageResponseTest {
 
 	@Test
 	void testMessageResponseFields() {
+		// Arrange
 		final var attachments = List.of(AttachmentResponse.builder().build());
 		final var direction = Direction.INBOUND;
 		final var email = "email";
 		final var errandNumber = "errandNumber";
-		final var externalCaseID = "externalCaseID";
-		final var familyID = "familyID";
+		final var externalCaseId = "externalCaseId";
+		final var familyId = "familyId";
 		final var firstName = "firstName";
 		final var lastName = "lastName";
 		final var message = "message";
-		final var messageID = "messageID";
+		final var messageId = "messageId";
 		final var messageType = MessageType.EMAIL;
 		final var mobileNumber = "mobileNumber";
 		final var sent = "sent";
 		final var subject = "subject";
-		final var userID = "userID";
+		final var userId = "userId";
 		final var userName = "userName";
 		final var viewed = true;
 		final var classification = Classification.INFORMATION;
 		final var headers = List.of(
-			EmailHeaderDTO.builder()
+			EmailHeader.builder()
 				.withHeader(Header.MESSAGE_ID)
 				.withValues(List.of("<test@test>"))
 				.build());
 
+		// Act
 		final var bean = MessageResponse.builder()
 			.withAttachments(attachments)
 			.withDirection(direction)
 			.withEmail(email)
 			.withErrandNumber(errandNumber)
-			.withExternalCaseID(externalCaseID)
-			.withFamilyID(familyID)
+			.withExternalCaseId(externalCaseId)
+			.withFamilyId(familyId)
 			.withFirstName(firstName)
 			.withLastName(lastName)
 			.withMessage(message)
-			.withMessageID(messageID)
+			.withMessageId(messageId)
 			.withMessageType(messageType.name())
 			.withMobileNumber(mobileNumber)
 			.withSent(sent)
 			.withSubject(subject)
-			.withUserID(userID)
+			.withUserId(userId)
 			.withUsername(userName)
 			.withViewed(viewed)
 			.withClassification(classification)
 			.withEmailHeaders(headers)
 			.build();
 
+		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(bean.getAttachments()).isEqualTo(attachments);
 		assertThat(bean.getDirection()).isEqualTo(direction);
 		assertThat(bean.getEmail()).isEqualTo(email);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
-		assertThat(bean.getExternalCaseID()).isEqualTo(externalCaseID);
-		assertThat(bean.getFamilyID()).isEqualTo(familyID);
+		assertThat(bean.getExternalCaseId()).isEqualTo(externalCaseId);
+		assertThat(bean.getFamilyId()).isEqualTo(familyId);
 		assertThat(bean.getFirstName()).isEqualTo(firstName);
 		assertThat(bean.getLastName()).isEqualTo(lastName);
 		assertThat(bean.getMessage()).isEqualTo(message);
-		assertThat(bean.getMessageID()).isEqualTo(messageID);
+		assertThat(bean.getMessageId()).isEqualTo(messageId);
 		assertThat(bean.getMessageType()).isEqualTo(messageType.name());
 		assertThat(bean.getMobileNumber()).isEqualTo(mobileNumber);
 		assertThat(bean.getSent()).isEqualTo(sent);
 		assertThat(bean.getSubject()).isEqualTo(subject);
-		assertThat(bean.getUserID()).isEqualTo(userID);
+		assertThat(bean.getUserId()).isEqualTo(userId);
 		assertThat(bean.getUsername()).isEqualTo(userName);
 		assertThat(bean.isViewed()).isEqualTo(viewed);
 		assertThat(bean.getClassification()).isEqualTo(classification);
@@ -110,18 +113,21 @@ class MessageResponseTest {
 
 	@Test
 	void testAttachmentResponseFields() {
-		final var attachmentID = "attachmentID";
+		// Arrange
+		final var attachmentId = "attachmentId";
 		final var name = "name";
 		final var contentType = "contentType";
 
+		// Act
 		final var bean = AttachmentResponse.builder()
-			.withAttachmentID(attachmentID)
+			.withAttachmentId(attachmentId)
 			.withName(name)
 			.withContentType(contentType)
 			.build();
 
+		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(bean.getAttachmentID()).isEqualTo(attachmentID);
+		assertThat(bean.getAttachmentId()).isEqualTo(attachmentId);
 		assertThat(bean.getContentType()).isEqualTo(contentType);
 		assertThat(bean.getName()).isEqualTo(name);
 	}

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.GetParkingPermitDTO;
+import se.sundsvall.casedata.api.model.GetParkingPermit;
 import se.sundsvall.casedata.service.ParkingPermitErrandService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -49,7 +49,7 @@ class ParkingPermitResource {
 	@Operation(description = "Get all issued parking permits.")
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<List<GetParkingPermitDTO>> getAllParkingPermits(
+	ResponseEntity<List<GetParkingPermit>> getAllParkingPermits(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@Parameter(description = "personId of the applicant") @RequestParam(required = false) final String personId) {

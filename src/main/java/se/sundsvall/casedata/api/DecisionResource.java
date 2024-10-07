@@ -31,8 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.DecisionDTO;
-import se.sundsvall.casedata.api.model.PatchDecisionDTO;
+import se.sundsvall.casedata.api.model.Decision;
+import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.service.DecisionService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -62,13 +62,13 @@ class DecisionResource {
 	@Operation(description = "Get decision on errand by decision id.")
 	@GetMapping(path = "/{decisionId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation")
-	ResponseEntity<DecisionDTO> getDecisionById(
+	ResponseEntity<Decision> getDecisionById(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "decisionId") final Long decisionId) {
 
-		return ok(decisionService.findByIdAndMunicipalityIdAndNamespace(decisionId, municipalityId, namespace));
+		return ok(decisionService.findDecisionOnErrand(errandId, decisionId, municipalityId, namespace));
 	}
 
 	@Operation(description = "Update decision on errand.")
@@ -79,9 +79,9 @@ class DecisionResource {
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "decisionId") final Long decisionId,
-		@RequestBody @Valid final PatchDecisionDTO patchDecisionDTO) {
+		@RequestBody @Valid final PatchDecision patchDecision) {
 
-		decisionService.updateDecision(decisionId, municipalityId, namespace, patchDecisionDTO);
+		decisionService.updateDecisionOnErrand(errandId, decisionId, municipalityId, namespace, patchDecision);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -95,9 +95,9 @@ class DecisionResource {
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "decisionId") final Long decisionId,
-		@RequestBody @Valid final DecisionDTO decisionDTO) {
+		@RequestBody @Valid final Decision decision) {
 
-		decisionService.replaceDecision(decisionId, municipalityId, namespace, decisionDTO);
+		decisionService.replaceDecisionOnErrand(errandId, decisionId, municipalityId, namespace, decision);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -111,10 +111,10 @@ class DecisionResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final DecisionDTO decisionDTO) {
+		@RequestBody @Valid final Decision decision) {
 
-		final var decision = decisionService.addDecisionToErrand(errandId, municipalityId, namespace, decisionDTO);
-		return created(fromPath("/{municipalityId}/{namespace}/decisions/{decisionId}").buildAndExpand(municipalityId, namespace, decision.getId()).toUri())
+		final var result = decisionService.addDecisionToErrand(errandId, municipalityId, namespace, decision);
+		return created(fromPath("/{municipalityId}/{namespace}/decisions/{decisionId}").buildAndExpand(municipalityId, namespace, result.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
@@ -122,7 +122,7 @@ class DecisionResource {
 	@Operation(description = "Get decisions on errand.")
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<List<DecisionDTO>> getDecision(
+	ResponseEntity<List<Decision>> getDecision(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId) {

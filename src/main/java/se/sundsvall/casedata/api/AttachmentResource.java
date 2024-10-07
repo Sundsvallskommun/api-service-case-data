@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.AttachmentDTO;
+import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.service.AttachmentService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -48,7 +48,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}")
-@Tag(name = "Attachments", description = "Attachment operations")
+@Tag(name = "Attachments", description = "AttachmentEntity operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
@@ -63,19 +63,19 @@ class AttachmentResource {
 	@Operation(description = "Get attachment on errand by attachment id.")
 	@GetMapping(path = "/errands/{errandId}/attachments/{attachmentId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<AttachmentDTO> getAttachments(
+	ResponseEntity<Attachment> getAttachments(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final Long attachmentId) {
 
-		return ok(attachmentService.findByIdAndMunicipalityIdAndNamespace(attachmentId, municipalityId, namespace));
+		return ok(attachmentService.findByIdAndMunicipalityIdAndNamespace(errandId, attachmentId, municipalityId, namespace));
 	}
 
 	@Operation(description = "Get attachment by errand number.")
 	@GetMapping(path = "/attachments/errand/{errandNumber}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<List<AttachmentDTO>> getAttachmentsByErrandNumber(
+	ResponseEntity<List<Attachment>> getAttachmentsByErrandNumber(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable("errandNumber") final String errandNumber) {
@@ -90,9 +90,9 @@ class AttachmentResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
+		@RequestBody @Valid final Attachment attachment) {
 
-		final var result = attachmentService.createAttachment(attachmentDTO, municipalityId, namespace);
+		final var result = attachmentService.createAttachment(attachment, municipalityId, namespace);
 		return created(fromPath("/{municipalityId}/{namespace}/errands/{errandId}/attachments/{id}").buildAndExpand(municipalityId, namespace, errandId, result.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -106,9 +106,9 @@ class AttachmentResource {
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final Long attachmentId,
-		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
+		@RequestBody @Valid final Attachment attachment) {
 
-		attachmentService.replaceAttachment(attachmentId, municipalityId, namespace, attachmentDTO);
+		attachmentService.replaceAttachment(errandId, attachmentId, municipalityId, namespace, attachment);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -122,9 +122,9 @@ class AttachmentResource {
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final Long attachmentId,
-		@RequestBody @Valid final AttachmentDTO attachmentDTO) {
+		@RequestBody @Valid final Attachment attachment) {
 
-		attachmentService.updateAttachment(attachmentId, municipalityId, namespace, attachmentDTO);
+		attachmentService.updateAttachment(errandId, attachmentId, municipalityId, namespace, attachment);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -139,13 +139,15 @@ class AttachmentResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final Long attachmentId) {
 
-		if (attachmentService.deleteAttachment(attachmentId, municipalityId, namespace)) {
+		if (attachmentService.deleteAttachment(errandId, attachmentId, municipalityId, namespace)) {
 			return noContent()
 				.header(CONTENT_TYPE, ALL_VALUE)
 				.build();
 		}
 
-		return notFound().build();
+		return notFound()
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
 	}
 
 }

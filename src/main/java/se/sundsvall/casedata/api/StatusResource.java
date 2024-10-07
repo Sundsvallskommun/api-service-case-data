@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.StatusDTO;
+import se.sundsvall.casedata.api.model.Status;
 import se.sundsvall.casedata.service.StatusService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -39,7 +39,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/statuses")
-@Tag(name = "Status", description = "Errand Status operations")
+@Tag(name = "StatusEntity", description = "Errand StatusEntity operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
@@ -52,13 +52,13 @@ class StatusResource {
 	@Operation(description = "Add status to errand")
 	@PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> patchErrandWithStatus(
+	ResponseEntity<Void> updateErrandWithStatus(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final StatusDTO statusDTO) {
+		@RequestBody @Valid final Status status) {
 
-		statusService.addStatusToErrand(errandId, municipalityId, namespace, statusDTO);
+		statusService.addStatusToErrand(errandId, municipalityId, namespace, status);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -67,13 +67,13 @@ class StatusResource {
 	@Operation(description = "Add/replace status on errand")
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> putStatusOnErrand(
+	ResponseEntity<Void> replaceStatusOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final List<StatusDTO> statusDTOList) {
+		@RequestBody @Valid final List<Status> statusList) {
 
-		statusService.replaceStatusesOnErrand(errandId, municipalityId, namespace, statusDTOList);
+		statusService.replaceStatusesOnErrand(errandId, municipalityId, namespace, statusList);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

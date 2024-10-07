@@ -3,7 +3,7 @@ package se.sundsvall.casedata.service;
 import static java.text.MessageFormat.format;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatusEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +11,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 
-import se.sundsvall.casedata.api.model.StatusDTO;
+import se.sundsvall.casedata.api.model.Status;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 import io.github.resilience4j.retry.annotation.Retry;
@@ -31,24 +31,23 @@ public class StatusService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void addStatusToErrand(final Long errandId, final String municipalityId, final String namespace, final StatusDTO statusDTO) {
+	public void addStatusToErrand(final Long errandId, final String municipalityId, final String namespace, final Status status) {
 		final var oldErrand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
-		final var status = toStatus(statusDTO);
-		oldErrand.getStatuses().add(status);
+		final var statusEntity = toStatusEntity(status);
+		oldErrand.getStatuses().add(statusEntity);
 		final var updatedErrand = errandRepository.save(oldErrand);
 		processService.updateProcess(updatedErrand);
 	}
-
 
 	@Retry(name = "OptimisticLocking")
-	public void replaceStatusesOnErrand(final Long errandId, final String municipalityId, final String namespace, final List<StatusDTO> dtos) {
+	public void replaceStatusesOnErrand(final Long errandId, final String municipalityId, final String namespace, final List<Status> statuses) {
 		final var oldErrand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
-		oldErrand.setStatuses(new ArrayList<>(dtos.stream().map(EntityMapper::toStatus).toList()));
+		oldErrand.setStatuses(new ArrayList<>(statuses.stream().map(EntityMapper::toStatusEntity).toList()));
 		final var updatedErrand = errandRepository.save(oldErrand);
 		processService.updateProcess(updatedErrand);
 	}
 
-	private Errand getErrandByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
+	private ErrandEntity getErrandByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
 		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
 				format(ERRAND_WAS_NOT_FOUND, errandId)));

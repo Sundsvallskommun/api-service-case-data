@@ -6,7 +6,8 @@ import jakarta.persistence.PreUpdate;
 
 import org.springframework.stereotype.Component;
 
-import se.sundsvall.casedata.integration.db.model.Appeal;
+import se.sundsvall.casedata.integration.db.model.AppealEntity;
+
 
 @Component
 public class AppealListener {
@@ -18,14 +19,14 @@ public class AppealListener {
 	}
 
 	@PostPersist
-	private void postPersist(final Appeal appeal) {
-		errandListener.updateErrandFields(appeal.getErrand());
+	private void postPersist(final AppealEntity appealEntity) {
+		errandListener.updateErrandFields(appealEntity.getErrand());
 	}
 
 	@PreUpdate
 	@PreRemove
-	private void preUpdate(final Appeal appeal) {
-		errandListener.updateErrandFields(appeal.getErrand());
+	private void preUpdate(final AppealEntity appealEntity) {
+		errandListener.updateErrandFields(appealEntity.getErrand());
 	}
 
 }

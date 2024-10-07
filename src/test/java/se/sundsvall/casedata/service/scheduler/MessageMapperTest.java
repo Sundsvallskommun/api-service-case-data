@@ -26,16 +26,15 @@ import se.sundsvall.casedata.api.model.MessageRequest.AttachmentRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.api.model.MessageResponse.AttachmentResponse;
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
-import se.sundsvall.casedata.integration.db.model.EmailHeader;
-import se.sundsvall.casedata.integration.db.model.Message;
-import se.sundsvall.casedata.integration.db.model.MessageAttachment;
-import se.sundsvall.casedata.integration.db.model.MessageAttachmentData;
+import se.sundsvall.casedata.integration.db.model.EmailHeaderEntity;
+import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
+import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
+import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.dept44.common.validators.annotation.impl.ValidUuidConstraintValidator;
 
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
-import generated.se.sundsvall.webmessagecollector.MessageDTO.DirectionEnum;
 
 @SpringBootTest(classes = {Application.class}, webEnvironment = MOCK)
 @ActiveProfiles("junit")
@@ -58,51 +57,54 @@ class MessageMapperTest {
 
 	@Test
 	void testToMessageResponseFromEmptyBean() {
-		assertThat(messageMapper.toMessageResponse(Message.builder().build()))
+		assertThat(messageMapper.toMessageResponse(MessageEntity.builder().build()))
 			.hasAllNullFieldsOrPropertiesExcept("viewed")
 			.extracting(MessageResponse::isViewed).isEqualTo(false);
 	}
 
 	@Test
 	void testToMessageResponses() {
+		// Arrange
 		final var bean = createMessage();
 		final var list = List.of(bean);
 
+		// Act
 		final var dto = messageMapper.toMessageResponses(list);
 
+		// Assert
 		assertThat(dto).isNotNull()
 			.hasSize(1)
 			.extracting(
 				MessageResponse::getDirection,
 				MessageResponse::getEmail,
 				MessageResponse::getErrandNumber,
-				MessageResponse::getExternalCaseID,
-				MessageResponse::getFamilyID,
+				MessageResponse::getExternalCaseId,
+				MessageResponse::getFamilyId,
 				MessageResponse::getFirstName,
 				MessageResponse::getLastName,
 				MessageResponse::getMessage,
-				MessageResponse::getMessageID,
+				MessageResponse::getMessageId,
 				MessageResponse::getMessageType,
 				MessageResponse::getMobileNumber,
 				MessageResponse::getSent,
 				MessageResponse::getSubject,
-				MessageResponse::getUserID,
+				MessageResponse::getUserId,
 				MessageResponse::getUsername)
 			.containsExactly(tuple(
 				bean.getDirection(),
 				bean.getEmail(),
 				bean.getErrandNumber(),
-				bean.getExternalCaseID(),
-				bean.getFamilyID(),
+				bean.getExternalCaseId(),
+				bean.getFamilyId(),
 				bean.getFirstName(),
 				bean.getLastName(),
 				bean.getTextmessage(),
-				bean.getMessageID(),
+				bean.getMessageId(),
 				bean.getMessageType(),
 				bean.getMobileNumber(),
 				bean.getSent(),
 				bean.getSubject(),
-				bean.getUserID(),
+				bean.getUserId(),
 				bean.getUsername()));
 		assertThat(dto.getFirst().getEmailHeaders()).allSatisfy(s -> {
 			assertThat(s.getHeader()).isNotNull().isInstanceOf(Header.class);
@@ -112,42 +114,45 @@ class MessageMapperTest {
 
 	@Test
 	void testToMessageResponse() {
+		// Arrange
 		final var bean = createMessage();
 
+		// Act
 		final var dto = messageMapper.toMessageResponse(bean);
 
+		// Assert
 		assertThat(dto).isNotNull()
 			.extracting(
 				MessageResponse::getDirection,
 				MessageResponse::getEmail,
 				MessageResponse::getErrandNumber,
-				MessageResponse::getExternalCaseID,
-				MessageResponse::getFamilyID,
+				MessageResponse::getExternalCaseId,
+				MessageResponse::getFamilyId,
 				MessageResponse::getFirstName,
 				MessageResponse::getLastName,
 				MessageResponse::getMessage,
-				MessageResponse::getMessageID,
+				MessageResponse::getMessageId,
 				MessageResponse::getMessageType,
 				MessageResponse::getMobileNumber,
 				MessageResponse::getSent,
 				MessageResponse::getSubject,
-				MessageResponse::getUserID,
+				MessageResponse::getUserId,
 				MessageResponse::getUsername)
 			.containsExactly(
 				bean.getDirection(),
 				bean.getEmail(),
 				bean.getErrandNumber(),
-				bean.getExternalCaseID(),
-				bean.getFamilyID(),
+				bean.getExternalCaseId(),
+				bean.getFamilyId(),
 				bean.getFirstName(),
 				bean.getLastName(),
 				bean.getTextmessage(),
-				bean.getMessageID(),
+				bean.getMessageId(),
 				bean.getMessageType(),
 				bean.getMobileNumber(),
 				bean.getSent(),
 				bean.getSubject(),
-				bean.getUserID(),
+				bean.getUserId(),
 				bean.getUsername());
 
 		assertThat(dto.getEmailHeaders()).allSatisfy(s -> {
@@ -157,42 +162,48 @@ class MessageMapperTest {
 
 		assertThat(dto.getAttachments()).isNotEmpty()
 			.extracting(
-				AttachmentResponse::getAttachmentID,
+				AttachmentResponse::getAttachmentId,
 				AttachmentResponse::getContentType,
 				AttachmentResponse::getName)
 			.containsExactly(tuple(
-				bean.getAttachments().getFirst().getAttachmentID(),
+				bean.getAttachments().getFirst().getAttachmentId(),
 				bean.getAttachments().getFirst().getContentType(),
 				bean.getAttachments().getFirst().getName()));
 	}
 
 	@Test
-	void testToAttachmentDto() {
+	void testToAttachment() {
+
+		// Arrange
 		final var attachmentID = "attachmentID";
 		final var contentType = "contentType";
 		final var name = "name";
 		final var content = "content";
-		final var messageAttachment = MessageAttachment.builder()
-			.withAttachmentData(MessageAttachmentData.builder()
+		final var messageAttachment = MessageAttachmentEntity.builder()
+			.withAttachmentData(MessageAttachmentDataEntity.builder()
 				.withFile(new MariaDbBlob(content.getBytes()))
 				.build())
-			.withAttachmentID(attachmentID)
+			.withAttachmentId(attachmentID)
 			.withContentType(contentType)
 			.withName(name)
 			.build();
 
-		final var dto = messageMapper.toAttachmentDto(messageAttachment);
+		// Act
+		final var dto = messageMapper.toMessageAttachment(messageAttachment);
 
-		assertThat(dto.getAttachmentID()).isEqualTo(attachmentID);
+		// Assert
+		assertThat(dto.getAttachmentId()).isEqualTo(attachmentID);
 		assertThat(dto.getContent()).isEqualTo(Base64.getEncoder().encodeToString(content.getBytes()));
 		assertThat(dto.getContentType()).isEqualTo(contentType);
 		assertThat(dto.getName()).isEqualTo(name);
 	}
 
 	@Test
-	void testToAttachmentDtoWithException() {
-		final var e = assertThrows(ThrowableProblem.class, () -> messageMapper.toAttachmentDto(null));
+	void testToAttachmentWithException() {
+		// Arrange & Act
+		final var e = assertThrows(ThrowableProblem.class, () -> messageMapper.toMessageAttachment(null));
 
+		// Assert
 		assertThat(e.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR);
 		assertThat(e.getMessage()).isEqualTo("Internal Server Error: Failed to convert binary stream to base64 representation");
 	}
@@ -200,6 +211,7 @@ class MessageMapperTest {
 	@Test
 	void testToAttachmentEntity() throws Exception {
 
+		// Arrange
 		final var messageID = "messageID";
 		final var content = new String(Base64.getEncoder().encode("content".getBytes()), StandardCharsets.UTF_8);
 		final var contentType = "contentType";
@@ -210,12 +222,14 @@ class MessageMapperTest {
 			.withName(name)
 			.build();
 
+		// Act
 		final var bean = messageMapper.toAttachmentEntity(attachmentRequest, messageID);
 
+		// Assert
 		assertThat(bean.getAttachmentData()).isNotNull();
 		assertThat(bean.getAttachmentData().getId()).isZero();
 		assertThat(bean.getAttachmentData().getFile().getBinaryStream().readAllBytes()).isEqualTo("content".getBytes());
-		assertThat(bean.getAttachmentID()).isNotBlank().satisfies(s -> assertThat(isValidUUID(s)).isTrue());
+		assertThat(bean.getAttachmentId()).isNotBlank().satisfies(s -> assertThat(isValidUUID(s)).isTrue());
 		assertThat(bean.getContentType()).isEqualTo(contentType);
 		assertThat(bean.getMessageID()).isEqualTo(messageID);
 		assertThat(bean.getName()).isEqualTo(name);
@@ -223,6 +237,8 @@ class MessageMapperTest {
 
 	@Test
 	void toAttachmentEntity() {
+
+		// Arrange
 		final var messageID = "messageID";
 		final var contentType = "contentType";
 		final var name = "name";
@@ -238,7 +254,7 @@ class MessageMapperTest {
 
 		// Assert
 		assertThat(bean.getAttachmentData()).isNull();
-		assertThat(bean.getAttachmentID()).isEqualTo(attachmentID);
+		assertThat(bean.getAttachmentId()).isEqualTo(attachmentID);
 		assertThat(bean.getContentType()).isEqualTo(contentType);
 		assertThat(bean.getMessageID()).isEqualTo(messageID);
 		assertThat(bean.getName()).isEqualTo(name);
@@ -246,8 +262,9 @@ class MessageMapperTest {
 
 	@Test
 	void testToMessageEntity() {
+		// Arrange
 		final var errandNumber = "errandNumber";
-		final var direction = DirectionEnum.OUTBOUND;
+		final var direction = MessageDTO.DirectionEnum.OUTBOUND;
 		final var email = "email";
 		final var externalCaseId = "externalCaseId";
 		final var familyId = "familyId";
@@ -284,21 +301,23 @@ class MessageMapperTest {
 			.username(username)
 			.attachments(attachments);
 
+		// Act
 		final var bean = messageMapper.toMessageEntity(errandNumber, dto, MUNICIPALITY_ID, NAMESPACE);
 
+		// Assert
 		assertThat(bean.getDirection()).isEqualTo(Direction.OUTBOUND);
 		assertThat(bean.getEmail()).isEqualTo(email);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
-		assertThat(bean.getFamilyID()).isEqualTo(familyId);
+		assertThat(bean.getFamilyId()).isEqualTo(familyId);
 		assertThat(bean.getFirstName()).isEqualTo(firstName);
 		assertThat(bean.getLastName()).isEqualTo(lastName);
-		assertThat(bean.getMessageID()).satisfies(s -> assertThat(isValidUUID(s)).isTrue());
+		assertThat(bean.getMessageId()).satisfies(s -> assertThat(isValidUUID(s)).isTrue());
 		assertThat(bean.getMessageType()).isEqualTo(MessageType.WEBMESSAGE.name());
 		assertThat(bean.getMobileNumber()).isNull();
 		assertThat(bean.getSent()).isEqualTo(sent);
 		assertThat(bean.getSubject()).isNull();
 		assertThat(bean.getTextmessage()).isEqualTo(message);
-		assertThat(bean.getUserID()).isEqualTo(userId);
+		assertThat(bean.getUserId()).isEqualTo(userId);
 		assertThat(bean.getUsername()).isEqualTo(username);
 		assertThat(bean.getAttachments()).isNull();
 
@@ -307,17 +326,17 @@ class MessageMapperTest {
 	@Test
 	void toAttachment() {
 		// Arrange
-		final var attachment = MessageAttachment.builder()
-			.withAttachmentData(MessageAttachmentData.builder()
+		final var attachment = MessageAttachmentEntity.builder()
+			.withAttachmentData(MessageAttachmentDataEntity.builder()
 				.withFile(new MariaDbBlob("content".getBytes()))
 				.build())
-			.withAttachmentID("attachmentID")
+			.withAttachmentId("attachmentId")
 			.withContentType("contentType")
 			.withName("name")
 			.build();
 
 		// Act
-		final var result = messageMapper.toAttachment(attachment);
+		final var result = messageMapper.toAttachmentEntity(attachment);
 
 		// Assert
 		assertThat(result.getFile()).isEqualTo(Base64.getEncoder().encodeToString("content".getBytes()));
@@ -329,15 +348,15 @@ class MessageMapperTest {
 	@Test
 	void toAttachmentWhenAttachmentIsNull() {
 		// Arrange
-		final var attachment = MessageAttachment.builder()
+		final var attachment = MessageAttachmentEntity.builder()
 			.withAttachmentData(null)
-			.withAttachmentID("attachmentID")
+			.withAttachmentId("attachmentID")
 			.withContentType("contentType")
 			.withName("name")
 			.build();
 
 		// Act
-		assertThatThrownBy(() -> messageMapper.toAttachment(attachment))
+		assertThatThrownBy(() -> messageMapper.toMessageAttachment(attachment))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasMessage("Internal Server Error: Failed to convert binary stream to base64 representation");
 
@@ -347,33 +366,33 @@ class MessageMapperTest {
 		return UUID_VALIDATOR.isValid(uuid);
 	}
 
-	private Message createMessage() {
-		final var attachmentID = "attachmentID";
-		final var attachmentData = MessageAttachmentData.builder().build();
+	private MessageEntity createMessage() {
+		final var attachmentId = "attachmentId";
+		final var attachmentData = MessageAttachmentDataEntity.builder().build();
 		final var contentType = "contentType";
-		final var messageID = "messageID";
+		final var messageId = "messageID";
 		final var name = "name";
-		final var attachments = List.of(MessageAttachment.builder()
-			.withAttachmentID(attachmentID)
+		final var attachments = List.of(MessageAttachmentEntity.builder()
+			.withAttachmentId(attachmentId)
 			.withAttachmentData(attachmentData)
 			.withContentType(contentType)
-			.withMessageID(messageID)
+			.withMessageID(messageId)
 			.withName(name)
 			.build());
 		final var headers = List.of(
-			EmailHeader.builder()
+			EmailHeaderEntity.builder()
 				.withHeader(Header.MESSAGE_ID)
 				.withValues(List.of("<Test@Test>"))
 				.build(),
-			EmailHeader.builder()
+			EmailHeaderEntity.builder()
 				.withHeader(Header.IN_REPLY_TO)
 				.withValues(List.of("<Test@Test>"))
 				.build());
 		final var direction = Direction.INBOUND;
 		final var email = "email";
 		final var errandNumber = "errandNumber";
-		final var externalCaseID = "externalCaseID";
-		final var familyID = "familyID";
+		final var externalCaseId = "externalCaseID";
+		final var familyId = "familyID";
 		final var firstName = "firstName";
 		final var lastName = "lastName";
 		final var textmessage = "textmessage";
@@ -381,26 +400,26 @@ class MessageMapperTest {
 		final var mobileNumber = "mobileNumber";
 		final var sent = "sent";
 		final var subject = "subject";
-		final var userID = "userID";
+		final var userId = "userID";
 		final var username = "username";
 		final var viewed = true;
 
-		return Message.builder()
+		return MessageEntity.builder()
 			.withAttachments(attachments)
 			.withDirection(direction)
 			.withEmail(email)
 			.withErrandNumber(errandNumber)
-			.withExternalCaseID(externalCaseID)
-			.withFamilyID(familyID)
+			.withExternalCaseId(externalCaseId)
+			.withFamilyId(familyId)
 			.withFirstName(firstName)
 			.withLastName(lastName)
 			.withTextmessage(textmessage)
-			.withMessageID(messageID)
+			.withMessageId(messageId)
 			.withMessageType(messageType.name())
 			.withMobileNumber(mobileNumber)
 			.withSent(sent)
 			.withSubject(subject)
-			.withUserID(userID)
+			.withUserId(userId)
 			.withUsername(username)
 			.withViewed(viewed)
 			.withHeaders(headers)

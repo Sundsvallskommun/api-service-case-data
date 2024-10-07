@@ -3,18 +3,18 @@ package se.sundsvall.casedata.service.util.mappers;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import se.sundsvall.casedata.api.model.AppealDTO;
-import se.sundsvall.casedata.api.model.AttachmentDTO;
-import se.sundsvall.casedata.api.model.DecisionDTO;
-import se.sundsvall.casedata.api.model.FacilityDTO;
-import se.sundsvall.casedata.api.model.NoteDTO;
-import se.sundsvall.casedata.api.model.StakeholderDTO;
-import se.sundsvall.casedata.integration.db.model.Appeal;
-import se.sundsvall.casedata.integration.db.model.Attachment;
-import se.sundsvall.casedata.integration.db.model.Decision;
-import se.sundsvall.casedata.integration.db.model.Facility;
-import se.sundsvall.casedata.integration.db.model.Note;
-import se.sundsvall.casedata.integration.db.model.Stakeholder;
+import se.sundsvall.casedata.api.model.Appeal;
+import se.sundsvall.casedata.api.model.Attachment;
+import se.sundsvall.casedata.api.model.Decision;
+import se.sundsvall.casedata.api.model.Facility;
+import se.sundsvall.casedata.api.model.Note;
+import se.sundsvall.casedata.api.model.Stakeholder;
+import se.sundsvall.casedata.integration.db.model.AppealEntity;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
+import se.sundsvall.casedata.integration.db.model.DecisionEntity;
+import se.sundsvall.casedata.integration.db.model.FacilityEntity;
+import se.sundsvall.casedata.integration.db.model.NoteEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
@@ -23,21 +23,21 @@ public final class PutMapper {
 	private PutMapper() {
 	}
 
-	public static Attachment putAttachment(final Attachment oldAttachment, final AttachmentDTO dto) {
-		Optional.ofNullable(dto).ifPresent(newAttachment -> {
-			oldAttachment.setExtraParameters(newAttachment.getExtraParameters());
-			oldAttachment.setCategory(newAttachment.getCategory());
-			oldAttachment.setName(newAttachment.getName());
-			oldAttachment.setNote(newAttachment.getNote());
-			oldAttachment.setExtension(newAttachment.getExtension());
-			oldAttachment.setMimeType(newAttachment.getMimeType());
-			oldAttachment.setFile(newAttachment.getFile());
+	public static AttachmentEntity putAttachment(final AttachmentEntity oldAttachmentEntity, final Attachment attachment) {
+		Optional.ofNullable(attachment).ifPresent(newAttachment -> {
+			oldAttachmentEntity.setExtraParameters(newAttachment.getExtraParameters());
+			oldAttachmentEntity.setCategory(newAttachment.getCategory());
+			oldAttachmentEntity.setName(newAttachment.getName());
+			oldAttachmentEntity.setNote(newAttachment.getNote());
+			oldAttachmentEntity.setExtension(newAttachment.getExtension());
+			oldAttachmentEntity.setMimeType(newAttachment.getMimeType());
+			oldAttachmentEntity.setFile(newAttachment.getFile());
 		});
-		return oldAttachment;
+		return oldAttachmentEntity;
 	}
 
-	public static Stakeholder putStakeholder(final Stakeholder oldStakeholder, final StakeholderDTO dto) {
-		Optional.ofNullable(dto).ifPresent(newStakeholder -> {
+	public static StakeholderEntity putStakeholder(final StakeholderEntity oldStakeholder, final Stakeholder stakeholder) {
+		Optional.ofNullable(stakeholder).ifPresent(newStakeholder -> {
 			oldStakeholder.setExtraParameters(newStakeholder.getExtraParameters());
 			oldStakeholder.setType(newStakeholder.getType());
 			oldStakeholder.setFirstName(newStakeholder.getFirstName());
@@ -48,14 +48,14 @@ public final class PutMapper {
 			oldStakeholder.setAuthorizedSignatory(newStakeholder.getAuthorizedSignatory());
 			oldStakeholder.setAdAccount(newStakeholder.getAdAccount());
 			oldStakeholder.setRoles(newStakeholder.getRoles());
-			oldStakeholder.setAddresses(new ArrayList<>(newStakeholder.getAddresses().stream().map(EntityMapper::toAddress).toList()));
-			oldStakeholder.setContactInformation(new ArrayList<>(newStakeholder.getContactInformation().stream().map(EntityMapper::toContactInformation).toList()));
+			oldStakeholder.setAddresses(new ArrayList<>(newStakeholder.getAddresses().stream().map(EntityMapper::toAddressEntity).toList()));
+			oldStakeholder.setContactInformation(new ArrayList<>(newStakeholder.getContactInformation().stream().map(EntityMapper::toContactInformationEntity).toList()));
 		});
 		return oldStakeholder;
 	}
 
-	public static Decision putDecision(final Decision oldDecision, final DecisionDTO dto) {
-		Optional.ofNullable(dto).ifPresent(newDecision -> {
+	public static DecisionEntity putDecision(final DecisionEntity oldDecision, final Decision decision) {
+		Optional.ofNullable(decision).ifPresent(newDecision -> {
 			oldDecision.setExtraParameters(newDecision.getExtraParameters());
 			oldDecision.setDecisionType(newDecision.getDecisionType());
 			oldDecision.setDecisionOutcome(newDecision.getDecisionOutcome());
@@ -63,41 +63,41 @@ public final class PutMapper {
 			oldDecision.setDecidedAt(newDecision.getDecidedAt());
 			oldDecision.setValidFrom(newDecision.getValidFrom());
 			oldDecision.setValidTo(newDecision.getValidTo());
-			oldDecision.setDecidedBy(EntityMapper.toStakeholder(newDecision.getDecidedBy(), oldDecision.getMunicipalityId(), oldDecision.getNamespace()));
-			oldDecision.setLaw(new ArrayList<>(newDecision.getLaw().stream().map(EntityMapper::toLaw).toList()));
+			oldDecision.setDecidedBy(EntityMapper.toStakeholderEntity(newDecision.getDecidedBy(), oldDecision.getMunicipalityId(), oldDecision.getNamespace()));
+			oldDecision.setLaw(new ArrayList<>(newDecision.getLaw().stream().map(EntityMapper::toLawEntity).toList()));
 			oldDecision.getAttachments().clear();
-			newDecision.getAttachments().forEach(attachment -> oldDecision.getAttachments().add(EntityMapper.toAttachment(attachment, oldDecision.getMunicipalityId(), oldDecision.getNamespace())));
+			newDecision.getAttachments().forEach(attachment -> oldDecision.getAttachments().add(EntityMapper.toAttachmentEntity(attachment, oldDecision.getMunicipalityId(), oldDecision.getNamespace())));
 		});
 		return oldDecision;
 	}
 
-	public static Appeal putAppeal(final Appeal oldAppeal, final AppealDTO dto) {
-		Optional.ofNullable(dto).ifPresent(newAppeal -> {
-			oldAppeal.setDescription(dto.getDescription());
-			oldAppeal.setStatus(AppealStatus.valueOf(dto.getStatus()));
-			oldAppeal.setTimelinessReview(TimelinessReview.valueOf(dto.getTimelinessReview()));
-			oldAppeal.setAppealConcernCommunicatedAt(dto.getAppealConcernCommunicatedAt());
+	public static AppealEntity putAppeal(final AppealEntity oldAppealEntity, final Appeal appeal) {
+		Optional.ofNullable(appeal).ifPresent(newAppeal -> {
+			oldAppealEntity.setDescription(appeal.getDescription());
+			oldAppealEntity.setStatus(AppealStatus.valueOf(appeal.getStatus()));
+			oldAppealEntity.setTimelinessReview(TimelinessReview.valueOf(appeal.getTimelinessReview()));
+			oldAppealEntity.setAppealConcernCommunicatedAt(appeal.getAppealConcernCommunicatedAt());
 		});
-		return oldAppeal;
+		return oldAppealEntity;
 	}
 
-	public static Note putNote(final Note oldNote, final NoteDTO dto) {
-		Optional.of(dto).ifPresent(newNote -> {
-			oldNote.setExtraParameters(newNote.getExtraParameters());
-			oldNote.setTitle(newNote.getTitle());
-			oldNote.setText(newNote.getText());
-			oldNote.setCreatedBy(newNote.getCreatedBy());
-			oldNote.setUpdatedBy(newNote.getUpdatedBy());
+	public static NoteEntity putNote(final NoteEntity oldNoteEntity, final Note note) {
+		Optional.of(note).ifPresent(newNote -> {
+			oldNoteEntity.setExtraParameters(newNote.getExtraParameters());
+			oldNoteEntity.setTitle(newNote.getTitle());
+			oldNoteEntity.setText(newNote.getText());
+			oldNoteEntity.setCreatedBy(newNote.getCreatedBy());
+			oldNoteEntity.setUpdatedBy(newNote.getUpdatedBy());
 		});
-		return oldNote;
+		return oldNoteEntity;
 	}
 
-	public static Facility putFacility(final Facility oldFacility, final FacilityDTO dto) {
-		Optional.of(dto).ifPresent(facility -> {
+	public static FacilityEntity putFacility(final FacilityEntity oldFacility, final Facility facility) {
+		Optional.of(facility).ifPresent(facilityEntity -> {
 			oldFacility.setFacilityType(facility.getFacilityType());
 			oldFacility.setMainFacility(facility.isMainFacility());
 			oldFacility.setDescription(facility.getDescription());
-			oldFacility.setAddress(EntityMapper.toAddress(facility.getAddress()));
+			oldFacility.setAddressEntity(EntityMapper.toAddressEntity(facility.getAddress()));
 			oldFacility.setFacilityCollectionName(facility.getFacilityCollectionName());
 			oldFacility.setExtraParameters(facility.getExtraParameters());
 		});

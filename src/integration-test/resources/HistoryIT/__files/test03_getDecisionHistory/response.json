@@ -10,7 +10,7 @@
     },
     "globalId": {
       "cdoId": 3,
-      "entity": "se.sundsvall.casedata.integration.db.model.Decision"
+      "entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
     }
   },
   {
@@ -24,14 +24,14 @@
     },
     "globalId": {
       "cdoId": 3,
-      "entity": "se.sundsvall.casedata.integration.db.model.Decision"
+      "entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
     },
     "left": null,
     "property": "errand",
     "propertyChangeType": "PROPERTY_VALUE_CHANGED",
     "right": {
       "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     }
   },
   {
@@ -45,7 +45,7 @@
     },
     "globalId": {
       "cdoId": 3,
-      "entity": "se.sundsvall.casedata.integration.db.model.Decision"
+      "entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
     },
     "left": null,
     "property": "decisionType",
@@ -63,7 +63,7 @@
     },
     "globalId": {
       "cdoId": 3,
-      "entity": "se.sundsvall.casedata.integration.db.model.Decision"
+      "entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
     },
     "left": null,
     "property": "decisionOutcome",
@@ -81,7 +81,7 @@
     },
     "globalId": {
       "cdoId": 3,
-      "entity": "se.sundsvall.casedata.integration.db.model.Decision"
+      "entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
     },
     "left": null,
     "property": "description",
@@ -105,15 +105,15 @@
           "fragment": "law/0",
           "ownerId": {
             "cdoId": 2,
-            "entity": "se.sundsvall.casedata.integration.db.model.Decision"
+            "entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
           },
-          "valueObject": "se.sundsvall.casedata.integration.db.model.Law"
+          "valueObject": "se.sundsvall.casedata.integration.db.model.LawEntity"
         }
       }
     ],
     "globalId": {
       "cdoId": 3,
-      "entity": "se.sundsvall.casedata.integration.db.model.Decision"
+      "entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
     },
     "property": "law",
     "propertyChangeType": "PROPERTY_VALUE_CHANGED"
@@ -129,7 +129,7 @@
     },
     "globalId": {
       "cdoId": 3,
-      "entity": "se.sundsvall.casedata.integration.db.model.Decision"
+      "entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
     },
     "left": null,
     "property": "decidedAt",
@@ -147,7 +147,7 @@
     },
     "globalId": {
       "cdoId": 3,
-      "entity": "se.sundsvall.casedata.integration.db.model.Decision"
+      "entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
     },
     "left": null,
     "property": "validFrom",
@@ -165,7 +165,7 @@
     },
     "globalId": {
       "cdoId": 3,
-      "entity": "se.sundsvall.casedata.integration.db.model.Decision"
+      "entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
     },
     "left": null,
     "property": "validTo",
@@ -187,13 +187,13 @@
         "index": 0,
         "value": {
           "cdoId": 1,
-          "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+          "entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
         }
       }
     ],
     "globalId": {
       "cdoId": 3,
-      "entity": "se.sundsvall.casedata.integration.db.model.Decision"
+      "entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
     },
     "property": "attachments",
     "propertyChangeType": "PROPERTY_VALUE_CHANGED"

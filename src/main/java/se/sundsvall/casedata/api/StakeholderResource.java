@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.StakeholderDTO;
+import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.service.StakeholderService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -63,39 +63,39 @@ class StakeholderResource {
 	@Operation(description = "Get stakeholder on errand by stakeholder id.")
 	@GetMapping(path = "/{stakeholderId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<StakeholderDTO> getStakeholders(
+	ResponseEntity<Stakeholder> getStakeholderOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId) {
 
-		return ok(stakeholderService.findByIdAndMunicipalityIdAndNamespace(stakeholderId, municipalityId, namespace));
+		return ok(stakeholderService.findStakeholderOnErrand(errandId, stakeholderId, municipalityId, namespace));
 	}
 
 	@Operation(description = "Get all stakeholders on errand.")
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<List<StakeholderDTO>> getStakeholders(
+	ResponseEntity<List<Stakeholder>> getAllStakeholdersOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestParam(required = false) final Optional<String> stakeholderRole) {
 
-		return stakeholderRole.map(role -> ok(stakeholderService.findStakeholdersByRoleAndMunicipalityIdAndNamespace(role, municipalityId, namespace)))
-			.orElseGet(() -> ok(stakeholderService.findAllStakeholdersByMunicipalityIdAndNamespace(municipalityId, namespace)));
+		return stakeholderRole.map(role -> ok(stakeholderService.findAllStakeholdersOnErrandByRole(errandId, role, municipalityId, namespace)))
+			.orElseGet(() -> ok(stakeholderService.findAllStakeholdersOnErrand(errandId, municipalityId, namespace)));
 	}
 
 	@Operation(description = "Update stakeholder on errand by stakeholder id.")
 	@PatchMapping(path = "/{stakeholderId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> patchStakeholder(
+	ResponseEntity<Void> updateStakeholderOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId,
-		@RequestBody @Valid final StakeholderDTO stakeholderDTO) {
+		@RequestBody @Valid final Stakeholder stakeholder) {
 
-		stakeholderService.patch(stakeholderId, municipalityId, namespace, stakeholderDTO);
+		stakeholderService.updateStakeholderOnErrand(errandId, stakeholderId, municipalityId, namespace, stakeholder);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -104,14 +104,14 @@ class StakeholderResource {
 	@Operation(description = "Replace stakeholder on errand by stakeholder id.")
 	@PutMapping(path = "/{stakeholderId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> putStakeholder(
+	ResponseEntity<Void> replaceStakeholderOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final StakeholderDTO stakeholderDTO) {
+		@RequestBody @Valid final Stakeholder stakeholder) {
 
-		stakeholderService.put(stakeholderId, municipalityId, namespace, stakeholderDTO);
+		stakeholderService.replaceStakeholderOnErrand(errandId, stakeholderId, municipalityId, namespace, stakeholder);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -120,14 +120,14 @@ class StakeholderResource {
 	@Operation(description = "Create and add stakeholder to errand.")
 	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource."), useReturnTypeSchema = true)
 	@PatchMapping(consumes = APPLICATION_JSON_VALUE, produces = {ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-	ResponseEntity<Void> patchErrandWithStakeholder(
+	ResponseEntity<Void> updateErrandWithStakeholder(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final StakeholderDTO stakeholderDTO) {
+		@RequestBody @Valid final Stakeholder stakeholder) {
 
-		final var stakeholder = stakeholderService.addStakeholderToErrand(errandId, municipalityId, namespace, stakeholderDTO);
-		return created(fromPath("/{municipalityId}/{namespace}/stakeholders/{stakeholderId}").buildAndExpand(municipalityId, namespace, stakeholder.getId()).toUri())
+		final var result = stakeholderService.addStakeholderToErrand(errandId, municipalityId, namespace, stakeholder);
+		return created(fromPath("/{municipalityId}/{namespace}/stakeholders/{stakeholderId}").buildAndExpand(municipalityId, namespace, result.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
@@ -135,13 +135,13 @@ class StakeholderResource {
 	@Operation(description = "Replace stakeholders on errand.")
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> putStakeholdersOnErrand(
+	ResponseEntity<Void> replaceStakeholdersOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final List<StakeholderDTO> stakeholderDTOList) {
+		@RequestBody @Valid final List<Stakeholder> stakeholderList) {
 
-		stakeholderService.replaceStakeholdersOnErrand(errandId, municipalityId, namespace, stakeholderDTOList);
+		stakeholderService.replaceStakeholdersOnErrand(errandId, municipalityId, namespace, stakeholderList);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

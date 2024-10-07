@@ -2,13 +2,13 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
-import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
+import static se.sundsvall.casedata.TestUtil.createAttachmentEntity;
 import static se.sundsvall.casedata.TestUtil.createDecision;
-import static se.sundsvall.casedata.TestUtil.createDecisionDTO;
+import static se.sundsvall.casedata.TestUtil.createDecisionEntity;
 import static se.sundsvall.casedata.TestUtil.createNote;
-import static se.sundsvall.casedata.TestUtil.createNoteDTO;
+import static se.sundsvall.casedata.TestUtil.createNoteEntity;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
-import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
+import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putAttachment;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putNote;
@@ -26,8 +26,8 @@ class PutMapperTest {
 
 	@Test
 	void putAttachmentTest() {
-		final var attachment = createAttachment();
-		final var attachmentDTO = createAttachmentDTO(AttachmentCategory.NOTIFICATION_WITHOUT_PERSONAL_NUMBER);
+		final var attachment = createAttachmentEntity();
+		final var attachmentDTO = createAttachment(AttachmentCategory.NOTIFICATION_WITHOUT_PERSONAL_NUMBER);
 
 		assertThat(attachment).satisfies(a -> {
 			assertThat(a.getCategory()).isNotEqualTo(attachmentDTO.getCategory());
@@ -53,8 +53,8 @@ class PutMapperTest {
 
 	@Test
 	void putStakeholderTest() {
-		final var stakeholder = createStakeholder();
-		final var stakeholderDTO = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.PROPERTY_OWNER.name()));
+		final var stakeholder = createStakeholderEntity();
+		final var stakeholderDTO = createStakeholder(StakeholderType.ORGANIZATION, List.of(StakeholderRole.PROPERTY_OWNER.name()));
 
 		assertThat(stakeholder).satisfies(s -> {
 			assertThat(s.getType()).isNotEqualTo(stakeholderDTO.getType());
@@ -81,15 +81,15 @@ class PutMapperTest {
 			assertThat(s.getAdAccount()).isEqualTo(stakeholderDTO.getAdAccount());
 			assertThat(s.getRoles()).isEqualTo(stakeholderDTO.getRoles());
 			assertThat(s.getExtraParameters()).containsAllEntriesOf(stakeholderDTO.getExtraParameters());
-			assertThat(s.getAddresses()).isEqualTo(stakeholderDTO.getAddresses().stream().map(EntityMapper::toAddress).toList());
-			assertThat(s.getContactInformation()).isEqualTo(stakeholderDTO.getContactInformation().stream().map(EntityMapper::toContactInformation).toList());
+			assertThat(s.getAddresses()).isEqualTo(stakeholderDTO.getAddresses().stream().map(EntityMapper::toAddressEntity).toList());
+			assertThat(s.getContactInformation()).isEqualTo(stakeholderDTO.getContactInformation().stream().map(EntityMapper::toContactInformationEntity).toList());
 		});
 	}
 
 	@Test
 	void putDecisionTest() {
-		final var decision = createDecision();
-		final var decisionDto = createDecisionDTO();
+		final var decision = createDecisionEntity();
+		final var decisionDto = createDecision();
 
 		assertThat(decision).satisfies(d -> {
 			assertThat(d.getDecisionType()).isNotEqualTo(decisionDto.getDecisionType());
@@ -112,8 +112,8 @@ class PutMapperTest {
 
 	@Test
 	void putNoteTest() {
-		final var note = createNote();
-		final var noteDto = createNoteDTO();
+		final var note = createNoteEntity();
+		final var noteDto = createNote();
 
 		assertThat(note).satisfies(n -> {
 			assertThat(n.getTitle()).isNotEqualTo(noteDto.getTitle());

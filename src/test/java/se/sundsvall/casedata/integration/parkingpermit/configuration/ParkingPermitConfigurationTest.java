@@ -77,4 +77,5 @@ class ParkingPermitConfigurationTest {
 			.isInstanceOf(ProblemErrorDecoder.class)
 			.hasFieldOrPropertyWithValue("integrationName", CLIENT_ID);
 	}
+
 }

@@ -29,11 +29,11 @@ import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
-import se.sundsvall.casedata.integration.db.model.Attachment;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.Message;
-import se.sundsvall.casedata.integration.db.model.MessageAttachment;
-import se.sundsvall.casedata.integration.db.model.MessageAttachmentData;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
+import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
+import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollectorClient;
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
@@ -68,26 +68,26 @@ class WebMessageCollectorServiceTest {
 	private WebMessageCollectorService webMessageCollectorService;
 
 	@Captor
-	private ArgumentCaptor<Message> messageCaptor;
+	private ArgumentCaptor<MessageEntity> messageCaptor;
 
 	@Captor
-	private ArgumentCaptor<MessageAttachment> messageAttachmentCaptor;
+	private ArgumentCaptor<MessageAttachmentEntity> messageAttachmentCaptor;
 
 	@Captor
-	private ArgumentCaptor<Attachment> attachmentCaptor;
+	private ArgumentCaptor<AttachmentEntity> attachmentCaptor;
 
-	private static void assertSavedMessageHasCorrectValues(final Message message) {
+	private static void assertSavedMessageHasCorrectValues(final MessageEntity message) {
 		assertThat(message.getDirection()).isEqualTo(INBOUND);
-		assertThat(message.getFamilyID()).isEqualTo("1");
-		assertThat(message.getExternalCaseID()).isEqualTo("1");
+		assertThat(message.getFamilyId()).isEqualTo("1");
+		assertThat(message.getExternalCaseId()).isEqualTo("1");
 		assertThat(message.getTextmessage()).isEqualTo("message");
-		assertThat(message.getMessageID()).isEqualTo("1");
+		assertThat(message.getMessageId()).isEqualTo("1");
 		assertThat(message.getSent()).isEqualTo("2021-01-01T00:00:00.000Z");
 		assertThat(message.getUsername()).isEqualTo("username");
 		assertThat(message.getFirstName()).isEqualTo("firstName");
 		assertThat(message.getLastName()).isEqualTo("lastName");
 		assertThat(message.getEmail()).isEqualTo("email");
-		assertThat(message.getMessageID()).isEqualTo("1");
+		assertThat(message.getMessageId()).isEqualTo("1");
 
 		assertThat(message.getAttachments()).isNull();
 	}
@@ -105,21 +105,21 @@ class WebMessageCollectorServiceTest {
 
 		final var bytes = new byte[]{1, 23, 45};
 		final var blob = new SerialBlob(bytes);
-		final var attachmentData = MessageAttachmentData.builder().withFile(blob).build();
+		final var attachmentData = MessageAttachmentDataEntity.builder().withFile(blob).build();
 
 		when(webMessageCollectorClientMock.getMessages(MUNICIPALITY_ID, familyId, instance)).thenReturn(messageDTOs);
 
-		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(Errand.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).withMunicipalityId(MUNICIPALITY_ID).withNamespace(NAMESPACE).build()));
+		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(ErrandEntity.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).withMunicipalityId(MUNICIPALITY_ID).withNamespace(NAMESPACE).build()));
 		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(MUNICIPALITY_ID, Map.of(instance, List.of(familyId))));
 		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(message);
-		when(messageRepositoryMock.saveAndFlush(any(Message.class))).thenReturn(message);
+		when(messageRepositoryMock.saveAndFlush(any(MessageEntity.class))).thenReturn(message);
 
 		when(messageMapperMock.toAttachmentEntity(any(generated.se.sundsvall.webmessagecollector.MessageAttachment.class), any(String.class))).thenReturn(createAttachment());
 
 		when(webMessageCollectorClientMock.getAttachment(any(String.class), anyInt())).thenReturn(bytes);
 		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(attachmentData);
 
-		when(messageMapperMock.toAttachment(any(MessageAttachment.class))).thenReturn(Attachment.builder().withName("fileName").build());
+		when(messageMapperMock.toAttachmentEntity(any(MessageAttachmentEntity.class))).thenReturn(AttachmentEntity.builder().withName("fileName").build());
 
 		// Act
 		webMessageCollectorService.getAndProcessMessages();
@@ -135,7 +135,7 @@ class WebMessageCollectorServiceTest {
 
 		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachmentCaptor.capture());
 		assertThat(messageAttachmentCaptor.getValue()).satisfies(attachment -> {
-			assertThat(attachment.getAttachmentID()).isEqualTo("1");
+			assertThat(attachment.getAttachmentId()).isEqualTo("1");
 			assertThat(attachment.getContentType()).isEqualTo("mimeType");
 			assertThat(attachment.getName()).isEqualTo("fileName");
 			assertThat(attachment.getAttachmentData().getFile()).isEqualTo(blob);
@@ -166,26 +166,26 @@ class WebMessageCollectorServiceTest {
 	}
 
 
-	private Message createMessage() {
-		return Message.builder()
+	private MessageEntity createMessage() {
+		return MessageEntity.builder()
 			.withErrandNumber("someErrandNumber")
 			.withDirection(INBOUND)
-			.withFamilyID("1")
-			.withExternalCaseID("1")
+			.withFamilyId("1")
+			.withExternalCaseId("1")
 			.withTextmessage("message")
-			.withMessageID("1")
+			.withMessageId("1")
 			.withSent("2021-01-01T00:00:00.000Z")
 			.withUsername("username")
 			.withFirstName("firstName")
 			.withLastName("lastName")
 			.withEmail("email")
-			.withMessageID("1")
+			.withMessageId("1")
 			.build();
 	}
 
-	private MessageAttachment createAttachment() {
-		return MessageAttachment.builder()
-			.withAttachmentID("1")
+	private MessageAttachmentEntity createAttachment() {
+		return MessageAttachmentEntity.builder()
+			.withAttachmentId("1")
 			.withName("fileName")
 			.withContentType("mimeType")
 			.build();

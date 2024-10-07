@@ -22,8 +22,8 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/ErrandListenerIT", classes = Application.class)
 @Sql({
-	"/db/script/truncate.sql",
-	"/db/script/errandIT-testdata.sql"
+	"/db/scripts/truncate.sql",
+	"/db/scripts/errandIT-testdata.sql"
 })
 class ErrandListenerIT extends AbstractAppTest {
 
