@@ -33,7 +33,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/messageattachments")
-@Tag(name = "MessageAttachments", description = "MessageAttachmentEntity operations")
+@Tag(name = "MessageAttachments", description = "MessageAttachment operations")
 @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
 @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 class MessageAttachmentResource {

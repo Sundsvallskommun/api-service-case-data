@@ -61,7 +61,7 @@ class DecisionResource {
 
 	@Operation(description = "Get decision on errand by decision id.")
 	@GetMapping(path = "/{decisionId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
-	@ApiResponse(responseCode = "200", description = "OK - Successful operation")
+	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Decision> getDecisionById(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -73,7 +73,7 @@ class DecisionResource {
 
 	@Operation(description = "Update decision on errand.")
 	@PatchMapping(path = "/{decisionId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation")
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchDecision(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -89,7 +89,7 @@ class DecisionResource {
 
 	@Operation(description = "Replace decision on errand.")
 	@PutMapping(path = "/{decisionId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation")
+	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putDecision(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
