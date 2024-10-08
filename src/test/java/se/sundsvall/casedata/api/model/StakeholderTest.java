@@ -87,8 +87,15 @@ class StakeholderTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(Stakeholder.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
+		assertThat(Stakeholder.builder().build()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version")
 			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
+				assertThat(bean.getExtraParameters()).isEmpty();
+				assertThat(bean.getVersion()).isZero();
+			});
+		assertThat(new Stakeholder()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version")
+			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getVersion()).isZero();
 			});

@@ -36,7 +36,7 @@ import lombok.ToString;
 public class Stakeholder {
 
 	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "The unique identifier of the stakeholder", example = "1")
-	private Long id;
+	private long id;
 
 	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "The version of the stakeholder", example = "1")
 	private int version;
@@ -61,7 +61,7 @@ public class Stakeholder {
 	@Schema(description = "The organization name of the stakeholder", example = "Sundsvalls testfabrik")
 	private String organizationName;
 
-	@Size(max = 255)
+	@Size(max = 13)
 	@Pattern(regexp = Constants.ORGNR_PATTERN_REGEX, message = Constants.ORGNR_PATTERN_MESSAGE)
 	@Schema(description = "Organization number with 10 or 12 digits.", example = "19901010-1234")
 	private String organizationNumber;

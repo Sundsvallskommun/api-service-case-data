@@ -66,14 +66,16 @@ class FacilityTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(Facility.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version", "mainFacility")
+		assertThat(Facility.builder().build()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version", "mainFacility")
 			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.isMainFacility()).isFalse();
 				assertThat(bean.getVersion()).isZero();
 			});
-		assertThat(new Facility()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version", "mainFacility")
+		assertThat(new Facility()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version", "mainFacility")
 			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.isMainFacility()).isFalse();
 				assertThat(bean.getVersion()).isZero();

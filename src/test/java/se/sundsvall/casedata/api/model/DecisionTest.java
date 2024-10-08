@@ -75,13 +75,15 @@ class DecisionTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(Decision.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
+		assertThat(Decision.builder().build()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version")
 			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getVersion()).isZero();
 			});
-		assertThat(new Decision()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
+		assertThat(new Decision()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version")
 			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getVersion()).isZero();
 			});

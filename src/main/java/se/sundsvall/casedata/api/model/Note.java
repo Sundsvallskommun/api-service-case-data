@@ -29,7 +29,7 @@ import lombok.ToString;
 public class Note {
 
 	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "The unique identifier of the note", example = "1")
-	private Long id;
+	private long id;
 
 	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "The version of the note", example = "1")
 	private int version;

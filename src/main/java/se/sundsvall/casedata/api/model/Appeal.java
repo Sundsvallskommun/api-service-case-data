@@ -27,7 +27,7 @@ import lombok.ToString;
 public class Appeal {
 
 	@Schema(description = "The id of the appeal", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
-	private Long id;
+	private long id;
 
 	@Schema(description = "The version of the appeal.", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
 	private int version;

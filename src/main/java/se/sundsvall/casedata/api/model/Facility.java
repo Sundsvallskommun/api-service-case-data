@@ -30,7 +30,7 @@ import lombok.ToString;
 public class Facility {
 
 	@Schema(description = "The id of the facility", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
-	private Long id;
+	private long id;
 
 	@Schema(description = "The version of the facility", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
 	private int version;

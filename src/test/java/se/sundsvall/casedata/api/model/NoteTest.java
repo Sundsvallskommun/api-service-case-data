@@ -69,13 +69,15 @@ class NoteTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(Note.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
+		assertThat(Note.builder().build()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version")
 			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
 				assertThat(bean.getVersion()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 			});
-		assertThat(new Note()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
+		assertThat(new Note()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version")
 			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
 				assertThat(bean.getVersion()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 			});

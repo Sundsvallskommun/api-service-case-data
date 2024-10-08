@@ -72,13 +72,15 @@ class AttachmentTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(Attachment.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
+		assertThat(Attachment.builder().build()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version")
 			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
 				assertThat(bean.getVersion()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 			});
-		assertThat(new Attachment()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
+		assertThat(new Attachment()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version")
 			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
 				assertThat(bean.getVersion()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 			});

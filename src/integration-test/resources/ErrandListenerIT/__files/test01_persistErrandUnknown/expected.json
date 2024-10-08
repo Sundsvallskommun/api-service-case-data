@@ -25,7 +25,7 @@
   "stakeholders": [
     {
       "id": 2,
-      "version": 0,
+      "version": 1,
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "type": "PERSON",
@@ -79,7 +79,7 @@
     },
     {
       "id": 3,
-      "version": 0,
+      "version": 1,
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "type": "ORGANIZATION",
@@ -152,7 +152,7 @@
   "decisions": [
     {
       "id": 1,
-      "version": 0,
+      "version": 1,
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "decisionType": "FINAL",
@@ -168,7 +168,7 @@
       ],
       "decidedBy": {
         "id": 1,
-        "version": 0,
+        "version": 1,
         "created": "${json-unit.any-string}",
         "updated": "${json-unit.any-string}",
         "type": "PERSON",
@@ -246,7 +246,7 @@
   "notes": [
     {
       "id": 1,
-      "version": 0,
+      "version": 1,
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "title": "Test note",
@@ -262,7 +262,7 @@
     },
     {
       "id": 2,
-      "version": 0,
+      "version": 1,
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "title": "sRGrJyRKNn",

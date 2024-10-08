@@ -141,14 +141,16 @@ class ErrandTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(Errand.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "priority", "version")
+		assertThat(Errand.builder().build()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "priority", "version")
 			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getPriority()).isEqualTo(Priority.MEDIUM);
 				assertThat(bean.getVersion()).isZero();
 			});
-		assertThat(new Errand()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "priority", "version")
+		assertThat(new Errand()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "priority", "version")
 			.satisfies(bean -> {
+				assertThat(bean.getId()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getPriority()).isEqualTo(Priority.MEDIUM);
 				assertThat(bean.getVersion()).isZero();
