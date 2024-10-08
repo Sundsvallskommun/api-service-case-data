@@ -19,7 +19,6 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 
@@ -32,7 +31,7 @@ class DecisionEntityTest {
 
 	@Test
 	void testBean() {
-		MatcherAssert.assertThat(Decision.class, allOf(
+		MatcherAssert.assertThat(DecisionEntity.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCodeExcluding("errand"),

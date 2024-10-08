@@ -18,8 +18,6 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.casedata.api.model.Facility;
-
 class FacilityEntityTest {
 
 	@BeforeAll
@@ -87,16 +85,15 @@ class FacilityEntityTest {
 		assertThat(facilityEntity.getExtraParameters()).isEqualTo(extraParameters);
 	}
 
-
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Facility.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version", "mainFacility")
+		assertThat(FacilityEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version", "mainFacility")
 			.satisfies(bean -> {
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.isMainFacility()).isFalse();
 				assertThat(bean.getVersion()).isZero();
 			});
-		assertThat(new Facility()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version", "mainFacility")
+		assertThat(new FacilityEntity()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version", "mainFacility")
 			.satisfies(bean -> {
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.isMainFacility()).isFalse();

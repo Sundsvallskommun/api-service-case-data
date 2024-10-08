@@ -19,7 +19,6 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 class StakeholderEntityTest {
@@ -112,12 +111,12 @@ class StakeholderEntityTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Stakeholder.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
+		assertThat(StakeholderEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
 			.satisfies(bean -> {
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getVersion()).isZero();
 			});
-		assertThat(new Stakeholder()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
+		assertThat(new StakeholderEntity()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
 			.satisfies(bean -> {
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getVersion()).isZero();

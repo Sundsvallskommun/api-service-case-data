@@ -32,6 +32,7 @@ class MessageEntityTest {
 
 	@Test
 	void testBuilderMethods() {
+		// Arrange
 		final var attachments = List.of(MessageAttachmentEntity.builder().build());
 		final var direction = Direction.OUTBOUND;
 		final var email = "email";
@@ -57,6 +58,7 @@ class MessageEntityTest {
 			.withValues(List.of("<messageID@test.com>"))
 			.build());
 
+		// Act
 		final var bean = MessageEntity.builder()
 			.withAttachments(attachments)
 			.withDirection(direction)
@@ -81,6 +83,7 @@ class MessageEntityTest {
 			.withHeaders(headers)
 			.build();
 
+		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(bean.getAttachments()).isEqualTo(attachments);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);

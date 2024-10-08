@@ -48,8 +48,10 @@ class MessageAttachmentDataEntityTest {
 
 	@Test
 	void noDirtOnEmptyBean() {
-		assertThat(MessageAttachmentEntity.builder().build()).hasAllNullFieldsOrProperties();
-		assertThat(new MessageAttachmentEntity()).hasAllNullFieldsOrProperties();
+		assertThat(MessageAttachmentDataEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("id")
+			.satisfies(bean -> assertThat(bean.getId()).isZero());
+		assertThat(new MessageAttachmentDataEntity()).hasAllNullFieldsOrPropertiesExcept("id")
+			.satisfies(bean -> assertThat(bean.getId()).isZero());
 	}
 
 }

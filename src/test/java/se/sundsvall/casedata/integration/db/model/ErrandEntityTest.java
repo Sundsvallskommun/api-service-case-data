@@ -20,7 +20,6 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.casedata.api.model.Errand;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
@@ -34,7 +33,7 @@ class ErrandEntityTest {
 
 	@Test
 	void testBean() {
-		MatcherAssert.assertThat(Errand.class, allOf(
+		MatcherAssert.assertThat(ErrandEntity.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
