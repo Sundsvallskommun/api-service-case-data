@@ -6,14 +6,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createErrand;
-import static se.sundsvall.casedata.TestUtil.createErrandDTO;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
-import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
+import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
 import static se.sundsvall.casedata.TestUtil.getRandomStakeholderRole;
 import static se.sundsvall.casedata.TestUtil.getRandomStakeholderType;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
@@ -21,9 +22,9 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.D
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.OPERATOR;
 import static se.sundsvall.casedata.integration.db.model.enums.StakeholderType.ORGANIZATION;
 import static se.sundsvall.casedata.integration.db.model.enums.StakeholderType.PERSON;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholder;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,12 +41,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 
-import se.sundsvall.casedata.api.model.StakeholderDTO;
+import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.StakeholderRepository;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.Stakeholder;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
@@ -53,7 +54,7 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 class StakeholderServiceTest {
 
 	@Mock
-	private StakeholderRepository stakeholderRepository;
+	private StakeholderRepository stakeholderRepositoryMock;
 
 	@InjectMocks
 	private StakeholderService stakeholderService;
@@ -65,97 +66,133 @@ class StakeholderServiceTest {
 	private ProcessService processServiceMock;
 
 	@Captor
-	private ArgumentCaptor<Errand> errandCaptor;
+	private ArgumentCaptor<ErrandEntity> errandCaptor;
 
 	@Test
-	void findAllStakeholdersByMunicipalityId() {
-		final List<Stakeholder> stakeholders = List.of(createStakeholder(), createStakeholder());
-		when(stakeholderRepository.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE)).thenReturn(stakeholders);
+	void findAllStakeholdersOnErrand() {
+		// Arrange
+		final List<StakeholderEntity> stakeholders = List.of(createStakeholderEntity(), createStakeholderEntity());
+		final var errand = createErrandEntity();
+		errand.setStakeholders(stakeholders);
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
-		final var result = stakeholderService.findAllStakeholdersByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
+		// Act
+		final var result = stakeholderService.findAllStakeholdersOnErrand(1L, MUNICIPALITY_ID, NAMESPACE);
 
+		// Assert
 		assertThat(result).hasSize(2);
 
-		verify(stakeholderRepository).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(stakeholderRepository);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		verifyNoMoreInteractions(errandRepositoryMock);
+		verifyNoInteractions(stakeholderRepositoryMock);
 	}
 
 	@Test
-	void findAllStakeholdersByMunicipalityId404() {
-		when(stakeholderRepository.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of());
+	void findAllStakeholdersOnErrandNotFound() {
 
-		assertThatThrownBy(() -> stakeholderService.findAllStakeholdersByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE))
-			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND);
-
-		verify(stakeholderRepository).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(stakeholderRepository);
+		// Arrange
+		final var errand = createErrandEntity();
+		errand.setStakeholders(null);
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
+		// Act
+		var result = stakeholderService.findAllStakeholdersOnErrand(1L, MUNICIPALITY_ID, NAMESPACE);
+		// Assert
+		assertThat(result).isEmpty();
+		verifyNoMoreInteractions(errandRepositoryMock);
+		verifyNoInteractions(stakeholderRepositoryMock);
 	}
 
 	@Test
 	void findStakeholdersByRoleAndMunicipalityId() {
-		final List<Stakeholder> stakeholders = Stream.of(
-				createStakeholderDTO(ORGANIZATION, List.of(DRIVER.name())),
-				createStakeholderDTO(PERSON, List.of(DRIVER.name(), OPERATOR.name())))
-			.map(stakeholderDTO -> toStakeholder(stakeholderDTO, MUNICIPALITY_ID, NAMESPACE))
+		// Arrange
+		final var stakeholders = Stream.of(
+				createStakeholder(ORGANIZATION, List.of(DRIVER.name())),
+				createStakeholder(PERSON, List.of(DRIVER.name(), OPERATOR.name())))
+			.map(stakeholderDTO -> toStakeholderEntity(stakeholderDTO, MUNICIPALITY_ID, NAMESPACE))
 			.toList();
-		when(stakeholderRepository.findByRolesAndMunicipalityIdAndNamespace(DRIVER.name(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(stakeholders);
+		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
+		errand.setStakeholders(stakeholders);
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
-		final var result = stakeholderService.findStakeholdersByRoleAndMunicipalityIdAndNamespace(DRIVER.name(), MUNICIPALITY_ID, NAMESPACE);
+		// Act
+		final var result = stakeholderService.findAllStakeholdersOnErrandByRole(1L, DRIVER.name(), MUNICIPALITY_ID, NAMESPACE);
 
+		// Assert
 		assertThat(result).hasSize(2);
 
-		verify(stakeholderRepository).findByRolesAndMunicipalityIdAndNamespace(DRIVER.name(), MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(stakeholderRepository);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		verifyNoMoreInteractions(stakeholderRepositoryMock);
 	}
 
 	@Test
 	void findStakeholdersByRoleAndMunicipalityId404() {
-		when(stakeholderRepository.findByRolesAndMunicipalityIdAndNamespace(DRIVER.name(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of());
+		// Arrange
+		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
+		final var driverName = DRIVER.name();
+		errand.setStakeholders(null);
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
-		var driverName = DRIVER.name();
-		assertThatThrownBy(() -> stakeholderService.findStakeholdersByRoleAndMunicipalityIdAndNamespace(driverName, MUNICIPALITY_ID, NAMESPACE))
-			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND);
+		// Act
+		var result = stakeholderService.findAllStakeholdersOnErrandByRole(1L, driverName, MUNICIPALITY_ID, NAMESPACE);
 
-		verify(stakeholderRepository).findByRolesAndMunicipalityIdAndNamespace(DRIVER.name(), MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(stakeholderRepository);
+		// Assert
+		assertThat(result).isEmpty();
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		verifyNoMoreInteractions(stakeholderRepositoryMock);
 	}
 
 	@Test
 	void testFindByIdAndMunicipalityId() {
-		final var stakeholder = toStakeholder(createStakeholderDTO(PERSON, List.of(StakeholderRole.APPLICANT.name())), MUNICIPALITY_ID, NAMESPACE);
-		when(stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(stakeholder));
+		// Arrange
+		final var stakeholderId = 5L;
+		final var errandId = 1L;
+		final var stakeholder = toStakeholderEntity(createStakeholder(PERSON, List.of(StakeholderRole.APPLICANT.name())), MUNICIPALITY_ID, NAMESPACE);
+		stakeholder.setId(stakeholderId);
+		final var errand = createErrandEntity();
+		errand.setStakeholders(List.of(stakeholder));
+		errand.setId(errandId);
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
-		final var result = stakeholderService.findByIdAndMunicipalityIdAndNamespace(5L, MUNICIPALITY_ID, NAMESPACE);
+		// Act
+		final var result = stakeholderService.findStakeholderOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE);
 
-		assertThat(result).isEqualTo(toStakeholderDto(stakeholder));
+		// Assert
+		assertThat(result).isEqualTo(toStakeholder(stakeholder));
 
-		verify(stakeholderRepository).findByIdAndMunicipalityIdAndNamespace(5L, MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(stakeholderRepository);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoMoreInteractions(errandRepositoryMock);
+		verifyNoInteractions(stakeholderRepositoryMock);
 	}
 
 	@Test
 	void testFindByIdAndMunicipalityIdNotFound() {
-		when(stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.empty());
+		// Arrange
+		final var errand = createErrandEntity();
+		errand.setStakeholders(null);
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
-		assertThatThrownBy(() -> stakeholderService.findByIdAndMunicipalityIdAndNamespace(3L, MUNICIPALITY_ID, NAMESPACE))
+		// Act & Assert
+		assertThatThrownBy(() -> stakeholderService.findStakeholderOnErrand(1L, 3L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND);
 
-		verify(stakeholderRepository).findByIdAndMunicipalityIdAndNamespace(3L, MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(stakeholderRepository);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoMoreInteractions(stakeholderRepositoryMock);
 	}
 
 	@Test
-	void testPut() {
-		final var stakeholder = createStakeholder();
-		final var stakeholderDto = createStakeholderDTO(PERSON, List.of(StakeholderRole.APPLICANT.name()));
+	void testReplaceStakeholderOnErrand() {
+		// Arrange
+		final var stakeholder = createStakeholderEntity();
+		final var stakeholderDto = createStakeholder(PERSON, List.of(StakeholderRole.APPLICANT.name()));
+		final var errand = createErrandEntity();
+		errand.setStakeholders(List.of(stakeholder));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
-		when(stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(stakeholder));
+		// Act
+		stakeholderService.replaceStakeholderOnErrand(1L, stakeholder.getId(), MUNICIPALITY_ID, NAMESPACE, stakeholderDto);
 
-		stakeholderService.put(stakeholder.getId(), MUNICIPALITY_ID, NAMESPACE, stakeholderDto);
-
+		// Assert
 		assertThat(stakeholder).satisfies(s -> {
 			assertThat(s.getExtraParameters()).isEqualTo(stakeholderDto.getExtraParameters());
 			assertThat(s.getType()).isEqualTo(stakeholderDto.getType());
@@ -167,41 +204,52 @@ class StakeholderServiceTest {
 			assertThat(s.getAuthorizedSignatory()).isEqualTo(stakeholderDto.getAuthorizedSignatory());
 			assertThat(s.getAdAccount()).isEqualTo(stakeholderDto.getAdAccount());
 			assertThat(s.getRoles()).isEqualTo(stakeholderDto.getRoles());
-			assertThat(s.getAddresses()).isEqualTo(stakeholderDto.getAddresses().stream().map(EntityMapper::toAddress).toList());
-			assertThat(s.getContactInformation()).isEqualTo(stakeholderDto.getContactInformation().stream().map(EntityMapper::toContactInformation).toList());
+			assertThat(s.getAddresses()).isEqualTo(stakeholderDto.getAddresses().stream().map(EntityMapper::toAddressEntity).toList());
+			assertThat(s.getContactInformation()).isEqualTo(stakeholderDto.getContactInformation().stream().map(EntityMapper::toContactInformationEntity).toList());
 		});
 
-		verify(stakeholderRepository).findByIdAndMunicipalityIdAndNamespace(stakeholder.getId(), MUNICIPALITY_ID, NAMESPACE);
-		verify(stakeholderRepository).save(stakeholder);
-		verifyNoMoreInteractions(stakeholderRepository);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
+		verify(stakeholderRepositoryMock).save(stakeholder);
+		verifyNoMoreInteractions(stakeholderRepositoryMock);
 	}
 
 	@Test
-	void testPatch() {
-		final StakeholderDTO stakeholderDTO = new StakeholderDTO();
-		final Stakeholder entity = new Stakeholder();
-		when(stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(entity));
+	void testUpdateStakeholderOnErrand() {
 
-		stakeholderService.patch(1L, MUNICIPALITY_ID, NAMESPACE, stakeholderDTO);
+		// Arrange
+		final var stakeholderId = 1L;
+		final var errandId = 1L;
+		final var stakeholder = Stakeholder.builder().withId(stakeholderId).build();
+		final var entity = new StakeholderEntity();
+		entity.setId(stakeholderId);
+		final var errand = createErrandEntity();
+		errand.setStakeholders(List.of(entity));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
-		verify(stakeholderRepository).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
-		verify(stakeholderRepository).save(entity);
-		verifyNoMoreInteractions(stakeholderRepository);
+		// Act
+		stakeholderService.updateStakeholderOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
+
+		// Assert
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(stakeholderRepositoryMock).save(entity);
+		verifyNoMoreInteractions(stakeholderRepositoryMock, errandRepositoryMock);
 	}
 
 	@Test
 	void replaceStakeholderOnErrandTest() {
 
 		// Arrange
-		final var errand = mockErrandFindByIdAndMunicipalityIdAndNamespace();
-		final var stakeholders = List.of(createStakeholderDTO(getRandomStakeholderType(), List.of(getRandomStakeholderRole())));
+		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
+		final var stakeholders = List.of(createStakeholder(getRandomStakeholderType(), List.of(getRandomStakeholderRole())));
+		final var stakeholderEntities = stakeholders.stream().map(s -> toStakeholderEntity(s, MUNICIPALITY_ID, NAMESPACE)).toList();
+		errand.getStakeholders().addAll(stakeholderEntities);
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
 		stakeholderService.replaceStakeholdersOnErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, stakeholders);
 
 		// Assert
-
 		verify(errandRepositoryMock).save(errandCaptor.capture());
 		assertThat(errandCaptor.getValue().getStakeholders()).isNotEmpty().hasSize(1);
 		assertThat(errandCaptor.getValue().getStakeholders().getFirst())
@@ -212,12 +260,11 @@ class StakeholderServiceTest {
 		verify(processServiceMock).updateProcess(errand);
 	}
 
-
 	@Test
 	void deleteStakeholderOnErrand() {
 
 		// Arrange
-		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID, NAMESPACE);
+		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		errand.setCaseType(PARKING_PERMIT_RENEWAL.name());
 		// Set ID on every stakeholder
 		errand.getStakeholders().forEach(s -> s.setId(new Random().nextLong(1, 1000)));
@@ -237,13 +284,12 @@ class StakeholderServiceTest {
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
 	}
 
-
 	@Test
 	void addStakeholderToErrandTest() {
 
 		// Arrange
-		final var errand = createErrand();
-		final var newStakeholder = createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name()));
+		final var errand = createErrandEntity();
+		final var newStakeholder = createStakeholder(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name()));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -257,14 +303,6 @@ class StakeholderServiceTest {
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
-	}
-
-
-	private Errand mockErrandFindByIdAndMunicipalityIdAndNamespace() {
-		final var errand = toErrand(createErrandDTO(), MUNICIPALITY_ID, NAMESPACE);
-		errand.setId(new Random().nextLong(1, 1000));
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
-		return errand;
 	}
 
 }

@@ -9,8 +9,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createErrand;
-import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.TestUtil.createStakeholder;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +23,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.test.context.ActiveProfiles;
 
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.service.StakeholderService;
 
@@ -39,8 +39,8 @@ class OptimisticLockingTest {
 
 	@Test
 	void patchErrandWithStakeholderOptimisticLockingFailureException() {
-		final var errand = createErrand();
-		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()));
+		final var errand = createErrandEntity();
+		final var stakeholderDto = createStakeholder(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		doThrow(OptimisticLockingFailureException.class).when(errandRepositoryMock).save(any());
 
@@ -48,13 +48,13 @@ class OptimisticLockingTest {
 			.isInstanceOf(OptimisticLockingFailureException.class);
 
 		//5 invocations because @Retry.
-		verify(errandRepositoryMock, times(5)).save(any(Errand.class));
+		verify(errandRepositoryMock, times(5)).save(any(ErrandEntity.class));
 	}
 
 	@Test
 	void patchErrandWithStakeholderOtherException() {
-		final var errand = createErrand();
-		final var stakeholderDto = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()));
+		final var errand = createErrandEntity();
+		final var stakeholderDto = createStakeholder(StakeholderType.ORGANIZATION, List.of(StakeholderRole.DRIVER.name()));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		doThrow(RuntimeException.class).when(errandRepositoryMock).save(any());
 
@@ -62,7 +62,7 @@ class OptimisticLockingTest {
 			.isInstanceOf(RuntimeException.class);
 
 		//Only 1 invocation, not retrying because it's not an OptimisticLockingFailureException.
-		verify(errandRepositoryMock).save(any(Errand.class));
+		verify(errandRepositoryMock).save(any(ErrandEntity.class));
 	}
 
 }

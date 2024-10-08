@@ -10,7 +10,7 @@
     },
     "globalId": {
       "cdoId": 5,
-      "entity": "se.sundsvall.casedata.integration.db.model.Note"
+      "entity": "se.sundsvall.casedata.integration.db.model.NoteEntity"
     }
   },
   {
@@ -24,14 +24,14 @@
     },
     "globalId": {
       "cdoId": 5,
-      "entity": "se.sundsvall.casedata.integration.db.model.Note"
+      "entity": "se.sundsvall.casedata.integration.db.model.NoteEntity"
     },
     "left": null,
     "property": "errand",
     "propertyChangeType": "PROPERTY_VALUE_CHANGED",
     "right": {
       "cdoId": 416,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     }
   },
   {
@@ -45,7 +45,7 @@
     },
     "globalId": {
       "cdoId": 5,
-      "entity": "se.sundsvall.casedata.integration.db.model.Note"
+      "entity": "se.sundsvall.casedata.integration.db.model.NoteEntity"
     },
     "left": null,
     "property": "municipalityId",
@@ -63,7 +63,7 @@
     },
     "globalId": {
       "cdoId": 5,
-      "entity": "se.sundsvall.casedata.integration.db.model.Note"
+      "entity": "se.sundsvall.casedata.integration.db.model.NoteEntity"
     },
     "left": null,
     "property": "title",
@@ -81,7 +81,7 @@
     },
     "globalId": {
       "cdoId": 5,
-      "entity": "se.sundsvall.casedata.integration.db.model.Note"
+      "entity": "se.sundsvall.casedata.integration.db.model.NoteEntity"
     },
     "left": null,
     "property": "text",

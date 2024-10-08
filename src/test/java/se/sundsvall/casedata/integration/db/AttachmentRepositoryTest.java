@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
-import se.sundsvall.casedata.integration.db.model.Attachment;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 
 /**
  * AttachmentRepository tests.
@@ -58,7 +58,7 @@ class AttachmentRepositoryTest {
 		// Assert
 		assertThat(result)
 			.isNotNull()
-			.extracting(Attachment::getId, Attachment::getErrandNumber, Attachment::getCategory, Attachment::getExtension, Attachment::getName, Attachment::getNote)
+			.extracting(AttachmentEntity::getId, AttachmentEntity::getErrandNumber, AttachmentEntity::getCategory, AttachmentEntity::getExtension, AttachmentEntity::getName, AttachmentEntity::getNote)
 			.containsExactly(
 				tuple(2L, "ERRAND-NUMBER-2", "PASSPORT_PHOTO", ".pdf", "test2.pdf", "NOTE-2"),
 				tuple(3L, "ERRAND-NUMBER-2", "POLICE_REPORT", ".pdf", "test3.pdf", "NOTE-3"),
@@ -141,7 +141,7 @@ class AttachmentRepositoryTest {
 		final var errandNumber = "PRH-2022-000029";
 		final var municipalityId = "2281";
 		final var extraParameters = Map.of("key", "value");
-		final var entity = Attachment.builder()
+		final var entity = AttachmentEntity.builder()
 			.withVersion(version)
 			.withCategory(category)
 			.withName(name)

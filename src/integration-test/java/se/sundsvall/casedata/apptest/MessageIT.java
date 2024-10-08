@@ -24,8 +24,8 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 	files = "classpath:/MessageIT/",
 	classes = Application.class)
 @Sql({
-	"/db/script/truncate.sql",
-	"/db/script/messageIT-testdata.sql"
+	"/db/scripts/truncate.sql",
+	"/db/scripts/messageIT-testdata.sql"
 })
 class MessageIT extends AbstractAppTest {
 
@@ -34,6 +34,9 @@ class MessageIT extends AbstractAppTest {
 	private static final String ERRAND_NUMBER = "ERRAND-NUMBER-1";
 
 	private static final Long ERRAND_ID = 1L;
+
+
+	private static final String ERRAND_NUMBER_PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/messages/" + ERRAND_NUMBER;
 
 	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + ERRAND_ID + "/messages";
 
@@ -45,7 +48,7 @@ class MessageIT extends AbstractAppTest {
 	void test01_getMessageOnErrand() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(PATH + "/" + ERRAND_NUMBER)
+			.withServicePath(ERRAND_NUMBER_PATH)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -63,7 +66,7 @@ class MessageIT extends AbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(PATH + "/" + ERRAND_NUMBER)
+			.withServicePath(ERRAND_NUMBER_PATH)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();

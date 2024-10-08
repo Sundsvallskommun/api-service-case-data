@@ -15,8 +15,8 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/ParkingPermitIT", classes = Application.class)
 @Sql({
-	"/db/script/truncate.sql",
-	"/db/script/parkingpermitIT-testdata.sql"
+	"/db/scripts/truncate.sql",
+	"/db/scripts/parkingpermitIT-testdata.sql"
 })
 class ParkingPermitIT extends AbstractAppTest {
 

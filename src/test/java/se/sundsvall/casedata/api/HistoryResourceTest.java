@@ -33,12 +33,13 @@ class HistoryResourceTest {
 
 	@Test
 	void getAttachmentHistory() {
+		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
 		final var history = "attachment history";
+		when(historyServiceMock.findAttachmentHistoryOnErrand(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
 
-		when(historyServiceMock.findAttachmentHistory(attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
-
+		// Act
 		var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/attachments/{attachmentId}/history").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
 			.exchange()
@@ -48,19 +49,21 @@ class HistoryResourceTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(response).isEqualTo(history);
-		verify(historyServiceMock).findAttachmentHistory(attachmentId, MUNICIPALITY_ID, NAMESPACE);
+		verify(historyServiceMock).findAttachmentHistoryOnErrand(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
 	}
 
 	@Test
 	void getDecisionHistory() {
+		// Arrange
 		final var errandId = 123L;
 		final var decisionId = 456L;
 		final var history = "decision history";
+		when(historyServiceMock.findDecisionHistoryOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
 
-		when(historyServiceMock.findDecisionHistory(decisionId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
-
+		// Act
 		var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/decisions/{decisionId}/history").build(MUNICIPALITY_ID, NAMESPACE, errandId, decisionId))
 			.exchange()
@@ -70,18 +73,20 @@ class HistoryResourceTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(response).isEqualTo(history);
-		verify(historyServiceMock).findDecisionHistory(decisionId, MUNICIPALITY_ID, NAMESPACE);
+		verify(historyServiceMock).findDecisionHistoryOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
 	}
 
 	@Test
 	void getErrandHistory() {
+		// Arrange
 		final var errandId = 123L;
 		final var history = "errand history";
-
 		when(historyServiceMock.findErrandHistory(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
 
+		// Act
 		var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/history").build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.exchange()
@@ -91,6 +96,7 @@ class HistoryResourceTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(response).isEqualTo(history);
 		verify(historyServiceMock).findErrandHistory(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
@@ -98,12 +104,13 @@ class HistoryResourceTest {
 
 	@Test
 	void getFacilityHistory() {
+		// Arrange
 		final var errandId = 123L;
 		final var facilityId = 456L;
 		final var history = "facility history";
+		when(historyServiceMock.findFacilityHistoryOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
 
-		when(historyServiceMock.findFacilityHistory(facilityId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
-
+		// Act
 		var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/facilities/{facilityId}/history").build(MUNICIPALITY_ID, NAMESPACE, errandId, facilityId))
 			.exchange()
@@ -113,19 +120,21 @@ class HistoryResourceTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(response).isEqualTo(history);
-		verify(historyServiceMock).findFacilityHistory(facilityId, MUNICIPALITY_ID, NAMESPACE);
+		verify(historyServiceMock).findFacilityHistoryOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
 	}
 
 	@Test
 	void getNoteHistory() {
+		// Arrange
 		final var errandId = 123L;
 		final var noteId = 456L;
 		final var history = "note history";
+		when(historyServiceMock.findNoteHistoryOnErrand(errandId, noteId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
 
-		when(historyServiceMock.findNoteHistory(noteId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
-
+		// Act
 		var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/notes/{noteId}/history").build(MUNICIPALITY_ID, NAMESPACE, errandId, noteId))
 			.exchange()
@@ -135,19 +144,21 @@ class HistoryResourceTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(response).isEqualTo(history);
-		verify(historyServiceMock).findNoteHistory(noteId, MUNICIPALITY_ID, NAMESPACE);
+		verify(historyServiceMock).findNoteHistoryOnErrand(errandId, noteId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
 	}
 
 	@Test
 	void getStakeholderHistory() {
+		// Arrange
 		final var errandId = 123L;
 		final var stakeholderId = 456L;
 		final var history = "stakeholder history";
+		when(historyServiceMock.findStakeholderHistoryOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
 
-		when(historyServiceMock.findStakeholderHistory(stakeholderId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
-
+		// Act
 		var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/stakeholders/{stakeholderId}/history").build(MUNICIPALITY_ID, NAMESPACE, errandId, stakeholderId))
 			.exchange()
@@ -157,8 +168,9 @@ class HistoryResourceTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(response).isEqualTo(history);
-		verify(historyServiceMock).findStakeholderHistory(stakeholderId, MUNICIPALITY_ID, NAMESPACE);
+		verify(historyServiceMock).findStakeholderHistoryOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
 	}
 

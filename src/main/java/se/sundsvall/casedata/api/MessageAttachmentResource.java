@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.MessageAttachmentDTO;
+import se.sundsvall.casedata.api.model.MessageAttachment;
 import se.sundsvall.casedata.service.MessageService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -51,13 +51,13 @@ class MessageAttachmentResource {
 	@Operation(description = "Get a messageAttachment. This resource has been marked as deprecated. Use /{attchmentID}/streamed instead.")
 	@GetMapping(path = "/{attachmentId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<MessageAttachmentDTO> getMessageAttachment(
+	ResponseEntity<MessageAttachment> getMessageAttachment(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final String attachmentId) {
 
-		return ok(service.getMessageAttachment(attachmentId, municipalityId, namespace));
+		return ok(service.getMessageAttachment(errandId, attachmentId, municipalityId, namespace));
 	}
 
 	@Operation(summary = "Get a streamed messageAttachment.", description = "Fetches the message attachment that matches the provided id in a streamed manner")
@@ -73,7 +73,7 @@ class MessageAttachmentResource {
 		@PathVariable(name = "attachmentId") final String attachmentId,
 		final HttpServletResponse response) {
 
-		service.getMessageAttachmentStreamed(attachmentId, municipalityId, namespace, response);
+		service.getMessageAttachmentStreamed(errandId, attachmentId, municipalityId, namespace, response);
 	}
 
 }

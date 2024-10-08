@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.MessageAttachmentDTO;
+import se.sundsvall.casedata.api.model.MessageAttachment;
 import se.sundsvall.casedata.service.MessageService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -39,8 +39,8 @@ class MessageAttachmentResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = "attachment123";
-		final var messageAttachmentDTO = new MessageAttachmentDTO();
-		when(messageServiceMock.getMessageAttachment(attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messageAttachmentDTO);
+		final var messageAttachment = new MessageAttachment();
+		when(messageServiceMock.getMessageAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messageAttachment);
 
 		// Act
 		var response = webTestClient.get()
@@ -48,13 +48,13 @@ class MessageAttachmentResourceTest {
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
-			.expectBody(MessageAttachmentDTO.class)
+			.expectBody(MessageAttachment.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(messageServiceMock).getMessageAttachment(attachmentId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageServiceMock).getMessageAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 
@@ -71,7 +71,7 @@ class MessageAttachmentResourceTest {
 			.expectStatus().isOk();
 
 		// Assert
-		verify(messageServiceMock).getMessageAttachmentStreamed(eq(attachmentId), eq(MUNICIPALITY_ID), eq(NAMESPACE), any());
+		verify(messageServiceMock).getMessageAttachmentStreamed(eq(errandId), eq(attachmentId), eq(MUNICIPALITY_ID), eq(NAMESPACE), any());
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 

@@ -36,10 +36,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.ErrandDTO;
-import se.sundsvall.casedata.api.model.ExtraParameterDTO;
-import se.sundsvall.casedata.api.model.PatchErrandDTO;
-import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.ExtraParameter;
+import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.ErrandService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -73,9 +73,9 @@ class ErrandResource {
 	ResponseEntity<Void> postErrands(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@RequestBody @Valid final ErrandDTO errandDTO) {
+		@RequestBody @Valid final Errand errand) {
 
-		final ErrandDTO result = errandService.createErrand(errandDTO, municipalityId, namespace);
+		final Errand result = errandService.createErrand(errand, municipalityId, namespace);
 		return created(
 			fromPath("/{municipalityId}/{namespace}/errands/{id}")
 				.buildAndExpand(municipalityId, namespace, result.getId())
@@ -87,7 +87,7 @@ class ErrandResource {
 	@Operation(description = "Get errand by ID.")
 	@GetMapping(path = "/{errandId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<ErrandDTO> getErrandById(
+	ResponseEntity<Errand> getErrandById(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId) {
@@ -102,9 +102,9 @@ class ErrandResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final PatchErrandDTO patchErrandDTO) {
+		@RequestBody @Valid final PatchErrand patchErrand) {
 
-		errandService.updateErrand(errandId, municipalityId, namespace, patchErrandDTO);
+		errandService.updateErrand(errandId, municipalityId, namespace, patchErrand);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -120,23 +120,25 @@ class ErrandResource {
 		@PathVariable(name = "errandId") final Long errandId) {
 
 		errandService.deleteByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
-		return noContent().build();
+		return noContent()
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
 	}
 
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@Operation(description = "Get errands with or without query. The query is very flexible and allows you as a client to control a lot yourself.")
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Page<ErrandDTO>> getErrands(
+	ResponseEntity<Page<Errand>> getErrands(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@Parameter(
 			description = "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)",
 			example = "caseType:'PARKING_PERMIT' and stakeholders.firstName~'*mar*' and applicationReceived>'2022-09-08T12:18:03.747+02:00'",
-			schema = @Schema(implementation = String.class)) @Filter final Specification<Errand> filter,
-		@Parameter(description = "extraParameters on errand. Use like this: extraParameters[artefact.permit.number]=12345&extraParameters[disability.aid]=Rullstol") final Optional<ExtraParameterDTO> extraParameterDTO,
+			schema = @Schema(implementation = String.class)) @Filter final Specification<ErrandEntity> filter,
+		@Parameter(description = "extraParameters on errand. Use like this: extraParameters[artefact.permit.number]=12345&extraParameters[disability.aid]=Rullstol") final Optional<ExtraParameter> extraParameter,
 		@ParameterObject final Pageable pageable) {
 
-		return ok(errandService.findAll(filter, municipalityId, namespace, extraParameterDTO.orElse(new ExtraParameterDTO()).getExtraParameters(), pageable));
+		return ok(errandService.findAll(filter, municipalityId, namespace, extraParameter.orElse(new ExtraParameter()).getExtraParameters(), pageable));
 	}
 
 }

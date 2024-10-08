@@ -29,8 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.Note;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 /**
@@ -65,7 +65,7 @@ class ErrandRepositoryTest {
 		// Assert
 		assertThat(result)
 			.isNotNull()
-			.extracting(Errand::getId, Errand::getErrandNumber, Errand::getCaseTitleAddition, Errand::getCaseType)
+			.extracting(ErrandEntity::getId, ErrandEntity::getErrandNumber, ErrandEntity::getCaseTitleAddition, ErrandEntity::getCaseType)
 			.containsExactly(
 				tuple(3L, "PRH-2022-000029", "Nytt parkeringstillstånd", "PARKING_PERMIT"),
 				tuple(2L, "ERRAND-NUMBER-2", "Nytt parkeringstillstånd", "PARKING_PERMIT"));
@@ -97,7 +97,7 @@ class ErrandRepositoryTest {
 		// Assert
 		assertThat(result)
 			.isNotNull()
-			.extracting(Errand::getId, Errand::getErrandNumber, Errand::getCaseTitleAddition, Errand::getCaseType)
+			.extracting(ErrandEntity::getId, ErrandEntity::getErrandNumber, ErrandEntity::getCaseTitleAddition, ErrandEntity::getCaseType)
 			.containsExactly(tuple(3L, "PRH-2022-000029", "Nytt parkeringstillstånd", "PARKING_PERMIT"));
 	}
 
@@ -125,7 +125,7 @@ class ErrandRepositoryTest {
 
 		// Assert
 		assertThat(result)
-			.extracting(Errand::getId, Errand::getErrandNumber, Errand::getCaseTitleAddition, Errand::getCaseType)
+			.extracting(ErrandEntity::getId, ErrandEntity::getErrandNumber, ErrandEntity::getCaseTitleAddition, ErrandEntity::getCaseType)
 			.containsExactly(2L, "ERRAND-NUMBER-2", "Nytt parkeringstillstånd", "PARKING_PERMIT");
 	}
 
@@ -153,7 +153,7 @@ class ErrandRepositoryTest {
 
 		// Assert
 		assertThat(result)
-			.extracting(Errand::getId, Errand::getErrandNumber, Errand::getCaseTitleAddition, Errand::getCaseType)
+			.extracting(ErrandEntity::getId, ErrandEntity::getErrandNumber, ErrandEntity::getCaseTitleAddition, ErrandEntity::getCaseType)
 			.containsExactly(2L, "ERRAND-NUMBER-2", "Nytt parkeringstillstånd", "PARKING_PERMIT");
 	}
 
@@ -196,13 +196,13 @@ class ErrandRepositoryTest {
 		final var noteText = "noteText";
 		final var noteType = INTERNAL;
 
-		final var entity = Errand.builder()
+		final var entity = ErrandEntity.builder()
 			.withCaseTitleAddition(caseTitleAddition)
 			.withCaseType(caseType)
 			.withCreatedByClient(createdBy)
 			.withDescription(description)
 			.withErrandNumber(errandNumber)
-			.withNotes(List.of(Note.builder().withText(noteText).withNoteType(noteType).build()))
+			.withNotes(List.of(NoteEntity.builder().withText(noteText).withNoteType(noteType).build()))
 			.build();
 
 		// Act
@@ -215,7 +215,7 @@ class ErrandRepositoryTest {
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
 		assertThat(result.getErrandNumber()).startsWith("PRH");
 		assertThat(result.getNotes())
-			.extracting(Note::getText, Note::getNoteType)
+			.extracting(NoteEntity::getText, NoteEntity::getNoteType)
 			.containsExactly(tuple(noteText, noteType));
 		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 	}

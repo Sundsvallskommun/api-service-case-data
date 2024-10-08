@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.FacilityDTO;
+import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.service.FacilityService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -64,9 +64,9 @@ class FacilityResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final FacilityDTO facilityDTO) {
+		@RequestBody @Valid final Facility facility) {
 
-		final FacilityDTO result = facilityService.createFacility(errandId, municipalityId, namespace, facilityDTO);
+		final Facility result = facilityService.createFacilityOnErrand(errandId, municipalityId, namespace, facility);
 		return created(
 			fromPath("/{municipalityId}/{namespace}/errands/{id}/facilities/{facilityId}")
 				.buildAndExpand(municipalityId, namespace, errandId, result.getId())
@@ -78,7 +78,7 @@ class FacilityResource {
 	@Operation(description = "Get all facilities on errand")
 	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<List<FacilityDTO>> getFacilities(
+	ResponseEntity<List<Facility>> getFacilities(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId) {
@@ -89,7 +89,7 @@ class FacilityResource {
 	@Operation(description = "Get a specific facility on errand")
 	@GetMapping(path = "/{facilityId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<FacilityDTO> getFacility(
+	ResponseEntity<Facility> getFacility(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
@@ -106,9 +106,9 @@ class FacilityResource {
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "facilityId") final Long facilityId,
-		@RequestBody @Valid final FacilityDTO facilityDTO) {
+		@RequestBody @Valid final Facility facility) {
 
-		facilityService.updateFacilityOnErrand(errandId, municipalityId, namespace, facilityId, facilityDTO);
+		facilityService.updateFacilityOnErrand(errandId, municipalityId, namespace, facilityId, facility);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -121,9 +121,9 @@ class FacilityResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final List<FacilityDTO> facilityDTOs) {
+		@RequestBody @Valid final List<Facility> facilities) {
 
-		facilityService.replaceFacilitiesOnErrand(errandId, municipalityId, namespace, facilityDTOs);
+		facilityService.replaceFacilitiesOnErrand(errandId, municipalityId, namespace, facilities);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -139,7 +139,9 @@ class FacilityResource {
 		@PathVariable(name = "facilityId") final Long facilityId) {
 
 		facilityService.deleteFacilityOnErrand(errandId, municipalityId, namespace, facilityId);
-		return noContent().build();
+		return noContent()
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
 	}
 
 }

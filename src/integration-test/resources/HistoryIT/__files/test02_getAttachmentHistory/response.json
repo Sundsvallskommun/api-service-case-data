@@ -10,7 +10,7 @@
     },
     "globalId": {
       "cdoId": 2,
-      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+      "entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
     }
   },
   {
@@ -24,7 +24,7 @@
     },
     "globalId": {
       "cdoId": 2,
-      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+      "entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
     },
     "left": null,
     "property": "category",
@@ -42,7 +42,7 @@
     },
     "globalId": {
       "cdoId": 2,
-      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+      "entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
     },
     "left": null,
     "property": "name",
@@ -60,7 +60,7 @@
     },
     "globalId": {
       "cdoId": 2,
-      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+      "entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
     },
     "left": null,
     "property": "note",
@@ -78,7 +78,7 @@
     },
     "globalId": {
       "cdoId": 2,
-      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+      "entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
     },
     "left": null,
     "property": "extension",
@@ -96,7 +96,7 @@
     },
     "globalId": {
       "cdoId": 2,
-      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+      "entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
     },
     "left": null,
     "property": "mimeType",
@@ -114,7 +114,7 @@
     },
     "globalId": {
       "cdoId": 2,
-      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+      "entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
     },
     "left": null,
     "property": "file",
@@ -132,7 +132,7 @@
     },
     "globalId": {
       "cdoId": 2,
-      "entity": "se.sundsvall.casedata.integration.db.model.Attachment"
+      "entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
     },
     "left": null,
     "property": "municipalityId",

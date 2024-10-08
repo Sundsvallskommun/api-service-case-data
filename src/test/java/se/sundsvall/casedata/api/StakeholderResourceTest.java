@@ -9,7 +9,7 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
+import static se.sundsvall.casedata.TestUtil.createStakeholder;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.StakeholderDTO;
+import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.service.StakeholderService;
 
@@ -39,132 +39,153 @@ class StakeholderResourceTest {
 
 	@Test
 	void getStakeholdersById() {
+		// Arrange
 		final var errandId = 123L;
 		final var stakeholderId = 456L;
-		final var stakeholderDTO = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of("SomeRole"));
+		final var stakeholder = createStakeholder(StakeholderType.ORGANIZATION, List.of("SomeRole"));
 
-		when(stakeholderServiceMock.findByIdAndMunicipalityIdAndNamespace(stakeholderId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(stakeholderDTO);
+		when(stakeholderServiceMock.findStakeholderOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(stakeholder);
 
+		// Act
 		var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{stakeholderId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, stakeholderId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(StakeholderDTO.class)
+			.expectBody(Stakeholder.class)
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(response).isNotNull();
-		verify(stakeholderServiceMock).findByIdAndMunicipalityIdAndNamespace(stakeholderId, MUNICIPALITY_ID, NAMESPACE);
+		verify(stakeholderServiceMock).findStakeholderOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}
 
 	@Test
-	void getStakeholders() {
+	void findAllStakeholdersOnErrand() {
+		// Arrange
 		final var errandId = 123L;
-		final var stakeholderDTO = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of("SomeRole"));
+		final var stakeholder = createStakeholder(StakeholderType.ORGANIZATION, List.of("SomeRole"));
 
-		when(stakeholderServiceMock.findAllStakeholdersByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(stakeholderDTO));
+		when(stakeholderServiceMock.findAllStakeholdersOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(stakeholder));
 
+		// Act
 		var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBodyList(StakeholderDTO.class)
+			.expectBodyList(Stakeholder.class)
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(response).hasSize(1);
-		verify(stakeholderServiceMock).findAllStakeholdersByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
+		verify(stakeholderServiceMock).findAllStakeholdersOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}
 
 	@Test
-	void patchStakeholder() {
+	void updateStakeholderOnErrand() {
+		// Arrange
 		final var errandId = 123L;
 		final var stakeholderId = 456L;
-		final var stakeholderDTO = createStakeholderDTO(StakeholderType.PERSON, List.of("DRIVER"));
+		final var stakeholder = createStakeholder(StakeholderType.PERSON, List.of("DRIVER"));
 
+		// Act
 		webTestClient.patch()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{stakeholderId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, stakeholderId))
 			.contentType(APPLICATION_JSON)
-			.bodyValue(stakeholderDTO)
+			.bodyValue(stakeholder)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectHeader().contentType(ALL_VALUE);
 
-		verify(stakeholderServiceMock).patch(stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholderDTO);
+		// Assert
+		verify(stakeholderServiceMock).updateStakeholderOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}
 
 	@Test
 	void putStakeholder() {
+		// Arrange
 		final var errandId = 123L;
 		final var stakeholderId = 456L;
-		final var stakeholderDTO = createStakeholderDTO(StakeholderType.PERSON, List.of("CONTROL_OFFICIAL"));
+		final var stakeholder = createStakeholder(StakeholderType.PERSON, List.of("CONTROL_OFFICIAL"));
 
+		// Act
 		webTestClient.put()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{stakeholderId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, stakeholderId))
 			.contentType(APPLICATION_JSON)
-			.bodyValue(stakeholderDTO)
+			.bodyValue(stakeholder)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectHeader().contentType(ALL_VALUE);
 
-		verify(stakeholderServiceMock).put(stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholderDTO);
+		// Assert
+		verify(stakeholderServiceMock).replaceStakeholderOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}
 
 	@Test
-	void patchErrandWithStakeholder() {
+	void updateErrandWithStakeholder() {
+		// Arrange
 		final var errandId = 123L;
 		final var stakeholderId = 456L;
-		final var stakeholderDTO = createStakeholderDTO(StakeholderType.PERSON, List.of("OPERATOR"));
-		stakeholderDTO.setId(stakeholderId);
+		final var stakeholder = createStakeholder(StakeholderType.PERSON, List.of("OPERATOR"));
+		stakeholder.setId(stakeholderId);
 
-		when(stakeholderServiceMock.addStakeholderToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholderDTO)).thenReturn(stakeholderDTO);
+		when(stakeholderServiceMock.addStakeholderToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholder)).thenReturn(stakeholder);
 
+		// Act
 		webTestClient.patch()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.contentType(APPLICATION_JSON)
-			.bodyValue(stakeholderDTO)
+			.bodyValue(stakeholder)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
 			.expectHeader().location("/2281/my.namespace/stakeholders/" + stakeholderId);
 
-		verify(stakeholderServiceMock).addStakeholderToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholderDTO);
+		// Assert
+		verify(stakeholderServiceMock).addStakeholderToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
 	}
 
 	@Test
-	void putStakeholdersOnErrand() {
+	void replaceStakeholdersOnErrand() {
+		// Arrange
 		final var errandId = 123L;
-		final var stakeholderDTOList = List.of(createStakeholderDTO(StakeholderType.ORGANIZATION, List.of("DELEGATE", "FELLOW_APPLICANT")));
+		final var stakeholderList = List.of(createStakeholder(StakeholderType.ORGANIZATION, List.of("DELEGATE", "FELLOW_APPLICANT")));
 
+		// Act
 		webTestClient.put()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.contentType(APPLICATION_JSON)
-			.bodyValue(stakeholderDTOList)
+			.bodyValue(stakeholderList)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectHeader().contentType(ALL_VALUE);
 
-		verify(stakeholderServiceMock).replaceStakeholdersOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholderDTOList);
+		// Assert
+		verify(stakeholderServiceMock).replaceStakeholdersOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholderList);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}
 
 	@Test
 	void deleteStakeholder() {
+		// Arrange
 		final var errandId = 123L;
 		final var stakeholderId = 456L;
 
+		// Act
 		webTestClient.delete()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{stakeholderId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, stakeholderId))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectHeader().contentType(ALL_VALUE);
 
+		// Assert
 		verify(stakeholderServiceMock).deleteStakeholderOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholderId);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}

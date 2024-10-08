@@ -9,25 +9,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @JaversSpringDataAuditable
 @CircuitBreaker(name = "errandRepository")
-public interface ErrandRepository extends JpaRepository<Errand, Long>, JpaSpecificationExecutor<Errand> {
+public interface ErrandRepository extends JpaRepository<ErrandEntity, Long>, JpaSpecificationExecutor<ErrandEntity> {
 
-	Page<Errand> findAllByIdInAndMunicipalityIdAndNamespace(final List<Long> id, final String municipalityId, final String namespace, final Pageable pageable);
+	Page<ErrandEntity> findAllByIdInAndMunicipalityIdAndNamespace(final List<Long> id, final String municipalityId, final String namespace, final Pageable pageable);
 
-	List<Errand> findAllByErrandNumberStartingWith(final String caseTypeAbbreviation);
+	List<ErrandEntity> findAllByErrandNumberStartingWith(final String caseTypeAbbreviation);
 
-	List<Errand> findAllByMunicipalityIdAndNamespace(final String municipalityId, final String namespace);
+	List<ErrandEntity> findAllByMunicipalityIdAndNamespace(final String municipalityId, final String namespace);
 
-	Optional<Errand> findByExternalCaseId(final String externalCaseId);
+	Optional<ErrandEntity> findByExternalCaseId(final String externalCaseId);
 
-	Optional<Errand> findByErrandNumber(final String errandNumber);
+	Optional<ErrandEntity> findByErrandNumber(final String errandNumber);
 
-	Optional<Errand> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
+	Optional<ErrandEntity> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
 
 	boolean existsByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
 

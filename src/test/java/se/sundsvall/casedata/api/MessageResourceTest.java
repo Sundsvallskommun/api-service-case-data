@@ -41,8 +41,8 @@ class MessageResourceTest {
 
 	@Test
 	void getMessagesOnErrand() {
+
 		// Arrange
-		final var errandId = 123L;
 		final var errandNumber = RandomStringUtils.secure().nextAlphabetic(10);
 		final var messages = List.of(MessageResponse.builder().build());
 
@@ -50,7 +50,7 @@ class MessageResourceTest {
 
 		// Act
 		var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandNumber}").build(MUNICIPALITY_ID, NAMESPACE, errandId, errandNumber))
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/{namespace}/messages/{errandNumber}").build(MUNICIPALITY_ID, NAMESPACE, errandNumber))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -80,7 +80,7 @@ class MessageResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(messageServiceMock).saveMessage(request, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageServiceMock).saveMessageOnErrand(errandId, request, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 
@@ -99,7 +99,7 @@ class MessageResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(messageServiceMock).updateViewedStatus(messageId, MUNICIPALITY_ID, NAMESPACE, isViewed);
+		verify(messageServiceMock).updateViewedStatus(errandId, messageId, MUNICIPALITY_ID, NAMESPACE, isViewed);
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 

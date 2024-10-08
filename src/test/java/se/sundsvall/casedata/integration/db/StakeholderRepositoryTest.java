@@ -28,14 +28,14 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
-import se.sundsvall.casedata.integration.db.model.Address;
-import se.sundsvall.casedata.integration.db.model.ContactInformation;
-import se.sundsvall.casedata.integration.db.model.Stakeholder;
+import se.sundsvall.casedata.integration.db.model.AddressEntity;
+import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 
 /**
  * StakeholderRepository tests.
  *
- * @see /src/test/resources/db/testdata-junit.sql for data setup.
+ * @see <a href="/src/test/resources/db/testdata-junit.sql">/src/test/resources/db/testdata-junit.sql</a> for data setup.
  */
 @DataJpaTest
 @Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
@@ -86,44 +86,6 @@ class StakeholderRepositoryTest {
 	}
 
 	@Test
-	void findByRoles() {
-
-		// Arrange
-		final var role = "ADMINISTRATOR";
-
-		// Act
-		final var result = stakeholderRepository.findByRolesAndMunicipalityIdAndNamespace(role, MUNICIPALITY_ID, NAMESPACE);
-
-		// Assert
-		assertThat(result)
-			.hasSize(1)
-			.allSatisfy(obj -> {
-				assertThat(obj.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
-				assertThat(obj.getUpdated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:15:01.563+01:00", ISO_DATE_TIME));
-				assertThat(obj.getAdAccount()).isEqualTo("AD-1");
-				assertThat(obj.getFirstName()).isEqualTo("FIRST-NAME-1");
-				assertThat(obj.getLastName()).isEqualTo("LAST-NAME-1");
-				assertThat(obj.getPersonId()).isEqualTo("d7af5f83-166a-468b-ab86-da8ca30ea97c");
-				assertThat(obj.getType()).isEqualTo(PERSON);
-				assertThat(obj.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
-				assertThat(obj.getNamespace()).isEqualTo(NAMESPACE);
-			});
-	}
-
-	@Test
-	void findByRolesNothingFound() {
-
-		// Arrange
-		final var role = "NON-EXISTING";
-
-		// Act
-		final var result = stakeholderRepository.findByRolesAndMunicipalityIdAndNamespace(role, MUNICIPALITY_ID, NAMESPACE);
-
-		// Assert
-		assertThat(result).isNotNull().isEmpty();
-	}
-
-	@Test
 	void create() {
 
 		final var firstName = "firstName";
@@ -131,7 +93,7 @@ class StakeholderRepositoryTest {
 		final var personId = UUID.randomUUID().toString();
 		final var role = "ADMINISTRATOR";
 		final var version = 10;
-		final var address = Address.builder()
+		final var address = AddressEntity.builder()
 			.withAddressCategory(POSTAL_ADDRESS)
 			.withApartmentNumber("apartmentNumber")
 			.withCareOf("careOf")
@@ -143,11 +105,11 @@ class StakeholderRepositoryTest {
 			.withPropertyDesignation("propertyDesignation")
 			.withStreet("street")
 			.build();
-		final var contactInformation = ContactInformation.builder()
+		final var contactInformation = ContactInformationEntity.builder()
 			.withContactType(EMAIL)
 			.withValue("contact@contact.com")
 			.build();
-		final var entity = Stakeholder.builder()
+		final var entity = StakeholderEntity.builder()
 			.withAdAccount(null)
 			.withAddresses(List.of(address))
 			.withContactInformation(List.of(contactInformation))

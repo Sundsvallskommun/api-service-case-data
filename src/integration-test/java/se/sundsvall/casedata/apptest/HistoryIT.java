@@ -16,8 +16,8 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/HistoryIT", classes = Application.class)
 @Sql({
-	"/db/script/truncate.sql",
-	"/db/script/historyIT-testdata.sql"
+	"/db/scripts/truncate.sql",
+	"/db/scripts/historyIT-testdata.sql"
 })
 class HistoryIT extends AbstractAppTest {
 

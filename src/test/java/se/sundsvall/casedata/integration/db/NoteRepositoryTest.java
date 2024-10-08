@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
-import se.sundsvall.casedata.integration.db.model.Note;
+import se.sundsvall.casedata.integration.db.model.NoteEntity;
 
 /**
  * NoteRepository tests.
@@ -99,7 +99,7 @@ class NoteRepositoryTest {
 		final var title = "title";
 		final var version = 2;
 
-		final var entity = Note.builder()
+		final var entity = NoteEntity.builder()
 			.withNoteType(noteType)
 			.withText(text)
 			.withTitle(title)

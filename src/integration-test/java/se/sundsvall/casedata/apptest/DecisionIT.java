@@ -26,8 +26,8 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 	files = "classpath:/DecisionIT/",
 	classes = Application.class)
 @Sql({
-	"/db/script/truncate.sql",
-	"/db/script/decisionIT-testdata.sql"
+	"/db/scripts/truncate.sql",
+	"/db/scripts/decisionIT-testdata.sql"
 })
 class DecisionIT extends AbstractAppTest {
 

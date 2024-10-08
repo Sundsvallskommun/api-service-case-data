@@ -8,8 +8,8 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createErrandDTO;
-import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
+import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createFacility;
 
 import java.util.List;
 import java.util.Map;
@@ -41,14 +41,17 @@ class ErrandResourceTest {
 
 	@Test
 	void deleteErrand() {
+		// Arrange
 		final var errandId = 123L;
 
+		// Act
 		webTestClient.delete()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}")
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId)))
 			.exchange()
 			.expectStatus().isNoContent();
 
+		// Assert
 		verify(errandServiceMock).deleteByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandServiceMock);
 	}
@@ -56,15 +59,17 @@ class ErrandResourceTest {
 	@ParameterizedTest
 	@EnumSource(FacilityType.class)
 	void postErrandWithFacilityType(final FacilityType facilityType) {
-		final var body = createErrandDTO();
+		// Arrange
+		final var body = createErrand();
 		body.setId(123L);
-		final var facility = createFacilityDTO();
+		final var facility = createFacility();
 		facility.setFacilityType(facilityType.name());
 		final var facilities = List.of(facility);
 		body.setFacilities(facilities);
 
 		when(errandServiceMock.createErrand(body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(body);
 
+		// Act
 		webTestClient.post()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
 			.contentType(APPLICATION_JSON)
@@ -74,8 +79,9 @@ class ErrandResourceTest {
 			.expectHeader().contentType(ALL_VALUE)
 			.expectHeader().location("/2281/my.namespace/errands/" + body.getId());
 
+		// Assert
 		verify(errandServiceMock).createErrand(body, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoMoreInteractions(errandServiceMock);
 	}
-
 
 }

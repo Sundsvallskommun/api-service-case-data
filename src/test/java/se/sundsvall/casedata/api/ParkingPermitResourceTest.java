@@ -20,7 +20,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.api.model.GetParkingPermitDTO;
+import se.sundsvall.casedata.api.model.GetParkingPermit;
 import se.sundsvall.casedata.service.ParkingPermitErrandService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -39,8 +39,8 @@ class ParkingPermitResourceTest {
 	void getAllParkingPermits() {
 		// Arrange
 		final var personId = "person123";
-		final var parkingPermitDTO = TestUtil.createGetParkingPermitDTO();
-		when(parkingPermitServiceMock.findAllByPersonIdAndMunicipalityId(personId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(parkingPermitDTO));
+		final var parkingPermit = TestUtil.createGetParkingPermitDTO();
+		when(parkingPermitServiceMock.findAllByPersonIdAndMunicipalityId(personId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(parkingPermit));
 
 		// Act
 		var response = webTestClient.get()
@@ -48,7 +48,7 @@ class ParkingPermitResourceTest {
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBodyList(GetParkingPermitDTO.class)
+			.expectBodyList(GetParkingPermit.class)
 			.returnResult()
 			.getResponseBody();
 

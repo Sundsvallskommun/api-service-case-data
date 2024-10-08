@@ -10,7 +10,7 @@
     },
     "globalId": {
       "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.Facility"
+      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
     }
   },
   {
@@ -24,14 +24,14 @@
     },
     "globalId": {
       "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.Facility"
+      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
     },
     "left": null,
     "property": "errand",
     "propertyChangeType": "PROPERTY_VALUE_CHANGED",
     "right": {
       "cdoId": 406,
-      "entity": "se.sundsvall.casedata.integration.db.model.Errand"
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     }
   },
   {
@@ -45,7 +45,7 @@
     },
     "globalId": {
       "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.Facility"
+      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
     },
     "left": null,
     "property": "description",
@@ -63,7 +63,7 @@
     },
     "globalId": {
       "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.Facility"
+      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
     },
     "left": null,
     "property": "municipalityId",
@@ -81,7 +81,7 @@
     },
     "globalId": {
       "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.Facility"
+      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
     },
     "left": null,
     "property": "facilityCollectionName",
@@ -99,7 +99,7 @@
     },
     "globalId": {
       "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.Facility"
+      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
     },
     "left": null,
     "property": "mainFacility",
@@ -117,7 +117,7 @@
     },
     "globalId": {
       "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.Facility"
+      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
     },
     "left": null,
     "property": "facilityType",
@@ -152,7 +152,7 @@
     ],
     "globalId": {
       "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.Facility"
+      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
     },
     "property": "extraParameters",
     "propertyChangeType": "PROPERTY_VALUE_CHANGED"
