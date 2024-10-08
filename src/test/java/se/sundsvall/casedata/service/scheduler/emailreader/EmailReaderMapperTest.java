@@ -17,13 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import generated.se.sundsvall.emailreader.Email;
-import generated.se.sundsvall.emailreader.EmailAttachment;
 import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.integration.db.model.EmailHeader;
+import se.sundsvall.casedata.integration.db.model.EmailHeaderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 
-@SpringBootTest(classes = { Application.class }, webEnvironment = MOCK)
+import generated.se.sundsvall.emailreader.Email;
+import generated.se.sundsvall.emailreader.EmailAttachment;
+
+@SpringBootTest(classes = {Application.class}, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class EmailReaderMapperTest {
 
@@ -101,7 +102,7 @@ class EmailReaderMapperTest {
 		assertThat(result)
 			.isNotNull()
 			.extracting(
-				"messageID",
+				"messageId",
 				"direction",
 				"subject",
 				"textmessage",
@@ -118,15 +119,15 @@ class EmailReaderMapperTest {
 				"someMunicipalityId");
 
 		assertThat(result.getHeaders()).hasSize(3).containsExactlyInAnyOrder(
-			EmailHeader.builder()
+			EmailHeaderEntity.builder()
 				.withHeader(Header.MESSAGE_ID)
 				.withValues(List.of("<some@message>"))
 				.build(),
-			EmailHeader.builder()
+			EmailHeaderEntity.builder()
 				.withHeader(Header.REFERENCES)
 				.withValues(List.of("<some@message>", "<another@one>"))
 				.build(),
-			EmailHeader.builder()
+			EmailHeaderEntity.builder()
 				.withHeader(Header.IN_REPLY_TO)
 				.withValues(List.of("<some@other>"))
 				.build());
@@ -135,12 +136,12 @@ class EmailReaderMapperTest {
 			.isEqualTo(email.getReceivedAt()
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-		assertThat(result.getMessageID()).isNotNull()
+		assertThat(result.getMessageId()).isNotNull()
 			.satisfies(id -> assertThat(isValidUUID(id)).isTrue());
 
 		assertThat(result.getAttachments()).isNotNull().hasSize(1)
 			.element(0).satisfies(attachment -> {
-				assertThat(attachment.getAttachmentID()).isNotNull()
+				assertThat(attachment.getAttachmentId()).isNotNull()
 					.satisfies(id -> assertThat(isValidUUID(id)).isTrue());
 				assertThat(attachment.getName()).isEqualTo("someName");
 				assertThat(attachment.getMessageID()).isEqualTo(messageID);
@@ -171,7 +172,7 @@ class EmailReaderMapperTest {
 		assertThat(result)
 			.isNotNull()
 			.extracting(
-				"messageID",
+				"messageId",
 				"direction",
 				"subject",
 				"textmessage",
@@ -191,7 +192,7 @@ class EmailReaderMapperTest {
 			.isEqualTo(email.getReceivedAt()
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-		assertThat(result.getMessageID()).isNotNull()
+		assertThat(result.getMessageId()).isNotNull()
 			.satisfies(id -> assertThat(isValidUUID(id)).isTrue());
 
 		assertThat(result.getAttachments()).isNotNull().isEmpty();
@@ -205,4 +206,5 @@ class EmailReaderMapperTest {
 			return false;
 		}
 	}
+
 }

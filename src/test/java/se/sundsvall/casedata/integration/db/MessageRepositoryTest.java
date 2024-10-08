@@ -3,6 +3,7 @@ package se.sundsvall.casedata.integration.db;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
-import se.sundsvall.casedata.integration.db.model.Message;
+import se.sundsvall.casedata.integration.db.model.MessageEntity;
 
 
 /**
@@ -53,14 +54,14 @@ class MessageRepositoryTest {
 		assertThat(result.getDirection()).isEqualTo(INBOUND);
 		assertThat(result.getEmail()).isEqualTo("test.testorsson@noreply.com");
 		assertThat(result.getErrandNumber()).isEqualTo("PRE-1970-000123");
-		assertThat(result.getExternalCaseID()).isEqualTo("123456");
-		assertThat(result.getFamilyID()).isEqualTo("123");
+		assertThat(result.getExternalCaseId()).isEqualTo("123456");
+		assertThat(result.getFamilyId()).isEqualTo("123");
 		assertThat(result.getFirstName()).isEqualTo("Test");
 		assertThat(result.getLastName()).isEqualTo("Testorsson");
 		assertThat(result.getTextmessage()).isEqualTo("Some message");
 		assertThat(result.getSent()).isEqualTo("2023-10-02 15:13:45.363");
 		assertThat(result.getSubject()).isEqualTo("Some subject");
-		assertThat(result.getUserID()).isEqualTo("aba01cal");
+		assertThat(result.getUserId()).isEqualTo("aba01cal");
 		assertThat(result.getUsername()).isEqualTo("Abacus Calculator");
 	}
 
@@ -84,7 +85,7 @@ class MessageRepositoryTest {
 		final var errandNumber = "PRE-1970-000123";
 
 		// Act
-		final var result = messageRepository.findAllByErrandNumberAndMunicipalityId(errandNumber, MUNICIPALITY_ID);
+		final var result = messageRepository.findAllByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result)
@@ -93,14 +94,14 @@ class MessageRepositoryTest {
 				assertThat(obj.getDirection()).isEqualTo(INBOUND);
 				assertThat(obj.getEmail()).isEqualTo("test.testorsson@noreply.com");
 				assertThat(obj.getErrandNumber()).isEqualTo("PRE-1970-000123");
-				assertThat(obj.getExternalCaseID()).isEqualTo("123456");
-				assertThat(obj.getFamilyID()).isEqualTo("123");
+				assertThat(obj.getExternalCaseId()).isEqualTo("123456");
+				assertThat(obj.getFamilyId()).isEqualTo("123");
 				assertThat(obj.getFirstName()).isEqualTo("Test");
 				assertThat(obj.getLastName()).isEqualTo("Testorsson");
 				assertThat(obj.getTextmessage()).isEqualTo("Some message");
 				assertThat(obj.getSent()).isEqualTo("2023-10-02 15:13:45.363");
 				assertThat(obj.getSubject()).isEqualTo("Some subject");
-				assertThat(obj.getUserID()).isEqualTo("aba01cal");
+				assertThat(obj.getUserId()).isEqualTo("aba01cal");
 				assertThat(obj.getUsername()).isEqualTo("Abacus Calculator");
 			});
 	}
@@ -112,7 +113,7 @@ class MessageRepositoryTest {
 		final var errandNumber = "NON-EXISTING";
 
 		// Act
-		final var result = messageRepository.findAllByErrandNumberAndMunicipalityId(errandNumber, MUNICIPALITY_ID);
+		final var result = messageRepository.findAllByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -138,20 +139,21 @@ class MessageRepositoryTest {
 		final var username = "username";
 		final var viewed = true;
 
-		final var entity = Message.builder()
+		MessageEntity.builder().build();
+		final var entity = MessageEntity.builder()
 			.withDirection(direction)
 			.withEmail(email)
 			.withErrandNumber(errandNumber)
-			.withExternalCaseID(externalCaseId)
-			.withFamilyID(familyId)
+			.withExternalCaseId(externalCaseId)
+			.withFamilyId(familyId)
 			.withFirstName(firstName)
 			.withLastName(lastName)
-			.withMessageID(messageId)
+			.withMessageId(messageId)
 			.withMessageType(messageType.name())
 			.withMobileNumber(mobileNumber)
 			.withSubject(subject)
 			.withTextmessage(textMessage)
-			.withUserID(userId)
+			.withUserId(userId)
 			.withUsername(username)
 			.withViewed(viewed)
 			.build();
@@ -161,20 +163,20 @@ class MessageRepositoryTest {
 
 		// Assert
 		assertThat(result).isNotNull();
-		assertThat(result.getMessageID()).isNotEmpty();
+		assertThat(result.getMessageId()).isNotEmpty();
 		assertThat(result.getDirection()).isEqualTo(direction);
 		assertThat(result.getEmail()).isEqualTo(email);
 		assertThat(result.getErrandNumber()).isEqualTo(errandNumber);
-		assertThat(result.getExternalCaseID()).isEqualTo(externalCaseId);
-		assertThat(result.getFamilyID()).isEqualTo(familyId);
+		assertThat(result.getExternalCaseId()).isEqualTo(externalCaseId);
+		assertThat(result.getFamilyId()).isEqualTo(familyId);
 		assertThat(result.getFirstName()).isEqualTo(firstName);
 		assertThat(result.getLastName()).isEqualTo(lastName);
-		assertThat(result.getMessageID()).isEqualTo(messageId);
+		assertThat(result.getMessageId()).isEqualTo(messageId);
 		assertThat(result.getMessageType()).isEqualTo(messageType.name());
 		assertThat(result.getMobileNumber()).isEqualTo(mobileNumber);
 		assertThat(result.getSubject()).isEqualTo(subject);
 		assertThat(result.getTextmessage()).isEqualTo(textMessage);
-		assertThat(result.getUserID()).isEqualTo(userId);
+		assertThat(result.getUserId()).isEqualTo(userId);
 		assertThat(result.getUsername()).isEqualTo(username);
 		assertThat(result.isViewed()).isTrue();
 	}

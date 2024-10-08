@@ -5,9 +5,11 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.createAppealDTO;
-import static se.sundsvall.casedata.TestUtil.createErrandDTO;
-import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createAppeal;
+import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,7 +34,7 @@ import se.sundsvall.casedata.service.ErrandService;
 @ActiveProfiles("junit")
 class ErrandResourceFailureTest {
 
-	private static final String BASE_URL = "/{municipalityId}/errands";
+	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands";
 
 	@MockBean
 	private ErrandService errandServiceMock;
@@ -42,12 +44,14 @@ class ErrandResourceFailureTest {
 
 	@Test
 	void postErrandWithExtraParameterTooLong() {
-		final var body = createErrandDTO();
+		// Arrange
+		final var body = createErrandEntity();
 		final String longExtraParameter = String.join("", Collections.nCopies(9000, "a")); // This creates a string longer than 8192 characters
 		body.getExtraParameters().put("longParameter", longExtraParameter);
 
+		// Act
 		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -56,20 +60,23 @@ class ErrandResourceFailureTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		verifyNoInteractions(errandServiceMock);
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = {"", " ", "invalid"})
 	void postErrandWithInvalidFacilityType(final String facilityType) {
-		final var body = createErrandDTO();
-		final var facility = createFacilityDTO();
+		// Arrange
+		final var body = createErrandEntity();
+		final var facility = createFacilityEntity();
 		facility.setFacilityType(facilityType);
 		final var facilities = List.of(facility);
 		body.setFacilities(facilities);
 
+		// Act
 		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -78,19 +85,21 @@ class ErrandResourceFailureTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		verifyNoInteractions(errandServiceMock);
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = {"", " ", "invalid"})
 	void postFacilityWithInvalidFacilityType(final String facilityType) {
-
+		// Arrange
 		final var errandId = 123L;
-		final var facility = createFacilityDTO();
+		final var facility = createFacilityEntity();
 		facility.setFacilityType(facilityType);
 
+		// Act
 		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities").build(MUNICIPALITY_ID, errandId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities").build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(facility)
 			.exchange()
@@ -99,22 +108,24 @@ class ErrandResourceFailureTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		verifyNoInteractions(errandServiceMock);
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = {"", " ", "invalid"})
 	void putFacilityWithInvalidFacilityType(final String facilityType) {
-
+		// Arrange
 		final var errandId = 123L;
 		final var facilityId = 456L;
-		final var facility = createFacilityDTO();
+		final var facility = createFacilityEntity();
 		facility.setId(facilityId);
 		facility.setFacilityType(facilityType);
 		final var facilities = List.of(facility);
 
+		// Act
 		webTestClient.put()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities").build(MUNICIPALITY_ID, errandId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities").build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(facilities)
 			.exchange()
@@ -123,19 +134,22 @@ class ErrandResourceFailureTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		verifyNoInteractions(errandServiceMock);
 	}
 
 	@Test
 	void postErrandWithInvalidAppeal() {
-		final var body = createErrandDTO();
-		final var appeal = createAppealDTO();
+		// Arrange
+		final var body = createErrand();
+		final var appeal = createAppeal();
 		appeal.setStatus("invalid");
 		appeal.setTimelinessReview("invalid");
 		body.setAppeals(List.of(appeal));
 
-		final var result = webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID))
+		// Act
+		var result = webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -144,6 +158,7 @@ class ErrandResourceFailureTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(result).isNotNull();
 		assertThat(result.getViolations()).hasSize(2)
 			.anyMatch(violation -> ("Invalid appeal status. Valid values are: " + Arrays.toString(AppealStatus.values())).equals(violation.getMessage()))
@@ -153,13 +168,15 @@ class ErrandResourceFailureTest {
 
 	@Test
 	void patchErrandWithInvalidAppeal() {
+		// Arrange
 		final var errandId = 123L;
-		final var body = createAppealDTO();
+		final var body = createAppeal();
 		body.setStatus("invalid");
 		body.setTimelinessReview("invalid");
 
-		final var result = webTestClient.patch()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/appeals").build(MUNICIPALITY_ID, errandId))
+		// Act
+		var result = webTestClient.patch()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/appeals").build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -168,6 +185,7 @@ class ErrandResourceFailureTest {
 			.returnResult()
 			.getResponseBody();
 
+		// Assert
 		assertThat(result).isNotNull();
 		assertThat(result.getViolations()).hasSize(2)
 			.anyMatch(violation -> ("Invalid appeal status. Valid values are: " + Arrays.toString(AppealStatus.values())).equals(violation.getMessage()))

@@ -17,15 +17,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import generated.se.sundsvall.emailreader.Email;
-import generated.se.sundsvall.emailreader.EmailAttachment;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.Message;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
+
+import generated.se.sundsvall.emailreader.Email;
+import generated.se.sundsvall.emailreader.EmailAttachment;
 
 @ExtendWith(MockitoExtension.class)
 class EmailReaderServiceTest {
@@ -49,7 +50,7 @@ class EmailReaderServiceTest {
 	private EmailReaderMapper emailReaderMapperMock;
 
 	@Mock
-	private Message messageMock;
+	private MessageEntity messageMock;
 
 	@InjectMocks
 	private EmailReaderService emailReaderService;
@@ -79,7 +80,7 @@ class EmailReaderServiceTest {
 		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
 			.thenReturn(List.of(email));
 
-		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(Errand.builder().build()));
+		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(ErrandEntity.builder().build()));
 		when(emailReaderMapperMock.toMessage(email, "someMunicipalityId")).thenReturn(messageMock);
 		when(messageRepositoryMock.existsById("someId")).thenReturn(false);
 
@@ -114,7 +115,7 @@ class EmailReaderServiceTest {
 					.content("someContent")
 					.contentType("someContentType")))));
 
-		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(Errand.builder().build()));
+		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(ErrandEntity.builder().build()));
 		when(messageRepositoryMock.existsById("someId")).thenReturn(true);
 
 		emailReaderService.getAndProcessEmails();

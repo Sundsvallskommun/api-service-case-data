@@ -25,7 +25,7 @@ import lombok.Setter;
 public class MessageRequest {
 
 	@Schema(description = "The message ID", example = "12")
-	private String messageID;
+	private String messageId;
 
 	@Schema(description = "The errand number", example = "PRH-2022-000001")
 	private String errandNumber;
@@ -34,10 +34,10 @@ public class MessageRequest {
 	private Direction direction;
 
 	@Schema(description = "The E-service ID that the message was created in", example = "12")
-	private String familyID;
+	private String familyId;
 
 	@Schema(description = "OpenE caseID", example = "12")
-	private String externalCaseID;
+	private String externalCaseId;
 
 	@Schema(description = "The message", example = "Hello world")
 	private String message;
@@ -68,7 +68,7 @@ public class MessageRequest {
 	private String email;
 
 	@Schema(description = "The user ID of the user that sent the message", example = "12")
-	private String userID;
+	private String userId;
 
 	@Schema(description = "The classification of the message")
 	private Classification classification;
@@ -77,7 +77,7 @@ public class MessageRequest {
 	private List<AttachmentRequest> attachmentRequests;
 
 	@Schema(description = "List of email headers on the message")
-	private List<EmailHeaderDTO> emailHeaders;
+	private List<EmailHeader> emailHeaders;
 
 	@Getter
 	@Setter
@@ -89,19 +89,11 @@ public class MessageRequest {
 
 		@NotBlank
 		@ValidBase64
-		@Schema(
-			description = "The attachment (file) content as a BASE64-encoded string",
-			example = "aGVsbG8gd29ybGQK",
-			requiredMode = REQUIRED
-		)
+		@Schema(description = "The attachment (file) content as a BASE64-encoded string", example = "aGVsbG8gd29ybGQK", requiredMode = REQUIRED)
 		private String content;
 
 		@NotBlank
-		@Schema(
-			description = "The attachment filename",
-			example = "test.txt",
-			requiredMode = REQUIRED
-		)
+		@Schema(description = "The attachment filename", example = "test.txt", requiredMode = REQUIRED)
 		private String name;
 
 		@Schema(description = "The attachment content type", example = "text/plain")

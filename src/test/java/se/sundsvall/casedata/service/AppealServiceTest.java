@@ -1,15 +1,18 @@
 package se.sundsvall.casedata.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAppeal;
-import static se.sundsvall.casedata.TestUtil.createAppealDTO;
-import static se.sundsvall.casedata.TestUtil.createDecision;
+import static se.sundsvall.casedata.TestUtil.createAppealEntity;
+import static se.sundsvall.casedata.TestUtil.createDecisionEntity;
 import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,9 +30,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import se.sundsvall.casedata.api.model.PatchAppealDTO;
+import se.sundsvall.casedata.api.model.PatchAppeal;
 import se.sundsvall.casedata.integration.db.AppealRepository;
-import se.sundsvall.casedata.integration.db.model.Appeal;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.AppealEntity;
+import se.sundsvall.casedata.integration.db.model.DecisionEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
@@ -42,102 +47,115 @@ class AppealServiceTest {
 	@Mock
 	private AppealRepository appealRepositoryMock;
 
+	@Mock
+	private ErrandRepository errandRepositoryMock;
+
+	@Mock
+	private ProcessService processServiceMock;
+
 	@Captor
-	private ArgumentCaptor<Appeal> appealCaptor;
+	private ArgumentCaptor<AppealEntity> appealCaptor;
 
-	@Test
-	void getAppealById() {
-		final Appeal appeal = createAppeal();
-
-		when(appealRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(appeal));
-
-		var result = appealService.findByIdAndMunicipalityId(appeal.getId(), MUNICIPALITY_ID);
-
-		assertThat(result).isNotNull();
-
-		verify(appealRepositoryMock).findByIdAndMunicipalityId(appeal.getId(), MUNICIPALITY_ID);
-		verifyNoMoreInteractions(appealRepositoryMock);
+	private static Stream<Arguments> decisionProvider() {
+		return Stream.of(
+			Arguments.of(2L, 2L),
+			Arguments.of(999L, null));
 	}
 
 	@Test
-	void patchAppeal() {
-		final Appeal appeal = createAppeal();
-		appeal.setId(new Random().nextLong());
+	void getAppealById() {
+		// Arrange
+		final var errand = createErrandEntity();
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
-		doReturn(Optional.of(appeal)).when(appealRepositoryMock).findByIdAndMunicipalityId(appeal.getId(), MUNICIPALITY_ID);
+		// Act
+		var result = appealService.findAppealOnErrand(errand.getId(), 1L, MUNICIPALITY_ID, NAMESPACE);
 
-		final PatchAppealDTO patch = new PatchAppealDTO();
-		patch.setDescription("New description");
-		patch.setStatus(AppealStatus.REJECTED.name());
-		patch.setTimelinessReview(TimelinessReview.REJECTED.name());
+		// Assert
+		assertThat(result).isNotNull();
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verifyNoMoreInteractions(errandRepositoryMock);
+	}
 
-		appealService.updateAppeal(appeal.getId(), MUNICIPALITY_ID, patch);
+	@Test
+	void updateAppeal() {
+		// Arrange
+		final var errand = createErrandEntity();
+		final var appealEntity = errand.getAppeals().getFirst();
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
+		final var patch = PatchAppeal.builder()
+			.withDescription("New description")
+			.withStatus(AppealStatus.REJECTED.name())
+			.withTimelinessReview(TimelinessReview.REJECTED.name())
+			.build();
+
+		// Act
+		appealService.updateAppeal(errand.getId(), appealEntity.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
+
+		// Assert
 		verify(appealRepositoryMock).save(appealCaptor.capture());
-
 		final var savedAppeal = appealCaptor.getValue();
-
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		assertThat(savedAppeal.getDescription()).isEqualTo(patch.getDescription());
 		assertThat(savedAppeal.getStatus().name()).isEqualTo(patch.getStatus());
 		assertThat(savedAppeal.getTimelinessReview()).isEqualTo(TimelinessReview.REJECTED);
 	}
 
 	@Test
-	void putAppeal() {
-		final var dto = createAppealDTO();
+	void replaceAppeal() {
+		// Arrange
+		final var dto = createAppeal();
 		dto.setDescription("New description");
 		dto.setStatus(AppealStatus.REJECTED.name());
 		dto.setTimelinessReview(TimelinessReview.REJECTED.name());
 
-		final var entity = createAppeal();
-		entity.setErrand(createErrand());
+		final var entity = createAppealEntity();
+		var errand = createErrandEntity();
+		errand.setAppeals(List.of(entity));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
-		when(appealRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
+		// Act
+		appealService.replaceAppeal(errand.getId(), 1L, MUNICIPALITY_ID, NAMESPACE, dto);
 
-		appealService.replaceAppeal(1L, MUNICIPALITY_ID, dto);
-
+		// Assert
 		verify(appealRepositoryMock).save(appealCaptor.capture());
-
 		final var savedAppeal = appealCaptor.getValue();
-
 		assertThat(savedAppeal.getDescription()).isEqualTo(dto.getDescription());
 		assertThat(savedAppeal.getStatus()).isEqualTo(AppealStatus.REJECTED);
 		assertThat(savedAppeal.getTimelinessReview()).isEqualTo(TimelinessReview.REJECTED);
-
-		verify(appealRepositoryMock).findByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(appealRepositoryMock).save(entity);
-		verifyNoMoreInteractions(appealRepositoryMock);
+		verifyNoMoreInteractions(appealRepositoryMock, errandRepositoryMock);
 	}
 
 	@ParameterizedTest
 	@MethodSource("decisionProvider")
 	void putAppealWhenDecisionIsSet(final Long decisionId, final Long expectedDecisionId) {
-		final var dto = createAppealDTO();
+		// Arrange
+		final var dto = createAppeal();
 		dto.setDescription("New description");
 		dto.setStatus(AppealStatus.REJECTED.name());
 		dto.setTimelinessReview(TimelinessReview.REJECTED.name());
 		dto.setDecisionId(decisionId);
 
-		final var entity = createAppeal();
-
-		final var currentDecision = createDecision();
+		final var entity = createAppealEntity();
+		final var currentDecision = createDecisionEntity();
 		currentDecision.setId(1L);
-
-		final var newDecision = createDecision();
+		final var newDecision = createDecisionEntity();
 		newDecision.setId(2L);
-
-		final var errand = createErrand();
+		final var errand = createErrandEntity();
 		errand.setDecisions(List.of(currentDecision, newDecision));
 		entity.setErrand(errand);
+		errand.setAppeals(List.of(entity));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
-		when(appealRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
+		// Act
+		appealService.replaceAppeal(errand.getId(), 1L, MUNICIPALITY_ID, NAMESPACE, dto);
 
-		appealService.replaceAppeal(1L, MUNICIPALITY_ID, dto);
-
+		// Assert
 		verify(appealRepositoryMock).save(appealCaptor.capture());
-
 		final var savedAppeal = appealCaptor.getValue();
-
 		assertThat(savedAppeal.getDescription()).isEqualTo(dto.getDescription());
 		assertThat(savedAppeal.getStatus()).isEqualTo(AppealStatus.REJECTED);
 		assertThat(savedAppeal.getTimelinessReview()).isEqualTo(TimelinessReview.REJECTED);
@@ -145,14 +163,47 @@ class AppealServiceTest {
 		if (expectedDecisionId == null) {
 			assertThat(savedAppeal.getDecision()).isNull();
 		}
-		verify(appealRepositoryMock).findByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(appealRepositoryMock).save(entity);
 		verifyNoMoreInteractions(appealRepositoryMock);
 	}
 
-	private static Stream<Arguments> decisionProvider() {
-		return Stream.of(
-			Arguments.of(2L, 2L),
-			Arguments.of(999L, null));
+	@Test
+	void addAppealToErrandTest() {
+		// Arrange
+		final var errand = createErrandEntity();
+		errand.getDecisions().add(DecisionEntity.builder().withId(123L).build());
+		final var newAppeal = createAppeal();
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+		// Act
+		final var appeal = appealService.addAppealToErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, newAppeal);
+
+		// Assert
+		assertThat(appeal).isEqualTo(newAppeal);
+		assertThat(errand.getDecisions()).isNotEmpty().hasSize(2);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).save(errand);
 	}
+
+	@Test
+	void deleteAppealOnErrand() {
+		// Arrange
+		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
+		errand.getDecisions().forEach(d -> d.setId(new Random().nextLong()));
+		final var errandId = new Random().nextLong(1, 1000);
+		final var appeal = errand.getAppeals().getFirst();
+		appeal.setId(new Random().nextLong());
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+
+		// Act
+		appealService.deleteAppealOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, appeal.getId());
+
+		// Assert
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).save(errand);
+		verify(processServiceMock).updateProcess(errand);
+	}
+
 }

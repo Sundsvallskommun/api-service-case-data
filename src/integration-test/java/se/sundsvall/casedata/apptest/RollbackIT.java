@@ -4,6 +4,8 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
+import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
@@ -14,12 +16,15 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/RollbackIT", classes = Application.class)
 @Sql({
-	"/db/script/truncate.sql"
+	"/db/scripts/truncate.sql",
 })
 class RollbackIT extends AbstractAppTest {
 
 	private static final String REQUEST_FILE = "request.json";
+
 	private static final String EXPECTED_FILE = "expected.json";
+
+	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands";
 
 	// Simulate HTTP 500 response from POST for starting process to ParkingPermit. No errand should be persisted.
 	@Test
@@ -27,7 +32,7 @@ class RollbackIT extends AbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(POST)
-			.withServicePath("/2281/errands")
+			.withServicePath(PATH)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(SERVICE_UNAVAILABLE)
 			.withExpectedResponse(EXPECTED_FILE)
@@ -35,8 +40,9 @@ class RollbackIT extends AbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath("/2281/errands/1")
+			.withServicePath(PATH + "/1")
 			.withExpectedResponseStatus(NOT_FOUND)
 			.sendRequestAndVerifyResponse();
 	}
+
 }

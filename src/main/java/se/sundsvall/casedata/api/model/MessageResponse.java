@@ -31,21 +31,20 @@ import lombok.ToString;
 public class MessageResponse {
 
 	@Schema(description = "The message ID", example = "12")
-	private String messageID;
+	private String messageId;
 
 	@Schema(description = "The errand number", example = "PRH-2022-000001")
 	private String errandNumber;
 
 	@Enumerated(EnumType.STRING)
-	@Schema(description = "If the message is inbound or outbound from the perspective of " +
-		"case-data/e-service.", example = "INBOUND")
+	@Schema(description = "If the message is inbound or outbound from the perspective of case-data/e-service.", example = "INBOUND")
 	private Direction direction;
 
 	@Schema(description = "The E-service ID that the message was created in", example = "12")
-	private String familyID;
+	private String familyId;
 
 	@Schema(description = "OpenE caseID", example = "12")
-	private String externalCaseID;
+	private String externalCaseId;
 
 	@Schema(description = "The message", example = "Hello world")
 	private String message;
@@ -75,7 +74,7 @@ public class MessageResponse {
 	private String email;
 
 	@Schema(description = "The user ID of the user that sent the message", example = "12")
-	private String userID;
+	private String userId;
 
 	@Schema(description = "Signal if the message has been viewed or not", example = "true")
 	private boolean viewed;
@@ -87,7 +86,7 @@ public class MessageResponse {
 	private List<AttachmentResponse> attachments;
 
 	@Schema(description = "List of email headers on the message")
-	private List<EmailHeaderDTO> emailHeaders;
+	private List<EmailHeader> emailHeaders;
 
 	@Getter
 	@Setter
@@ -99,19 +98,11 @@ public class MessageResponse {
 	public static class AttachmentResponse {
 
 		@NotBlank
-		@Schema(
-			description = "The attachment ID",
-			example = "aGVsbG8gd29ybGQK",
-			requiredMode = REQUIRED
-		)
-		private String attachmentID;
+		@Schema(description = "The attachment ID", example = "aGVsbG8gd29ybGQK", requiredMode = REQUIRED)
+		private String attachmentId;
 
 		@NotBlank
-		@Schema(
-			description = "The attachment filename",
-			example = "test.txt",
-			requiredMode = REQUIRED
-		)
+		@Schema(description = "The attachment filename", example = "test.txt", requiredMode = REQUIRED)
 		private String name;
 
 		@Schema(description = "The attachment content type", example = "text/plain")

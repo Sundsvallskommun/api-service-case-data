@@ -7,18 +7,19 @@ import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.Optional;
 
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostUpdate;
+import jakarta.persistence.PrePersist;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import jakarta.persistence.PostPersist;
-import jakarta.persistence.PostUpdate;
-import jakarta.persistence.PrePersist;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 
 @Component
 public class ErrandListener {
@@ -37,23 +38,23 @@ public class ErrandListener {
 	}
 
 	@PrePersist
-	private void beforePersist(final Errand errand) {
+	private void beforePersist(final ErrandEntity errand) {
 		errand.setErrandNumber(generateErrandNumber(errand.getCaseType()));
 	}
 
 	@PostPersist
-	private void postPersist(final Errand errand) {
+	private void postPersist(final ErrandEntity errand) {
 		errand.setCreatedByClient(incomingRequestFilter.getSubscriber());
 		errand.setCreatedBy(incomingRequestFilter.getAdUser());
 		LOG.info("Created errand with errandNumber: {}. Subscriber: {}. AD-user: {}", errand.getErrandNumber(), incomingRequestFilter.getSubscriber(), incomingRequestFilter.getAdUser());
 	}
 
 	@PostUpdate
-	private void beforeUpdate(final Errand errand) {
+	private void beforeUpdate(final ErrandEntity errand) {
 		updateErrandFields(errand);
 	}
 
-	void updateErrandFields(final Errand errand) {
+	void updateErrandFields(final ErrandEntity errand) {
 		if (errand != null) {
 			// Behöver sätta datum för att errand-objektet ska uppdateras med ny version o.s.v.
 			errand.setUpdated(OffsetDateTime.now());
@@ -67,11 +68,11 @@ public class ErrandListener {
 		// Get the latest errand with an errandNumber and only the ones within the same year. If this year i different, a new
 		// sequenceNumber begins.
 		final var abbreviation = CaseType.valueOf(caseType).getAbbreviation();
-		final Optional<Errand> latestErrand = errandRepository.findAllByErrandNumberStartingWith(abbreviation)
+		final Optional<ErrandEntity> latestErrand = errandRepository.findAllByErrandNumberStartingWith(abbreviation)
 			.stream()
 			.filter(errand -> isNotBlank(errand.getErrandNumber()))
 			.filter(errand -> LocalDate.now().getYear() == extractYearFromErrandNumber(errand))
-			.max(Comparator.comparing(Errand::getCreated));
+			.max(Comparator.comparing(ErrandEntity::getCreated));
 
 		// Default start value = 1
 		long nextSequenceNumber = 1;
@@ -87,7 +88,8 @@ public class ErrandListener {
 			String.format("%06d", nextSequenceNumber);
 	}
 
-	private int extractYearFromErrandNumber(Errand errand) {
+	private int extractYearFromErrandNumber(ErrandEntity errand) {
 		return Integer.parseInt(errand.getErrandNumber().substring(errand.getErrandNumber().lastIndexOf(DELIMITER) - 4, errand.getErrandNumber().lastIndexOf(DELIMITER)));
 	}
+
 }

@@ -6,12 +6,14 @@ import org.javers.spring.annotation.JaversSpringDataAuditable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import se.sundsvall.casedata.integration.db.model.DecisionEntity;
+
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import se.sundsvall.casedata.integration.db.model.Decision;
 
 @JaversSpringDataAuditable
 @CircuitBreaker(name = "decisionRepository")
-public interface DecisionRepository extends JpaRepository<Decision, Long>, JpaSpecificationExecutor<Decision> {
+public interface DecisionRepository extends JpaRepository<DecisionEntity, Long>, JpaSpecificationExecutor<DecisionEntity> {
 
-	Optional<Decision> findByIdAndMunicipalityId(final Long id, final String municipalityId);
+	Optional<DecisionEntity> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
+
 }

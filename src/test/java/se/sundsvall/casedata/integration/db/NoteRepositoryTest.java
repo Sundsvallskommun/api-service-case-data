@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
-import se.sundsvall.casedata.integration.db.model.Note;
+import se.sundsvall.casedata.integration.db.model.NoteEntity;
 
 /**
  * NoteRepository tests.
@@ -30,7 +30,7 @@ import se.sundsvall.casedata.integration.db.model.Note;
  * @see /src/test/resources/db/testdata-junit.sql for data setup.
  */
 @DataJpaTest
-@Import(value = { JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class })
+@Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
 @Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
@@ -99,7 +99,7 @@ class NoteRepositoryTest {
 		final var title = "title";
 		final var version = 2;
 
-		final var entity = Note.builder()
+		final var entity = NoteEntity.builder()
 			.withNoteType(noteType)
 			.withText(text)
 			.withTitle(title)
@@ -119,4 +119,5 @@ class NoteRepositoryTest {
 		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 		assertThat(result.getVersion()).isEqualTo(version);
 	}
+
 }

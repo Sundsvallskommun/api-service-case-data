@@ -6,6 +6,8 @@ import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
+import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 
@@ -22,14 +24,21 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 	files = "classpath:/MessageIT/",
 	classes = Application.class)
 @Sql({
-	"/db/script/truncate.sql",
-	"/db/script/messageIT-testdata.sql"
+	"/db/scripts/truncate.sql",
+	"/db/scripts/messageIT-testdata.sql"
 })
 class MessageIT extends AbstractAppTest {
 
 	private static final String MESSAGE_ID = "a8883fb9-60b4-4f38-9f48-642070ff49ee";
+
 	private static final String ERRAND_NUMBER = "ERRAND-NUMBER-1";
-	private static final String PATH = "/2281/messages";
+
+	private static final Long ERRAND_ID = 1L;
+
+
+	private static final String ERRAND_NUMBER_PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/messages/" + ERRAND_NUMBER;
+
+	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + ERRAND_ID + "/messages";
 
 
 	@Autowired
@@ -39,7 +48,7 @@ class MessageIT extends AbstractAppTest {
 	void test01_getMessageOnErrand() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(PATH + "/" + ERRAND_NUMBER)
+			.withServicePath(ERRAND_NUMBER_PATH)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -57,7 +66,7 @@ class MessageIT extends AbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(PATH + "/" + ERRAND_NUMBER)
+			.withServicePath(ERRAND_NUMBER_PATH)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
@@ -75,4 +84,5 @@ class MessageIT extends AbstractAppTest {
 
 		assertThat(messageRepository.findById(MESSAGE_ID).orElseThrow().isViewed()).isFalse();
 	}
+
 }

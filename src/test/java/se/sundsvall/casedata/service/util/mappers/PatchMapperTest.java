@@ -2,20 +2,21 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
-import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
-import static se.sundsvall.casedata.TestUtil.createDecision;
-import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createAttachmentEntity;
+import static se.sundsvall.casedata.TestUtil.createDecisionEntity;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createFacility;
-import static se.sundsvall.casedata.TestUtil.createFacilityDTO;
+import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 import static se.sundsvall.casedata.TestUtil.createNote;
-import static se.sundsvall.casedata.TestUtil.createNoteDTO;
-import static se.sundsvall.casedata.TestUtil.createPatchDecisionDto;
-import static se.sundsvall.casedata.TestUtil.createPatchErrandDto;
+import static se.sundsvall.casedata.TestUtil.createNoteEntity;
+import static se.sundsvall.casedata.TestUtil.createPatchDecision;
+import static se.sundsvall.casedata.TestUtil.createPatchErrand;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
-import static se.sundsvall.casedata.TestUtil.createStakeholderDTO;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddress;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
+import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchAttachment;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecision;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchErrand;
@@ -35,8 +36,8 @@ class PatchMapperTest {
 
 	@Test
 	void patchErrandTest() {
-		final var errand = createErrand();
-		final var patch = createPatchErrandDto();
+		final var errand = createErrandEntity();
+		final var patch = createPatchErrand();
 
 		final var patchedErrand = patchErrand(errand, patch);
 
@@ -52,14 +53,14 @@ class PatchMapperTest {
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
 			assertThat(e.getApplicationReceived()).isEqualTo(patch.getApplicationReceived());
 			assertThat(e.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
-			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(facilityDTO -> toFacility(facilityDTO, MUNICIPALITY_ID)).toList());
+			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(facilityDTO -> toFacilityEntity(facilityDTO, MUNICIPALITY_ID, NAMESPACE)).toList());
 		});
 	}
 
 	@Test
 	void patchDecisionTest() {
-		final var decision = createDecision();
-		final var patch = createPatchDecisionDto();
+		final var decision = createDecisionEntity();
+		final var patch = createPatchDecision();
 
 		final var patchedDecision = patchDecision(decision, patch);
 
@@ -76,8 +77,8 @@ class PatchMapperTest {
 
 	@Test
 	void patchStakeholderOrganizationTest() {
-		final var stakeholder = createStakeholder();
-		final var patch = createStakeholderDTO(StakeholderType.ORGANIZATION, List.of(StakeholderRole.OPERATOR.name()));
+		final var stakeholder = createStakeholderEntity();
+		final var patch = createStakeholder(StakeholderType.ORGANIZATION, List.of(StakeholderRole.OPERATOR.name()));
 
 		final var patchedStakeholder = patchStakeholder(stakeholder, patch);
 
@@ -88,16 +89,16 @@ class PatchMapperTest {
 			assertThat(s.getAuthorizedSignatory()).isEqualTo(patch.getAuthorizedSignatory());
 			assertThat(s.getAdAccount()).isEqualTo(patch.getAdAccount());
 			assertThat(s.getRoles()).isEqualTo(patch.getRoles());
-			assertThat(s.getAddresses()).isEqualTo(patch.getAddresses().stream().map(EntityMapper::toAddress).toList());
-			assertThat(s.getContactInformation()).isEqualTo(patch.getContactInformation().stream().map(EntityMapper::toContactInformation).toList());
+			assertThat(s.getAddresses()).isEqualTo(patch.getAddresses().stream().map(EntityMapper::toAddressEntity).toList());
+			assertThat(s.getContactInformation()).isEqualTo(patch.getContactInformation().stream().map(EntityMapper::toContactInformationEntity).toList());
 			assertThat(s.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
 		});
 	}
 
 	@Test
 	void patchStakeholderPersonTest() {
-		final var stakeholder = createStakeholder();
-		final var patch = createStakeholderDTO(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name()));
+		final var stakeholder = createStakeholderEntity();
+		final var patch = createStakeholder(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name()));
 
 		final var patchedStakeholder = patchStakeholder(stakeholder, patch);
 
@@ -108,16 +109,16 @@ class PatchMapperTest {
 			assertThat(s.getLastName()).isEqualTo(patch.getLastName());
 			assertThat(s.getAdAccount()).isEqualTo(patch.getAdAccount());
 			assertThat(s.getRoles()).isEqualTo(patch.getRoles());
-			assertThat(s.getAddresses()).isEqualTo(patch.getAddresses().stream().map(EntityMapper::toAddress).toList());
-			assertThat(s.getContactInformation()).isEqualTo(patch.getContactInformation().stream().map(EntityMapper::toContactInformation).toList());
+			assertThat(s.getAddresses()).isEqualTo(patch.getAddresses().stream().map(EntityMapper::toAddressEntity).toList());
+			assertThat(s.getContactInformation()).isEqualTo(patch.getContactInformation().stream().map(EntityMapper::toContactInformationEntity).toList());
 			assertThat(s.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
 		});
 	}
 
 	@Test
 	void patchAttachmentTest() {
-		final var attachment = createAttachment();
-		final var patch = createAttachmentDTO(AttachmentCategory.POLICE_REPORT);
+		final var attachment = createAttachmentEntity();
+		final var patch = createAttachment(AttachmentCategory.POLICE_REPORT);
 
 		final var patchedAttachment = patchAttachment(attachment, patch);
 
@@ -134,8 +135,8 @@ class PatchMapperTest {
 
 	@Test
 	void patchNoteTest() {
-		final var note = createNote();
-		final var patch = createNoteDTO();
+		final var note = createNoteEntity();
+		final var patch = createNote();
 
 		final var patchedNote = patchNote(note, patch);
 
@@ -151,13 +152,13 @@ class PatchMapperTest {
 
 	@Test
 	void patchFacilityTest() {
-		final var facility = createFacility();
-		final var patch = createFacilityDTO();
+		final var facility = createFacilityEntity();
+		final var patch = createFacility();
 
 		final var patchedFacility = patchFacility(facility, patch);
 
 		assertThat(patchedFacility).isNotNull().satisfies(f -> {
-			assertThat(f.getAddress()).isEqualTo(toAddress(patch.getAddress()));
+			assertThat(f.getAddressEntity()).isEqualTo(toAddressEntity(patch.getAddress()));
 			assertThat(f.getDescription()).isEqualTo(patch.getDescription());
 			assertThat(f.getFacilityCollectionName()).isEqualTo(patch.getFacilityCollectionName());
 			assertThat(f.getFacilityType()).isEqualTo(patch.getFacilityType());
@@ -165,4 +166,5 @@ class PatchMapperTest {
 			assertThat(f.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
 		});
 	}
+
 }

@@ -2,12 +2,13 @@ package se.sundsvall.casedata.integration.db.listeners;
 
 import java.time.OffsetDateTime;
 
-import org.springframework.stereotype.Component;
-
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
-import se.sundsvall.casedata.integration.db.model.Stakeholder;
+
+import org.springframework.stereotype.Component;
+
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 
 @Component
 public class StakeholderListener {
@@ -19,16 +20,17 @@ public class StakeholderListener {
 	}
 
 	@PostPersist
-	private void postPersist(final Stakeholder stakeholder) {
+	private void postPersist(final StakeholderEntity stakeholder) {
 		errandListener.updateErrandFields(stakeholder.getErrand());
 	}
 
 	@PreUpdate
 	@PreRemove
-	private void preUpdate(final Stakeholder stakeholder) {
+	private void preUpdate(final StakeholderEntity stakeholder) {
 		if (stakeholder.getCreated() == null) {
 			stakeholder.setCreated(OffsetDateTime.now());
 		}
 		errandListener.updateErrandFields(stakeholder.getErrand());
 	}
+
 }

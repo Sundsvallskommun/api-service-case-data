@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,12 +34,12 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.FacilityRepository;
 import se.sundsvall.casedata.integration.db.NoteRepository;
 import se.sundsvall.casedata.integration.db.StakeholderRepository;
-import se.sundsvall.casedata.integration.db.model.Attachment;
-import se.sundsvall.casedata.integration.db.model.Decision;
-import se.sundsvall.casedata.integration.db.model.Errand;
-import se.sundsvall.casedata.integration.db.model.Facility;
-import se.sundsvall.casedata.integration.db.model.Note;
-import se.sundsvall.casedata.integration.db.model.Stakeholder;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
+import se.sundsvall.casedata.integration.db.model.DecisionEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.FacilityEntity;
+import se.sundsvall.casedata.integration.db.model.NoteEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 
 @ExtendWith(MockitoExtension.class)
 class HistoryServiceTest {
@@ -71,99 +72,119 @@ class HistoryServiceTest {
 	private HistoryService historyService;
 
 	@Test
-	void testFindFacilityHistoryNothingFound() {
-		when(facilityRepositoryMock.findByIdAndMunicipalityId(123L, MUNICIPALITY_ID)).thenReturn(Optional.empty());
+	void testFindFacilityHistoryOnErrandNothingFound() {
+		// Arrange
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(facilityRepositoryMock.findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> historyService.findFacilityHistory(123L, MUNICIPALITY_ID))
+		// Act & Assert
+		assertThatThrownBy(() -> historyService.findFacilityHistoryOnErrand(1L, 123L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Facility not found");
 
-		verify(facilityRepositoryMock).findByIdAndMunicipalityId(123L, MUNICIPALITY_ID);
+		verify(facilityRepositoryMock).findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(javers);
 	}
 
 	@Test
 	void testFindHistoryFacilityFound() {
-		when(facilityRepositoryMock.findByIdAndMunicipalityId(123L, MUNICIPALITY_ID)).thenReturn(Optional.of(mock(Facility.class)));
+		// Arrange
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(facilityRepositoryMock.findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(mock(FacilityEntity.class)));
 		when(javers.findChanges(any(JqlQuery.class))).thenReturn(new Changes(List.of(mock(Change.class)), PrettyValuePrinter.getDefault()));
 		when(javers.getJsonConverter()).thenReturn(jsonConverter);
 		when(jsonConverter.toJson(any(Changes.class))).thenReturn("[]");
 
-		// call the findHistory() method with an existing facility id
-		final String jsonChanges = historyService.findFacilityHistory(123L, MUNICIPALITY_ID);
+		// Act
+		final String jsonChanges = historyService.findFacilityHistoryOnErrand(1L, 123L, MUNICIPALITY_ID, NAMESPACE);
 
-		// assert that the returned JSON string is not empty
+		// Assert
 		assertThat(jsonChanges).isNotEmpty();
-
-		// verify that the findChanges() method of the Javers dependency was called with the expected QueryBuilder argument
 		verify(javers).findChanges(any(JqlQuery.class));
 		verifyNoMoreInteractions(javers);
 	}
 
 	@Test
-	void testFindAttachmentHistory() {
-		when(attachmentRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(mock(Attachment.class)));
+	void testFindAttachmentHistoryOnErrand() {
+		// Arrange
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(attachmentRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(mock(AttachmentEntity.class)));
 		when(javers.findChanges(any(JqlQuery.class))).thenReturn(new Changes(List.of(mock(Change.class)), PrettyValuePrinter.getDefault()));
 		when(javers.getJsonConverter()).thenReturn(jsonConverter);
 		when(jsonConverter.toJson(any(Changes.class))).thenReturn("[]");
 
-		final var jsonChanges = historyService.findAttachmentHistory(1L, MUNICIPALITY_ID);
-		assertThat(jsonChanges).isNotEmpty();
+		// Act
+		final var jsonChanges = historyService.findAttachmentHistoryOnErrand(1L, 1L, MUNICIPALITY_ID, NAMESPACE);
 
+		// Assert
+		assertThat(jsonChanges).isNotEmpty();
 		verify(javers).findChanges(any(JqlQuery.class));
 		verifyNoMoreInteractions(javers);
 	}
 
 	@Test
-	void testFindAttachmentHistoryNothingFound() {
-		when(attachmentRepositoryMock.findByIdAndMunicipalityId(123L, MUNICIPALITY_ID)).thenReturn(Optional.empty());
+	void testFindAttachmentHistoryOnErrandNothingFound() {
+		// Arrange
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(attachmentRepositoryMock.findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> historyService.findAttachmentHistory(123L, MUNICIPALITY_ID))
+		// Act & Assert
+		assertThatThrownBy(() -> historyService.findAttachmentHistoryOnErrand(1L, 123L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Attachment not found");
 
-		verify(attachmentRepositoryMock).findByIdAndMunicipalityId(123L, MUNICIPALITY_ID);
+		verify(attachmentRepositoryMock).findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(javers);
 	}
 
 	@Test
-	void testFindDecisionHistory() {
-		when(decisionRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(mock(Decision.class)));
+	void testFindDecisionHistoryOnErrand() {
+		// Arrange
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(decisionRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(mock(DecisionEntity.class)));
 		when(javers.findChanges(any(JqlQuery.class))).thenReturn(new Changes(List.of(mock(Change.class)), PrettyValuePrinter.getDefault()));
 		when(javers.getJsonConverter()).thenReturn(jsonConverter);
 		when(jsonConverter.toJson(any(Changes.class))).thenReturn("[]");
 
-		final var jsonChanges = historyService.findDecisionHistory(1L, MUNICIPALITY_ID);
-		assertThat(jsonChanges).isNotEmpty();
+		// Act
+		final var jsonChanges = historyService.findDecisionHistoryOnErrand(1L, 1L, MUNICIPALITY_ID, NAMESPACE);
 
+		// Assert
+		assertThat(jsonChanges).isNotEmpty();
 		verify(javers).findChanges(any(JqlQuery.class));
 		verifyNoMoreInteractions(javers);
 	}
 
 	@Test
-	void testFindDecisionHistoryNothingFound() {
-		when(decisionRepositoryMock.findByIdAndMunicipalityId(123L, MUNICIPALITY_ID)).thenReturn(Optional.empty());
+	void testFindDecisionHistoryOnErrandNothingFound() {
+		// Arrange
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(decisionRepositoryMock.findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> historyService.findDecisionHistory(123L, MUNICIPALITY_ID))
+		// Act & Assert
+		assertThatThrownBy(() -> historyService.findDecisionHistoryOnErrand(1L, 123L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Decision not found");
 
-
-		verify(decisionRepositoryMock).findByIdAndMunicipalityId(123L, MUNICIPALITY_ID);
+		verify(decisionRepositoryMock).findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(javers);
 	}
 
 	@Test
 	void testFindErrandHistory() {
-		when(errandRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(mock(Errand.class)));
+		// Arrange
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(mock(ErrandEntity.class)));
 		when(javers.findChanges(any(JqlQuery.class))).thenReturn(new Changes(List.of(mock(Change.class)), PrettyValuePrinter.getDefault()));
 		when(javers.getJsonConverter()).thenReturn(jsonConverter);
 		when(jsonConverter.toJson(any(Changes.class))).thenReturn("[]");
 
-		final var jsonChanges = historyService.findErrandHistory(1L, MUNICIPALITY_ID);
+		// Act
+		final var jsonChanges = historyService.findErrandHistory(1L, MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
 		assertThat(jsonChanges).isNotEmpty();
 
 		verify(javers).findChanges(any(JqlQuery.class));
@@ -172,25 +193,32 @@ class HistoryServiceTest {
 
 	@Test
 	void testFindErrandHistoryNothingFound() {
-		when(errandRepositoryMock.findByIdAndMunicipalityId(123L, MUNICIPALITY_ID)).thenReturn(Optional.empty());
+		// Arrange
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> historyService.findErrandHistory(123L, MUNICIPALITY_ID))
+		// Act & Assert
+		assertThatThrownBy(() -> historyService.findErrandHistory(123L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Errand not found");
 
-		verify(errandRepositoryMock).findByIdAndMunicipalityId(123L, MUNICIPALITY_ID);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(javers);
 	}
 
 	@Test
-	void testFindNoteHistory() {
-		when(noteRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(mock(Note.class)));
+	void testFindNoteHistoryOnErrand() {
+		// Arrange
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(noteRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(mock(NoteEntity.class)));
 		when(javers.findChanges(any(JqlQuery.class))).thenReturn(new Changes(List.of(mock(Change.class)), PrettyValuePrinter.getDefault()));
 		when(javers.getJsonConverter()).thenReturn(jsonConverter);
 		when(jsonConverter.toJson(any(Changes.class))).thenReturn("[]");
 
-		final var jsonChanges = historyService.findNoteHistory(1L, MUNICIPALITY_ID);
+		// Act
+		final var jsonChanges = historyService.findNoteHistoryOnErrand(1L, 1L, MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
 		assertThat(jsonChanges).isNotEmpty();
 
 		verify(javers).findChanges(any(JqlQuery.class));
@@ -198,26 +226,33 @@ class HistoryServiceTest {
 	}
 
 	@Test
-	void testFindNoteHistoryNothingFound() {
-		when(noteRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.empty());
+	void testFindNoteHistoryOnErrandNothingFound() {
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(noteRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> historyService.findNoteHistory(1L, MUNICIPALITY_ID))
+
+		// Act & Assert
+		assertThatThrownBy(() -> historyService.findNoteHistoryOnErrand(1L, 1L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Note not found");
 
-		verify(noteRepositoryMock).findByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
+		verify(noteRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(javers);
 	}
 
 	@Test
 	void testFindHistoryStakeholderFound() {
-		when(stakeholderRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(mock(Stakeholder.class)));
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(stakeholderRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(mock(StakeholderEntity.class)));
 		when(javers.findChanges(any(JqlQuery.class))).thenReturn(new Changes(List.of(mock(Change.class)), PrettyValuePrinter.getDefault()));
 		when(javers.getJsonConverter()).thenReturn(jsonConverter);
 		when(jsonConverter.toJson(any(Changes.class))).thenReturn("[]");
 
-		final var jsonChanges = historyService.findStakeholderHistory(1L, MUNICIPALITY_ID);
+		// Act
+		final var jsonChanges = historyService.findStakeholderHistoryOnErrand(1L, 1L, MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
 		assertThat(jsonChanges).isNotEmpty();
 
 		verify(javers).findChanges(any(JqlQuery.class));
@@ -226,14 +261,17 @@ class HistoryServiceTest {
 
 	@Test
 	void testFindHistoryNothingFound() {
-		when(stakeholderRepositoryMock.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.empty());
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(stakeholderRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> historyService.findStakeholderHistory(1L, MUNICIPALITY_ID))
+		// Act & Assert
+		assertThatThrownBy(() -> historyService.findStakeholderHistoryOnErrand(1L, 1L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Stakeholder not found");
 
-		verify(stakeholderRepositoryMock).findByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
+		verify(stakeholderRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(javers);
 	}
+
 }
