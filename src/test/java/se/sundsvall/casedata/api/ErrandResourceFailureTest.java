@@ -50,7 +50,7 @@ class ErrandResourceFailureTest {
 		body.getExtraParameters().put("longParameter", longExtraParameter);
 
 		// Act
-		var response = webTestClient.post()
+		webTestClient.post()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
@@ -75,7 +75,7 @@ class ErrandResourceFailureTest {
 		body.setFacilities(facilities);
 
 		// Act
-		var response = webTestClient.post()
+		webTestClient.post()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
@@ -98,7 +98,7 @@ class ErrandResourceFailureTest {
 		facility.setFacilityType(facilityType);
 
 		// Act
-		var response = webTestClient.post()
+		webTestClient.post()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities").build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(facility)
@@ -124,7 +124,7 @@ class ErrandResourceFailureTest {
 		final var facilities = List.of(facility);
 
 		// Act
-		var response = webTestClient.put()
+		webTestClient.put()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/facilities").build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(facilities)
