@@ -145,7 +145,7 @@ public final class TestUtil {
 			.withId(1L)
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
-			.withDecisionType(getRandomDecisionType())
+			.withDecisionType(DecisionType.FINAL)
 			.withDecisionOutcome(DecisionOutcome.CANCELLATION)
 			.withDescription(RandomStringUtils.secure().next(30, true, false))
 			.withDecidedBy(createStakeholder(StakeholderType.PERSON, List.of(StakeholderRole.OPERATOR.name())))
