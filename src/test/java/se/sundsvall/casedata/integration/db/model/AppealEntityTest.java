@@ -3,7 +3,7 @@ package se.sundsvall.casedata.integration.db.model;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToStringExcluding;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
@@ -34,7 +34,7 @@ class AppealEntityTest {
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
 			hasValidBeanEquals(),
-			hasValidBeanToString()));
+			hasValidBeanToStringExcluding("errand")));
 	}
 
 	@Test

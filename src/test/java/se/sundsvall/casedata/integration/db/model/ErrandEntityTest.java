@@ -74,6 +74,8 @@ class ErrandEntityTest {
 		var extraParameters = Map.of("key", "value");
 		var created = now();
 		var updated = now();
+		var suspensionFrom = now();
+		var suspensionTo = now();
 
 		// Act
 		var bean = ErrandEntity.builder()
@@ -106,12 +108,14 @@ class ErrandEntityTest {
 			.withExtraParameters(extraParameters)
 			.withCreated(created)
 			.withUpdated(updated)
+			.withSuspendedFrom(suspensionFrom)
+			.withSuspendedTo(suspensionTo)
 			.build();
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertBasicFields(bean, id, errandNumber, municipalityId, namespace, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase);
-		assertDates(bean, startDate, endDate, applicationReceived, created, updated);
+		assertDates(bean, startDate, endDate, applicationReceived, created, updated, suspensionFrom, suspensionTo);
 		assertCollections(bean, statuses, stakeholders, facilities, decisions, appeals, notes, extraParameters);
 		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
 	}
@@ -131,12 +135,14 @@ class ErrandEntityTest {
 		assertThat(bean.getPhase()).isEqualTo(phase);
 	}
 
-	private void assertDates(ErrandEntity bean, LocalDate startDate, LocalDate endDate, OffsetDateTime applicationReceived, OffsetDateTime created, OffsetDateTime updated) {
+	private void assertDates(ErrandEntity bean, LocalDate startDate, LocalDate endDate, OffsetDateTime applicationReceived, OffsetDateTime created, OffsetDateTime updated, OffsetDateTime suspensionFrom, OffsetDateTime suspensionTo) {
 		assertThat(bean.getStartDate()).isEqualTo(startDate);
 		assertThat(bean.getEndDate()).isEqualTo(endDate);
 		assertThat(bean.getApplicationReceived()).isEqualTo(applicationReceived);
 		assertThat(bean.getCreated()).isEqualTo(created);
 		assertThat(bean.getUpdated()).isEqualTo(updated);
+		assertThat(bean.getSuspendedFrom()).isEqualTo(suspensionFrom);
+		assertThat(bean.getSuspendedTo()).isEqualTo(suspensionTo);
 	}
 
 	private void assertCollections(ErrandEntity bean, List<StatusEntity> statuses, List<StakeholderEntity> stakeholders, List<FacilityEntity> facilities, List<DecisionEntity> decisions, List<AppealEntity> appeals, List<NoteEntity> notes, Map<String, String> extraParameters) {

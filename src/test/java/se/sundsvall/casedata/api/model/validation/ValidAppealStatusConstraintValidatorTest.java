@@ -16,6 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
+import se.sundsvall.casedata.api.model.validation.impl.ValidAppealStatusConstraintValidator;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 
 class ValidAppealStatusConstraintValidatorTest {

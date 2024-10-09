@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.api.model.validation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -8,21 +9,18 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-import se.sundsvall.casedata.api.model.validation.impl.ValidMapValueSizeValidator;
+import se.sundsvall.casedata.api.model.validation.impl.ValidSuspensionConstraintValidator;
 
-@Constraint(validatedBy = ValidMapValueSizeValidator.class)
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Documented
+@Target({ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidMapValueSize {
+@Constraint(validatedBy = ValidSuspensionConstraintValidator.class)
+public @interface ValidSuspension {
 
-	String message() default "Map value length is not valid";
-
-	boolean nullable() default true;
+	String message() default "to date must be after from date";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
-
-	int max() default Integer.MAX_VALUE;
 
 }

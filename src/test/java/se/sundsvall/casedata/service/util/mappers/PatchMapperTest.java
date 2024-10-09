@@ -41,7 +41,7 @@ class PatchMapperTest {
 
 		final var patchedErrand = patchErrand(errand, patch);
 
-		assertThat(patchedErrand).isNotNull().satisfies(e -> {
+		assertThat(patchedErrand).isNotNull().hasNoNullFieldsOrPropertiesExcept("id").satisfies(e -> {
 			assertThat(e.getCaseType()).isEqualTo(patch.getCaseType().name());
 			assertThat(e.getDescription()).isEqualTo(patch.getDescription());
 			assertThat(e.getExternalCaseId()).isEqualTo(patch.getExternalCaseId());
@@ -53,6 +53,8 @@ class PatchMapperTest {
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
 			assertThat(e.getApplicationReceived()).isEqualTo(patch.getApplicationReceived());
 			assertThat(e.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
+			assertThat(e.getSuspendedFrom()).isEqualTo(patch.getSuspension().getSuspendedFrom());
+			assertThat(e.getSuspendedTo()).isEqualTo(patch.getSuspension().getSuspendedTo());
 			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(facilityDTO -> toFacilityEntity(facilityDTO, MUNICIPALITY_ID, NAMESPACE)).toList());
 		});
 	}
@@ -64,7 +66,7 @@ class PatchMapperTest {
 
 		final var patchedDecision = patchDecision(decision, patch);
 
-		assertThat(patchedDecision).isNotNull().satisfies(d -> {
+		assertThat(patchedDecision).isNotNull().hasNoNullFieldsOrPropertiesExcept("errand", "municipalityId", "namespace").satisfies(d -> {
 			assertThat(d.getDecisionType()).isEqualTo(patch.getDecisionType());
 			assertThat(d.getDecisionOutcome()).isEqualTo(patch.getDecisionOutcome());
 			assertThat(d.getDescription()).isEqualTo(patch.getDescription());
@@ -82,7 +84,7 @@ class PatchMapperTest {
 
 		final var patchedStakeholder = patchStakeholder(stakeholder, patch);
 
-		assertThat(patchedStakeholder).isNotNull().satisfies(s -> {
+		assertThat(patchedStakeholder).isNotNull().hasNoNullFieldsOrPropertiesExcept("errand").satisfies(s -> {
 			assertThat(s.getType()).isEqualTo(patch.getType());
 			assertThat(s.getOrganizationName()).isEqualTo(patch.getOrganizationName());
 			assertThat(s.getOrganizationNumber()).isEqualTo(patch.getOrganizationNumber());
@@ -102,7 +104,7 @@ class PatchMapperTest {
 
 		final var patchedStakeholder = patchStakeholder(stakeholder, patch);
 
-		assertThat(patchedStakeholder).isNotNull().satisfies(s -> {
+		assertThat(patchedStakeholder).isNotNull().hasNoNullFieldsOrPropertiesExcept("errand").satisfies(s -> {
 			assertThat(s.getType()).isEqualTo(patch.getType());
 			assertThat(s.getPersonId()).isEqualTo(patch.getPersonId());
 			assertThat(s.getFirstName()).isEqualTo(patch.getFirstName());
@@ -122,7 +124,7 @@ class PatchMapperTest {
 
 		final var patchedAttachment = patchAttachment(attachment, patch);
 
-		assertThat(patchedAttachment).isNotNull().satisfies(a -> {
+		assertThat(patchedAttachment).isNotNull().hasNoNullFieldsOrPropertiesExcept("municipalityId", "namespace").satisfies(a -> {
 			assertThat(a.getCategory()).isEqualTo(patch.getCategory());
 			assertThat(a.getName()).isEqualTo(patch.getName());
 			assertThat(a.getNote()).isEqualTo(patch.getNote());
@@ -140,7 +142,7 @@ class PatchMapperTest {
 
 		final var patchedNote = patchNote(note, patch);
 
-		assertThat(patchedNote).isNotNull().satisfies(n -> {
+		assertThat(patchedNote).isNotNull().hasNoNullFieldsOrPropertiesExcept("municipalityId", "namespace").satisfies(n -> {
 			assertThat(n.getTitle()).isEqualTo(patch.getTitle());
 			assertThat(n.getText()).isEqualTo(patch.getText());
 			assertThat(n.getNoteType()).isEqualTo(patch.getNoteType());
@@ -157,7 +159,7 @@ class PatchMapperTest {
 
 		final var patchedFacility = patchFacility(facility, patch);
 
-		assertThat(patchedFacility).isNotNull().satisfies(f -> {
+		assertThat(patchedFacility).isNotNull().hasNoNullFieldsOrPropertiesExcept("errand", "municipalityId", "namespace").satisfies(f -> {
 			assertThat(f.getAddressEntity()).isEqualTo(toAddressEntity(patch.getAddress()));
 			assertThat(f.getDescription()).isEqualTo(patch.getDescription());
 			assertThat(f.getFacilityCollectionName()).isEqualTo(patch.getFacilityCollectionName());

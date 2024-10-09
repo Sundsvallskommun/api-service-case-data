@@ -14,6 +14,7 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.impl.ValidAttachmentCategoryConstraintValidator;
 
 /**
  * The annotated element must be a valid {@link AttachmentCategory}.

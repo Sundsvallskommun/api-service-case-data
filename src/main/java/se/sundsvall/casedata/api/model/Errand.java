@@ -127,6 +127,10 @@ public class Errand {
 	@Schema(description = "The most recent user who updated the errand", accessMode = Schema.AccessMode.READ_ONLY)
 	private String updatedBy;
 
+	@Valid
+	@Schema(description = "Suspension information")
+	private Suspension suspension;
+
 	@Schema(description = "Extra parameters for the errand", example = "{\"key1\":\"value1\",\"key2\":\"value2\"}")
 	@ValidMapValueSize(max = 8192)
 	@Builder.Default

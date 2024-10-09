@@ -12,6 +12,8 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
+import se.sundsvall.casedata.api.model.validation.impl.ValidMessageTypeConstraintValidator;
+
 @Documented
 @Target({FIELD, CONSTRUCTOR, PARAMETER})
 @Retention(RUNTIME)
