@@ -1,11 +1,14 @@
 package se.sundsvall.casedata.api.model.validation;
 
 import jakarta.validation.ConstraintValidatorContext;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+
+import se.sundsvall.casedata.api.model.validation.impl.ValidTimelinessReviewValueConstraintValidator;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
 import java.util.Arrays;
@@ -19,6 +22,7 @@ import static org.mockito.Mockito.when;
 class ValidTimelinessReviewValueConstraintValidatorTest {
 
 	private ValidTimelinessReviewValueConstraintValidator validator;
+
 	private ConstraintValidatorContext contextMock;
 
 	@BeforeEach
@@ -29,7 +33,7 @@ class ValidTimelinessReviewValueConstraintValidatorTest {
 
 	@ParameterizedTest
 	@EnumSource(TimelinessReview.class)
-	void isValid_withValidValue (final TimelinessReview status) {
+	void isValid_withValidValue(final TimelinessReview status) {
 		final var validValue = status.toString();
 		assertThat(validator.isValid(validValue, contextMock)).isTrue();
 	}
@@ -59,4 +63,5 @@ class ValidTimelinessReviewValueConstraintValidatorTest {
 		verify(contextMock).buildConstraintViolationWithTemplate("Timeliness review value cannot be null or empty. Valid values are: " + Arrays.toString(TimelinessReview.values()));
 		verify(builderMock).addConstraintViolation();
 	}
+
 }

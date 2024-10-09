@@ -68,7 +68,7 @@ class EntityMapperTest {
 		final var errandDto = createErrand();
 		final var errand = toErrandEntity(errandDto, MUNICIPALITY_ID, NAMESPACE);
 
-		assertThat(errand).satisfies(e -> {
+		assertThat(errand).hasNoNullFieldsOrProperties().satisfies(e -> {
 			assertThat(e.getErrandNumber()).isEqualTo(errandDto.getErrandNumber());
 			assertThat(e.getUpdatedByClient()).isEqualTo(errandDto.getUpdatedByClient());
 			assertThat(e.getUpdatedBy()).isEqualTo(errandDto.getUpdatedBy());
@@ -77,6 +77,7 @@ class EntityMapperTest {
 			assertThat(e.getCreatedByClient()).isEqualTo(errandDto.getCreatedByClient());
 			assertThat(e.getCaseTitleAddition()).isEqualTo(errandDto.getCaseTitleAddition());
 			assertThat(e.getDescription()).isEqualTo(errandDto.getDescription());
+
 		});
 	}
 
@@ -85,7 +86,7 @@ class EntityMapperTest {
 		final var errand = createErrandEntity();
 		final var errandDto = toErrand(errand);
 
-		assertThat(errandDto).satisfies(e -> {
+		assertThat(errandDto).hasNoNullFieldsOrPropertiesExcept("messageIds").satisfies(e -> {
 			assertThat(e.getErrandNumber()).isEqualTo(errand.getErrandNumber());
 			assertThat(e.getUpdatedByClient()).isEqualTo(errand.getUpdatedByClient());
 			assertThat(e.getUpdatedBy()).isEqualTo(errand.getUpdatedBy());
@@ -103,7 +104,7 @@ class EntityMapperTest {
 		final var errandEntity = createErrandEntity();
 		final var decision = toDecisionEntity(decisionDto, errandEntity, MUNICIPALITY_ID, NAMESPACE);
 
-		assertThat(decision).satisfies(d -> {
+		assertThat(decision).hasNoNullFieldsOrProperties().satisfies(d -> {
 			assertThat(d.getDescription()).isEqualTo(decisionDto.getDescription());
 			assertThat(d.getDecidedAt()).isEqualTo(decisionDto.getDecidedAt());
 			assertThat(d.getUpdated()).isEqualTo(decisionDto.getUpdated());
@@ -121,7 +122,7 @@ class EntityMapperTest {
 		final var decision = createDecisionEntity();
 		final var decisionDto = toDecision(decision);
 
-		assertThat(decisionDto).satisfies(d -> {
+		assertThat(decisionDto).hasNoNullFieldsOrProperties().satisfies(d -> {
 			assertThat(d.getDescription()).isEqualTo(decision.getDescription());
 			assertThat(d.getDecidedAt()).isEqualTo(decision.getDecidedAt());
 			assertThat(d.getUpdated()).isEqualTo(decision.getUpdated());
@@ -139,7 +140,7 @@ class EntityMapperTest {
 		final var noteDto = createNote();
 		final var note = toNoteEntity(noteDto, MUNICIPALITY_ID, NAMESPACE);
 
-		assertThat(note).satisfies(n -> {
+		assertThat(note).hasNoNullFieldsOrPropertiesExcept("errand").satisfies(n -> {
 			assertThat(n.getText()).isEqualTo(noteDto.getText());
 			assertThat(n.getNoteType()).isEqualTo(noteDto.getNoteType());
 			assertThat(n.getExtraParameters()).isEqualTo(noteDto.getExtraParameters());
@@ -158,7 +159,7 @@ class EntityMapperTest {
 		final var note = createNoteEntity();
 		final var noteDto = toNote(note);
 
-		assertThat(noteDto).satisfies(n -> {
+		assertThat(noteDto).hasNoNullFieldsOrProperties().satisfies(n -> {
 			assertThat(n.getText()).isEqualTo(note.getText());
 			assertThat(n.getNoteType()).isEqualTo(note.getNoteType());
 			assertThat(n.getExtraParameters()).isEqualTo(note.getExtraParameters());
@@ -177,7 +178,7 @@ class EntityMapperTest {
 		final var facilityDto = createFacility();
 		final var facility = toFacilityEntity(facilityDto, MUNICIPALITY_ID, NAMESPACE);
 
-		assertThat(facility).satisfies(f -> {
+		assertThat(facility).hasNoNullFieldsOrPropertiesExcept("errand").satisfies(f -> {
 			assertThat(f.getFacilityType()).isEqualTo(facilityDto.getFacilityType());
 			assertThat(f.getUpdated()).isEqualTo(facilityDto.getUpdated());
 			assertThat(f.getCreated()).isEqualTo(facilityDto.getCreated());
@@ -194,7 +195,7 @@ class EntityMapperTest {
 		final var facility = createFacilityEntity();
 		final var facilityDto = toFacility(facility);
 
-		assertThat(facilityDto).satisfies(f -> {
+		assertThat(facilityDto).hasNoNullFieldsOrProperties().satisfies(f -> {
 			assertThat(f.getDescription()).isEqualTo(facility.getDescription());
 			assertThat(f.getFacilityType()).isEqualTo(facility.getFacilityType());
 			assertThat(f.getUpdated()).isEqualTo(facility.getUpdated());
@@ -211,7 +212,7 @@ class EntityMapperTest {
 		final var stakeholderDto = createStakeholder(StakeholderType.ORGANIZATION, List.of(StakeholderRole.APPLICANT.name()));
 		final var stakeholder = toStakeholderEntity(stakeholderDto, MUNICIPALITY_ID, NAMESPACE);
 
-		assertThat(stakeholder).satisfies(s -> {
+		assertThat(stakeholder).hasNoNullFieldsOrPropertiesExcept("errand", "firstName", "lastName", "personId").satisfies(s -> {
 			assertThat(s.getAdAccount()).isEqualTo(stakeholderDto.getAdAccount());
 			assertThat(s.getAuthorizedSignatory()).isEqualTo(stakeholderDto.getAuthorizedSignatory());
 			assertThat(s.getCreated()).isEqualTo(stakeholderDto.getCreated());
@@ -232,7 +233,7 @@ class EntityMapperTest {
 		final var stakeholder = createStakeholderEntity();
 		final var stakeholderDto = toStakeholder(stakeholder);
 
-		assertThat(stakeholderDto).satisfies(s -> {
+		assertThat(stakeholderDto).hasNoNullFieldsOrProperties().satisfies(s -> {
 			assertThat(s.getAdAccount()).isEqualTo(stakeholder.getAdAccount());
 			assertThat(s.getAuthorizedSignatory()).isEqualTo(stakeholder.getAuthorizedSignatory());
 			assertThat(s.getCreated()).isEqualTo(stakeholder.getCreated());
@@ -253,7 +254,7 @@ class EntityMapperTest {
 		final var attachmentDto = createAttachment(AttachmentCategory.POLICE_REPORT);
 		final var attachment = toAttachmentEntity(attachmentDto, MUNICIPALITY_ID, NAMESPACE);
 
-		assertThat(attachment).satisfies(a -> {
+		assertThat(attachment).hasNoNullFieldsOrProperties().satisfies(a -> {
 			assertThat(a.getCategory()).isEqualTo(attachmentDto.getCategory());
 			assertThat(a.getCreated()).isEqualTo(attachmentDto.getCreated());
 			assertThat(a.getUpdated()).isEqualTo(attachmentDto.getUpdated());
@@ -267,7 +268,7 @@ class EntityMapperTest {
 		final var attachment = createAttachmentEntity();
 		final var attachmentDto = toAttachment(attachment);
 
-		assertThat(attachmentDto).satisfies(a -> {
+		assertThat(attachmentDto).hasNoNullFieldsOrProperties().satisfies(a -> {
 			assertThat(a.getCategory()).isEqualTo(attachment.getCategory());
 			assertThat(a.getCreated()).isEqualTo(attachment.getCreated());
 			assertThat(a.getUpdated()).isEqualTo(attachment.getUpdated());
@@ -281,7 +282,7 @@ class EntityMapperTest {
 		final var statusDto = createStatus();
 		final var status = toStatusEntity(statusDto);
 
-		assertThat(status).satisfies(s -> {
+		assertThat(status).hasNoNullFieldsOrProperties().satisfies(s -> {
 			assertThat(s.getDateTime()).isEqualTo(statusDto.getDateTime());
 			assertThat(s.getStatusType()).isEqualTo(statusDto.getStatusType());
 			assertThat(s.getDescription()).isEqualTo(statusDto.getDescription());
@@ -293,7 +294,7 @@ class EntityMapperTest {
 		final var status = createStatusEntity();
 		final var statusDto = toStatus(status);
 
-		assertThat(statusDto).satisfies(s -> {
+		assertThat(statusDto).hasNoNullFieldsOrProperties().satisfies(s -> {
 			assertThat(s.getDateTime()).isEqualTo(status.getDateTime());
 			assertThat(s.getStatusType()).isEqualTo(status.getStatusType());
 			assertThat(s.getDescription()).isEqualTo(status.getDescription());
@@ -305,7 +306,7 @@ class EntityMapperTest {
 		final var coordinatesDto = createCoordinates();
 		final var coordinates = toCoordinatesEntity(coordinatesDto);
 
-		assertThat(coordinates).satisfies(c -> {
+		assertThat(coordinates).hasNoNullFieldsOrProperties().satisfies(c -> {
 			assertThat(c.getLatitude()).isEqualTo(coordinatesDto.getLatitude());
 			assertThat(c.getLongitude()).isEqualTo(coordinatesDto.getLongitude());
 		});
@@ -316,7 +317,7 @@ class EntityMapperTest {
 		final var coordinates = createCoordinatesEntity();
 		final var coordinatesDto = toCoordinates(coordinates);
 
-		assertThat(coordinatesDto).satisfies(c -> {
+		assertThat(coordinatesDto).hasNoNullFieldsOrProperties().satisfies(c -> {
 			assertThat(c.getLatitude()).isEqualTo(coordinates.getLatitude());
 			assertThat(c.getLongitude()).isEqualTo(coordinates.getLongitude());
 		});
@@ -327,7 +328,7 @@ class EntityMapperTest {
 		final var addressDto = createAddress(AddressCategory.VISITING_ADDRESS);
 		final var address = toAddressEntity(addressDto);
 
-		assertThat(address).satisfies(a -> {
+		assertThat(address).hasNoNullFieldsOrProperties().satisfies(a -> {
 			assertThat(a.getStreet()).isEqualTo(addressDto.getStreet());
 			assertThat(a.getCity()).isEqualTo(addressDto.getCity());
 			assertThat(a.getCountry()).isEqualTo(addressDto.getCountry());
@@ -346,7 +347,7 @@ class EntityMapperTest {
 		final var address = createAddressEntity();
 		final var addressDto = toAddress(address);
 
-		assertThat(addressDto).satisfies(a -> {
+		assertThat(addressDto).hasNoNullFieldsOrProperties().satisfies(a -> {
 			assertThat(a.getStreet()).isEqualTo(address.getStreet());
 			assertThat(a.getCity()).isEqualTo(address.getCity());
 			assertThat(a.getCountry()).isEqualTo(address.getCountry());
@@ -365,7 +366,7 @@ class EntityMapperTest {
 		final var contactInformationDto = createContactInformation(ContactType.EMAIL);
 		final var contactInformation = toContactInformationEntity(contactInformationDto);
 
-		assertThat(contactInformation).satisfies(c -> {
+		assertThat(contactInformation).hasNoNullFieldsOrProperties().satisfies(c -> {
 			assertThat(c.getContactType()).isEqualTo(contactInformationDto.getContactType());
 			assertThat(c.getValue()).isEqualTo(contactInformationDto.getValue());
 		});
@@ -376,7 +377,7 @@ class EntityMapperTest {
 		final var contactInformation = createContactInformationEntity();
 		final var contactInformationDto = toContactInformation(contactInformation);
 
-		assertThat(contactInformationDto).satisfies(c -> {
+		assertThat(contactInformationDto).hasNoNullFieldsOrProperties().satisfies(c -> {
 			assertThat(c.getContactType()).isEqualTo(contactInformation.getContactType());
 			assertThat(c.getValue()).isEqualTo(contactInformation.getValue());
 		});
@@ -387,7 +388,7 @@ class EntityMapperTest {
 		final var lawDto = createLaw();
 		final var law = toLawEntity(lawDto);
 
-		assertThat(law).satisfies(l -> {
+		assertThat(law).hasNoNullFieldsOrProperties().satisfies(l -> {
 			assertThat(l.getArticle()).isEqualTo(lawDto.getArticle());
 			assertThat(l.getSfs()).isEqualTo(lawDto.getSfs());
 			assertThat(l.getChapter()).isEqualTo(lawDto.getChapter());
@@ -400,7 +401,7 @@ class EntityMapperTest {
 		final var law = createLawEntity();
 		final var lawDto = toLaw(law);
 
-		assertThat(lawDto).satisfies(l -> {
+		assertThat(lawDto).hasNoNullFieldsOrProperties().satisfies(l -> {
 			assertThat(l.getArticle()).isEqualTo(law.getArticle());
 			assertThat(l.getSfs()).isEqualTo(law.getSfs());
 			assertThat(l.getChapter()).isEqualTo(law.getChapter());

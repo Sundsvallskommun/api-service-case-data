@@ -17,6 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.api.model.validation.impl.ValidStakeholderRoleConstraintValidator;
 
 class ValidStakeholderRoleConstraintValidatorTest {
 

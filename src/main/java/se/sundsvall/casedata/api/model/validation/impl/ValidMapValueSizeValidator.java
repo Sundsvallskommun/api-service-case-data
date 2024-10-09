@@ -1,9 +1,11 @@
-package se.sundsvall.casedata.api.model.validation;
+package se.sundsvall.casedata.api.model.validation.impl;
 
 import java.util.Map;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
+import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 
 import lombok.Setter;
 

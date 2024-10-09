@@ -57,6 +57,7 @@ class PatchErrandTest {
 		final var applicationReceived = OffsetDateTime.now();
 		final var extraParameters = createExtraParameters();
 		final var facilities = List.of(createFacility());
+		final var suspension = new Suspension();
 
 		// Act
 		final var result = PatchErrand.builder()
@@ -72,6 +73,7 @@ class PatchErrandTest {
 			.withApplicationReceived(applicationReceived)
 			.withExtraParameters(extraParameters)
 			.withFacilities(facilities)
+			.withSuspension(suspension)
 			.build();
 
 		// Assert
@@ -88,6 +90,7 @@ class PatchErrandTest {
 		assertThat(result.getApplicationReceived()).isEqualTo(applicationReceived);
 		assertThat(result.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(result.getFacilities()).isEqualTo(facilities);
+		assertThat(result.getSuspension()).isEqualTo(suspension);
 	}
 
 	@Test

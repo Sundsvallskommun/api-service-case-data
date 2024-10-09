@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -66,6 +67,10 @@ public class PatchErrand {
 	@Schema(description = "End date of the business if it is time-limited.", format = "date", example = "2022-06-01")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate endDate;
+
+	@Valid
+	@Schema(description = "Suspension information")
+	private Suspension suspension;
 
 	@Schema(description = "The time the application was received.", example = "2022-01-01T12:00:00Z")
 	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)

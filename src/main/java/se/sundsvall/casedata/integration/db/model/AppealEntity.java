@@ -113,10 +113,11 @@ public class AppealEntity {
 
 	@Override
 	public String toString() {
+		var errandId = errand != null ? errand.getId() : null;
 		return "AppealEntity{" +
 			"id=" + id +
 			", version=" + version +
-			", errand=" + errand +
+			", errand=" + errandId +
 			", municipalityId='" + municipalityId + '\'' +
 			", namespace='" + namespace + '\'' +
 			", description='" + description + '\'' +
