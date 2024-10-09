@@ -1,7 +1,9 @@
-package se.sundsvall.casedata.api.model.validation;
+package se.sundsvall.casedata.api.model.validation.impl;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
+import se.sundsvall.casedata.api.model.validation.ValidAppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 
 import java.util.Arrays;
@@ -16,7 +18,7 @@ public class ValidAppealStatusConstraintValidator implements ConstraintValidator
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
 
-		if(value == null || value.isBlank()) {
+		if (value == null || value.isBlank()) {
 			context.disableDefaultConstraintViolation();
 			context.buildConstraintViolationWithTemplate("Appeal status cannot be null or empty. Valid values are: " + Arrays.toString(AppealStatus.values()))
 				.addConstraintViolation();
@@ -26,7 +28,7 @@ public class ValidAppealStatusConstraintValidator implements ConstraintValidator
 		final var isValid = Arrays.stream(AppealStatus.values())
 			.anyMatch(appealStatus -> appealStatus.toString().equals(value));
 
-		if(!isValid) {
+		if (!isValid) {
 			context.disableDefaultConstraintViolation();
 			context.buildConstraintViolationWithTemplate("Invalid appeal status. Valid values are: " + Arrays.toString(AppealStatus.values()))
 				.addConstraintViolation();
@@ -34,4 +36,5 @@ public class ValidAppealStatusConstraintValidator implements ConstraintValidator
 
 		return isValid;
 	}
+
 }

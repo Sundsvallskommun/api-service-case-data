@@ -97,6 +97,8 @@
         application_received datetime(6),
         created datetime(6),
         id bigint not null auto_increment,
+        suspended_from datetime(6),
+        suspended_to datetime(6),
         updated datetime(6),
         created_by varchar(36),
         updated_by varchar(36),

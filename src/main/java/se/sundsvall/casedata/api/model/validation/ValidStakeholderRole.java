@@ -13,6 +13,7 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.api.model.validation.impl.ValidStakeholderRoleConstraintValidator;
 
 /**
  * The annotated element must be a valid {@link StakeholderRole}.

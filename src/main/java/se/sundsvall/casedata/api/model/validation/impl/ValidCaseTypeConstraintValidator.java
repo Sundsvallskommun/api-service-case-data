@@ -1,10 +1,11 @@
-package se.sundsvall.casedata.api.model.validation;
+package se.sundsvall.casedata.api.model.validation.impl;
 
 import java.util.Arrays;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import se.sundsvall.casedata.api.model.validation.ValidCaseType;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 public class ValidCaseTypeConstraintValidator implements ConstraintValidator<ValidCaseType, String> {

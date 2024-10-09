@@ -1,5 +1,7 @@
 package se.sundsvall.casedata.integration.db.model;
 
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -180,6 +182,14 @@ public class ErrandEntity {
 	@DiffIgnore
 	private OffsetDateTime updated;
 
+	@Column(name = "suspended_to")
+	@TimeZoneStorage(NORMALIZE)
+	private OffsetDateTime suspendedTo;
+
+	@Column(name = "suspended_from")
+	@TimeZoneStorage(NORMALIZE)
+	private OffsetDateTime suspendedFrom;
+
 	@ElementCollection
 	@CollectionTable(name = "errand_extra_parameters",
 		joinColumns = @JoinColumn(name = "errand_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_errand_extra_parameters_errand_id")))
@@ -220,6 +230,8 @@ public class ErrandEntity {
 			", updatedBy='" + updatedBy + '\'' +
 			", created=" + created +
 			", updated=" + updated +
+			", suspendedTo=" + suspendedTo +
+			", suspendedFrom=" + suspendedFrom +
 			", extraParameters=" + extraParameters +
 			'}';
 	}

@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "9.0"
 servers:
-  - url: http://localhost:61063
+  - url: http://localhost:52651
     description: Generated server url
 tags:
   - name: MessageAttachments
@@ -1970,18 +1970,18 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "201":
-          description: Created - Successful operation
-          headers:
-            Location:
-              description: Location of the created resource
-              style: simple
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "201":
+          description: Created - Successful operation
+          headers:
+            Location:
+              description: Location of the created resource
+              style: simple
   /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}:
     get:
       tags:
@@ -2730,12 +2730,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "200":
           description: OK - Successful operation
           content:
@@ -2745,6 +2739,12 @@ paths:
             application/problem+json:
               schema:
                 type: string
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}/history:
     get:
       tags:
@@ -2792,12 +2792,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "200":
           description: OK - Successful operation
           content:
@@ -2807,6 +2801,12 @@ paths:
             application/problem+json:
               schema:
                 type: string
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/messageattachments/{attachmentId}:
     get:
       tags:
@@ -2961,12 +2961,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "200":
           description: OK - Successful operation
           content:
@@ -2976,6 +2970,12 @@ paths:
             application/problem+json:
               schema:
                 type: string
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}/history:
     get:
       tags:
@@ -3023,12 +3023,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "200":
           description: OK - Successful operation
           content:
@@ -3038,6 +3032,12 @@ paths:
             application/problem+json:
               schema:
                 type: string
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}/history:
     get:
       tags:
@@ -3085,12 +3085,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "200":
           description: OK - Successful operation
           content:
@@ -3100,6 +3094,12 @@ paths:
             application/problem+json:
               schema:
                 type: string
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}/history:
     get:
       tags:
@@ -3147,12 +3147,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "200":
           description: OK - Successful operation
           content:
@@ -3162,6 +3156,12 @@ paths:
             application/problem+json:
               schema:
                 type: string
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/attachments/errand/{errandNumber}:
     get:
       tags:
@@ -3272,12 +3272,12 @@ components:
           type: object
           additionalProperties:
             type: object
+        status:
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
     StatusType:
       type: object
       properties:
@@ -3407,12 +3407,12 @@ components:
           type: object
           additionalProperties:
             type: object
+        status:
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
         suppressed:
           type: array
           items:
@@ -4122,6 +4122,8 @@ components:
           type: string
           description: The most recent user who updated the errand
           readOnly: true
+        suspension:
+          $ref: "#/components/schemas/Suspension"
         extraParameters:
           type: object
           additionalProperties:
@@ -4214,6 +4216,20 @@ components:
       enum:
         - INTERNAL
         - PUBLIC
+    Suspension:
+      type: object
+      properties:
+        suspendedTo:
+          type: string
+          description: Timestamp when the suspension wears off
+          format: date-time
+          example: 2000-10-31T01:30:00+02:00
+        suspendedFrom:
+          type: string
+          description: Timestamp when the suspension started
+          format: date-time
+          example: 2000-10-31T01:30:00+02:00
+      description: Suspension information
     Classification:
       type: string
       description: Message classification
@@ -4699,8 +4715,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
-        unpaged:
-          type: boolean
         paged:
           type: boolean
         pageNumber:
@@ -4709,6 +4723,8 @@ components:
         pageSize:
           type: integer
           format: int32
+        unpaged:
+          type: boolean
     SortObject:
       type: object
       properties:

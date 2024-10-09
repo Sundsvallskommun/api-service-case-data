@@ -12,14 +12,18 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import se.sundsvall.casedata.api.model.validation.impl.ValidTimelinessReviewValueConstraintValidator;
+
 @Documented
 @Target({FIELD, CONSTRUCTOR, PARAMETER})
 @Retention(RUNTIME)
 @Constraint(validatedBy = ValidTimelinessReviewValueConstraintValidator.class)
 public @interface ValidTimelinessReviewValue {
+
 	String message() default "Invalid timeliness review value";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
+
 }
