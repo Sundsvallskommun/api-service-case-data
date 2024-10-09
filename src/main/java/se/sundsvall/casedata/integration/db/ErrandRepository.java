@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.integration.db;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,5 +33,7 @@ public interface ErrandRepository extends JpaRepository<ErrandEntity, Long>, Jpa
 	boolean existsByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
 
 	void deleteByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
+
+	List<ErrandEntity> findAllBySuspendedToBefore(OffsetDateTime now);
 
 }
