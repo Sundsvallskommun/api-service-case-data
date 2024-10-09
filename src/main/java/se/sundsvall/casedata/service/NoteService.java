@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static java.text.MessageFormat.format;
 import static java.util.Collections.emptyList;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
@@ -15,6 +14,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.NoteRepository;
@@ -22,16 +22,12 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
-import io.github.resilience4j.retry.annotation.Retry;
-
 @Service
 public class NoteService {
 
-
 	private static final String NOTE_WAS_NOT_FOUND = "Note was not found";
 
-	private static final String NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Note with id: {0} was not found on errand with id: {1}";
-
+	private static final String NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Note with id: %s was not found on errand with id: %s";
 
 	private final NoteRepository noteRepository;
 
@@ -56,7 +52,7 @@ public class NoteService {
 			.stream()
 			.filter(note -> note.getId().equals(noteId))
 			.findAny()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, noteId, errandId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(noteId, errandId)));
 
 		patchNote(noteEntity, updatedNote);
 		noteRepository.save(noteEntity);
@@ -77,20 +73,20 @@ public class NoteService {
 		final var noteEntity = errandEntity.getNotes().stream()
 			.filter(note -> note.getId().equals(noteId))
 			.findAny()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, noteId, errandId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(noteId, errandId)));
 
 		return toNote(noteEntity);
 	}
 
 	public List<Note> getAllNotesOnErrand(final Long errandId, final String municipalityId, final String namespace, final Optional<NoteType> noteType) {
-		final var errand = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace).orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(ERRAND_WAS_NOT_FOUND, errandId)));
+		final var errand = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace).orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_WAS_NOT_FOUND.formatted(errandId)));
 
 		return noteType.map(type -> errand.getNotes().stream()
 			.filter(note -> note.getNoteType() == type)
 			.map(EntityMapper::toNote)
 			.toList()).orElseGet(() -> errand.getNotes().stream()
-			.map(EntityMapper::toNote)
-			.toList());
+				.map(EntityMapper::toNote)
+				.toList());
 	}
 
 	@Retry(name = "OptimisticLocking")
@@ -99,7 +95,7 @@ public class NoteService {
 		final var noteToRemove = errand.getNotes().stream()
 			.filter(note -> note.getId().equals(noteId))
 			.findAny()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, noteId, errandId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(noteId, errandId)));
 		errand.getNotes().remove(noteToRemove);
 		errandRepository.save(errand);
 		processService.updateProcess(errand);
@@ -118,9 +114,6 @@ public class NoteService {
 
 	public ErrandEntity getErrandByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
 		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
-				format(ERRAND_WAS_NOT_FOUND, errandId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_WAS_NOT_FOUND.formatted(errandId)));
 	}
-
-
 }
