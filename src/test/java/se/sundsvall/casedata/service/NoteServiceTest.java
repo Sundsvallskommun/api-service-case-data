@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +35,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.ThrowableProblem;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.model.Note;
@@ -66,10 +67,10 @@ class NoteServiceTest {
 	@Test
 	void updateNoteOnErrandNotFound() {
 		// Arrange
-		var note = new Note();
-		var errandId = 1L;
-		var noteId = 1L;
-		var errand = new ErrandEntity();
+		final var note = new Note();
+		final var errandId = 1L;
+		final var noteId = 1L;
+		final var errand = new ErrandEntity();
 		errand.setNotes(null);
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
@@ -171,7 +172,7 @@ class NoteServiceTest {
 		assertThatThrownBy(() -> noteService.getAllNotesOnErrand(3213L, MUNICIPALITY_ID, NAMESPACE, noteType))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
-			.hasFieldOrPropertyWithValue("detail", "Errand with id: 3,213 was not found");
+			.hasFieldOrPropertyWithValue("detail", "Errand with id: 3213 was not found");
 	}
 
 	@ParameterizedTest
