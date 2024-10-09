@@ -82,6 +82,7 @@ public class ErrandService {
 		return toErrand(resultErrand);
 	}
 
+	@Transactional
 	public void updateErrand(final Long errandId, final String municipalityId, final String namespace, final PatchErrand patchErrand) {
 		final var oldErrand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
 		final var updatedErrand = PatchMapper.patchErrand(oldErrand, patchErrand);
