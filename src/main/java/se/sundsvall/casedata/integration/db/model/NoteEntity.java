@@ -118,7 +118,7 @@ public class NoteEntity {
 
 	@Override
 	public String toString() {
-		var errandId = errand == null ? 0 : errand.getId();
+		var errandId = (errand == null || errand.getId() == null) ? 0 : errand.getId();
 		return "NoteEntity{" +
 			"id=" + id +
 			", version=" + version +

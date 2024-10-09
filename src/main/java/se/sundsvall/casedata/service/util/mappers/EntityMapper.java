@@ -18,6 +18,7 @@ import se.sundsvall.casedata.api.model.Law;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.Status;
+import se.sundsvall.casedata.api.model.Suspension;
 import se.sundsvall.casedata.integration.db.model.AddressEntity;
 import se.sundsvall.casedata.integration.db.model.AppealEntity;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
@@ -61,6 +62,7 @@ public final class EntityMapper {
 				.withUpdatedByClient(errandEntity.getUpdatedByClient())
 				.withCreatedBy(errandEntity.getCreatedBy())
 				.withUpdatedBy(errandEntity.getUpdatedBy())
+				.withSuspension(Suspension.builder().withSuspendedFrom(errandEntity.getSuspendedFrom()).withSuspendedTo(errandEntity.getSuspendedTo()).build())
 				.withNotes(new ArrayList<>(errandEntity.getNotes().stream().map(EntityMapper::toNote).toList()))
 				.withStatuses(new ArrayList<>(errandEntity.getStatuses().stream().map(EntityMapper::toStatus).toList()))
 				.withStakeholders(new ArrayList<>(errandEntity.getStakeholders().stream().map(EntityMapper::toStakeholder).toList()))
@@ -99,6 +101,8 @@ public final class EntityMapper {
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
 				.withUpdatedBy(errand.getUpdatedBy())
+				.withSuspendedFrom(Optional.ofNullable(errand.getSuspension()).map(Suspension::getSuspendedFrom).orElse(null))
+				.withSuspendedTo(Optional.ofNullable(errand.getSuspension()).map(Suspension::getSuspendedTo).orElse(null))
 				.withExtraParameters(Optional.of(errand.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.withStatuses(new ArrayList<>(Optional.ofNullable(errand.getStatuses())
 					.orElse(emptyList())
@@ -242,6 +246,7 @@ public final class EntityMapper {
 				.withValidFrom(decision.getValidFrom())
 				.withValidTo(decision.getValidTo())
 				.withMunicipalityId(municipalityId)
+				.withNamespace(namespace)
 				.withLaw(new ArrayList<>(decision.getLaw().stream().map(EntityMapper::toLawEntity).toList()))
 				.withAttachments(new ArrayList<>(decision.getAttachments().stream().map(e -> toAttachmentEntity(e, municipalityId, namespace)).toList()))
 				.withExtraParameters(Optional.ofNullable(decision.getExtraParameters()).orElse(new LinkedHashMap<>()))

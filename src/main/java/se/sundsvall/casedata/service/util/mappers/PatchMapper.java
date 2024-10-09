@@ -41,6 +41,12 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getEndDate()).ifPresent(errand::setEndDate);
 		Optional.ofNullable(patch.getApplicationReceived()).ifPresent(errand::setApplicationReceived);
 		Optional.ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(patch.getFacilities().stream().map(facility -> toFacilityEntity(facility, errand.getMunicipalityId(), errand.getNamespace())).toList()));
+		Optional.ofNullable(patch.getSuspension()).ifPresent(
+			suspension -> {
+				errand.setSuspendedFrom(suspension.getSuspendedFrom());
+				errand.setSuspendedTo(suspension.getSuspendedTo());
+			});
+
 		return errand;
 	}
 

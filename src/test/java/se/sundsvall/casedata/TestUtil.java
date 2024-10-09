@@ -35,6 +35,7 @@ import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.Status;
+import se.sundsvall.casedata.api.model.Suspension;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
@@ -94,6 +95,13 @@ public final class TestUtil {
 			.withStatuses(new ArrayList<>(List.of(createStatus())))
 			.withDecisions(new ArrayList<>(List.of(createDecision())))
 			.withAppeals(new ArrayList<>(List.of(createAppeal())))
+			.withUpdatedBy(RandomStringUtils.secure().next(10, true, false))
+			.withCreatedBy(RandomStringUtils.secure().next(10, true, false))
+			.withUpdatedByClient(RandomStringUtils.secure().next(10, true, false))
+			.withCreatedByClient(RandomStringUtils.secure().next(10, true, false))
+			.withProcessId(RandomStringUtils.secure().next(10, true, true))
+			.withCreated(getRandomOffsetDateTime())
+			.withUpdated(getRandomOffsetDateTime())
 			.withNotes(new ArrayList<>(List.of(createNote(), createNote(), createNote())))
 			.withStakeholders(new ArrayList<>(List.of(
 				createStakeholder(StakeholderType.PERSON, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole()))),
@@ -102,6 +110,7 @@ public final class TestUtil {
 				RandomStringUtils.secure().next(10, true, true),
 				RandomStringUtils.secure().next(10, true, true),
 				RandomStringUtils.secure().next(10, true, true))))
+			.withSuspension(Suspension.builder().withSuspendedFrom(OffsetDateTime.now()).withSuspendedTo(OffsetDateTime.now().plusDays(5)).build())
 			.withExtraParameters(createExtraParameters())
 			.build();
 	}
@@ -134,6 +143,8 @@ public final class TestUtil {
 	public static Decision createDecision() {
 		return Decision.builder()
 			.withId(1L)
+			.withCreated(getRandomOffsetDateTime())
+			.withUpdated(getRandomOffsetDateTime())
 			.withDecisionType(getRandomDecisionType())
 			.withDecisionOutcome(DecisionOutcome.CANCELLATION)
 			.withDescription(RandomStringUtils.secure().next(30, true, false))
@@ -183,6 +194,8 @@ public final class TestUtil {
 	public static Attachment createAttachment(final AttachmentCategory category) {
 
 		return Attachment.builder()
+			.withCreated(getRandomOffsetDateTime())
+			.withUpdated(getRandomOffsetDateTime())
 			.withId(new Random().nextLong(1, 100000))
 			.withCategory(category.toString())
 			.withName(RandomStringUtils.secure().next(10, true, false) + ".pdf")
@@ -190,6 +203,7 @@ public final class TestUtil {
 			.withExtension(".pdf")
 			.withMimeType("application/pdf")
 			.withFile("dGVzdA==")
+			.withErrandNumber(RandomStringUtils.secure().next(10, true, true))
 			.withExtraParameters(createExtraParameters())
 			.build();
 	}
@@ -228,6 +242,8 @@ public final class TestUtil {
 	public static Stakeholder createStakeholder(final StakeholderType stakeholderType, final List<String> stakeholderRoles) {
 		if (stakeholderType.equals(StakeholderType.PERSON)) {
 			return Stakeholder.builder()
+				.withCreated(getRandomOffsetDateTime())
+				.withUpdated(getRandomOffsetDateTime())
 				.withType(StakeholderType.PERSON)
 				.withPersonId(UUID.randomUUID().toString())
 				.withAdAccount(RandomStringUtils.secure().next(10, true, false))
@@ -240,6 +256,8 @@ public final class TestUtil {
 				.build();
 		} else {
 			return Stakeholder.builder()
+				.withCreated(getRandomOffsetDateTime())
+				.withUpdated(getRandomOffsetDateTime())
 				.withType(StakeholderType.ORGANIZATION)
 				.withOrganizationNumber((new Random().nextInt(999999 - 111111) + 111111) + "-" + (new Random().nextInt(9999 - 1111) + 1111))
 				.withOrganizationName(RandomStringUtils.secure().next(20, true, false))
@@ -288,6 +306,8 @@ public final class TestUtil {
 
 	public static Note createNote() {
 		return Note.builder()
+			.withCreated(getRandomOffsetDateTime())
+			.withUpdated(getRandomOffsetDateTime())
 			.withId(new Random().nextLong(1, 100000))
 			.withTitle(RandomStringUtils.secure().next(10, true, false))
 			.withText(RandomStringUtils.secure().next(10, true, false))
@@ -312,6 +332,7 @@ public final class TestUtil {
 			.withApplicationReceived(getRandomOffsetDateTime())
 			.withExtraParameters(createExtraParameters())
 			.withFacilities(new ArrayList<>(List.of(createFacility())))
+			.withSuspension(Suspension.builder().withSuspendedFrom(OffsetDateTime.now()).withSuspendedTo(OffsetDateTime.now().plusDays(5)).build())
 			.build();
 	}
 
@@ -362,6 +383,7 @@ public final class TestUtil {
 
 	public static FacilityEntity createFacilityEntity() {
 		return FacilityEntity.builder()
+			.withFacilityCollectionName("facilityCollectionName")
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
 			.withDescription("description")
@@ -433,6 +455,11 @@ public final class TestUtil {
 
 	public static DecisionEntity createDecisionEntity() {
 		return DecisionEntity.builder()
+			.withDecisionType(DecisionType.PROPOSED)
+			.withDescription("description")
+			.withDecidedBy(createStakeholderEntity())
+			.withValidFrom(getRandomOffsetDateTime())
+			.withValidTo(getRandomOffsetDateTime())
 			.withExtraParameters(createExtraParameters())
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
