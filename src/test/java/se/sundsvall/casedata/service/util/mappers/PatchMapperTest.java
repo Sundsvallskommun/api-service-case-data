@@ -11,8 +11,10 @@ import static se.sundsvall.casedata.TestUtil.createFacility;
 import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 import static se.sundsvall.casedata.TestUtil.createNote;
 import static se.sundsvall.casedata.TestUtil.createNoteEntity;
+import static se.sundsvall.casedata.TestUtil.createNotificationEntity;
 import static se.sundsvall.casedata.TestUtil.createPatchDecision;
 import static se.sundsvall.casedata.TestUtil.createPatchErrand;
+import static se.sundsvall.casedata.TestUtil.createPatchNotification;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
@@ -169,4 +171,21 @@ class PatchMapperTest {
 		});
 	}
 
+	@Test
+	void patchNotificationTest() {
+		final var notificationEntity = createNotificationEntity(null);
+		final var patchNotification = createPatchNotification(null);
+
+		final var patchedNotificationEntity = PatchMapper.patchNotification(notificationEntity, patchNotification);
+
+		assertThat(patchedNotificationEntity).isNotNull().satisfies(patchedEntity -> {
+			assertThat(patchedEntity.getContent()).isEqualTo(patchNotification.getContent());
+			assertThat(patchedEntity.getDescription()).isEqualTo(patchNotification.getDescription());
+			assertThat(patchedEntity.getExpires()).isEqualTo(patchNotification.getExpires());
+			assertThat(patchedEntity.getOwnerFullName()).isEqualTo(patchNotification.getOwnerFullName());
+			assertThat(patchedEntity.getOwnerId()).isEqualTo(patchNotification.getOwnerId());
+			assertThat(patchedEntity.getType()).isEqualTo(patchNotification.getType());
+			assertThat(patchedEntity.isAcknowledged()).isEqualTo(patchNotification.isAcknowledged());
+		});
+	}
 }

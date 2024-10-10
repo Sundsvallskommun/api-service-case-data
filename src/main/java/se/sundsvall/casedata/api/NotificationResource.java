@@ -41,7 +41,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchNotification;
-import se.sundsvall.casedata.api.model.PostNotification;
 import se.sundsvall.casedata.service.NotificationService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -49,7 +48,9 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}/notifications")
 @Tag(name = "Notifications", description = "User notifications operations")
-@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = { Problem.class, ConstraintViolationProblem.class })))
+@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
+	Problem.class, ConstraintViolationProblem.class
+})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 class NotificationResource {
@@ -60,7 +61,9 @@ class NotificationResource {
 		this.notificationService = notificationService;
 	}
 
-	@GetMapping(produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	@GetMapping(produces = {
+		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
+	})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	@Operation(summary = "Get notifications", description = "Get notifications for the provided namespace, municipality and ownerId")
 	ResponseEntity<List<Notification>> getNotifications(
@@ -88,7 +91,7 @@ class NotificationResource {
 	ResponseEntity<Void> createNotification(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Valid @NotNull @RequestBody final PostNotification notification) {
+		@Valid @NotNull @RequestBody final Notification notification) {
 
 		final var result = notificationService.createNotification(municipalityId, namespace, notification);
 		return created(fromPath("/{municipalityId}/{namespace}/notifications/{notificationId}")

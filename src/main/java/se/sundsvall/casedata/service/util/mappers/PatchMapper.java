@@ -12,6 +12,7 @@ import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.api.model.PatchAppeal;
 import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.api.model.PatchNotification;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.AppealEntity;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
@@ -19,6 +20,7 @@ import se.sundsvall.casedata.integration.db.model.DecisionEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
+import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
@@ -120,4 +122,13 @@ public final class PatchMapper {
 		return facility;
 	}
 
+	public static NotificationEntity patchNotification(final NotificationEntity notificationEntity, final PatchNotification patch) {
+		Optional.ofNullable(patch.getContent()).ifPresent(notificationEntity::setContent);
+		Optional.ofNullable(patch.getDescription()).ifPresent(notificationEntity::setDescription);
+		Optional.ofNullable(patch.getExpires()).ifPresent(notificationEntity::setExpires);
+		Optional.ofNullable(patch.getOwnerFullName()).ifPresent(notificationEntity::setOwnerFullName);
+		Optional.ofNullable(patch.getOwnerId()).ifPresent(notificationEntity::setOwnerId);
+		Optional.ofNullable(patch.getType()).ifPresent(notificationEntity::setType);
+		return notificationEntity;
+	}
 }

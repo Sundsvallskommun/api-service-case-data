@@ -7,6 +7,8 @@ import java.time.OffsetDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,35 +33,40 @@ public class Notification {
 	@Schema(description = "Timestamp when the notification was last modified", example = "2000-10-31T01:30:00.000+02:00", accessMode = READ_ONLY)
 	private OffsetDateTime modified;
 
-	@Schema(description = "Name of the owner of the notification", example = "Test Testorsson", accessMode = READ_ONLY)
+	@NotBlank
+	@Schema(description = "Name of the owner of the notification", example = "Test Testorsson")
 	private String ownerFullName;
 
-	@Schema(description = "Owner id of the notification", example = "AD01", accessMode = READ_ONLY)
+	@NotBlank
+	@Schema(description = "Owner id of the notification", example = "AD01")
 	private String ownerId;
 
-	@Schema(description = "User who created the notification", example = "TestUser", accessMode = READ_ONLY)
+	@Schema(description = "User who created the notification", example = "TestUser")
 	private String createdBy;
 
-	@Schema(description = "Full name of the user who created the notification", example = "Test Testorsson", accessMode = READ_ONLY)
+	@Schema(description = "Full name of the user who created the notification", example = "Test Testorsson")
 	private String createdByFullName;
 
-	@Schema(description = "Type of the notification", example = "CREATE", accessMode = READ_ONLY)
+	@NotBlank
+	@Schema(description = "Type of the notification", example = "CREATE")
 	private String type;
 
-	@Schema(description = "Description of the notification", example = "Some description of the notification", accessMode = READ_ONLY)
+	@NotBlank
+	@Schema(description = "Description of the notification", example = "Some description of the notification")
 	private String description;
 
-	@Schema(description = "Content of the notification", example = "Some content of the notification", accessMode = READ_ONLY)
+	@Schema(description = "Content of the notification", example = "Some content of the notification")
 	private String content;
 
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	@Schema(description = "Timestamp when the notification expires", example = "2000-10-31T01:30:00.000+02:00", accessMode = READ_ONLY)
+	@Schema(description = "Timestamp when the notification expires", example = "2000-10-31T01:30:00.000+02:00")
 	private OffsetDateTime expires;
 
-	@Schema(description = "Acknowledged status of the notification", example = "true", accessMode = READ_ONLY)
+	@Schema(description = "Acknowledged status of the notification", example = "true")
 	private boolean acknowledged;
 
-	@Schema(description = "Errand id of the notification", example = "1234", accessMode = READ_ONLY)
+	@NotNull
+	@Schema(description = "Errand id of the notification", example = "1234")
 	private Long errandId;
 
 	@Schema(description = "Errand number of the notification", example = "PRH-2022-000001", accessMode = READ_ONLY)

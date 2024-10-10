@@ -234,6 +234,25 @@
         primary key (note_id, extra_parameter_key)
     ) engine=InnoDB;
 
+    create table notification (
+        acknowledged bit,
+        created datetime(6),
+        errand_id bigint,
+        expires datetime(6),
+        modified datetime(6),
+        content varchar(255),
+        created_by varchar(255),
+        created_by_full_name varchar(255),
+        description varchar(255),
+        id varchar(255) not null,
+        municipality_id varchar(255) not null,
+        namespace varchar(255) not null,
+        owner_full_name varchar(255),
+        owner_id varchar(255),
+        type varchar(255),
+        primary key (id)
+    ) engine=InnoDB;
+
     create table stakeholder (
         version integer,
         created datetime(6),
@@ -355,6 +374,15 @@
     create index idx_note_namespace 
        on note (namespace);
 
+    create index idx_notification_municipality_id 
+       on notification (municipality_id);
+
+    create index idx_notification_namespace 
+       on notification (namespace);
+
+    create index idx_notification_owner_id 
+       on notification (owner_id);
+
     create index idx_stakeholder_municipality_id 
        on stakeholder (municipality_id);
 
@@ -445,6 +473,11 @@
        add constraint FK_note_extra_parameters_note_id 
        foreign key (note_id) 
        references note (id);
+
+    alter table if exists notification 
+       add constraint fk_notification_errand_id 
+       foreign key (errand_id) 
+       references errand (id);
 
     alter table if exists stakeholder 
        add constraint FK_stakeholder_errand_id 

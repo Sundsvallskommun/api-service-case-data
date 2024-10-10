@@ -16,6 +16,7 @@ import se.sundsvall.casedata.api.model.Errand;
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.api.model.Law;
 import se.sundsvall.casedata.api.model.Note;
+import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.Status;
 import se.sundsvall.casedata.api.model.Suspension;
@@ -29,6 +30,7 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.LawEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
+import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.StatusEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
@@ -501,4 +503,45 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
+	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace) {
+		return Optional.ofNullable(notification)
+			.map(obj -> NotificationEntity.builder()
+				.withAcknowledged(notification.isAcknowledged())
+				.withContent(notification.getContent())
+				.withCreated(notification.getCreated())
+				.withCreatedBy(notification.getCreatedBy())
+				.withCreatedByFullName(notification.getCreatedByFullName())
+				.withDescription(notification.getDescription())
+				.withExpires(notification.getExpires())
+				.withId(notification.getId())
+				.withModified(notification.getModified())
+				.withMunicipalityId(municipalityId)
+				.withNamespace(namespace)
+				.withOwnerFullName(notification.getOwnerFullName())
+				.withOwnerId(notification.getOwnerId())
+				.withType(notification.getType())
+				.build())
+			.orElse(null);
+	}
+
+	public static Notification toNotification(final NotificationEntity notificationEntity) {
+		return Optional.ofNullable(notificationEntity)
+			.map(obj -> Notification.builder()
+				.withAcknowledged(notificationEntity.isAcknowledged())
+				.withContent(notificationEntity.getContent())
+				.withCreated(notificationEntity.getCreated())
+				.withCreatedBy(notificationEntity.getCreatedBy())
+				.withCreatedByFullName(notificationEntity.getCreatedByFullName())
+				.withDescription(notificationEntity.getDescription())
+				.withErrandId(notificationEntity.getErrand().getId())
+				.withErrandNumber(notificationEntity.getErrand().getErrandNumber())
+				.withExpires(notificationEntity.getExpires())
+				.withId(notificationEntity.getId())
+				.withModified(notificationEntity.getModified())
+				.withOwnerFullName(notificationEntity.getOwnerFullName())
+				.withOwnerId(notificationEntity.getOwnerId())
+				.withType(notificationEntity.getType())
+				.build())
+			.orElse(null);
+	}
 }
