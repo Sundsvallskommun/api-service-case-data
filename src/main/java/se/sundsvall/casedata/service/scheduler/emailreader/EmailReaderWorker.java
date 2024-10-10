@@ -4,8 +4,6 @@ import static se.sundsvall.casedata.service.scheduler.emailreader.ErrandNumberPa
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +14,11 @@ import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
 
 import generated.se.sundsvall.emailreader.Email;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Component
-@ConditionalOnProperty(prefix = "scheduler.emailreader", name = "enabled", havingValue = "true", matchIfMissing = true)
-public class EmailReaderService {
+public class EmailReaderWorker {
 
-	private static final Logger LOG = LoggerFactory.getLogger(EmailReaderService.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(EmailReaderWorker.class.getName());
 
 	private final MessageRepository messageRepository;
 
@@ -36,7 +32,7 @@ public class EmailReaderService {
 
 	private final EmailReaderMapper emailReaderMapper;
 
-	public EmailReaderService(final MessageRepository repository, final ErrandRepository errandRepository, final AttachmentRepository attachmentRepository, final EmailReaderClient client, final EmailReaderProperties emailReaderProperties,
+	public EmailReaderWorker(final MessageRepository repository, final ErrandRepository errandRepository, final AttachmentRepository attachmentRepository, final EmailReaderClient client, final EmailReaderProperties emailReaderProperties,
 		final EmailReaderMapper emailReaderMapper) {
 		this.messageRepository = repository;
 		this.errandRepository = errandRepository;
@@ -46,8 +42,6 @@ public class EmailReaderService {
 		this.emailReaderMapper = emailReaderMapper;
 	}
 
-	@Scheduled(initialDelayString = "${scheduler.emailreader.initialDelay}", fixedRateString = "${scheduler.emailreader.fixedRate}")
-	@SchedulerLock(name = "emailreader", lockAtMostFor = "${scheduler.emailreader.shedlock-lock-at-most-for}")
 	void getAndProcessEmails() {
 
 		try {

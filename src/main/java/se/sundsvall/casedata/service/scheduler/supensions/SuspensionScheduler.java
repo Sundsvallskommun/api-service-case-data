@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service.scheduler.supensions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import se.sundsvall.dept44.requestid.RequestId;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Service
+@ConditionalOnProperty(prefix = "scheduler.suspensions", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class SuspensionScheduler {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SuspensionScheduler.class);

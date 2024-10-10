@@ -140,8 +140,8 @@ scheduler:
     initialDelay: PT10M
     shedlock-lock-at-most-for: PT10M
   emailreader:
-    fixedRate: PT10M
-    initialDelay: PT10M
+    fixedRate: PT1S
+    initialDelay: PT1S
     shedlock-lock-at-most-for: PT10M
   suspension:
     cron: 0 */15 * * * *

@@ -41,7 +41,7 @@ import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
 
 @ExtendWith(MockitoExtension.class)
-class WebMessageCollectorServiceTest {
+class WebMessageCollectorWorkerTest {
 
 	@Mock
 	AttachmentRepository attachmentRepositoryMock;
@@ -65,7 +65,7 @@ class WebMessageCollectorServiceTest {
 	private MessageMapper messageMapperMock;
 
 	@InjectMocks
-	private WebMessageCollectorService webMessageCollectorService;
+	private WebMessageCollectorWorker webMessageCollectorWorker;
 
 	@Captor
 	private ArgumentCaptor<MessageEntity> messageCaptor;
@@ -122,13 +122,13 @@ class WebMessageCollectorServiceTest {
 		when(messageMapperMock.toAttachmentEntity(any(MessageAttachmentEntity.class))).thenReturn(AttachmentEntity.builder().withName("fileName").build());
 
 		// Act
-		webMessageCollectorService.getAndProcessMessages();
+		webMessageCollectorWorker.getAndProcessMessages();
 
 		// Assert
 		verify(webMessageCollectorClientMock).getMessages(MUNICIPALITY_ID, familyId, instance);
 		verify(webMessageCollectorClientMock).deleteMessages(any(), any());
 		verify(messageRepositoryMock).saveAndFlush(messageCaptor.capture());
-		assertThat(messageCaptor.getValue()).satisfies(WebMessageCollectorServiceTest::assertSavedMessageHasCorrectValues);
+		assertThat(messageCaptor.getValue()).satisfies(WebMessageCollectorWorkerTest::assertSavedMessageHasCorrectValues);
 
 		verify(webMessageCollectorClientMock).getAttachment(MUNICIPALITY_ID, 1);
 		verify(messageMapperMock).toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE);
@@ -156,7 +156,7 @@ class WebMessageCollectorServiceTest {
 		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(MUNICIPALITY_ID, Map.of(instance, List.of(familyId))));
 
 		// Act
-		webMessageCollectorService.getAndProcessMessages();
+		webMessageCollectorWorker.getAndProcessMessages();
 
 		// Assert
 		verify(webMessageCollectorClientMock).getMessages(MUNICIPALITY_ID, familyId, instance);

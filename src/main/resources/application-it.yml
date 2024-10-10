@@ -40,6 +40,8 @@ scheduler:
     enabled: false
   emailreader:
     enabled: false
+  suspension:
+    enabled: false
 
 #----------------------------------------
 # Retry settings
