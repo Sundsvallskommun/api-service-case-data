@@ -29,7 +29,7 @@ import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
 
 @ExtendWith(MockitoExtension.class)
-class EmailReaderServiceTest {
+class EmailReaderWorkerTest {
 
 	@Mock
 	private EmailReaderProperties emailReaderPropertiesMock;
@@ -53,7 +53,7 @@ class EmailReaderServiceTest {
 	private MessageEntity messageMock;
 
 	@InjectMocks
-	private EmailReaderService emailReaderService;
+	private EmailReaderWorker emailReaderWorker;
 
 	@BeforeEach
 	void setUp() {
@@ -85,7 +85,7 @@ class EmailReaderServiceTest {
 		when(messageRepositoryMock.existsById("someId")).thenReturn(false);
 
 		// Act
-		emailReaderService.getAndProcessEmails();
+		emailReaderWorker.getAndProcessEmails();
 
 		// Assert
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
@@ -118,7 +118,7 @@ class EmailReaderServiceTest {
 		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(ErrandEntity.builder().build()));
 		when(messageRepositoryMock.existsById("someId")).thenReturn(true);
 
-		emailReaderService.getAndProcessEmails();
+		emailReaderWorker.getAndProcessEmails();
 
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
 		verify(errandRepositoryMock).findByErrandNumber("PRH-2022-01");
@@ -144,7 +144,7 @@ class EmailReaderServiceTest {
 					.content("someContent")
 					.contentType("someContentType")))));
 
-		emailReaderService.getAndProcessEmails();
+		emailReaderWorker.getAndProcessEmails();
 
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
 		verify(emailReaderClientMock).deleteEmail("someMunicipalityId", "someId");
@@ -158,7 +158,7 @@ class EmailReaderServiceTest {
 		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
 			.thenReturn(null);
 
-		emailReaderService.getAndProcessEmails();
+		emailReaderWorker.getAndProcessEmails();
 
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
 		verifyNoMoreInteractions(emailReaderClientMock);
@@ -172,7 +172,7 @@ class EmailReaderServiceTest {
 		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
 			.thenThrow(new RuntimeException("some exception"));
 
-		emailReaderService.getAndProcessEmails();
+		emailReaderWorker.getAndProcessEmails();
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
 		verifyNoMoreInteractions(emailReaderClientMock);
 		verifyNoInteractions(messageRepositoryMock, attachmentRepositoryMock);

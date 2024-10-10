@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
@@ -21,11 +19,9 @@ import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMe
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Component
-@ConditionalOnProperty(prefix = "scheduler.message-collector", name = "enabled", havingValue = "true", matchIfMissing = true)
-public class WebMessageCollectorService {
+public class WebMessageCollectorWorker {
 
 	private final MessageRepository messageRepository;
 
@@ -41,7 +37,7 @@ public class WebMessageCollectorService {
 
 	private final WebMessageCollectorProperties webMessageCollectorProperties;
 
-	public WebMessageCollectorService(final MessageRepository messageRepository, final WebMessageCollectorClient webMessageCollectorClient, final MessageAttachmentRepository messageAttachmentRepository, final ErrandRepository errandRepository,
+	public WebMessageCollectorWorker(final MessageRepository messageRepository, final WebMessageCollectorClient webMessageCollectorClient, final MessageAttachmentRepository messageAttachmentRepository, final ErrandRepository errandRepository,
 		final AttachmentRepository attachmentRepository, final MessageMapper messageMapper,
 		final WebMessageCollectorProperties webMessageCollectorProperties) {
 		this.messageRepository = messageRepository;
@@ -53,9 +49,7 @@ public class WebMessageCollectorService {
 		this.webMessageCollectorProperties = webMessageCollectorProperties;
 	}
 
-	@Scheduled(initialDelayString = "${scheduler.message-collector.initialDelay}", fixedRateString = "${scheduler.message-collector.fixedRate}")
-	@SchedulerLock(name = "message-collector", lockAtMostFor = "${scheduler.message-collector.shedlock-lock-at-most-for}")
-	void getAndProcessMessages() {
+	public void getAndProcessMessages() {
 
 		getMessages().forEach((municipalityId, messages) -> {
 			final var handledIds = messages.stream()

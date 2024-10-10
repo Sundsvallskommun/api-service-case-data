@@ -56,7 +56,7 @@ openapi:
   name: ${spring.application.name}
   title: ${spring.application.name}
   version: '@project.version@'
-  
+
 springdoc:
   swagger-ui:
     operationsSorter: alpha
@@ -140,6 +140,9 @@ scheduler:
     initialDelay: PT10M
     shedlock-lock-at-most-for: PT10M
   emailreader:
-    fixedRate: PT10M
-    initialDelay: PT10M
+    fixedRate: PT1S
+    initialDelay: PT1S
+    shedlock-lock-at-most-for: PT10M
+  suspension:
+    cron: 0 */15 * * * *
     shedlock-lock-at-most-for: PT10M
