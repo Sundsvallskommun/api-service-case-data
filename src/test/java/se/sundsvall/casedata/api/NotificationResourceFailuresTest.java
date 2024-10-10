@@ -23,8 +23,8 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 import org.zalando.problem.violations.Violation;
 
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchNotification;
-import se.sundsvall.casedata.api.model.PostNotification;
 import se.sundsvall.casedata.service.NotificationService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -60,7 +60,7 @@ class NotificationResourceFailuresTest {
 		assertThat(response.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getDetail()).isEqualTo(
-			"Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.NotificationResource.createNotification(java.lang.String,java.lang.String,se.sundsvall.casedata.api.model.PostNotification)");
+			"Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.NotificationResource.createNotification(java.lang.String,java.lang.String,se.sundsvall.casedata.api.model.Notification)");
 
 		verifyNoInteractions(notificationServiceMock);
 	}
@@ -70,7 +70,7 @@ class NotificationResourceFailuresTest {
 
 		// Arrange
 		final var municipalityId = "invalid";
-		final var requestBody = PostNotification.builder()
+		final var requestBody = Notification.builder()
 			.withOwnerId("SomeOwnerId")
 			.withOwnerFullName("SomeOwnerFullName")
 			.withCreatedBy("SomeUser")
@@ -107,7 +107,7 @@ class NotificationResourceFailuresTest {
 	void createWithEmptyBody() {
 
 		// Arrange
-		final var requestBody = PostNotification.builder().build();
+		final var requestBody = Notification.builder().build();
 
 		// Act
 		final var response = webTestClient.post()
