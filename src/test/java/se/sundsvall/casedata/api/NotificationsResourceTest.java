@@ -22,7 +22,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchNotification;
-import se.sundsvall.casedata.api.model.PostNotification;
 import se.sundsvall.casedata.service.NotificationService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -89,7 +88,7 @@ class NotificationsResourceTest {
 	void createNotification() {
 
 		// Arrange
-		final var requestBody = PostNotification.builder()
+		final var requestBody = Notification.builder()
 			.withOwnerId("SomeOwnerId")
 			.withOwnerFullName("SomeOwnerFullName")
 			.withCreatedBy("SomeUser")

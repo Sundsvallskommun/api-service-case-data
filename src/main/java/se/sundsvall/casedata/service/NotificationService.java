@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchNotification;
-import se.sundsvall.casedata.api.model.PostNotification;
 import se.sundsvall.dept44.util.jacoco.ExcludeFromJacocoGeneratedCoverageReport;
 
 @Service
@@ -23,7 +22,7 @@ public class NotificationService {
 		return Notification.builder().build();
 	}
 
-	public Notification createNotification(String municipalityId, String namespace, PostNotification notification) {
+	public Notification createNotification(String municipalityId, String namespace, Notification notification) {
 		/* TODO Implement */
 		return Notification.builder().build();
 	}

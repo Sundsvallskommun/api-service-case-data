@@ -21,6 +21,8 @@ import static se.sundsvall.casedata.TestUtil.createLaw;
 import static se.sundsvall.casedata.TestUtil.createLawEntity;
 import static se.sundsvall.casedata.TestUtil.createNote;
 import static se.sundsvall.casedata.TestUtil.createNoteEntity;
+import static se.sundsvall.casedata.TestUtil.createNotification;
+import static se.sundsvall.casedata.TestUtil.createNotificationEntity;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
 import static se.sundsvall.casedata.TestUtil.createStatus;
@@ -43,6 +45,8 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toLaw;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toLawEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotificationEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholder;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
@@ -409,4 +413,47 @@ class EntityMapperTest {
 		});
 	}
 
+	@Test
+	void toNotificationEntityTest() {
+		final var notification = createNotification(null);
+		final var notificationEntity = toNotificationEntity(notification, MUNICIPALITY_ID, NAMESPACE);
+
+		assertThat(notificationEntity).satisfies(entity -> {
+			assertThat(entity.getContent()).isEqualTo(notification.getContent());
+			assertThat(entity.getCreated()).isEqualTo(notification.getCreated());
+			assertThat(entity.getCreatedBy()).isEqualTo(notification.getCreatedBy());
+			assertThat(entity.getCreatedByFullName()).isEqualTo(notification.getCreatedByFullName());
+			assertThat(entity.getDescription()).isEqualTo(notification.getDescription());
+			assertThat(entity.getExpires()).isEqualTo(notification.getExpires());
+			assertThat(entity.getId()).isEqualTo(notification.getId());
+			assertThat(entity.getModified()).isEqualTo(notification.getModified());
+			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+			assertThat(entity.getNamespace()).isEqualTo(NAMESPACE);
+			assertThat(entity.getOwnerFullName()).isEqualTo(notification.getOwnerFullName());
+			assertThat(entity.getOwnerId()).isEqualTo(notification.getOwnerId());
+			assertThat(entity.getType()).isEqualTo(notification.getType());
+		});
+	}
+
+	@Test
+	void toNotificationTest() {
+		final var notificationEntity = createNotificationEntity(null);
+		final var notification = toNotification(notificationEntity);
+
+		assertThat(notification).satisfies(obj -> {
+			assertThat(obj.getContent()).isEqualTo(notificationEntity.getContent());
+			assertThat(obj.getCreated()).isEqualTo(notificationEntity.getCreated());
+			assertThat(obj.getCreatedBy()).isEqualTo(notificationEntity.getCreatedBy());
+			assertThat(obj.getCreatedByFullName()).isEqualTo(notificationEntity.getCreatedByFullName());
+			assertThat(obj.getDescription()).isEqualTo(notificationEntity.getDescription());
+			assertThat(obj.getExpires()).isEqualTo(notificationEntity.getExpires());
+			assertThat(obj.getErrandId()).isEqualTo(notificationEntity.getErrand().getId());
+			assertThat(obj.getErrandNumber()).isEqualTo(notificationEntity.getErrand().getErrandNumber());
+			assertThat(obj.getId()).isEqualTo(notificationEntity.getId());
+			assertThat(obj.getModified()).isEqualTo(notificationEntity.getModified());
+			assertThat(obj.getOwnerFullName()).isEqualTo(notificationEntity.getOwnerFullName());
+			assertThat(obj.getOwnerId()).isEqualTo(notificationEntity.getOwnerId());
+			assertThat(obj.getType()).isEqualTo(notificationEntity.getType());
+		});
+	}
 }

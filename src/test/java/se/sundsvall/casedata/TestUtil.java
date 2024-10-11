@@ -1,5 +1,6 @@
 package se.sundsvall.casedata;
 
+import static java.util.UUID.randomUUID;
 import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 import java.time.LocalDate;
@@ -13,11 +14,12 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Appeal;
@@ -30,9 +32,11 @@ import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.api.model.GetParkingPermit;
 import se.sundsvall.casedata.api.model.Law;
 import se.sundsvall.casedata.api.model.Note;
+import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchAppeal;
 import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.api.model.PatchNotification;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.Status;
 import se.sundsvall.casedata.api.model.Suspension;
@@ -50,6 +54,7 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.LawEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
+import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.StatusEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
@@ -168,7 +173,6 @@ public final class TestUtil {
 			.withDecisionId(123L).build();
 	}
 
-
 	public static PatchAppeal createPatchAppeal() {
 		return PatchAppeal.builder()
 			.withDescription("Appeal Patch description")
@@ -222,7 +226,7 @@ public final class TestUtil {
 		return facilityTypes.stream()
 			.map(facilityType -> Facility.builder()
 				.withFacilityType(facilityType.name())
-				.withMainFacility(oneMainFacility && facilityTypes.indexOf(facilityType) == 0)
+				.withMainFacility(oneMainFacility && (facilityTypes.indexOf(facilityType) == 0))
 				.withDescription(RandomStringUtils.secure().next(20, true, false))
 				.withFacilityCollectionName(RandomStringUtils.secure().next(10, true, false))
 				.withAddress(createAddress(AddressCategory.VISITING_ADDRESS))
@@ -240,7 +244,7 @@ public final class TestUtil {
 	}
 
 	public static Stakeholder createStakeholder(final StakeholderType stakeholderType, final List<String> stakeholderRoles) {
-		if (stakeholderType.equals(StakeholderType.PERSON)) {
+		if (StakeholderType.PERSON.equals(stakeholderType)) {
 			return Stakeholder.builder()
 				.withCreated(getRandomOffsetDateTime())
 				.withUpdated(getRandomOffsetDateTime())
@@ -254,22 +258,20 @@ public final class TestUtil {
 				.withAddresses(List.of(createAddress(AddressCategory.VISITING_ADDRESS)))
 				.withExtraParameters(createExtraParameters())
 				.build();
-		} else {
-			return Stakeholder.builder()
-				.withCreated(getRandomOffsetDateTime())
-				.withUpdated(getRandomOffsetDateTime())
-				.withType(StakeholderType.ORGANIZATION)
-				.withOrganizationNumber((new Random().nextInt(999999 - 111111) + 111111) + "-" + (new Random().nextInt(9999 - 1111) + 1111))
-				.withOrganizationName(RandomStringUtils.secure().next(20, true, false))
-				.withRoles(stakeholderRoles)
-				.withContactInformation(List.of(createContactInformation(ContactType.EMAIL), createContactInformation(ContactType.PHONE), createContactInformation(ContactType.CELLPHONE)))
-				.withAddresses(List.of(createAddress(AddressCategory.VISITING_ADDRESS)))
-				.withExtraParameters(createExtraParameters())
-				.withAuthorizedSignatory(RandomStringUtils.secure().next(10, true, false))
-				.withAdAccount(RandomStringUtils.secure().next(10, true, false))
-				.build();
-
 		}
+		return Stakeholder.builder()
+			.withCreated(getRandomOffsetDateTime())
+			.withUpdated(getRandomOffsetDateTime())
+			.withType(StakeholderType.ORGANIZATION)
+			.withOrganizationNumber((new Random().nextInt(999999 - 111111) + 111111) + "-" + (new Random().nextInt(9999 - 1111) + 1111))
+			.withOrganizationName(RandomStringUtils.secure().next(20, true, false))
+			.withRoles(stakeholderRoles)
+			.withContactInformation(List.of(createContactInformation(ContactType.EMAIL), createContactInformation(ContactType.PHONE), createContactInformation(ContactType.CELLPHONE)))
+			.withAddresses(List.of(createAddress(AddressCategory.VISITING_ADDRESS)))
+			.withExtraParameters(createExtraParameters())
+			.withAuthorizedSignatory(RandomStringUtils.secure().next(10, true, false))
+			.withAdAccount(RandomStringUtils.secure().next(10, true, false))
+			.build();
 	}
 
 	public static ContactInformation createContactInformation(final ContactType contactType) {
@@ -371,6 +373,73 @@ public final class TestUtil {
 			modifier.accept(note);
 		}
 		return note;
+	}
+
+	public static NotificationEntity createNotificationEntity(final Consumer<NotificationEntity> modifier) {
+		final var notification = NotificationEntity.builder()
+			.withAcknowledged(true)
+			.withContent(RandomStringUtils.secure().next(10, true, false))
+			.withCreated(getRandomOffsetDateTime())
+			.withCreatedBy(RandomStringUtils.secure().next(10, true, false))
+			.withCreatedByFullName(RandomStringUtils.secure().next(10, true, false))
+			.withDescription(RandomStringUtils.secure().next(10, true, false))
+			.withErrand(createErrandEntity())
+			.withExpires(getRandomOffsetDateTime())
+			.withId(randomUUID().toString())
+			.withModified(getRandomOffsetDateTime())
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withOwnerFullName(RandomStringUtils.secure().next(10, true, false))
+			.withOwnerId(RandomStringUtils.secure().next(10, true, false))
+			.withType(RandomStringUtils.secure().next(10, true, false))
+			.build();
+
+		if (modifier != null) {
+			modifier.accept(notification);
+		}
+		return notification;
+	}
+
+	public static Notification createNotification(final Consumer<Notification> modifier) {
+		final var notification = Notification.builder()
+			.withAcknowledged(true)
+			.withContent(RandomStringUtils.secure().next(10, true, false))
+			.withCreated(getRandomOffsetDateTime())
+			.withCreatedBy(RandomStringUtils.secure().next(10, true, false))
+			.withCreatedByFullName(RandomStringUtils.secure().next(10, true, false))
+			.withDescription(RandomStringUtils.secure().next(10, true, false))
+			.withErrandId(1L)
+			.withErrandNumber(RandomStringUtils.secure().next(10, true, false))
+			.withExpires(getRandomOffsetDateTime())
+			.withId(randomUUID().toString())
+			.withModified(getRandomOffsetDateTime())
+			.withOwnerFullName(RandomStringUtils.secure().next(10, true, false))
+			.withOwnerId(RandomStringUtils.secure().next(10, true, false))
+			.withType(RandomStringUtils.secure().next(10, true, false))
+			.build();
+
+		if (modifier != null) {
+			modifier.accept(notification);
+		}
+		return notification;
+	}
+
+	public static PatchNotification createPatchNotification(final Consumer<PatchNotification> modifier) {
+		final var patchNotification = PatchNotification.builder()
+			.withAcknowledged(true)
+			.withContent(RandomStringUtils.secure().next(10, true, false))
+			.withDescription(RandomStringUtils.secure().next(10, true, false))
+			.withExpires(getRandomOffsetDateTime())
+			.withId(randomUUID().toString())
+			.withOwnerFullName(RandomStringUtils.secure().next(10, true, false))
+			.withOwnerId(RandomStringUtils.secure().next(10, true, false))
+			.withType(RandomStringUtils.secure().next(10, true, false))
+			.build();
+
+		if (modifier != null) {
+			modifier.accept(patchNotification);
+		}
+		return patchNotification;
 	}
 
 	public static StatusEntity createStatusEntity() {
