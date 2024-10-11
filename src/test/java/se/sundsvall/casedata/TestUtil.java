@@ -14,12 +14,11 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import org.apache.commons.lang3.RandomStringUtils;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Appeal;
@@ -28,6 +27,7 @@ import se.sundsvall.casedata.api.model.ContactInformation;
 import se.sundsvall.casedata.api.model.Coordinates;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.api.model.GetParkingPermit;
 import se.sundsvall.casedata.api.model.Law;
@@ -51,6 +51,7 @@ import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
 import se.sundsvall.casedata.integration.db.model.CoordinatesEntity;
 import se.sundsvall.casedata.integration.db.model.DecisionEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.LawEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
@@ -114,7 +115,7 @@ public final class TestUtil {
 				RandomStringUtils.secure().next(10, true, true),
 				RandomStringUtils.secure().next(10, true, true))))
 			.withSuspension(Suspension.builder().withSuspendedFrom(OffsetDateTime.now()).withSuspendedTo(OffsetDateTime.now().plusDays(5)).build())
-			.withExtraParameters(createExtraParameters())
+			.withExtraParameters(createExtraParametersList())
 			.build();
 	}
 
@@ -241,6 +242,19 @@ public final class TestUtil {
 		return extraParams;
 	}
 
+	public static List<ExtraParameter> createExtraParametersList() {
+		final var extraParams = new ArrayList<ExtraParameter>();
+		extraParams.add(ExtraParameter.builder().withKey(RandomStringUtils.secure().next(10, true, false))
+			.withValues(List.of(RandomStringUtils.secure().next(20, true, false))).build());
+		extraParams.add(ExtraParameter.builder().withKey(RandomStringUtils.secure().next(10, true, false))
+			.withValues(List.of(RandomStringUtils.secure().next(20, true, false))).build());
+		extraParams.add(ExtraParameter.builder().withKey(RandomStringUtils.secure().next(10, true, false))
+			.withValues(List.of(RandomStringUtils.secure().next(20, true, false))).build());
+
+		return extraParams;
+	}
+
+
 	public static Stakeholder createStakeholder(final StakeholderType stakeholderType, final List<String> stakeholderRoles) {
 		if (StakeholderType.PERSON.equals(stakeholderType)) {
 			return Stakeholder.builder()
@@ -330,7 +344,7 @@ public final class TestUtil {
 			.withStartDate(LocalDate.now())
 			.withEndDate(LocalDate.now())
 			.withApplicationReceived(getRandomOffsetDateTime())
-			.withExtraParameters(createExtraParameters())
+			.withExtraParameters(createExtraParametersList())
 			.withFacilities(new ArrayList<>(List.of(createFacility())))
 			.withSuspension(Suspension.builder().withSuspendedFrom(OffsetDateTime.now()).withSuspendedTo(OffsetDateTime.now().plusDays(5)).build())
 			.build();
@@ -589,7 +603,7 @@ public final class TestUtil {
 			.withStakeholders(new ArrayList<>(List.of(createStakeholderEntity())))
 			.withDecisions(new ArrayList<>(List.of(createDecisionEntity())))
 			.withAppeals(new ArrayList<>(List.of(createAppealEntity())))
-			.withExtraParameters(createExtraParameters())
+			.withExtraParameters(createExtraParameterEntityList())
 			.withErrandNumber("errandNumber")
 			.withExternalCaseId("externalCaseId")
 			.withProcessId("processId")
@@ -614,6 +628,20 @@ public final class TestUtil {
 			.withChannel(Channel.EMAIL)
 			.withCaseType(CaseType.PARKING_PERMIT.name())
 			.build();
+	}
+
+	private static List<ExtraParameterEntity> createExtraParameterEntityList() {
+		var listy = new ArrayList<ExtraParameterEntity>();
+		listy.add(
+			ExtraParameterEntity.builder()
+				.withKey("key1")
+				.withValues(List.of("value1"))
+				.build());
+		listy.add(
+			ExtraParameterEntity.builder()
+				.withKey("key2")
+				.build());
+		return listy;
 	}
 
 	public static GetParkingPermit createGetParkingPermitDTO() {

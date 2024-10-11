@@ -7,7 +7,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 
 import java.util.List;
-import java.util.Map;
 
 import jakarta.transaction.Transactional;
 
@@ -56,11 +55,10 @@ public class ErrandService {
 	/**
 	 * @return Page of Errand without duplicates
 	 */
-	public Page<Errand> findAll(final Specification<ErrandEntity> specification, final String municipalityId, final String namespace, final Map<String, String> extraParameters, final Pageable pageable) {
+	public Page<Errand> findAll(final Specification<ErrandEntity> specification, final String municipalityId, final String namespace, final Pageable pageable) {
 		// Extract all ID's and remove duplicates
 		final List<Long> allIds = errandRepository.findAll(specification).stream()
 			.filter(errand -> municipalityId.equals(errand.getMunicipalityId()))
-			.filter(errand -> hashmapContainsAllKeyAndValues(errand.getExtraParameters(), extraParameters))
 			.map(ErrandEntity::getId)
 			.distinct()
 			.toList();
@@ -81,7 +79,7 @@ public class ErrandService {
 
 		return toErrand(resultErrand);
 	}
-	
+
 	public void updateErrand(final Long errandId, final String municipalityId, final String namespace, final PatchErrand patchErrand) {
 		final var oldErrand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
 		final var updatedErrand = PatchMapper.patchErrand(oldErrand, patchErrand);
@@ -96,16 +94,6 @@ public class ErrandService {
 		}
 
 		errandRepository.deleteByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
-	}
-
-	private boolean hashmapContainsAllKeyAndValues(final Map<String, String> map, final Map<String, String> mapToCheck) {
-		for (final Map.Entry<String, String> entry : mapToCheck.entrySet()) {
-			final String mapValue = map.get(entry.getKey());
-			if (!entry.getValue().equals(mapValue)) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	@Retry(name = "OptimisticLocking")

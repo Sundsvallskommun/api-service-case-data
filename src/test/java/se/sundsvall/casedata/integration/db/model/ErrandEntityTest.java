@@ -13,7 +13,6 @@ import static org.hamcrest.CoreMatchers.allOf;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.hamcrest.MatcherAssert;
@@ -71,7 +70,7 @@ class ErrandEntityTest {
 		var updatedByClient = "updatedByClient";
 		var createdBy = "createdBy";
 		var updatedBy = "updatedBy";
-		var extraParameters = Map.of("key", "value");
+		var extraParameters = List.of(new ExtraParameterEntity());
 		var created = now();
 		var updated = now();
 		var suspensionFrom = now();
@@ -145,7 +144,7 @@ class ErrandEntityTest {
 		assertThat(bean.getSuspendedTo()).isEqualTo(suspensionTo);
 	}
 
-	private void assertCollections(ErrandEntity bean, List<StatusEntity> statuses, List<StakeholderEntity> stakeholders, List<FacilityEntity> facilities, List<DecisionEntity> decisions, List<AppealEntity> appeals, List<NoteEntity> notes, Map<String, String> extraParameters) {
+	private void assertCollections(ErrandEntity bean, List<StatusEntity> statuses, List<StakeholderEntity> stakeholders, List<FacilityEntity> facilities, List<DecisionEntity> decisions, List<AppealEntity> appeals, List<NoteEntity> notes, List<ExtraParameterEntity> extraParameters) {
 		assertThat(bean.getStatuses()).isEqualTo(statuses);
 		assertThat(bean.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(bean.getFacilities()).isEqualTo(facilities);
@@ -165,14 +164,12 @@ class ErrandEntityTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(ErrandEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
+		assertThat(ErrandEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("version")
 			.satisfies(bean -> {
-				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getVersion()).isZero();
 			});
-		assertThat(new ErrandEntity()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
+		assertThat(new ErrandEntity()).hasAllNullFieldsOrPropertiesExcept("version")
 			.satisfies(bean -> {
-				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getVersion()).isZero();
 			});
 	}

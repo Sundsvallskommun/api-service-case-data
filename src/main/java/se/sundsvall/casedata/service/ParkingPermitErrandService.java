@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.api.model.GetParkingPermit;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -32,18 +33,26 @@ public class ParkingPermitErrandService {
 		final List<ErrandEntity> allErrands = personId == null ? errandRepository.findAllByMunicipalityIdAndNamespace(municipalityId, namespace) : findAllErrandsWithApplicant(personId, municipalityId, namespace);
 
 		final List<Errand> allErrandsWithPrh = allErrands.stream()
-			.filter(errand -> errand.getExtraParameters().containsKey(PERMIT_NUMBER_EXTRA_PARAMETER_KEY))
+			.filter(errand -> errand.getExtraParameters().stream().anyMatch(param -> param.getKey().equals(PERMIT_NUMBER_EXTRA_PARAMETER_KEY)))
 			.map(EntityMapper::toErrand)
 			.toList();
 
 		allErrandsWithPrh.forEach(errand -> parkingPermitsList.add(GetParkingPermit.builder()
-			.withArtefactPermitNumber(errand.getExtraParameters().get(PERMIT_NUMBER_EXTRA_PARAMETER_KEY))
-			.withArtefactPermitStatus(errand.getExtraParameters().get(PERMIT_STATUS_EXTRA_PARAMETER_KEY))
+			.withArtefactPermitNumber(getExtraParameterValue(errand.getExtraParameters(), PERMIT_NUMBER_EXTRA_PARAMETER_KEY))
+			.withArtefactPermitStatus(getExtraParameterValue(errand.getExtraParameters(), PERMIT_STATUS_EXTRA_PARAMETER_KEY))
 			.withErrandId(errand.getId())
 			.withErrandDecision(errand.getDecisions().stream().filter(decision -> DecisionType.FINAL.equals(decision.getDecisionType())).findFirst().orElse(null))
 			.build()));
 
 		return parkingPermitsList;
+	}
+
+	private String getExtraParameterValue(List<ExtraParameter> extraParameters, String key) {
+		return extraParameters.stream()
+			.filter(param -> key.equals(param.getKey()))
+			.findFirst()
+			.map(param -> param.getValues().getFirst())
+			.orElse(null);
 	}
 
 	/**

@@ -12,7 +12,6 @@ import static org.hamcrest.CoreMatchers.allOf;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.hamcrest.MatcherAssert;
@@ -71,7 +70,7 @@ class ErrandTest {
 		final var updatedByClient = "client2";
 		final var createdBy = "user1";
 		final var updatedBy = "user2";
-		final var extraParameters = Map.of("key1", "value1", "key2", "value2");
+		final var extraParameters = List.of(ExtraParameter.builder().withKey("key1").withValues(List.of("value1")).build());
 		final var created = OffsetDateTime.parse("2023-10-01T12:00:00Z");
 		final var updated = OffsetDateTime.parse("2023-10-02T12:00:00Z");
 		final var suspension = new Suspension();
@@ -140,7 +139,7 @@ class ErrandTest {
 		assertThat(bean.getUpdated()).isEqualTo(updated);
 	}
 
-	private void assertCollections(Errand bean, List<Status> statuses, List<Stakeholder> stakeholders, List<Facility> facilities, List<Decision> decisions, List<Appeal> appeals, List<Note> notes, Map<String, String> extraParameters) {
+	private void assertCollections(Errand bean, List<Status> statuses, List<Stakeholder> stakeholders, List<Facility> facilities, List<Decision> decisions, List<Appeal> appeals, List<Note> notes, List<ExtraParameter> extraParameters) {
 		assertThat(bean.getStatuses()).isEqualTo(statuses);
 		assertThat(bean.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(bean.getFacilities()).isEqualTo(facilities);
@@ -160,17 +159,15 @@ class ErrandTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(Errand.builder().build()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "priority", "version")
+		assertThat(Errand.builder().build()).hasAllNullFieldsOrPropertiesExcept("id", "priority", "version")
 			.satisfies(bean -> {
 				assertThat(bean.getId()).isZero();
-				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getPriority()).isEqualTo(Priority.MEDIUM);
 				assertThat(bean.getVersion()).isZero();
 			});
-		assertThat(new Errand()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "priority", "version")
+		assertThat(new Errand()).hasAllNullFieldsOrPropertiesExcept("id", "priority", "version")
 			.satisfies(bean -> {
 				assertThat(bean.getId()).isZero();
-				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getPriority()).isEqualTo(Priority.MEDIUM);
 				assertThat(bean.getVersion()).isZero();
 			});

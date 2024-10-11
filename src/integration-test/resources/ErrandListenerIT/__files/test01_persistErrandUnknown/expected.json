@@ -282,9 +282,27 @@
   "updatedByClient": "UNKNOWN",
   "createdBy": "UNKNOWN",
   "updatedBy": "UNKNOWN",
-  "extraParameters": {
-    "test8": "test8",
-    "test9": "test9",
-    "test7": "test7"
-  }
+  "extraParameters": [
+    {
+      "key": "test9",
+      "displayName": "Test 9",
+      "values": [
+        "test9"
+      ]
+    },
+    {
+      "key": "test8",
+      "displayName": "Test 8",
+      "values": [
+        "test8"
+      ]
+    },
+    {
+      "key": "test7",
+      "displayName": "Test 7",
+      "values": [
+        "test7"
+      ]
+    }
+  ]
 }

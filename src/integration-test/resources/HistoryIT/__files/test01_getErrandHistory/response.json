@@ -45,6 +45,24 @@
       "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "left": null,
+    "property": "municipalityId",
+    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
+    "right": "2281"
+  },
+  {
+    "changeType": "InitialValueChange",
+    "commitMetadata": {
+      "author": "ANDSOD",
+      "commitDate": "2024-01-25T12:00:00",
+      "commitDateInstant": "2024-01-25T12:00:00Z",
+      "id": 1.00,
+      "properties": []
+    },
+    "globalId": {
+      "cdoId": 1,
+      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
+    },
+    "left": null,
     "property": "caseType",
     "propertyChangeType": "PROPERTY_VALUE_CHANGED",
     "right": "PARKING_PERMIT"
@@ -170,24 +188,6 @@
     "propertyChangeType": "PROPERTY_VALUE_CHANGED"
   },
   {
-    "changeType": "InitialValueChange",
-    "commitMetadata": {
-      "author": "ANDSOD",
-      "commitDate": "2024-01-25T12:00:00",
-      "commitDateInstant": "2024-01-25T12:00:00Z",
-      "id": 1.00,
-      "properties": []
-    },
-    "globalId": {
-      "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
-    },
-    "left": null,
-    "property": "municipalityId",
-    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
-    "right": "2281"
-  },
-  {
     "changeType": "ListChange",
     "commitMetadata": {
       "author": "ANDSOD",
@@ -211,94 +211,6 @@
       "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
     },
     "property": "stakeholders",
-    "propertyChangeType": "PROPERTY_VALUE_CHANGED"
-  },
-  {
-    "changeType": "MapChange",
-    "commitMetadata": {
-      "author": "ANDSOD",
-      "commitDate": "2024-01-25T12:00:00",
-      "commitDateInstant": "2024-01-25T12:00:00Z",
-      "id": 1.00,
-      "properties": []
-    },
-    "entryChanges": [
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "disability.walkingAbility",
-        "value": "true"
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "application.applicant.testimonial",
-        "value": "true"
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "consent.view.transportationServiceDetails",
-        "value": "false"
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "disability.aid",
-        "value": "Inget"
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "disability.canBeAloneWhileParking",
-        "value": "true"
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "application.role",
-        "value": "SELF"
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "application.applicant.capacity",
-        "value": "DRIVER"
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "application.applicant.signingAbility",
-        "value": "false"
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "disability.walkingDistance.max",
-        "value": ""
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "disability.walkingDistance.beforeRest",
-        "value": ""
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "consent.contact.doctor",
-        "value": "false"
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "application.reason",
-        "value": ""
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "disability.canBeAloneWhileParking.note",
-        "value": ""
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "disability.duration",
-        "value": "P6M"
-      }
-    ],
-    "globalId": {
-      "cdoId": 1,
-      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
-    },
-    "property": "extraParameters",
     "propertyChangeType": "PROPERTY_VALUE_CHANGED"
   }
 ]

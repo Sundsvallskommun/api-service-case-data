@@ -12,9 +12,13 @@ VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         'ERRAND-NUMBER-2', '', '2281', 'Aktualisering', 'MEDIUM',
         '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'my.namespace');
 
-INSERT INTO errand_extra_parameters(errand_id, extra_parameter_key, extra_parameter_value)
-VALUES (1, 'artefact.permit.number', 'Test value1'),
-       (2, 'artefact.permit.number', 'Test value2');
+INSERT INTO errand_extra_parameters (errand_id, id, display_name, parameters_key)
+values (1, '123e4567-e89b-12d3-a456-426614174000', 'test', 'artefact.permit.number'),
+       (2, '123e4567-e89b-12d3-a456-426614174001', 'test', 'artefact.permit.number');
+
+INSERT INTO errand_extra_parameter_values (extra_parameter_id, value)
+VALUES ('123e4567-e89b-12d3-a456-426614174000', 'Test value1'),
+       ('123e4567-e89b-12d3-a456-426614174001', 'Test value2');
 
 INSERT INTO stakeholder
 (id, created, updated, version, ad_account, authorized_signatory, first_name, last_name,

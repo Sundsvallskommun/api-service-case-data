@@ -16,7 +16,7 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createDecision;
 import static se.sundsvall.casedata.TestUtil.createErrand;
-import static se.sundsvall.casedata.TestUtil.createExtraParameters;
+import static se.sundsvall.casedata.TestUtil.createExtraParametersList;
 import static se.sundsvall.casedata.TestUtil.createFacility;
 import static se.sundsvall.casedata.TestUtil.createNote;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
@@ -31,9 +31,7 @@ import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -88,6 +86,7 @@ class ErrandIT extends AbstractAppTest {
 		"facilities",
 		"decisions",
 		"suspension",
+		"extraParameters",
 		"appeals",
 		"note.*\\.createdBy",
 		"note.*\\.updatedBy",
@@ -180,7 +179,7 @@ class ErrandIT extends AbstractAppTest {
 		final PatchErrand inputPatchErrand = new PatchErrand();
 		inputPatchErrand.setDiaryNumber("A new patched diary number");
 		inputPatchErrand.setApplicationReceived(getRandomOffsetDateTime());
-		inputPatchErrand.setExtraParameters(createExtraParameters());
+		inputPatchErrand.setExtraParameters(createExtraParametersList());
 		inputPatchErrand.setFacilities(List.of(createFacility()));
 
 		// Patch the object
@@ -204,7 +203,7 @@ class ErrandIT extends AbstractAppTest {
 		resultPostErrand.setApplicationReceived(inputPatchErrand.getApplicationReceived());
 		resultPostErrand.setUpdatedByClient(Constants.UNKNOWN);
 		resultPostErrand.setUpdatedBy(Constants.UNKNOWN);
-		resultPostErrand.getExtraParameters().putAll(inputPatchErrand.getExtraParameters());
+		resultPostErrand.getExtraParameters().addAll(inputPatchErrand.getExtraParameters());
 
 		assertThat(resultPostErrand)
 			.usingRecursiveComparison()
@@ -255,9 +254,7 @@ class ErrandIT extends AbstractAppTest {
 	void testGetWithExtraParameter(final String municipalityId) {
 		final Errand inputPostErrand = createErrand();
 		inputPostErrand.setCaseType(PARKING_PERMIT_RENEWAL.name());
-		final Map<String, String> extraParameters = new HashMap<>();
-		extraParameters.put("key 1", "value 1");
-		extraParameters.put("key 2", "value 2");
+		final var extraParameters = createExtraParametersList();
 		inputPostErrand.setExtraParameters(extraParameters);
 		// Create initial errand
 		postErrand(inputPostErrand, municipalityId);
@@ -293,9 +290,7 @@ class ErrandIT extends AbstractAppTest {
 	@ValueSource(strings = {"2281", "2061", "2062"})
 	void testGetWithExtraParameterMismatch(final String municipalityId) {
 		final Errand inputPostErrand = createErrand();
-		final Map<String, String> extraParameters = new HashMap<>();
-		extraParameters.put("key 1", "value 1");
-		extraParameters.put("key 2", "value 2");
+		final var extraParameters = createExtraParametersList();
 		inputPostErrand.setExtraParameters(extraParameters);
 		// Create initial errand
 		postErrand(inputPostErrand, municipalityId);
@@ -315,9 +310,7 @@ class ErrandIT extends AbstractAppTest {
 	@ValueSource(strings = {"2281", "2061", "2062"})
 	void testGetWithExtraParameterAndFilterMismatch(final String municipalityId) {
 		final Errand inputPostErrand = createErrand();
-		final Map<String, String> extraParameters = new HashMap<>();
-		extraParameters.put("key 1", "value 1");
-		extraParameters.put("key 2", "value 2");
+		final var extraParameters = createExtraParametersList();
 		inputPostErrand.setExtraParameters(extraParameters);
 		// Create initial errand
 		postErrand(inputPostErrand, municipalityId);
@@ -338,8 +331,7 @@ class ErrandIT extends AbstractAppTest {
 	void testGetWithFilterPageableAndExtraParameters(final String municipalityId) {
 		final Errand inputPostErrand = createErrand();
 		inputPostErrand.setCaseType(LOST_PARKING_PERMIT.name());
-		final Map<String, String> extraParameters = new HashMap<>();
-		extraParameters.put("key 1", "value 1");
+		final var extraParameters = createExtraParametersList();
 		inputPostErrand.setExtraParameters(extraParameters);
 		// Create initial errand
 		postErrand(inputPostErrand, municipalityId);

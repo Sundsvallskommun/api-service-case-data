@@ -2,8 +2,10 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import generated.se.sundsvall.employee.PortalPersonData;
@@ -19,6 +21,7 @@ import se.sundsvall.casedata.integration.db.model.AppealEntity;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.DecisionEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
@@ -32,7 +35,10 @@ public final class PatchMapper {
 
 	public static ErrandEntity patchErrand(final ErrandEntity errand, final PatchErrand patch) {
 		// ExtraParameters are not patched, they are posted for whatever reason.
-		Optional.ofNullable(patch.getExtraParameters()).ifPresent(s -> errand.getExtraParameters().putAll(patch.getExtraParameters()));
+		Optional.ofNullable(patch.getExtraParameters()).ifPresent(extraParams -> {
+			List<ExtraParameterEntity> newExtraParams = toErrandParameterEntityList(extraParams, errand);
+			errand.getExtraParameters().addAll(newExtraParams);
+		});
 		Optional.ofNullable(patch.getCaseType()).ifPresent(caseType -> errand.setCaseType(caseType.name()));
 		Optional.ofNullable(patch.getExternalCaseId()).ifPresent(errand::setExternalCaseId);
 		Optional.ofNullable(patch.getPriority()).ifPresent(errand::setPriority);
@@ -133,4 +139,5 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getType()).ifPresent(notificationEntity::setType);
 		return notificationEntity;
 	}
+
 }

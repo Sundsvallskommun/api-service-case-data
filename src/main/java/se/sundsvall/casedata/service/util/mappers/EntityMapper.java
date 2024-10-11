@@ -2,6 +2,8 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import static java.time.OffsetDateTime.now;
 import static java.util.Collections.emptyList;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -75,7 +77,7 @@ public final class EntityMapper {
 				.withFacilities(new ArrayList<>(errandEntity.getFacilities().stream().map(EntityMapper::toFacility).toList()))
 				.withDecisions(new ArrayList<>(errandEntity.getDecisions().stream().map(EntityMapper::toDecision).toList()))
 				.withAppeals(new ArrayList<>(errandEntity.getAppeals().stream().map(EntityMapper::toAppeal).toList()))
-				.withExtraParameters(Optional.of(errandEntity.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.withExtraParameters(toParameterList(errandEntity.getExtraParameters()))
 				.build())
 			.orElse(null);
 	}
@@ -109,7 +111,6 @@ public final class EntityMapper {
 				.withUpdatedBy(errand.getUpdatedBy())
 				.withSuspendedFrom(Optional.ofNullable(errand.getSuspension()).map(Suspension::getSuspendedFrom).orElse(null))
 				.withSuspendedTo(Optional.ofNullable(errand.getSuspension()).map(Suspension::getSuspendedTo).orElse(null))
-				.withExtraParameters(Optional.of(errand.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.withStatuses(new ArrayList<>(Optional.ofNullable(errand.getStatuses())
 					.orElse(emptyList())
 					.stream()
@@ -143,6 +144,7 @@ public final class EntityMapper {
 			entity.getDecisions().forEach(decision -> decision.setErrand(entity));
 			entity.getNotes().forEach(note -> note.setErrand(entity));
 			entity.getAppeals().forEach(appeal -> appeal.setErrand(entity));
+			entity.setExtraParameters(toErrandParameterEntityList(errand.getExtraParameters(), entity));
 		});
 
 		return errandEntity.orElse(null);

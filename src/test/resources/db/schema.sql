@@ -119,11 +119,17 @@
         primary key (id)
     ) engine=InnoDB;
 
+    create table errand_extra_parameter_values (
+        extra_parameter_id varchar(255) not null,
+        value varchar(255)
+    ) engine=InnoDB;
+
     create table errand_extra_parameters (
         errand_id bigint not null,
-        extra_parameter_value varchar(8192),
-        extra_parameter_key varchar(255) not null,
-        primary key (errand_id, extra_parameter_key)
+        display_name varchar(255),
+        id varchar(255) not null,
+        parameters_key varchar(255),
+        primary key (id)
     ) engine=InnoDB;
 
     create table errand_statuses (
@@ -439,8 +445,13 @@
        foreign key (email_header_id) 
        references email_header (id);
 
+    alter table if exists errand_extra_parameter_values 
+       add constraint fk_errand_extra_parameter_values_parameter_id 
+       foreign key (extra_parameter_id) 
+       references errand_extra_parameters (id);
+
     alter table if exists errand_extra_parameters 
-       add constraint FK_errand_extra_parameters_errand_id 
+       add constraint fk_extra_parameter_errand_id 
        foreign key (errand_id) 
        references errand (id);
 
