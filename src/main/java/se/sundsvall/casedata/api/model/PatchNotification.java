@@ -45,5 +45,5 @@ public class PatchNotification {
 	private OffsetDateTime expires;
 
 	@Schema(description = "Acknowledged status of the notification", example = "true")
-	private boolean acknowledged;
+	private Boolean acknowledged;
 }

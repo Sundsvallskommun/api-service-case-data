@@ -503,7 +503,7 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace) {
+	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace, ErrandEntity errand) {
 		return Optional.ofNullable(notification)
 			.map(obj -> NotificationEntity.builder()
 				.withAcknowledged(notification.isAcknowledged())
@@ -513,6 +513,7 @@ public final class EntityMapper {
 				.withCreatedByFullName(notification.getCreatedByFullName())
 				.withDescription(notification.getDescription())
 				.withExpires(notification.getExpires())
+				.withErrand(errand)
 				.withId(notification.getId())
 				.withModified(notification.getModified())
 				.withMunicipalityId(municipalityId)

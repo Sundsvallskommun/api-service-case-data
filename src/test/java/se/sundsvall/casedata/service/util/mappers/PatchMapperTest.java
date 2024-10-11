@@ -185,7 +185,7 @@ class PatchMapperTest {
 			assertThat(patchedEntity.getOwnerFullName()).isEqualTo(patchNotification.getOwnerFullName());
 			assertThat(patchedEntity.getOwnerId()).isEqualTo(patchNotification.getOwnerId());
 			assertThat(patchedEntity.getType()).isEqualTo(patchNotification.getType());
-			assertThat(patchedEntity.isAcknowledged()).isEqualTo(patchNotification.isAcknowledged());
+			assertThat(patchedEntity.isAcknowledged()).isEqualTo(patchNotification.getAcknowledged());
 		});
 	}
 }

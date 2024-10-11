@@ -416,7 +416,8 @@ class EntityMapperTest {
 	@Test
 	void toNotificationEntityTest() {
 		final var notification = createNotification(null);
-		final var notificationEntity = toNotificationEntity(notification, MUNICIPALITY_ID, NAMESPACE);
+		final var errand = createErrandEntity();
+		final var notificationEntity = toNotificationEntity(notification, MUNICIPALITY_ID, NAMESPACE, errand);
 
 		assertThat(notificationEntity).satisfies(entity -> {
 			assertThat(entity.getContent()).isEqualTo(notification.getContent());
@@ -425,6 +426,7 @@ class EntityMapperTest {
 			assertThat(entity.getCreatedByFullName()).isEqualTo(notification.getCreatedByFullName());
 			assertThat(entity.getDescription()).isEqualTo(notification.getDescription());
 			assertThat(entity.getExpires()).isEqualTo(notification.getExpires());
+			assertThat(entity.getErrand()).isEqualTo(errand);
 			assertThat(entity.getId()).isEqualTo(notification.getId());
 			assertThat(entity.getModified()).isEqualTo(notification.getModified());
 			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
