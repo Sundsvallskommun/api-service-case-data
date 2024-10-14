@@ -71,7 +71,6 @@ import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 public final class TestUtil {
 
 	public static final String MUNICIPALITY_ID = "2281";
-
 	public static final String NAMESPACE = "my.namespace";
 
 	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
@@ -81,7 +80,6 @@ public final class TestUtil {
 		.registerModule(new JavaTimeModule());
 
 	public static Errand createErrand() {
-
 		return Errand.builder()
 			.withId(new Random().nextLong(1, 100000))
 			.withExternalCaseId(UUID.randomUUID().toString())
@@ -627,5 +625,4 @@ public final class TestUtil {
 			.withErrandDecision(createDecision())
 			.build();
 	}
-
 }

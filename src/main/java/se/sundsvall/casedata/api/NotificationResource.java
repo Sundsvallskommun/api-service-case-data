@@ -80,7 +80,7 @@ class NotificationResource {
 	ResponseEntity<Notification> getNotification(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "notificationId", description = "notificationId", example = "12") @PathVariable final String notificationId) {
+		@Parameter(name = "notificationId", description = "notificationId", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable final String notificationId) {
 
 		return ok(notificationService.getNotification(municipalityId, namespace, notificationId));
 	}
@@ -120,7 +120,7 @@ class NotificationResource {
 	ResponseEntity<Void> deleteNotification(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "notificationId", description = "notificationId", example = "12") @PathVariable final String notificationId) {
+		@Parameter(name = "notificationId", description = "notificationId", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable final String notificationId) {
 
 		notificationService.deleteNotification(municipalityId, namespace, notificationId);
 		return noContent()

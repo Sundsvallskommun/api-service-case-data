@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import static java.time.OffsetDateTime.now;
 import static java.util.Collections.emptyList;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
 public final class EntityMapper {
+
+	private static final int DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS = 30;
 
 	private EntityMapper() {}
 
@@ -503,7 +506,7 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace) {
+	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace, ErrandEntity errand) {
 		return Optional.ofNullable(notification)
 			.map(obj -> NotificationEntity.builder()
 				.withAcknowledged(notification.isAcknowledged())
@@ -512,7 +515,8 @@ public final class EntityMapper {
 				.withCreatedBy(notification.getCreatedBy())
 				.withCreatedByFullName(notification.getCreatedByFullName())
 				.withDescription(notification.getDescription())
-				.withExpires(notification.getExpires())
+				.withExpires(Optional.ofNullable(notification.getExpires()).orElse(now().plusDays(DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS)))
+				.withErrand(errand)
 				.withId(notification.getId())
 				.withModified(notification.getModified())
 				.withMunicipalityId(municipalityId)

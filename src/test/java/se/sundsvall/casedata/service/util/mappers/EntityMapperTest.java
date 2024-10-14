@@ -1,6 +1,9 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import static java.time.OffsetDateTime.now;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAddress;
@@ -416,7 +419,9 @@ class EntityMapperTest {
 	@Test
 	void toNotificationEntityTest() {
 		final var notification = createNotification(null);
-		final var notificationEntity = toNotificationEntity(notification, MUNICIPALITY_ID, NAMESPACE);
+		final var errand = createErrandEntity();
+
+		final var notificationEntity = toNotificationEntity(notification, MUNICIPALITY_ID, NAMESPACE, errand);
 
 		assertThat(notificationEntity).satisfies(entity -> {
 			assertThat(entity.getContent()).isEqualTo(notification.getContent());
@@ -425,6 +430,34 @@ class EntityMapperTest {
 			assertThat(entity.getCreatedByFullName()).isEqualTo(notification.getCreatedByFullName());
 			assertThat(entity.getDescription()).isEqualTo(notification.getDescription());
 			assertThat(entity.getExpires()).isEqualTo(notification.getExpires());
+			assertThat(entity.getErrand()).isEqualTo(errand);
+			assertThat(entity.getId()).isEqualTo(notification.getId());
+			assertThat(entity.getModified()).isEqualTo(notification.getModified());
+			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+			assertThat(entity.getNamespace()).isEqualTo(NAMESPACE);
+			assertThat(entity.getOwnerFullName()).isEqualTo(notification.getOwnerFullName());
+			assertThat(entity.getOwnerId()).isEqualTo(notification.getOwnerId());
+			assertThat(entity.getType()).isEqualTo(notification.getType());
+		});
+	}
+
+	@Test
+	void toNotificationEntityWhenExpriresIsNullTest() {
+		final var notification = createNotification(null);
+		final var errand = createErrandEntity();
+
+		notification.setExpires(null);
+
+		final var notificationEntity = toNotificationEntity(notification, MUNICIPALITY_ID, NAMESPACE, errand);
+
+		assertThat(notificationEntity).satisfies(entity -> {
+			assertThat(entity.getContent()).isEqualTo(notification.getContent());
+			assertThat(entity.getCreated()).isEqualTo(notification.getCreated());
+			assertThat(entity.getCreatedBy()).isEqualTo(notification.getCreatedBy());
+			assertThat(entity.getCreatedByFullName()).isEqualTo(notification.getCreatedByFullName());
+			assertThat(entity.getDescription()).isEqualTo(notification.getDescription());
+			assertThat(entity.getExpires()).isCloseTo(now().plusDays(30), within(1, SECONDS)); // Should be 30 days from now
+			assertThat(entity.getErrand()).isEqualTo(errand);
 			assertThat(entity.getId()).isEqualTo(notification.getId());
 			assertThat(entity.getModified()).isEqualTo(notification.getModified());
 			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);

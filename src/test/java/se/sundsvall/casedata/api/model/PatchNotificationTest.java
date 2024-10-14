@@ -64,7 +64,7 @@ class PatchNotificationTest {
 		assertThat(bean.getDescription()).isEqualTo(description);
 		assertThat(bean.getContent()).isEqualTo(content);
 		assertThat(bean.getExpires()).isEqualTo(expires);
-		assertThat(bean.isAcknowledged()).isEqualTo(acknowledged);
+		assertThat(bean.getAcknowledged()).isEqualTo(acknowledged);
 	}
 
 	@Test

@@ -123,6 +123,7 @@ public final class PatchMapper {
 	}
 
 	public static NotificationEntity patchNotification(final NotificationEntity notificationEntity, final PatchNotification patch) {
+		Optional.ofNullable(patch.getAcknowledged()).ifPresent(notificationEntity::setAcknowledged);
 		Optional.ofNullable(patch.getContent()).ifPresent(notificationEntity::setContent);
 		Optional.ofNullable(patch.getDescription()).ifPresent(notificationEntity::setDescription);
 		Optional.ofNullable(patch.getExpires()).ifPresent(notificationEntity::setExpires);
