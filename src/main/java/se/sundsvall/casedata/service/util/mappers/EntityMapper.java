@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
+import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Appeal;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -506,14 +507,14 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace, ErrandEntity errand) {
+	public static NotificationEntity toNotificationEntity(Notification notification, String municipalityId, String namespace, ErrandEntity errand, PortalPersonData creator, PortalPersonData owner) {
 		return Optional.ofNullable(notification)
 			.map(obj -> NotificationEntity.builder()
 				.withAcknowledged(notification.isAcknowledged())
 				.withContent(notification.getContent())
 				.withCreated(notification.getCreated())
 				.withCreatedBy(notification.getCreatedBy())
-				.withCreatedByFullName(notification.getCreatedByFullName())
+				.withCreatedByFullName(Optional.ofNullable(creator).map(PortalPersonData::getFullname).orElse("unknown"))
 				.withDescription(notification.getDescription())
 				.withExpires(Optional.ofNullable(notification.getExpires()).orElse(now().plusDays(DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS)))
 				.withErrand(errand)
@@ -521,7 +522,7 @@ public final class EntityMapper {
 				.withModified(notification.getModified())
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
-				.withOwnerFullName(notification.getOwnerFullName())
+				.withOwnerFullName(Optional.ofNullable(owner).map(PortalPersonData::getFullname).orElse("unknown"))
 				.withOwnerId(notification.getOwnerId())
 				.withType(notification.getType())
 				.build())

@@ -170,7 +170,6 @@ class NotificationResourceFailuresTest {
 			PatchNotification.builder()
 				.withId(randomUUID().toString())
 				.withOwnerId("SomeOwnerId")
-				.withOwnerFullName("SomeOwnerFullName")
 				.withType("SomeType")
 				.withDescription("Some description")
 				.withAcknowledged(false)

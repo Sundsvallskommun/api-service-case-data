@@ -429,7 +429,6 @@ public final class TestUtil {
 			.withDescription(RandomStringUtils.secure().next(10, true, false))
 			.withExpires(getRandomOffsetDateTime())
 			.withId(randomUUID().toString())
-			.withOwnerFullName(RandomStringUtils.secure().next(10, true, false))
 			.withOwnerId(RandomStringUtils.secure().next(10, true, false))
 			.withType(RandomStringUtils.secure().next(10, true, false))
 			.build();

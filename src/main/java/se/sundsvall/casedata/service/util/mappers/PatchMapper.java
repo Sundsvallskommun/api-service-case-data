@@ -6,6 +6,7 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility
 import java.util.ArrayList;
 import java.util.Optional;
 
+import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.api.model.Note;
@@ -122,12 +123,12 @@ public final class PatchMapper {
 		return facility;
 	}
 
-	public static NotificationEntity patchNotification(final NotificationEntity notificationEntity, final PatchNotification patch) {
+	public static NotificationEntity patchNotification(final NotificationEntity notificationEntity, final PatchNotification patch, PortalPersonData owner) {
 		Optional.ofNullable(patch.getAcknowledged()).ifPresent(notificationEntity::setAcknowledged);
 		Optional.ofNullable(patch.getContent()).ifPresent(notificationEntity::setContent);
 		Optional.ofNullable(patch.getDescription()).ifPresent(notificationEntity::setDescription);
 		Optional.ofNullable(patch.getExpires()).ifPresent(notificationEntity::setExpires);
-		Optional.ofNullable(patch.getOwnerFullName()).ifPresent(notificationEntity::setOwnerFullName);
+		Optional.ofNullable(owner).ifPresent(obj -> notificationEntity.setOwnerFullName(obj.getFullname()));
 		Optional.ofNullable(patch.getOwnerId()).ifPresent(notificationEntity::setOwnerId);
 		Optional.ofNullable(patch.getType()).ifPresent(notificationEntity::setType);
 		return notificationEntity;

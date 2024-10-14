@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
@@ -175,14 +176,16 @@ class PatchMapperTest {
 	void patchNotificationTest() {
 		final var notificationEntity = createNotificationEntity(null);
 		final var patchNotification = createPatchNotification(null);
+		final var fullName = "Test Testsson";
+		final var owner = new PortalPersonData().fullname(fullName);
 
-		final var patchedNotificationEntity = PatchMapper.patchNotification(notificationEntity, patchNotification);
+		final var patchedNotificationEntity = PatchMapper.patchNotification(notificationEntity, patchNotification, owner);
 
 		assertThat(patchedNotificationEntity).isNotNull().satisfies(patchedEntity -> {
 			assertThat(patchedEntity.getContent()).isEqualTo(patchNotification.getContent());
 			assertThat(patchedEntity.getDescription()).isEqualTo(patchNotification.getDescription());
 			assertThat(patchedEntity.getExpires()).isEqualTo(patchNotification.getExpires());
-			assertThat(patchedEntity.getOwnerFullName()).isEqualTo(patchNotification.getOwnerFullName());
+			assertThat(patchedEntity.getOwnerFullName()).isEqualTo(fullName);
 			assertThat(patchedEntity.getOwnerId()).isEqualTo(patchNotification.getOwnerId());
 			assertThat(patchedEntity.getType()).isEqualTo(patchNotification.getType());
 			assertThat(patchedEntity.isAcknowledged()).isEqualTo(patchNotification.getAcknowledged());

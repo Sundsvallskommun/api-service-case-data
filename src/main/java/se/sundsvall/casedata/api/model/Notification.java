@@ -34,7 +34,7 @@ public class Notification {
 	private OffsetDateTime modified;
 
 	@NotBlank
-	@Schema(description = "Name of the owner of the notification", example = "Test Testorsson")
+	@Schema(description = "Name of the owner of the notification", example = "Test Testorsson", accessMode = READ_ONLY)
 	private String ownerFullName;
 
 	@NotBlank
@@ -44,7 +44,7 @@ public class Notification {
 	@Schema(description = "User who created the notification", example = "TestUser")
 	private String createdBy;
 
-	@Schema(description = "Full name of the user who created the notification", example = "Test Testorsson")
+	@Schema(description = "Full name of the user who created the notification", example = "Test Testorsson", accessMode = READ_ONLY)
 	private String createdByFullName;
 
 	@NotBlank
