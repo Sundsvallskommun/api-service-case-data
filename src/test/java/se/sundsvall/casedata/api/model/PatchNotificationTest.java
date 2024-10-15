@@ -38,7 +38,6 @@ class PatchNotificationTest {
 	void testBuilderMethods() {
 
 		// Arrange
-		final var owner = "Test Testorsson";
 		final var ownerId = "cb20c51f-fcf3-42c0-b613-de563634a8ec";
 		final var type = "SomeType";
 		final var description = "Some description of the notification";
@@ -48,7 +47,6 @@ class PatchNotificationTest {
 
 		// Act
 		final var bean = PatchNotification.builder()
-			.withOwnerFullName(owner)
 			.withOwnerId(ownerId)
 			.withType(type)
 			.withDescription(description)
@@ -58,7 +56,6 @@ class PatchNotificationTest {
 			.build();
 
 		// Assert
-		assertThat(bean.getOwnerFullName()).isEqualTo(owner);
 		assertThat(bean.getOwnerId()).isEqualTo(ownerId);
 		assertThat(bean.getType()).isEqualTo(type);
 		assertThat(bean.getDescription()).isEqualTo(description);

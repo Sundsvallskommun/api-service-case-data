@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
-
 import java.time.OffsetDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,11 +20,8 @@ import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 public class PatchNotification {
 
 	@ValidUuid
-	@Schema(description = "Unique identifier for the notification", example = "123e4567-e89b-12d3-a456-426614174000", accessMode = READ_ONLY)
+	@Schema(description = "Unique identifier for the notification", example = "123e4567-e89b-12d3-a456-426614174000")
 	private String id;
-
-	@Schema(description = "Name of the owner of the notification", example = "Test Testorsson")
-	private String ownerFullName;
 
 	@Schema(description = "Owner id of the notification", example = "AD01")
 	private String ownerId;

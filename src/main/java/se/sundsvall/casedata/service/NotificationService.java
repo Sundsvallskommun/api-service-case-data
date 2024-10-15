@@ -7,10 +7,12 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotifica
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNotification;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 
+import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchNotification;
@@ -27,11 +29,18 @@ public class NotificationService {
 	private final IncomingRequestFilter incomingRequestFilter;
 	private final NotificationRepository notificationRepository;
 	private final ErrandRepository errandRepository;
+	private final EmployeeService employeeService;
 
-	public NotificationService(final NotificationRepository notificationRepository, final IncomingRequestFilter incomingRequestFilter, final ErrandRepository errandRepository) {
+	public NotificationService(
+		final NotificationRepository notificationRepository,
+		final IncomingRequestFilter incomingRequestFilter,
+		final ErrandRepository errandRepository,
+		final EmployeeService employeeService) {
+
 		this.notificationRepository = notificationRepository;
 		this.incomingRequestFilter = incomingRequestFilter;
 		this.errandRepository = errandRepository;
+		this.employeeService = employeeService;
 	}
 
 	public List<Notification> getNotifications(String municipalityId, String namespace, String ownerId) {
@@ -54,7 +63,11 @@ public class NotificationService {
 		final var errandEntity = errandRepository.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(notification.getErrandId(), namespace, municipalityId)));
 
-		return toNotification(notificationRepository.save(toNotificationEntity(notification, municipalityId, namespace, errandEntity)));
+		final var creator = getPortalPersonData(incomingRequestFilter.getAdUser());
+		final var owner = getPortalPersonData(notification.getOwnerId());
+
+		return toNotification(notificationRepository.save(toNotificationEntity(notification, municipalityId, namespace, errandEntity, creator, owner)));
+
 	}
 
 	public void updateNotifications(String municipalityId, String namespace, List<PatchNotification> notifications) {
@@ -72,7 +85,9 @@ public class NotificationService {
 		final var entity = notificationRepository.findByIdAndNamespaceAndMunicipalityId(notificationId, namespace, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTIFICATION_ENTITY_NOT_FOUND.formatted(notificationId, namespace, municipalityId)));
 
-		notificationRepository.save(patchNotification(entity, notification));
+		final var owner = getPortalPersonData(notification.getOwnerId());
+
+		notificationRepository.save(patchNotification(entity, notification, owner));
 	}
 
 	private boolean notificationExists(final String municipalityId, final String namespace, final Notification notification) {
@@ -89,5 +104,11 @@ public class NotificationService {
 
 	private boolean isExecutingUserTheOwner(final String ownerId) {
 		return equalsIgnoreCase(ownerId, incomingRequestFilter.getAdUser());
+	}
+
+	private PortalPersonData getPortalPersonData(String adAccountId) {
+		return Optional.ofNullable(adAccountId)
+			.map(employeeService::getEmployeeByLoginName)
+			.orElse(null);
 	}
 }
