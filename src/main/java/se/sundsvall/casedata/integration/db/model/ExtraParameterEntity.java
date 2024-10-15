@@ -17,17 +17,13 @@ import org.hibernate.annotations.UuidGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.With;
 
 @Entity
 @Table(name = "errand_extra_parameters")
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 @Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
