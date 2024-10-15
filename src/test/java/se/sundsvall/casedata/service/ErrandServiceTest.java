@@ -27,7 +27,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -43,14 +42,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.zalando.problem.ThrowableProblem;
 
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.FacilityRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
-
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ErrandServiceTest {
@@ -70,11 +71,14 @@ class ErrandServiceTest {
 	@Mock
 	private ProcessService processServiceMock;
 
+	@Mock
+	private NotificationService notificationServiceMock;
+
 	@Captor
 	private ArgumentCaptor<List<Long>> idListCapture;
 
 	@Captor
-	private ArgumentCaptor<ErrandEntity> errandCaptor;
+	private ArgumentCaptor<Notification> notificationCaptor;
 
 	private ErrandEntity mockErrandFindByIdAndMunicipalityIdAndNamespace() {
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
@@ -101,8 +105,14 @@ class ErrandServiceTest {
 
 		// Assert
 		verify(processServiceMock).startProcess(inputErrand);
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 		verify(errandRepositoryMock, times(2)).save(any());
 		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
+
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende skapat");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("CREATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(inputErrand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(inputErrand.getId());
 	}
 
 	@Test
@@ -121,8 +131,14 @@ class ErrandServiceTest {
 
 		// Assert
 		verify(processServiceMock).startProcess(inputErrand);
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 		verify(errandRepositoryMock).save(any());
 		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
+
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende skapat");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("CREATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(inputErrand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(inputErrand.getId());
 	}
 
 	@Test
@@ -190,7 +206,6 @@ class ErrandServiceTest {
 		verify(errandRepositoryMock, never()).deleteById(id);
 	}
 
-
 	@Test
 	void updateErrandTest() {
 
@@ -223,8 +238,13 @@ class ErrandServiceTest {
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
-	}
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
+	}
 
 	@Test
 	void findAllWithoutDuplicates() {
@@ -251,7 +271,6 @@ class ErrandServiceTest {
 		assertThat(idListCapture.getValue().getFirst()).isEqualTo(errandDTO.getId());
 	}
 
-
 	@Test
 	void testPatch() {
 
@@ -271,6 +290,5 @@ class ErrandServiceTest {
 		verify(processServiceMock).updateProcess(entity);
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
 	}
-
 
 }

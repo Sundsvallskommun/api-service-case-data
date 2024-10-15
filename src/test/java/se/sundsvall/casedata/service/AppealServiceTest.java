@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -30,6 +31,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchAppeal;
 import se.sundsvall.casedata.integration.db.AppealRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -53,8 +55,14 @@ class AppealServiceTest {
 	@Mock
 	private ProcessService processServiceMock;
 
+	@Mock
+	private NotificationService notificationServiceMock;
+
 	@Captor
 	private ArgumentCaptor<AppealEntity> appealCaptor;
+
+	@Captor
+	private ArgumentCaptor<Notification> notificationCaptor;
 
 	private static Stream<Arguments> decisionProvider() {
 		return Stream.of(
@@ -69,7 +77,7 @@ class AppealServiceTest {
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act
-		var result = appealService.findAppealOnErrand(errand.getId(), 1L, MUNICIPALITY_ID, NAMESPACE);
+		final var result = appealService.findAppealOnErrand(errand.getId(), 1L, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -97,9 +105,16 @@ class AppealServiceTest {
 		verify(appealRepositoryMock).save(appealCaptor.capture());
 		final var savedAppeal = appealCaptor.getValue();
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+
 		assertThat(savedAppeal.getDescription()).isEqualTo(patch.getDescription());
 		assertThat(savedAppeal.getStatus().name()).isEqualTo(patch.getStatus());
 		assertThat(savedAppeal.getTimelinessReview()).isEqualTo(TimelinessReview.REJECTED);
+
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Överklagan uppdaterad");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 	}
 
 	@Test
@@ -111,7 +126,7 @@ class AppealServiceTest {
 		dto.setTimelinessReview(TimelinessReview.REJECTED.name());
 
 		final var entity = createAppealEntity();
-		var errand = createErrandEntity();
+		final var errand = createErrandEntity();
 		errand.setAppeals(List.of(entity));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
@@ -126,7 +141,13 @@ class AppealServiceTest {
 		assertThat(savedAppeal.getTimelinessReview()).isEqualTo(TimelinessReview.REJECTED);
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(appealRepositoryMock).save(entity);
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 		verifyNoMoreInteractions(appealRepositoryMock, errandRepositoryMock);
+
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Överklagan uppdaterad");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 	}
 
 	@ParameterizedTest
@@ -165,7 +186,13 @@ class AppealServiceTest {
 		}
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(appealRepositoryMock).save(entity);
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 		verifyNoMoreInteractions(appealRepositoryMock);
+
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Överklagan uppdaterad");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 	}
 
 	@Test
@@ -185,6 +212,12 @@ class AppealServiceTest {
 		assertThat(errand.getDecisions()).isNotEmpty().hasSize(2);
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Överklagan skapad");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 	}
 
 	@Test

@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import static java.time.OffsetDateTime.now;
 import static java.util.Collections.emptyList;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
 
@@ -549,6 +550,15 @@ public final class EntityMapper {
 				.withOwnerId(notificationEntity.getOwnerId())
 				.withType(notificationEntity.getType())
 				.build())
+			.orElse(null);
+	}
+
+	public static String toOwnerId(ErrandEntity errandEntity) {
+		return Optional.ofNullable(errandEntity.getStakeholders()).orElse(emptyList()).stream()
+			.filter(stakeholder -> Optional.ofNullable(stakeholder.getRoles()).orElse(emptyList()).stream()
+				.anyMatch(ADMINISTRATOR.toString()::equalsIgnoreCase))
+			.findFirst()
+			.map(StakeholderEntity::getAdAccount)
 			.orElse(null);
 	}
 }

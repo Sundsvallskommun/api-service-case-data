@@ -62,6 +62,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import generated.se.sundsvall.employee.PortalPersonData;
+import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
@@ -76,7 +77,7 @@ class EntityMapperTest {
 		final var errandDto = createErrand();
 		final var errand = toErrandEntity(errandDto, MUNICIPALITY_ID, NAMESPACE);
 
-		assertThat(errand).hasNoNullFieldsOrProperties().satisfies(e -> {
+		assertThat(errand).hasNoNullFieldsOrPropertiesExcept("notifications").satisfies(e -> {
 			assertThat(e.getErrandNumber()).isEqualTo(errandDto.getErrandNumber());
 			assertThat(e.getUpdatedByClient()).isEqualTo(errandDto.getUpdatedByClient());
 			assertThat(e.getUpdatedBy()).isEqualTo(errandDto.getUpdatedBy());
@@ -85,7 +86,6 @@ class EntityMapperTest {
 			assertThat(e.getCreatedByClient()).isEqualTo(errandDto.getCreatedByClient());
 			assertThat(e.getCaseTitleAddition()).isEqualTo(errandDto.getCaseTitleAddition());
 			assertThat(e.getDescription()).isEqualTo(errandDto.getDescription());
-
 		});
 	}
 
@@ -518,5 +518,29 @@ class EntityMapperTest {
 			assertThat(obj.getOwnerId()).isEqualTo(notificationEntity.getOwnerId());
 			assertThat(obj.getType()).isEqualTo(notificationEntity.getType());
 		});
+	}
+
+	@Test
+	void toOwnerIdTest() {
+
+		final var errandEntity = createErrandEntity();
+		final var stakeholderList = errandEntity.getStakeholders();
+		stakeholderList.add(TestUtil.createAdministratorStakeholderEntity());
+		errandEntity.setStakeholders(stakeholderList);
+
+		final var ownerId = EntityMapper.toOwnerId(errandEntity);
+
+		assertThat(ownerId).isEqualTo("administratorAdAccount");
+	}
+
+	@Test
+	void toOwnerIdWhenStakeholdersIsNullTest() {
+
+		final var errandEntity = createErrandEntity();
+		errandEntity.setStakeholders(null);
+
+		final var ownerId = EntityMapper.toOwnerId(errandEntity);
+
+		assertThat(ownerId).isNull();
 	}
 }

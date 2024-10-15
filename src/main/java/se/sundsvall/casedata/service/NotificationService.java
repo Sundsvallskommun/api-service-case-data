@@ -31,6 +31,17 @@ public class NotificationService {
 	private final ErrandRepository errandRepository;
 	private final EmployeeService employeeService;
 
+	public enum EventType {
+		CREATE,
+		READ,
+		UPDATE,
+		DELETE,
+		ACCESS,
+		EXECUTE,
+		CANCEL,
+		DROP;
+	}
+
 	public NotificationService(
 		final NotificationRepository notificationRepository,
 		final IncomingRequestFilter incomingRequestFilter,
