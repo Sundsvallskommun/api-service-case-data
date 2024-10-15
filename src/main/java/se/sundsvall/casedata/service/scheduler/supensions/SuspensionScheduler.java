@@ -28,9 +28,9 @@ public class SuspensionScheduler {
 		try {
 			RequestId.init();
 
-			LOG.debug("Cleaning up suspensions");
-			suspensionWorker.cleanUpSuspensions();
-			LOG.debug("Finished cleaning up suspensions");
+			LOG.debug("Processing suspensions");
+			suspensionWorker.processExpiredSuspensions();
+			LOG.debug("Finished processing suspensions");
 		} finally {
 			RequestId.reset();
 		}

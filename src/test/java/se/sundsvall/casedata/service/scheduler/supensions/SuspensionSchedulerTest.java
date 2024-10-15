@@ -25,7 +25,7 @@ class SuspensionSchedulerTest {
 		suspensionScheduler.cleanUpSuspensions();
 
 		// Verify
-		verify(suspensionWorkerMock).cleanUpSuspensions();
+		verify(suspensionWorkerMock).processExpiredSuspensions();
 		verifyNoMoreInteractions(suspensionWorkerMock);
 	}
 
