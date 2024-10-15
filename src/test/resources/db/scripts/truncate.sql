@@ -22,6 +22,7 @@ truncate table email_header;
 truncate table email_header_values;
 truncate table note;
 truncate table note_extra_parameters;
+truncate table notification;
 truncate table stakeholder;
 truncate table stakeholder_addresses;
 truncate table stakeholder_contact_information;

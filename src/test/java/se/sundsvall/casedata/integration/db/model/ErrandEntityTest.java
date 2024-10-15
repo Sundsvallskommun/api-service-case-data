@@ -45,40 +45,41 @@ class ErrandEntityTest {
 	void builder() {
 		// Arrange
 
-		var id = 1L;
-		var errandNumber = "errandNumber";
-		var municipalityId = "municipalityId";
-		var namespace = "namespace";
-		var externalCaseId = "externalCaseId";
-		var caseType = "caseType";
-		var channel = Channel.EMAIL;
-		var priority = Priority.HIGH;
-		var description = "description";
-		var caseTitleAddition = "caseTitleAddition";
-		var diaryNumber = "diaryNumber";
-		var phase = "phase";
-		var statuses = List.of(new StatusEntity());
-		var startDate = LocalDate.now();
-		var endDate = LocalDate.now();
-		var applicationReceived = now();
-		var processId = "processId";
-		var stakeholders = List.of(new StakeholderEntity());
-		var facilities = List.of(new FacilityEntity());
-		var decisions = List.of(new DecisionEntity());
-		var appeals = List.of(new AppealEntity());
-		var notes = List.of(new NoteEntity());
-		var createdByClient = "createdByClient";
-		var updatedByClient = "updatedByClient";
-		var createdBy = "createdBy";
-		var updatedBy = "updatedBy";
-		var extraParameters = Map.of("key", "value");
-		var created = now();
-		var updated = now();
-		var suspensionFrom = now();
-		var suspensionTo = now();
+		final var id = 1L;
+		final var errandNumber = "errandNumber";
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var externalCaseId = "externalCaseId";
+		final var caseType = "caseType";
+		final var channel = Channel.EMAIL;
+		final var priority = Priority.HIGH;
+		final var description = "description";
+		final var caseTitleAddition = "caseTitleAddition";
+		final var diaryNumber = "diaryNumber";
+		final var phase = "phase";
+		final var statuses = List.of(new StatusEntity());
+		final var startDate = LocalDate.now();
+		final var endDate = LocalDate.now();
+		final var applicationReceived = now();
+		final var processId = "processId";
+		final var stakeholders = List.of(new StakeholderEntity());
+		final var facilities = List.of(new FacilityEntity());
+		final var decisions = List.of(new DecisionEntity());
+		final var appeals = List.of(new AppealEntity());
+		final var notes = List.of(new NoteEntity());
+		final var notifications = List.of(new NotificationEntity());
+		final var createdByClient = "createdByClient";
+		final var updatedByClient = "updatedByClient";
+		final var createdBy = "createdBy";
+		final var updatedBy = "updatedBy";
+		final var extraParameters = Map.of("key", "value");
+		final var created = now();
+		final var updated = now();
+		final var suspensionFrom = now();
+		final var suspensionTo = now();
 
 		// Act
-		var bean = ErrandEntity.builder()
+		final var bean = ErrandEntity.builder()
 			.withId(id)
 			.withErrandNumber(errandNumber)
 			.withMunicipalityId(municipalityId)
@@ -101,6 +102,7 @@ class ErrandEntityTest {
 			.withDecisions(decisions)
 			.withAppeals(appeals)
 			.withNotes(notes)
+			.withNotifications(notifications)
 			.withCreatedByClient(createdByClient)
 			.withUpdatedByClient(updatedByClient)
 			.withCreatedBy(createdBy)
@@ -116,11 +118,12 @@ class ErrandEntityTest {
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertBasicFields(bean, id, errandNumber, municipalityId, namespace, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase);
 		assertDates(bean, startDate, endDate, applicationReceived, created, updated, suspensionFrom, suspensionTo);
-		assertCollections(bean, statuses, stakeholders, facilities, decisions, appeals, notes, extraParameters);
+		assertCollections(bean, statuses, stakeholders, facilities, decisions, appeals, notes, notifications, extraParameters);
 		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
 	}
 
-	private void assertBasicFields(ErrandEntity bean, Long id, String errandNumber, String municipalityId, String namespace, String externalCaseId, String caseType, Channel channel, Priority priority, String description, String caseTitleAddition, String diaryNumber, String phase) {
+	private void assertBasicFields(ErrandEntity bean, Long id, String errandNumber, String municipalityId, String namespace, String externalCaseId, String caseType, Channel channel, Priority priority, String description, String caseTitleAddition,
+		String diaryNumber, String phase) {
 		assertThat(bean.getId()).isEqualTo(id);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
@@ -145,13 +148,15 @@ class ErrandEntityTest {
 		assertThat(bean.getSuspendedTo()).isEqualTo(suspensionTo);
 	}
 
-	private void assertCollections(ErrandEntity bean, List<StatusEntity> statuses, List<StakeholderEntity> stakeholders, List<FacilityEntity> facilities, List<DecisionEntity> decisions, List<AppealEntity> appeals, List<NoteEntity> notes, Map<String, String> extraParameters) {
+	private void assertCollections(ErrandEntity bean, List<StatusEntity> statuses, List<StakeholderEntity> stakeholders, List<FacilityEntity> facilities, List<DecisionEntity> decisions, List<AppealEntity> appeals, List<NoteEntity> notes,
+		List<NotificationEntity> notifications, Map<String, String> extraParameters) {
 		assertThat(bean.getStatuses()).isEqualTo(statuses);
 		assertThat(bean.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(bean.getFacilities()).isEqualTo(facilities);
 		assertThat(bean.getDecisions()).isEqualTo(decisions);
 		assertThat(bean.getAppeals()).isEqualTo(appeals);
 		assertThat(bean.getNotes()).isEqualTo(notes);
+		assertThat(bean.getNotifications()).isEqualTo(notifications);
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
 	}
 
@@ -161,7 +166,6 @@ class ErrandEntityTest {
 		assertThat(bean.getCreatedBy()).isEqualTo(createdBy);
 		assertThat(bean.getUpdatedBy()).isEqualTo(updatedBy);
 	}
-
 
 	@Test
 	void testNoDirtOnCreatedBean() {
@@ -176,6 +180,5 @@ class ErrandEntityTest {
 				assertThat(bean.getVersion()).isZero();
 			});
 	}
-
 
 }

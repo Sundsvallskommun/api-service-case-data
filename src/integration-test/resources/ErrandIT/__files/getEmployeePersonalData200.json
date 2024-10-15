@@ -1,0 +1,17 @@
+{
+	"personid": "b10be261-b417-4c3e-a42a-9b94c27c17fe",
+	"givenname": "Test",
+	"lastname": "Testsson",
+	"fullname": "Testsson Test",
+	"address": "",
+	"postalCode": "",
+	"city": "",
+	"aboutMe": "",
+	"email": "test.testsson@sundsvall.se",
+	"mailNickname": "test.testsson",
+	"company": "Sundsvalls kommun",
+	"companyId": 1,
+	"orgTree": "2|28|KSK Avd Digitalisering och IT",
+	"isManager": false,
+	"loginName": "PERSONAL\\user123"
+}

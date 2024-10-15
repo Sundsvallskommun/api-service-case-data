@@ -2,9 +2,13 @@ package se.sundsvall.casedata.service;
 
 import static java.text.MessageFormat.format;
 import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_CREATED;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_UPDATED;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecision;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecisionEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecision;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 
@@ -13,14 +17,14 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import se.sundsvall.casedata.api.model.Decision;
+import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.integration.db.DecisionRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 public class DecisionService {
@@ -30,15 +34,15 @@ public class DecisionService {
 	private static final String DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Decision with id: {0} was not found on errand with id: {1}";
 
 	private final DecisionRepository decisionRepository;
-
 	private final ErrandRepository errandRepository;
-
 	private final ProcessService processService;
+	private final NotificationService notificationService;
 
-	public DecisionService(final DecisionRepository decisionRepository, final ErrandRepository errandRepository, final ProcessService processService) {
+	public DecisionService(final DecisionRepository decisionRepository, final ErrandRepository errandRepository, final ProcessService processService, final NotificationService notificationService) {
 		this.decisionRepository = decisionRepository;
 		this.errandRepository = errandRepository;
 		this.processService = processService;
+		this.notificationService = notificationService;
 	}
 
 	public List<Decision> findDecisionsOnErrand(final Long errandId, final String municipalityId, final String namespace) {
@@ -68,16 +72,36 @@ public class DecisionService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, id, errandId)));
 
 		decisionRepository.save(putDecision(entity, decision));
+
+		// Create notification
+		notificationService.createNotification(municipalityId, namespace, Notification.builder()
+			.withCreatedBy(entity.getErrand().getCreatedBy())
+			.withDescription(NOTIFICATION_DECISION_UPDATED)
+			.withErrandId(entity.getErrand().getId())
+			.withType(UPDATE.toString())
+			.withOwnerId(toOwnerId(entity.getErrand()))
+			.build());
 	}
 
 	@Retry(name = "OptimisticLocking")
 	public void updateDecisionOnErrand(final Long errandId, final Long id, final String municipalityId, final String namespace, final PatchDecision decision) {
-		final var decisionList = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace).getDecisions();
+		final var errand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
+		final var decisionList = errand.getDecisions();
 		final var entity = decisionList.stream()
 			.filter(decisionEntity -> decisionEntity.getId().equals(id))
 			.findFirst()
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, id, errandId)));
+
 		decisionRepository.save(patchDecision(entity, decision));
+
+		// Create notification
+		notificationService.createNotification(municipalityId, namespace, Notification.builder()
+			.withCreatedBy(errand.getCreatedBy())
+			.withDescription(NOTIFICATION_DECISION_UPDATED)
+			.withErrandId(errand.getId())
+			.withType(UPDATE.toString())
+			.withOwnerId(toOwnerId(errand))
+			.build());
 	}
 
 	@Retry(name = "OptimisticLocking")
@@ -88,6 +112,16 @@ public class DecisionService {
 		errandEntity.getDecisions().add(decisionEntity);
 		final var updatedErrand = errandRepository.save(errandEntity);
 		processService.updateProcess(updatedErrand);
+
+		// Create notification
+		notificationService.createNotification(municipalityId, namespace, Notification.builder()
+			.withCreatedBy(errandEntity.getCreatedBy())
+			.withDescription(NOTIFICATION_DECISION_CREATED)
+			.withErrandId(errandEntity.getId())
+			.withType(UPDATE.toString())
+			.withOwnerId(toOwnerId(errandEntity))
+			.build());
+
 		return toDecision(decisionEntity);
 	}
 
@@ -108,5 +142,4 @@ public class DecisionService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
 				format(ERRAND_WAS_NOT_FOUND, errandId)));
 	}
-
 }

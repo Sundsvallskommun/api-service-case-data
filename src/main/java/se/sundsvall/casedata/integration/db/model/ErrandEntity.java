@@ -8,6 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.javers.core.metamodel.annotation.DiffIgnore;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -28,18 +36,6 @@ import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.javers.core.metamodel.annotation.DiffIgnore;
-
-import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
-import se.sundsvall.casedata.integration.db.model.enums.Channel;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,6 +43,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 @Entity
 @Table(name = "errand",
@@ -54,7 +53,11 @@ import lombok.Setter;
 		@Index(name = "idx_errand_municipality_id", columnList = "municipality_id"),
 		@Index(name = "idx_errand_namespace", columnList = "namespace")
 	},
-	uniqueConstraints = {@UniqueConstraint(name = "UK_errand_errand_number", columnNames = {"errand_number"})})
+	uniqueConstraints = {
+		@UniqueConstraint(name = "UK_errand_errand_number", columnNames = {
+			"errand_number"
+		})
+	})
 @EntityListeners(ErrandListener.class)
 @Getter
 @Setter
@@ -150,6 +153,9 @@ public class ErrandEntity {
 	@JsonManagedReference
 	private List<NoteEntity> notes;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
+	private List<NotificationEntity> notifications;
+
 	// WSO2-client
 	@Column(name = "created_by_client")
 	@DiffIgnore
@@ -200,40 +206,14 @@ public class ErrandEntity {
 
 	@Override
 	public String toString() {
-		return "ErrandEntity{" +
-			"id=" + id +
-			", version=" + version +
-			", errandNumber='" + errandNumber + '\'' +
-			", municipalityId='" + municipalityId + '\'' +
-			", namespace='" + namespace + '\'' +
-			", externalCaseId='" + externalCaseId + '\'' +
-			", caseType='" + caseType + '\'' +
-			", channel=" + channel +
-			", priority=" + priority +
-			", description='" + description + '\'' +
-			", caseTitleAddition='" + caseTitleAddition + '\'' +
-			", diaryNumber='" + diaryNumber + '\'' +
-			", phase='" + phase + '\'' +
-			", statuses=" + statuses +
-			", startDate=" + startDate +
-			", endDate=" + endDate +
-			", applicationReceived=" + applicationReceived +
-			", processId='" + processId + '\'' +
-			", stakeholders=" + stakeholders +
-			", facilities=" + facilities +
-			", decisions=" + decisions +
-			", appeals=" + appeals +
-			", notes=" + notes +
-			", createdByClient='" + createdByClient + '\'' +
-			", updatedByClient='" + updatedByClient + '\'' +
-			", createdBy='" + createdBy + '\'' +
-			", updatedBy='" + updatedBy + '\'' +
-			", created=" + created +
-			", updated=" + updated +
-			", suspendedTo=" + suspendedTo +
-			", suspendedFrom=" + suspendedFrom +
-			", extraParameters=" + extraParameters +
-			'}';
+		final StringBuilder builder = new StringBuilder();
+		builder.append("ErrandEntity [id=").append(id).append(", version=").append(version).append(", errandNumber=").append(errandNumber).append(", municipalityId=").append(municipalityId).append(", namespace=").append(namespace).append(
+			", externalCaseId=").append(externalCaseId).append(", caseType=").append(caseType).append(", channel=").append(channel).append(", priority=").append(priority).append(", description=").append(description).append(", caseTitleAddition=").append(
+				caseTitleAddition).append(", diaryNumber=").append(diaryNumber).append(", phase=").append(phase).append(", statuses=").append(statuses).append(", startDate=").append(startDate).append(", endDate=").append(endDate).append(
+					", applicationReceived=").append(applicationReceived).append(", processId=").append(processId).append(", stakeholders=").append(stakeholders).append(", facilities=").append(facilities).append(", decisions=").append(decisions).append(
+						", appeals=").append(appeals).append(", notes=").append(notes).append(", notifications=").append(notifications).append(", createdByClient=").append(createdByClient).append(", updatedByClient=").append(updatedByClient).append(
+							", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append(", created=").append(created).append(", updated=").append(updated).append(", suspendedTo=").append(suspendedTo).append(", suspendedFrom=").append(
+								suspendedFrom).append(", extraParameters=").append(extraParameters).append("]");
+		return builder.toString();
 	}
-
 }

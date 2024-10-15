@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +35,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.ThrowableProblem;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.integration.db.DecisionRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -46,20 +48,26 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 @ExtendWith(MockitoExtension.class)
 class DecisionServiceTest {
 
-	@InjectMocks
-	private DecisionService decisionService;
-
 	@Mock
 	private DecisionRepository decisionRepository;
-
-	@Captor
-	private ArgumentCaptor<DecisionEntity> decisionCaptor;
 
 	@Mock
 	private ErrandRepository errandRepositoryMock;
 
 	@Mock
 	private ProcessService processServiceMock;
+
+	@Mock
+	private NotificationService notificationServiceMock;
+
+	@InjectMocks
+	private DecisionService decisionService;
+
+	@Captor
+	private ArgumentCaptor<DecisionEntity> decisionCaptor;
+
+	@Captor
+	private ArgumentCaptor<Notification> notificationCaptor;
 
 	@Test
 	void patchDecisionOnErrand() throws JsonProcessingException {
@@ -87,6 +95,12 @@ class DecisionServiceTest {
 		extraParams.putAll(patch.getExtraParameters());
 		extraParams.putAll(decision.getExtraParameters());
 		assertEquals(extraParams, persistedDecision.getExtraParameters());
+
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Beslut uppdaterat");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 	}
 
 	@Test
@@ -104,6 +118,12 @@ class DecisionServiceTest {
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verify(decisionRepository, times(1)).save(entity);
 		verifyNoMoreInteractions(errandRepositoryMock, decisionRepository);
+
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Beslut uppdaterat");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 	}
 
 	@Test
@@ -170,6 +190,12 @@ class DecisionServiceTest {
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
+
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Beslut skapat");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 	}
 
 }
