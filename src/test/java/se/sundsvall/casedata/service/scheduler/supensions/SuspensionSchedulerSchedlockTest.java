@@ -58,7 +58,7 @@ class SuspensionSchedulerSchedlockTest {
 				.isCloseTo(LocalDateTime.now(systemUTC()), within(10, ChronoUnit.SECONDS)));
 
 		// Only one call should be made as long as transferFiles() is locked and mock is waiting for first call to finish
-		verify(suspensionWorkerMock).cleanUpSuspensions();
+		verify(suspensionWorkerMock).processExpiredSuspensions();
 		verifyNoMoreInteractions(suspensionWorkerMock);
 	}
 
@@ -91,7 +91,7 @@ class SuspensionSchedulerSchedlockTest {
 				await().forever()
 					.until(() -> false);
 				return null;
-			}).when(mockBean).cleanUpSuspensions();
+			}).when(mockBean).processExpiredSuspensions();
 
 			return mockBean;
 		}
