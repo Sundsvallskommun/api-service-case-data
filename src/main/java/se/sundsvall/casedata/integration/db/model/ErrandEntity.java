@@ -4,9 +4,7 @@ import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -22,7 +20,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
@@ -190,13 +187,8 @@ public class ErrandEntity {
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime suspendedFrom;
 
-	@ElementCollection
-	@CollectionTable(name = "errand_extra_parameters",
-		joinColumns = @JoinColumn(name = "errand_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_errand_extra_parameters_errand_id")))
-	@MapKeyColumn(name = "extra_parameter_key")
-	@Column(name = "extra_parameter_value", length = 8192)
-	@Builder.Default
-	private Map<String, String> extraParameters = new HashMap<>();
+	@OneToMany(mappedBy = "errandEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ExtraParameterEntity> extraParameters;
 
 	@Override
 	public String toString() {

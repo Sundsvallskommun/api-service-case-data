@@ -21,7 +21,6 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -49,6 +48,7 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.FacilityRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
 
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 
@@ -213,7 +213,11 @@ class ErrandServiceTest {
 			assertThat(e.getPhase()).isEqualTo(patch.getPhase());
 			assertThat(e.getStartDate()).isEqualTo(patch.getStartDate());
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
-			assertThat(e.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
+			assertThat(e.getExtraParameters())
+				.containsAll(patch.getExtraParameters().stream()
+					.map(parameter -> ErrandExtraParameterMapper.toErrandParameterEntity(parameter)
+						.withErrandEntity(errand))
+					.toList());
 		});
 
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
@@ -238,7 +242,7 @@ class ErrandServiceTest {
 		final Pageable pageable = PageRequest.of(0, 20);
 
 		// Act
-		errandService.findAll(filterSpecification, MUNICIPALITY_ID, NAMESPACE, new HashMap<>(), pageable);
+		errandService.findAll(filterSpecification, MUNICIPALITY_ID, NAMESPACE, pageable);
 
 		// Assert
 		verify(errandRepositoryMock).findAllByIdInAndMunicipalityIdAndNamespace(idListCapture.capture(), eq(MUNICIPALITY_ID), eq(NAMESPACE), any(Pageable.class));

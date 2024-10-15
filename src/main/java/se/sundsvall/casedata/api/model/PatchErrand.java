@@ -2,9 +2,7 @@ package se.sundsvall.casedata.api.model;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -13,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 
-import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
@@ -76,9 +73,7 @@ public class PatchErrand {
 	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)
 	private OffsetDateTime applicationReceived;
 
-	@Schema(description = "Additional parameters for the case", example = "{\"key1\":\"value1\",\"key2\":\"value2\"}")
-	@ValidMapValueSize(max = 8192)
-	@Builder.Default
-	private Map<String, String> extraParameters = new HashMap<>();
+	@Schema(description = "Extra parameters for the errand")
+	private List<ExtraParameter> extraParameters;
 
 }

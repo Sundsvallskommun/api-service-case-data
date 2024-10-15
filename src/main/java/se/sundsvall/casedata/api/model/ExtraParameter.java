@@ -1,18 +1,29 @@
 package se.sundsvall.casedata.api.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
+import jakarta.validation.constraints.NotBlank;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder(setterPrefix = "with")
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExtraParameter {
 
-	@ValidMapValueSize(max = 8192)
-	@Schema(description = "Extra parameters", example = "{\"key1\":\"value1\",\"key2\":\"value2\"}")
-	private Map<String, String> extraParameters = new HashMap<>();
+	@Schema(description = "Parameter key")
+	@NotBlank
+	private String key;
+
+	@Schema(description = "Parameter display name")
+	private String displayName;
+
+	@Schema(description = "Parameter values")
+	private List<String> values;
 
 }

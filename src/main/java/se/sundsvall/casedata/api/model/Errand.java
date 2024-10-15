@@ -2,9 +2,7 @@ package se.sundsvall.casedata.api.model;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -14,7 +12,6 @@ import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
-import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
@@ -131,10 +128,8 @@ public class Errand {
 	@Schema(description = "Suspension information")
 	private Suspension suspension;
 
-	@Schema(description = "Extra parameters for the errand", example = "{\"key1\":\"value1\",\"key2\":\"value2\"}")
-	@ValidMapValueSize(max = 8192)
-	@Builder.Default
-	private Map<String, String> extraParameters = new HashMap<>();
+	@Schema(description = "Extra parameters for the errand")
+	private List<ExtraParameter> extraParameters;
 
 	@Schema(description = "Date and time when the errand was created", accessMode = Schema.AccessMode.READ_ONLY, example = "2023-10-01T12:00:00Z")
 	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)

@@ -26,6 +26,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 import se.sundsvall.casedata.service.ErrandService;
@@ -47,7 +48,7 @@ class ErrandResourceFailureTest {
 		// Arrange
 		final var body = createErrandEntity();
 		final String longExtraParameter = String.join("", Collections.nCopies(9000, "a")); // This creates a string longer than 8192 characters
-		body.getExtraParameters().put("longParameter", longExtraParameter);
+		body.setExtraParameters(List.of(ExtraParameterEntity.builder().withKey("longParameter").withValues(List.of(longExtraParameter)).build()));
 
 		// Act
 		webTestClient.post()

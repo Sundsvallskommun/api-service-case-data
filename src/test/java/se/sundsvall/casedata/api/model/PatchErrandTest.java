@@ -8,7 +8,7 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
-import static se.sundsvall.casedata.TestUtil.createExtraParameters;
+import static se.sundsvall.casedata.TestUtil.createExtraParametersList;
 import static se.sundsvall.casedata.TestUtil.createFacility;
 
 import java.time.LocalDate;
@@ -55,7 +55,7 @@ class PatchErrandTest {
 		final var startDate = LocalDate.now();
 		final var endDate = LocalDate.now();
 		final var applicationReceived = OffsetDateTime.now();
-		final var extraParameters = createExtraParameters();
+		final var extraParameters = createExtraParametersList();
 		final var facilities = List.of(createFacility());
 		final var suspension = new Suspension();
 
@@ -95,11 +95,8 @@ class PatchErrandTest {
 
 	@Test
 	void noDirtOnCreatedBean() {
-		assertThat(PatchErrand.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters")
-			.satisfies(bean -> assertThat(bean.getExtraParameters()).isNotNull().isEmpty());
-
-		assertThat(new PatchErrand()).hasAllNullFieldsOrPropertiesExcept("extraParameters")
-			.satisfies(bean -> assertThat(bean.getExtraParameters()).isNotNull().isEmpty());
+		assertThat(PatchErrand.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new PatchErrand()).hasAllNullFieldsOrProperties();
 	}
 
 }

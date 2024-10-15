@@ -15,8 +15,11 @@ VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         'PRH-2022-000029', 'ext-no-3', '2281', 'my.namespace', 'Aktualisering', 'HIGH',
         '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL);
 
-INSERT INTO errand_extra_parameters (errand_id, extra_parameter_value, extra_parameter_key)
-VALUES (1, 'test', 'test-value');
+INSERT INTO errand_extra_parameters (errand_id, id, display_name, parameters_key)
+values (1, '123e4567-e89b-12d3-a456-426614174000', 'test', 'test-value');
+
+INSERT INTO errand_extra_parameter_values (extra_parameter_id, value)
+VALUES ('123e4567-e89b-12d3-a456-426614174000', 'test');
 
 INSERT INTO errand_statuses (errand_id, date_time, description, status_type, status_order)
 VALUES (1, '2022-12-02 15:13:45.363', 'Beslut verkställt', 'Beslut verkställt', 0);

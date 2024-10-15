@@ -68,7 +68,7 @@
   "updatedByClient": "WSO2_MS_caseManagement",
   "createdBy": "UNKNOWN",
   "updatedBy": "Hi my name is AD_USER",
-  "extraParameters": {},
+  "extraParameters": [],
   "created": "2022-12-02T15:13:45.363+01:00",
   "updated": "${json-unit.any-string}"
 }
