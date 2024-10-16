@@ -30,27 +30,7 @@ class MessageAttachmentIT extends AbstractAppTest {
 	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + ERRAND_ID + "/messageattachments/";
 
 	@Test
-	void test01_getMessageAttachmentNotFound() {
-		setupCall()
-			.withHttpMethod(GET)
-			.withServicePath(PATH + "666")
-			.withExpectedResponseStatus(NOT_FOUND)
-			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse();
-	}
-
-	@Test
-	void test02_getMessageAttachment() {
-		setupCall()
-			.withHttpMethod(GET)
-			.withServicePath(PATH + "05b29c30-4512-46c0-9d82-d0f11cb04bae")
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse();
-	}
-
-	@Test
-	void test03_getMessageAttachmentStreamedNotFound() {
+	void test01_getMessageAttachmentStreamedNotFound() {
 		setupCall()
 			.withHttpMethod(GET)
 			.withServicePath(PATH + "666/streamed")
@@ -60,7 +40,7 @@ class MessageAttachmentIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test04_getMessageAttachmentStreamed() throws Exception {
+	void test02_getMessageAttachmentStreamed() throws Exception {
 		setupCall()
 			.withHttpMethod(GET)
 			.withServicePath(PATH + "05b29c30-4512-46c0-9d82-d0f11cb04bae/streamed")

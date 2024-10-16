@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.zalando.problem.Status.NOT_FOUND;
@@ -40,6 +41,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.model.Note;
+import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.NoteRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
@@ -58,11 +60,17 @@ class NoteServiceTest {
 	@Mock
 	private ProcessService processServiceMock;
 
+	@Mock
+	private NotificationService notificationServiceMock;
+
 	@InjectMocks
 	private NoteService noteService;
 
 	@Captor
 	private ArgumentCaptor<NoteEntity> noteCaptor;
+
+	@Captor
+	private ArgumentCaptor<Notification> notificationCaptor;
 
 	@Test
 	void updateNoteOnErrandNotFound() {
@@ -79,6 +87,8 @@ class NoteServiceTest {
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Note with id: " + errandId + " was not found on errand with id: " + noteId);
+
+		verifyNoInteractions(notificationServiceMock);
 	}
 
 	@Test
@@ -109,6 +119,12 @@ class NoteServiceTest {
 			.ignoringFieldsMatchingRegexes(
 				"id", "version", "created", "updated")
 			.isEqualTo(toNote(persistedNote));
+
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Notering uppdaterad");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 	}
 
 	@Test
@@ -130,6 +146,11 @@ class NoteServiceTest {
 		// Assert
 		verify(noteRepositoryMock).save(entity);
 		verifyNoMoreInteractions(noteRepositoryMock);
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Notering uppdaterad");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 	}
 
 	@Test
@@ -232,6 +253,11 @@ class NoteServiceTest {
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
+		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Notering skapad");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("CREATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 	}
 
 }

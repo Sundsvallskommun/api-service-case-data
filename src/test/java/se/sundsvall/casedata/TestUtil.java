@@ -1,6 +1,7 @@
 package se.sundsvall.casedata;
 
 import static java.util.UUID.randomUUID;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 import java.time.LocalDate;
@@ -108,7 +109,7 @@ public final class TestUtil {
 			.withUpdated(getRandomOffsetDateTime())
 			.withNotes(new ArrayList<>(List.of(createNote(), createNote(), createNote())))
 			.withStakeholders(new ArrayList<>(List.of(
-				createStakeholder(StakeholderType.PERSON, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole()))),
+				createStakeholder(StakeholderType.PERSON, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole(), ADMINISTRATOR.toString()))),
 				createStakeholder(StakeholderType.ORGANIZATION, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole()))))))
 			.withMessageIds(new ArrayList<>(List.of(
 				RandomStringUtils.secure().next(10, true, true),
@@ -490,6 +491,30 @@ public final class TestUtil {
 			.withContactInformation(new ArrayList<>(List.of(createContactInformationEntity())))
 			.withErrand(null)
 			.withAdAccount("adAccount")
+			.withAuthorizedSignatory("authorizedSignatory")
+			.withFirstName("firstName")
+			.withLastName("lastName")
+			.withOrganizationName("organizationName")
+			.withOrganizationNumber("organizationNumber")
+			.withPersonId("personId")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.build();
+	}
+
+	public static StakeholderEntity createAdministratorStakeholderEntity() {
+		return StakeholderEntity.builder()
+			.withRoles(new ArrayList<>(List.of(ADMINISTRATOR.name())))
+			.withType(StakeholderType.PERSON)
+			.withCreated(getRandomOffsetDateTime())
+			.withUpdated(getRandomOffsetDateTime())
+			.withVersion(1)
+			.withId(1L)
+			.withExtraParameters(createExtraParameters())
+			.withAddresses(new ArrayList<>(List.of(createAddressEntity())))
+			.withContactInformation(new ArrayList<>(List.of(createContactInformationEntity())))
+			.withErrand(null)
+			.withAdAccount("administratorAdAccount")
 			.withAuthorizedSignatory("authorizedSignatory")
 			.withFirstName("firstName")
 			.withLastName("lastName")
