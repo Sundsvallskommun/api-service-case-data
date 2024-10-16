@@ -14,14 +14,6 @@ import org.javers.core.metamodel.annotation.DiffIgnore;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.javers.core.metamodel.annotation.DiffIgnore;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
