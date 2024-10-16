@@ -28,5 +28,4 @@ class EmailReaderSchedulerTest {
 		verify(emailReaderWorkerMock).getAndProcessEmails();
 		verifyNoMoreInteractions(emailReaderWorkerMock);
 	}
-
 }

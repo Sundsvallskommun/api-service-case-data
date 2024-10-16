@@ -1,21 +1,21 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
+import static java.time.OffsetDateTime.now;
+import static java.time.ZoneId.systemDefault;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.Optional;
-
-import jakarta.persistence.PostPersist;
-import jakarta.persistence.PostUpdate;
-import jakarta.persistence.PrePersist;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostUpdate;
+import jakarta.persistence.PrePersist;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -57,7 +57,7 @@ public class ErrandListener {
 	void updateErrandFields(final ErrandEntity errand) {
 		if (errand != null) {
 			// Behöver sätta datum för att errand-objektet ska uppdateras med ny version o.s.v.
-			errand.setUpdated(OffsetDateTime.now());
+			errand.setUpdated(now(systemDefault()));
 			errand.setUpdatedByClient(incomingRequestFilter.getSubscriber());
 			errand.setUpdatedBy(incomingRequestFilter.getAdUser());
 			LOG.info("Updated errand with updated: {}. errandNumber: {}. Subscriber: {}. AD-user: {}", errand.getUpdated(), errand.getErrandNumber(), incomingRequestFilter.getSubscriber(), incomingRequestFilter.getAdUser());

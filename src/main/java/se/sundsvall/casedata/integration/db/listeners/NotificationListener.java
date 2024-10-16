@@ -1,9 +1,8 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
 import static java.time.OffsetDateTime.now;
+import static java.time.ZoneId.systemDefault;
 import static java.time.temporal.ChronoUnit.MILLIS;
-
-import java.time.ZoneId;
 
 import org.springframework.stereotype.Component;
 
@@ -22,13 +21,13 @@ public class NotificationListener {
 
 	@PrePersist
 	void prePersist(final NotificationEntity notification) {
-		notification.setCreated(now(ZoneId.systemDefault()).truncatedTo(MILLIS));
+		notification.setCreated(now(systemDefault()).truncatedTo(MILLIS));
 		errandListener.updateErrandFields(notification.getErrand());
 	}
 
 	@PreUpdate
 	void preUpdate(final NotificationEntity notification) {
-		notification.setModified(now(ZoneId.systemDefault()).truncatedTo(MILLIS));
+		notification.setModified(now(systemDefault()).truncatedTo(MILLIS));
 		errandListener.updateErrandFields(notification.getErrand());
 	}
 }

@@ -12,7 +12,6 @@ spring:
   flyway:
     enabled: true
   jpa:
-    database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
       ddl-auto: validate
   security:
@@ -156,4 +155,7 @@ scheduler:
     shedlock-lock-at-most-for: PT10M
   suspension:
     cron: 0 */15 * * * *
+    shedlock-lock-at-most-for: PT10M
+  notification:
+    cron: 0 0 0 * * *
     shedlock-lock-at-most-for: PT10M

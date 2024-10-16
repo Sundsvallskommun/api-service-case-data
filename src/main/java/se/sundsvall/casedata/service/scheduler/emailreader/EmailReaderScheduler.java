@@ -16,16 +16,16 @@ public class EmailReaderScheduler {
 
 	private final EmailReaderWorker emailReaderWorker;
 
-	public EmailReaderScheduler(final EmailReaderWorker emailReaderWorker) {this.emailReaderWorker = emailReaderWorker;}
+	public EmailReaderScheduler(final EmailReaderWorker emailReaderWorker) {
+		this.emailReaderWorker = emailReaderWorker;
+	}
 
-	@Scheduled(initialDelayString = "${scheduler.emailreader.initialDelay}", fixedRateString = "${scheduler.emailreader.fixedRate}")
+	@Scheduled(initialDelayString = "${scheduler.emailreader.initialDelay}", fixedRateString = "${scheduler.emailreader.fixedRate}", zone = "Europe/Stockholm")
 	@SchedulerLock(name = "emailreader", lockAtMostFor = "${scheduler.emailreader.shedlock-lock-at-most-for}")
 	void getAndProcessEmails() {
 
 		LOG.info("Getting and processing emails");
 		emailReaderWorker.getAndProcessEmails();
 		LOG.info("Finished getting and processing emails");
-
 	}
-
 }

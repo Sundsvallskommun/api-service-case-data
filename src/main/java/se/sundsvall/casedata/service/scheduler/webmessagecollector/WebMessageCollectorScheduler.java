@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,9 +16,11 @@ public class WebMessageCollectorScheduler {
 
 	private final WebMessageCollectorWorker webMessageCollectorWorker;
 
-	public WebMessageCollectorScheduler(final WebMessageCollectorWorker webMessageCollectorWorker) {this.webMessageCollectorWorker = webMessageCollectorWorker;}
+	public WebMessageCollectorScheduler(final WebMessageCollectorWorker webMessageCollectorWorker) {
+		this.webMessageCollectorWorker = webMessageCollectorWorker;
+	}
 
-	@Scheduled(initialDelayString = "${scheduler.message-collector.initialDelay}", fixedRateString = "${scheduler.message-collector.fixedRate}")
+	@Scheduled(initialDelayString = "${scheduler.message-collector.initialDelay}", fixedRateString = "${scheduler.message-collector.fixedRate}", zone = "Europe/Stockholm")
 	@SchedulerLock(name = "message-collector", lockAtMostFor = "${scheduler.message-collector.shedlock-lock-at-most-for}")
 	public void getAndProcessMessages() {
 		LOG.info("Getting and processing messages");
@@ -27,5 +28,4 @@ public class WebMessageCollectorScheduler {
 		LOG.info("Finished getting and processing messages");
 
 	}
-
 }

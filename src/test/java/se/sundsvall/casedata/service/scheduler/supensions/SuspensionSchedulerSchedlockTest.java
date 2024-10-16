@@ -50,7 +50,7 @@ class SuspensionSchedulerSchedlockTest {
 	void verifyShedLockForCleanSuspensions() {
 
 		// Make sure scheduling occurs multiple times
-		await().until(() -> mockCalledTime != null && LocalDateTime.now().isAfter(mockCalledTime.plusSeconds(2)));
+		await().until(() -> (mockCalledTime != null) && LocalDateTime.now().isAfter(mockCalledTime.plusSeconds(2)));
 
 		// Verify lock
 		await().atMost(5, SECONDS)
@@ -81,7 +81,7 @@ class SuspensionSchedulerSchedlockTest {
 
 		@Bean
 		@Primary
-		public SuspensionWorker createMock() {
+		SuspensionWorker createMock() {
 
 			final var mockBean = Mockito.mock(SuspensionWorker.class);
 
@@ -95,7 +95,5 @@ class SuspensionSchedulerSchedlockTest {
 
 			return mockBean;
 		}
-
 	}
-
 }
