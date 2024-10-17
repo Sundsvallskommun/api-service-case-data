@@ -6,12 +6,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import se.sundsvall.dept44.requestid.RequestId;
 
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
-
 @Service
-@ConditionalOnProperty(prefix = "scheduler.suspensions", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "scheduler.suspension", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class SuspensionScheduler {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SuspensionScheduler.class);
@@ -22,9 +21,9 @@ public class SuspensionScheduler {
 		this.suspensionWorker = suspensionWorker;
 	}
 
-	@Scheduled(cron = "${scheduler.suspension.cron}")
-	@SchedulerLock(name = "clean_suspensions", lockAtMostFor = "${scheduler.suspension.shedlock-lock-at-most-for}")
-	void cleanUpSuspensions() {
+	@Scheduled(cron = "${scheduler.suspension.cron}", zone = "Europe/Stockholm")
+	@SchedulerLock(name = "process_suspensions", lockAtMostFor = "${scheduler.suspension.shedlock-lock-at-most-for}")
+	void processs() {
 		try {
 			RequestId.init();
 
@@ -35,5 +34,4 @@ public class SuspensionScheduler {
 			RequestId.reset();
 		}
 	}
-
 }

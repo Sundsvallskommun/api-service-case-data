@@ -48,6 +48,8 @@ scheduler:
     enabled: false
   suspension:
     enabled: false
+  notification:
+    enabled: false
 
 #----------------------------------------
 # Retry settings
