@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import se.sundsvall.dept44.requestid.RequestId;
 
 @Service
 @ConditionalOnProperty(prefix = "scheduler.emailreader", name = "enabled", havingValue = "true", matchIfMissing = true)
@@ -23,9 +24,14 @@ public class EmailReaderScheduler {
 	@Scheduled(initialDelayString = "${scheduler.emailreader.initialDelay}", fixedRateString = "${scheduler.emailreader.fixedRate}", zone = "Europe/Stockholm")
 	@SchedulerLock(name = "emailreader", lockAtMostFor = "${scheduler.emailreader.shedlock-lock-at-most-for}")
 	void getAndProcessEmails() {
+		try {
+			RequestId.init();
 
-		LOG.info("Getting and processing emails");
-		emailReaderWorker.getAndProcessEmails();
-		LOG.info("Finished getting and processing emails");
+			LOG.info("Getting and processing emails");
+			emailReaderWorker.getAndProcessEmails();
+			LOG.info("Finished getting and processing emails");
+		} finally {
+			RequestId.reset();
+		}
 	}
 }

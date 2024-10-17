@@ -22,8 +22,8 @@ public class SuspensionScheduler {
 	}
 
 	@Scheduled(cron = "${scheduler.suspension.cron}", zone = "Europe/Stockholm")
-	@SchedulerLock(name = "clean_suspensions", lockAtMostFor = "${scheduler.suspension.shedlock-lock-at-most-for}")
-	void cleanUpSuspensions() {
+	@SchedulerLock(name = "process_suspensions", lockAtMostFor = "${scheduler.suspension.shedlock-lock-at-most-for}")
+	void processs() {
 		try {
 			RequestId.init();
 
@@ -34,5 +34,4 @@ public class SuspensionScheduler {
 			RequestId.reset();
 		}
 	}
-
 }

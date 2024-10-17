@@ -25,7 +25,7 @@ class NotificationWorkerTest {
 	private NotificationWorker notificationWorker;
 
 	@Test
-	void cleanUpNotifications() {
+	void processExpiredNotifications() {
 
 		// Arrange
 		final var list = List.of(
@@ -36,20 +36,20 @@ class NotificationWorkerTest {
 		when(notificationRepositoryMock.findByExpiresBefore(any())).thenReturn(list);
 
 		// Act
-		notificationWorker.cleanupNotifications();
+		notificationWorker.processExpiredNotifications();
 
 		// Assert
 		verify(notificationRepositoryMock).deleteAllInBatch(list);
 	}
 
 	@Test
-	void cleanUpNotificationsNoNotifications() {
+	void processExpiredNotificationsNoNotificationsFound() {
 
 		// Arrange
 		when(notificationRepositoryMock.findByExpiresBefore(any())).thenReturn(emptyList());
 
 		// Act
-		notificationWorker.cleanupNotifications();
+		notificationWorker.processExpiredNotifications();
 
 		// Assert
 		verify(notificationRepositoryMock).findByExpiresBefore(any());

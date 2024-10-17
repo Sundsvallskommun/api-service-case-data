@@ -22,14 +22,14 @@ public class NotificationScheduler {
 	}
 
 	@Scheduled(cron = "${scheduler.notification.cron}", zone = "Europe/Stockholm")
-	@SchedulerLock(name = "cleanup_notifications", lockAtMostFor = "${scheduler.notification.shedlock-lock-at-most-for}")
-	void cleanupNotifications() {
+	@SchedulerLock(name = "process_notifications", lockAtMostFor = "${scheduler.notification.shedlock-lock-at-most-for}")
+	void process() {
 		try {
 			RequestId.init();
 
-			LOG.debug("Cleaning up notifications");
-			notificationWorker.cleanupNotifications();
-			LOG.debug("Finished cleaning up notifications");
+			LOG.debug("Start processing expired notifications");
+			notificationWorker.processExpiredNotifications();
+			LOG.debug("Finished processing expired notifications");
 		} finally {
 			RequestId.reset();
 		}

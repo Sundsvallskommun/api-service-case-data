@@ -22,11 +22,10 @@ class SuspensionSchedulerTest {
 	void cleanUpSuspensions() {
 
 		// Act
-		suspensionScheduler.cleanUpSuspensions();
+		suspensionScheduler.processs();
 
 		// Verify
 		verify(suspensionWorkerMock).processExpiredSuspensions();
 		verifyNoMoreInteractions(suspensionWorkerMock);
 	}
-
 }

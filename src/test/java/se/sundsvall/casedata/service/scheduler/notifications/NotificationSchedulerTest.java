@@ -22,10 +22,10 @@ class NotificationSchedulerTest {
 	void cleanUpNotifications() {
 
 		// Act
-		notificationScheduler.cleanupNotifications();
+		notificationScheduler.process();
 
 		// Assert
-		verify(notificationWorkerMock).cleanupNotifications();
+		verify(notificationWorkerMock).processExpiredNotifications();
 		verifyNoMoreInteractions(notificationWorkerMock);
 	}
 }
