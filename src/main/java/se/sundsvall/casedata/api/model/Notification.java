@@ -33,7 +33,6 @@ public class Notification {
 	@Schema(description = "Timestamp when the notification was last modified", example = "2000-10-31T01:30:00.000+02:00", accessMode = READ_ONLY)
 	private OffsetDateTime modified;
 
-	@NotBlank
 	@Schema(description = "Name of the owner of the notification", example = "Test Testorsson", accessMode = READ_ONLY)
 	private String ownerFullName;
 

@@ -130,7 +130,6 @@ class NotificationResourceFailuresTest {
 			.containsExactlyInAnyOrder(
 				tuple("description", "must not be blank"),
 				tuple("errandId", "must not be null"),
-				tuple("ownerFullName", "must not be blank"),
 				tuple("ownerId", "must not be blank"),
 				tuple("type", "must not be blank"));
 

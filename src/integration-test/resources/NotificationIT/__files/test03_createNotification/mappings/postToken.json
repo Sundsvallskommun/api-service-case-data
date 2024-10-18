@@ -1,0 +1,24 @@
+{
+	"name": "api-gateway",
+	"request": {
+		"urlPattern": "/token",
+		"method": "POST",
+		"bodyPatterns": [
+			{
+				"matches": "^grant_type=client_credentials&scope=device_([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$"
+			}
+		]
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"status": 200,
+		"jsonBody": {
+			"access_token": "mocked value",
+			"scope": "am_application_scope default",
+			"token_type": "Bearer",
+			"expires_in": -1
+		}
+	}
+}

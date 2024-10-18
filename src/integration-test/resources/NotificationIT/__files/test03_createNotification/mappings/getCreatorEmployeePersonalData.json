@@ -1,0 +1,30 @@
+{
+	"name": "api-employee-getCreatorPersonalData",
+	"request": {
+		"method": "GET",
+		"urlPath": "/employee/portalpersondata/personal/creator123"
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"status": 200,
+		"jsonBody": {
+			"personid": "b10be261-b417-4c3e-a42a-9b94c27c17fe",
+			"givenname": "Creator",
+			"lastname": "Creatorson",
+			"fullname": "Creatorson Creator",
+			"address": "",
+			"postalCode": "",
+			"city": "",
+			"aboutMe": "",
+			"email": "creator.creatorson@sundsvall.se",
+			"mailNickname": "creator.creatorson",
+			"company": "Sundsvalls kommun",
+			"companyId": 1,
+			"orgTree": "2|28|KSK Avd Digitalisering och IT",
+			"isManager": false,
+			"loginName": "PERSONAL\\creator123"
+		}
+	}
+}

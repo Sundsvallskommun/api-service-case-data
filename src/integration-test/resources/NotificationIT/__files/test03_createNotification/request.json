@@ -1,0 +1,9 @@
+{
+	"ownerId": "owner123",
+	"createdBy": "creator123",
+	"type": "CREATE",
+	"description": "Test description",
+	"content": "Test content",
+	"expires": "2050-10-31T01:30:00+02:00",
+	"errandId": 1
+}
