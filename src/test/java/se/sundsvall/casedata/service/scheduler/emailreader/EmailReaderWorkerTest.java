@@ -1,22 +1,13 @@
 package se.sundsvall.casedata.service.scheduler.emailreader;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Optional;
-
+import generated.se.sundsvall.emailreader.Email;
+import generated.se.sundsvall.emailreader.EmailAttachment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
@@ -25,8 +16,16 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
 
-import generated.se.sundsvall.emailreader.Email;
-import generated.se.sundsvall.emailreader.EmailAttachment;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EmailReaderWorkerTest {
@@ -65,6 +64,9 @@ class EmailReaderWorkerTest {
 	void getAndProcessEmails() {
 
 		// Arrange
+		var municipalityId = "someMunicipalityId";
+		var namespace = "someNamespace";
+
 		final var email = new Email()
 			.id("someId")
 			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
@@ -80,8 +82,9 @@ class EmailReaderWorkerTest {
 		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
 			.thenReturn(List.of(email));
 
-		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(ErrandEntity.builder().build()));
-		when(emailReaderMapperMock.toMessage(email, "someMunicipalityId")).thenReturn(messageMock);
+		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(ErrandEntity.builder().withNamespace(namespace).withMunicipalityId(municipalityId).build()));
+
+		when(emailReaderMapperMock.toMessage(email, municipalityId, namespace)).thenReturn(messageMock);
 		when(messageRepositoryMock.existsById("someId")).thenReturn(false);
 
 		// Act
@@ -91,11 +94,11 @@ class EmailReaderWorkerTest {
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
 		verify(errandRepositoryMock).findByErrandNumber("PRH-2022-01");
 		verify(messageRepositoryMock).existsById("someId");
-		verify(emailReaderMapperMock).toMessage(email, "someMunicipalityId");
-		verify(emailReaderMapperMock).toAttachments(any());
+		verify(emailReaderMapperMock).toMessage(email, municipalityId, namespace);
+		verify(emailReaderMapperMock).toAttachments(any(), eq(municipalityId), eq(namespace));
 		verify(messageRepositoryMock).save(any());
 		verify(attachmentRepositoryMock).saveAll(any());
-		verify(emailReaderClientMock).deleteEmail("someMunicipalityId", "someId");
+		verify(emailReaderClientMock).deleteEmail(municipalityId, "someId");
 		verifyNoMoreInteractions(emailReaderClientMock, messageRepositoryMock, attachmentRepositoryMock);
 	}
 

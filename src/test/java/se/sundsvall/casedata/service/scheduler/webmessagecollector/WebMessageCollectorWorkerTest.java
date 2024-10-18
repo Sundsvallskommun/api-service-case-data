@@ -1,22 +1,6 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
-
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.sql.rowset.serial.SerialBlob;
-
+import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,7 +8,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
@@ -38,7 +21,21 @@ import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollector
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 
-import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import javax.sql.rowset.serial.SerialBlob;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
 
 @ExtendWith(MockitoExtension.class)
 class WebMessageCollectorWorkerTest {
@@ -103,18 +100,19 @@ class WebMessageCollectorWorkerTest {
 		final var messageDTOs = createMessages();
 		final var message = createMessage();
 
-		final var bytes = new byte[]{1, 23, 45};
+		final var bytes = new byte[] { 1, 23, 45 };
 		final var blob = new SerialBlob(bytes);
 		final var attachmentData = MessageAttachmentDataEntity.builder().withFile(blob).build();
 
 		when(webMessageCollectorClientMock.getMessages(MUNICIPALITY_ID, familyId, instance)).thenReturn(messageDTOs);
 
-		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(ErrandEntity.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).withMunicipalityId(MUNICIPALITY_ID).withNamespace(NAMESPACE).build()));
+		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(
+			Optional.ofNullable(ErrandEntity.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).withMunicipalityId(MUNICIPALITY_ID).withNamespace(NAMESPACE).build()));
 		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(MUNICIPALITY_ID, Map.of(instance, List.of(familyId))));
 		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(message);
 		when(messageRepositoryMock.saveAndFlush(any(MessageEntity.class))).thenReturn(message);
 
-		when(messageMapperMock.toAttachmentEntity(any(generated.se.sundsvall.webmessagecollector.MessageAttachment.class), any(String.class))).thenReturn(createAttachment());
+		when(messageMapperMock.toAttachmentEntity(any(generated.se.sundsvall.webmessagecollector.MessageAttachment.class), any(String.class), any(String.class), any(String.class))).thenReturn(createAttachment());
 
 		when(webMessageCollectorClientMock.getAttachment(any(String.class), anyInt())).thenReturn(bytes);
 		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(attachmentData);
@@ -165,11 +163,12 @@ class WebMessageCollectorWorkerTest {
 		verify(messageMapperMock, never()).toMessageEntity(any(), any(), any());
 	}
 
-
 	private MessageEntity createMessage() {
 		return MessageEntity.builder()
 			.withErrandNumber("someErrandNumber")
 			.withDirection(INBOUND)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.withFamilyId("1")
 			.withExternalCaseId("1")
 			.withTextmessage("message")
@@ -185,6 +184,8 @@ class WebMessageCollectorWorkerTest {
 
 	private MessageAttachmentEntity createAttachment() {
 		return MessageAttachmentEntity.builder()
+			.withNamespace(NAMESPACE)
+			.withMunicipalityId(MUNICIPALITY_ID)
 			.withAttachmentId("1")
 			.withName("fileName")
 			.withContentType("mimeType")

@@ -1,18 +1,6 @@
 package se.sundsvall.casedata.service.scheduler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.groups.Tuple.tuple;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.List;
-
+import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import org.junit.jupiter.api.Test;
 import org.mariadb.jdbc.MariaDbBlob;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
 import org.zalando.problem.ThrowableProblem;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.MessageRequest.AttachmentRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
@@ -34,9 +21,20 @@ import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.dept44.common.validators.annotation.impl.ValidUuidConstraintValidator;
 
-import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.List;
 
-@SpringBootTest(classes = {Application.class}, webEnvironment = MOCK)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.groups.Tuple.tuple;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+
+@SpringBootTest(classes = { Application.class }, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class MessageMapperTest {
 
@@ -216,6 +214,8 @@ class MessageMapperTest {
 		final var content = new String(Base64.getEncoder().encode("content".getBytes()), StandardCharsets.UTF_8);
 		final var contentType = "contentType";
 		final var name = "name";
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
 		final var attachmentRequest = AttachmentRequest.builder()
 			.withContent(content)
 			.withContentType(contentType)
@@ -223,7 +223,7 @@ class MessageMapperTest {
 			.build();
 
 		// Act
-		final var bean = messageMapper.toAttachmentEntity(attachmentRequest, messageID);
+		final var bean = messageMapper.toAttachmentEntity(attachmentRequest, messageID, municipalityId, namespace);
 
 		// Assert
 		assertThat(bean.getAttachmentData()).isNotNull();
@@ -243,6 +243,8 @@ class MessageMapperTest {
 		final var contentType = "contentType";
 		final var name = "name";
 		final var attachmentID = "12";
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
 		final var messageAttachment = new generated.se.sundsvall.webmessagecollector.MessageAttachment()
 			.name(name)
 			.extension(contentType)
@@ -250,7 +252,7 @@ class MessageMapperTest {
 			.attachmentId(Integer.valueOf(attachmentID));
 
 		// Act
-		final var bean = messageMapper.toAttachmentEntity(messageAttachment, messageID);
+		final var bean = messageMapper.toAttachmentEntity(messageAttachment, messageID, municipalityId, namespace);
 
 		// Assert
 		assertThat(bean.getAttachmentData()).isNull();
