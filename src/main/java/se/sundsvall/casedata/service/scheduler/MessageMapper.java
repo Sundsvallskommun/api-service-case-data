@@ -1,16 +1,8 @@
 package se.sundsvall.casedata.service.scheduler;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
+import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
-
 import se.sundsvall.casedata.api.model.EmailHeader;
 import se.sundsvall.casedata.api.model.MessageAttachment;
 import se.sundsvall.casedata.api.model.MessageRequest;
@@ -24,7 +16,13 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.service.util.BlobBuilder;
 
-import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 
 @Component
 public class MessageMapper {
@@ -79,7 +77,7 @@ public class MessageMapper {
 		Optional.ofNullable(request.getEmailHeaders()).ifPresent(headers -> entity.withHeaders(toEmailHeadersEntities(headers)));
 		if (request.getAttachmentRequests() != null) {
 			entity.withAttachments(toAttachmentEntities(request.getAttachmentRequests(),
-				request.getMessageId()));
+				request.getMessageId(), municipalityId, namespace));
 		}
 		return entity.build();
 	}
@@ -145,11 +143,13 @@ public class MessageMapper {
 			.build();
 	}
 
-	public MessageAttachmentEntity toAttachmentEntity(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId) {
+	public MessageAttachmentEntity toAttachmentEntity(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId, final String municipalityId, final String namespace) {
 
 		return MessageAttachmentEntity.builder()
 			.withAttachmentId(String.valueOf(attachment.getAttachmentId()))
 			.withMessageID(messageId)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.withName(attachment.getName())
 			.withContentType(attachment.getMimeType())
 			.build();
@@ -158,6 +158,8 @@ public class MessageMapper {
 	public AttachmentEntity toAttachmentEntity(final MessageAttachmentEntity attachment) {
 		try {
 			return AttachmentEntity.builder()
+				.withMunicipalityId(attachment.getMunicipalityId())
+				.withNamespace(attachment.getNamespace())
 				.withFile(Base64.getEncoder().encodeToString(attachment.getAttachmentData().getFile().getBinaryStream().readAllBytes()))
 				.withName(attachment.getName())
 				.withMimeType(attachment.getContentType())
@@ -167,14 +169,16 @@ public class MessageMapper {
 		}
 	}
 
-	public List<MessageAttachmentEntity> toAttachmentEntities(final List<MessageRequest.AttachmentRequest> attachmentRequests, final String messageID) {
+	public List<MessageAttachmentEntity> toAttachmentEntities(final List<MessageRequest.AttachmentRequest> attachmentRequests, final String messageID, final String municipalityId, final String namespace) {
 		return attachmentRequests.stream()
-			.map(attachmentRequest -> toAttachmentEntity(attachmentRequest, messageID))
+			.map(attachmentRequest -> toAttachmentEntity(attachmentRequest, messageID, municipalityId, namespace))
 			.toList();
 	}
 
-	public MessageAttachmentEntity toAttachmentEntity(final MessageRequest.AttachmentRequest attachmentRequest, final String messageID) {
+	public MessageAttachmentEntity toAttachmentEntity(final MessageRequest.AttachmentRequest attachmentRequest, final String messageID, final String municipalityId, final String namespace) {
 		return MessageAttachmentEntity.builder()
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.withAttachmentId(UUID.randomUUID().toString())
 			.withMessageID(messageID)
 			.withName(attachmentRequest.getName())

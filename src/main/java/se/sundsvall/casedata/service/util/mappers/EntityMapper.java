@@ -1,15 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import static java.time.OffsetDateTime.now;
-import static java.util.Collections.emptyList;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Optional;
-
 import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Appeal;
@@ -40,6 +30,16 @@ import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.StatusEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Optional;
+
+import static java.time.OffsetDateTime.now;
+import static java.util.Collections.emptyList;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
 
 public final class EntityMapper {
 
@@ -99,7 +99,6 @@ public final class EntityMapper {
 				.withCaseTitleAddition(errand.getCaseTitleAddition())
 				.withDiaryNumber(errand.getDiaryNumber())
 				.withPhase(errand.getPhase())
-				.withMunicipalityId(municipalityId)
 				.withStartDate(errand.getStartDate())
 				.withEndDate(errand.getEndDate())
 				.withApplicationReceived(errand.getApplicationReceived())

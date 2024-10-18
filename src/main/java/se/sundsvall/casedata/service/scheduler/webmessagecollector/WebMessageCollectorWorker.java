@@ -1,14 +1,7 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
-import static java.util.Collections.emptyMap;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import org.springframework.stereotype.Component;
-
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
@@ -18,7 +11,12 @@ import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollector
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 
-import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyMap;
 
 @Component
 public class WebMessageCollectorWorker {
@@ -56,7 +54,7 @@ public class WebMessageCollectorWorker {
 				.map(message -> {
 					processMessage(message)
 						.ifPresent(processedMessage -> message.getAttachments()
-							.forEach(messageAttachment -> processAttachment(messageAttachment, processedMessage.getMessageId(), processedMessage.getErrandNumber(), municipalityId)));
+							.forEach(messageAttachment -> processAttachment(messageAttachment, processedMessage.getMessageId(), processedMessage.getErrandNumber(), processedMessage.getMunicipalityId(), processedMessage.getNamespace())));
 					return message.getId();
 				})
 				.toList();
@@ -75,10 +73,10 @@ public class WebMessageCollectorWorker {
 		});
 	}
 
-	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId, final String errandNumber, final String municipalityId) {
+	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId, final String errandNumber, final String municipalityId, final String namespace) {
 		final var attachmentId = attachment.getAttachmentId();
 		// Map the attachment
-		final var messageAttachment = messageMapper.toAttachmentEntity(attachment, messageId);
+		final var messageAttachment = messageMapper.toAttachmentEntity(attachment, messageId, municipalityId, namespace);
 		// Fetch the data
 		final var data = webMessageCollectorClient.getAttachment(municipalityId, attachmentId);
 		messageAttachment.setAttachmentData(messageMapper.toMessageAttachmentData(data));

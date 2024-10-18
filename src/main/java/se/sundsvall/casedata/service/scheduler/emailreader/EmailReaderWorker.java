@@ -1,19 +1,17 @@
 package se.sundsvall.casedata.service.scheduler.emailreader;
 
-import static se.sundsvall.casedata.service.scheduler.emailreader.ErrandNumberParser.parseSubject;
-
+import generated.se.sundsvall.emailreader.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
 
-import generated.se.sundsvall.emailreader.Email;
+import static se.sundsvall.casedata.service.scheduler.emailreader.ErrandNumberParser.parseSubject;
 
 @Component
 public class EmailReaderWorker {
@@ -60,8 +58,8 @@ public class EmailReaderWorker {
 			errandRepository.findByErrandNumber(errandNumber)
 				.filter(errand -> !messageRepository.existsById(email.getId()))
 				.ifPresent(errand -> {
-					messageRepository.save(emailReaderMapper.toMessage(email, emailReaderProperties.municipalityId()).withErrandNumber(errandNumber));
-					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email).stream()
+					messageRepository.save(emailReaderMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace()).withErrandNumber(errandNumber));
+					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email, errand.getMunicipalityId(), errand.getNamespace()).stream()
 						.map(attachment -> attachment.withErrandNumber(errandNumber).withMunicipalityId(emailReaderProperties.municipalityId()))
 						.toList());
 				});

@@ -1,9 +1,14 @@
 package se.sundsvall.casedata.service.scheduler.emailreader;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static se.sundsvall.casedata.api.model.validation.enums.MessageType.EMAIL;
-import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
+import generated.se.sundsvall.emailreader.Email;
+import generated.se.sundsvall.emailreader.EmailAttachment;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.integration.db.model.EmailHeaderEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Header;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,19 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static se.sundsvall.casedata.api.model.validation.enums.MessageType.EMAIL;
+import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
 
-import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.integration.db.model.EmailHeaderEntity;
-import se.sundsvall.casedata.integration.db.model.enums.Header;
-
-import generated.se.sundsvall.emailreader.Email;
-import generated.se.sundsvall.emailreader.EmailAttachment;
-
-@SpringBootTest(classes = {Application.class}, webEnvironment = MOCK)
+@SpringBootTest(classes = { Application.class }, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class EmailReaderMapperTest {
 
@@ -34,6 +32,7 @@ class EmailReaderMapperTest {
 	@Test
 	void toAttachment() {
 
+		// Arrange
 		final var email = new Email()
 			.id("someId")
 			.subject("someSubject")
@@ -45,25 +44,32 @@ class EmailReaderMapperTest {
 				.name("someName")
 				.content("someContent")
 				.contentType("someContentType")));
+		final var namespace = "someNamespace";
+		final var municipalityId = "someMunicipalityId";
 
-		final var result = emailReaderMapper.toAttachments(email);
+		// Act
+		final var result = emailReaderMapper.toAttachments(email, municipalityId, namespace);
 
+		// Assert
 		assertThat(result).isNotNull().hasSize(1)
 			.element(0).satisfies(attachment -> {
 				assertThat(attachment.getName()).isEqualTo("someName");
 				assertThat(attachment.getFile()).isEqualTo("someContent");
 				assertThat(attachment.getMimeType()).isEqualTo("someContentType");
+				assertThat(attachment.getNamespace()).isEqualTo(namespace);
+				assertThat(attachment.getMunicipalityId()).isEqualTo(municipalityId);
 			});
 	}
 
 	@Test
 	void toAttachment_withNullEmail() {
-		assertThat(emailReaderMapper.toAttachments(null)).isEmpty();
+		assertThat(emailReaderMapper.toAttachments(null, null, null)).isEmpty();
 	}
 
 	@Test
 	void toAttachment_withNullEmailAttachments() {
 
+		// Arrange
 		final var email = new Email()
 			.id("someId")
 			.subject("someSubject")
@@ -71,15 +77,20 @@ class EmailReaderMapperTest {
 			.sender("someSender")
 			.message("someMessage")
 			.receivedAt(OffsetDateTime.now());
+		final var namespace = "someNamespace";
+		final var municipalityId = "someMunicipalityId";
+		// Act
+		final var result = emailReaderMapper.toAttachments(email, namespace, municipalityId);
 
-		final var result = emailReaderMapper.toAttachments(email);
-
+		// Assert
 		assertThat(result).isNotNull().isEmpty();
 	}
 
 	@Test
 	void toMessage() {
+		// Arrange
 		final var messageID = UUID.randomUUID().toString();
+		final var namespace = "someNamespace";
 		final var municipalityId = "someMunicipalityId";
 		final var email = new Email()
 			.id(messageID)
@@ -97,8 +108,10 @@ class EmailReaderMapperTest {
 				.content(Base64.getEncoder().encodeToString("someContent".getBytes()))
 				.contentType("someContentType")));
 
-		final var result = emailReaderMapper.toMessage(email, municipalityId);
+		// Act
+		final var result = emailReaderMapper.toMessage(email, municipalityId, namespace);
 
+		// Assert
 		assertThat(result)
 			.isNotNull()
 			.extracting(
@@ -152,13 +165,15 @@ class EmailReaderMapperTest {
 
 	@Test
 	void toMessage_withNullEmail() {
-		assertThat(emailReaderMapper.toMessage(null, null)).isNull();
+		assertThat(emailReaderMapper.toMessage(null, null, null)).isNull();
 	}
 
 	@Test
 	void toMessage_withNullAttachments() {
 
+		// Arrange
 		final var municipalityId = "someMunicipalityId";
+		final var namespace = "someNamespace";
 		final var email = new Email()
 			.id(UUID.randomUUID().toString())
 			.subject("someSubject")
@@ -167,8 +182,10 @@ class EmailReaderMapperTest {
 			.message("someMessage")
 			.receivedAt(OffsetDateTime.now());
 
-		final var result = emailReaderMapper.toMessage(email, municipalityId);
+		// Act
+		final var result = emailReaderMapper.toMessage(email, municipalityId, namespace);
 
+		// Assert
 		assertThat(result)
 			.isNotNull()
 			.extracting(
