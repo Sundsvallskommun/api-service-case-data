@@ -1,5 +1,13 @@
 package se.sundsvall.casedata.api.model;
 
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Random;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -9,14 +17,6 @@ import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
-
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Random;
-
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 class AttachmentTest {
 
@@ -46,6 +46,8 @@ class AttachmentTest {
 		final var file = "file";
 		final var errandNumber = "errandNumber";
 		final var extraParameters = new HashMap<String, String>();
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
 
 		// Act
 		final var bean = Attachment.builder()
@@ -57,6 +59,8 @@ class AttachmentTest {
 			.withFile(file)
 			.withErrandNumber(errandNumber)
 			.withExtraParameters(extraParameters)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.build();
 
 		// Assert
@@ -68,6 +72,8 @@ class AttachmentTest {
 		assertThat(bean.getFile()).isEqualTo(file);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
+		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
+		assertThat(bean.getNamespace()).isEqualTo(namespace);
 	}
 
 	@Test

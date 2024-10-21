@@ -1,5 +1,16 @@
 package se.sundsvall.casedata.api.model;
 
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Random;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -8,18 +19,6 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Random;
-
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import se.sundsvall.casedata.integration.db.model.enums.Channel;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 class ErrandTest {
 
@@ -38,7 +37,6 @@ class ErrandTest {
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
 	}
-
 
 	@Test
 	void builderTest() {
@@ -74,6 +72,8 @@ class ErrandTest {
 		final var created = OffsetDateTime.parse("2023-10-01T12:00:00Z");
 		final var updated = OffsetDateTime.parse("2023-10-02T12:00:00Z");
 		final var suspension = new Suspension();
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
 
 		// Act
 		final var bean = Errand.builder()
@@ -107,17 +107,20 @@ class ErrandTest {
 			.withCreated(created)
 			.withUpdated(updated)
 			.withSuspension(suspension)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.build();
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
-		assertBasicFields(bean, id, errandNumber, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase, suspension);
+		assertBasicFields(bean, id, errandNumber, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase, suspension, municipalityId, namespace);
 		assertDates(bean, startDate, endDate, applicationReceived, created, updated);
 		assertCollections(bean, statuses, stakeholders, facilities, decisions, appeals, notes, extraParameters);
 		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
 	}
 
-	private void assertBasicFields(Errand bean, Long id, String errandNumber, String externalCaseId, String caseType, Channel channel, Priority priority, String description, String caseTitleAddition, String diaryNumber, String phase, Suspension suspension) {
+	private void assertBasicFields(Errand bean, Long id, String errandNumber, String externalCaseId, String caseType, Channel channel, Priority priority, String description, String caseTitleAddition, String diaryNumber, String phase,
+		Suspension suspension, String municipalityId, String namespace) {
 		assertThat(bean.getId()).isEqualTo(id);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
 		assertThat(bean.getExternalCaseId()).isEqualTo(externalCaseId);
@@ -129,6 +132,8 @@ class ErrandTest {
 		assertThat(bean.getDiaryNumber()).isEqualTo(diaryNumber);
 		assertThat(bean.getPhase()).isEqualTo(phase);
 		assertThat(bean.getSuspension()).isEqualTo(suspension);
+		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
+		assertThat(bean.getNamespace()).isEqualTo(namespace);
 	}
 
 	private void assertDates(Errand bean, LocalDate startDate, LocalDate endDate, OffsetDateTime applicationReceived, OffsetDateTime created, OffsetDateTime updated) {
@@ -155,7 +160,6 @@ class ErrandTest {
 		assertThat(bean.getCreatedBy()).isEqualTo(createdBy);
 		assertThat(bean.getUpdatedBy()).isEqualTo(updatedBy);
 	}
-
 
 	@Test
 	void testNoDirtOnEmptyBean() {

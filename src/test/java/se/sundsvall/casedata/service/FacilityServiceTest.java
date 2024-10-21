@@ -1,5 +1,22 @@
 package se.sundsvall.casedata.service;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.FacilityRepository;
+import se.sundsvall.casedata.integration.db.model.AddressEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -16,27 +33,8 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEn
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
 
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.AddressEntity;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
 @ExtendWith(MockitoExtension.class)
 class FacilityServiceTest {
-
 
 	@InjectMocks
 	private FacilityService facilityService;
@@ -50,7 +48,6 @@ class FacilityServiceTest {
 	@Mock
 	private ProcessService processServiceMock;
 
-
 	private ErrandEntity mockErrandFindByIdAndMunicipalityIdAndNamespace() {
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		errand.setId(new Random().nextLong(1, 1000));
@@ -60,7 +57,6 @@ class FacilityServiceTest {
 
 	@Test
 	void createFacilityOnErrandTest() {
-
 
 		// Arrange
 		final var errand = createErrandEntity();
@@ -81,7 +77,6 @@ class FacilityServiceTest {
 		verify(facilityRepositoryMock).save(any());
 		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
 	}
-
 
 	@Test
 	void findFacilityOnErrand() {
@@ -159,7 +154,6 @@ class FacilityServiceTest {
 		verify(processServiceMock).updateProcess(errand);
 	}
 
-
 	@Test
 	void deleteFacilityOnErrand() {
 
@@ -212,6 +206,5 @@ class FacilityServiceTest {
 		verify(facilityRepositoryMock).save(facility);
 		verify(processServiceMock).updateProcess(errand);
 	}
-
 
 }

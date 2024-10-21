@@ -1,5 +1,15 @@
 package se.sundsvall.casedata.api.model;
 
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -9,17 +19,6 @@ import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
-
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 class StakeholderTest {
 
@@ -53,6 +52,8 @@ class StakeholderTest {
 		final var addresses = new ArrayList<Address>();
 		final var contactInformation = new ArrayList<ContactInformation>();
 		final var extraParameters = new HashMap<String, String>();
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
 
 		// Act
 		final var bean = Stakeholder.builder()
@@ -68,6 +69,8 @@ class StakeholderTest {
 			.withAddresses(addresses)
 			.withContactInformation(contactInformation)
 			.withExtraParameters(extraParameters)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.build();
 
 		// Assert
@@ -83,6 +86,8 @@ class StakeholderTest {
 		assertThat(bean.getAddresses()).isEqualTo(addresses);
 		assertThat(bean.getContactInformation()).isEqualTo(contactInformation);
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
+		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
+		assertThat(bean.getNamespace()).isEqualTo(namespace);
 	}
 
 	@Test

@@ -1,24 +1,21 @@
 package se.sundsvall.casedata.api.model;
 
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
-
-import jakarta.validation.constraints.Size;
-
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-
-import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
-import se.sundsvall.casedata.integration.db.model.enums.NoteType;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
+import se.sundsvall.casedata.integration.db.model.enums.NoteType;
+
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @ToString
@@ -33,6 +30,12 @@ public class Note {
 
 	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "The version of the note", example = "1")
 	private int version;
+
+	@Schema(description = "The municipality ID", example = "2281", accessMode = Schema.AccessMode.READ_ONLY)
+	private String municipalityId;
+
+	@Schema(description = "Namespace", example = "my.namespace", accessMode = Schema.AccessMode.READ_ONLY)
+	private String namespace;
 
 	@Schema(description = "The title of the note", example = "Motivering till bifall")
 	@Size(max = 255)

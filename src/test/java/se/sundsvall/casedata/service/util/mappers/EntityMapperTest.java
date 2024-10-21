@@ -1,5 +1,18 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import generated.se.sundsvall.employee.PortalPersonData;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.TestUtil;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
+import se.sundsvall.casedata.integration.db.model.enums.ContactType;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
+import java.util.List;
+
 import static java.time.OffsetDateTime.now;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,20 +68,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakehol
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatusEntity;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import generated.se.sundsvall.employee.PortalPersonData;
-import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-import se.sundsvall.casedata.integration.db.model.enums.ContactType;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
 @ExtendWith(MockitoExtension.class)
 class EntityMapperTest {
 
@@ -103,6 +102,8 @@ class EntityMapperTest {
 			assertThat(e.getCreatedByClient()).isEqualTo(errand.getCreatedByClient());
 			assertThat(e.getCaseTitleAddition()).isEqualTo(errand.getCaseTitleAddition());
 			assertThat(e.getDescription()).isEqualTo(errand.getDescription());
+			assertThat(e.getNamespace()).isEqualTo(errand.getNamespace());
+			assertThat(e.getMunicipalityId()).isEqualTo(errand.getMunicipalityId());
 		});
 	}
 
@@ -140,6 +141,8 @@ class EntityMapperTest {
 			assertThat(d.getDecisionOutcome()).isEqualTo(decision.getDecisionOutcome());
 			assertThat(d.getVersion()).isEqualTo(decision.getVersion());
 			assertThat(d.getId()).isEqualTo(decision.getId());
+			assertThat(d.getMunicipalityId()).isEqualTo(decision.getMunicipalityId());
+			assertThat(d.getNamespace()).isEqualTo(decision.getNamespace());
 		});
 	}
 
@@ -178,6 +181,8 @@ class EntityMapperTest {
 			assertThat(n.getCreated()).isEqualTo(note.getCreated());
 			assertThat(n.getVersion()).isEqualTo(note.getVersion());
 			assertThat(n.getId()).isEqualTo(note.getId());
+			assertThat(n.getMunicipalityId()).isEqualTo(note.getMunicipalityId());
+			assertThat(n.getNamespace()).isEqualTo(note.getNamespace());
 		});
 	}
 
@@ -212,6 +217,8 @@ class EntityMapperTest {
 			assertThat(f.getId()).isEqualTo(facility.getId());
 			assertThat(f.getVersion()).isEqualTo(facility.getVersion());
 			assertThat(f.getFacilityCollectionName()).isEqualTo(facility.getFacilityCollectionName());
+			assertThat(f.getMunicipalityId()).isEqualTo(facility.getMunicipalityId());
+			assertThat(f.getNamespace()).isEqualTo(facility.getNamespace());
 		});
 	}
 
@@ -254,6 +261,8 @@ class EntityMapperTest {
 			assertThat(s.getRoles()).isEqualTo(stakeholder.getRoles());
 			assertThat(s.getId()).isEqualTo(stakeholder.getId());
 			assertThat(s.getVersion()).isEqualTo(stakeholder.getVersion());
+			assertThat(s.getMunicipalityId()).isEqualTo(stakeholder.getMunicipalityId());
+			assertThat(s.getNamespace()).isEqualTo(stakeholder.getNamespace());
 		});
 	}
 
@@ -282,6 +291,8 @@ class EntityMapperTest {
 			assertThat(a.getUpdated()).isEqualTo(attachment.getUpdated());
 			assertThat(a.getId()).isEqualTo(attachment.getId());
 			assertThat(a.getVersion()).isEqualTo(attachment.getVersion());
+			assertThat(a.getMunicipalityId()).isEqualTo(attachment.getMunicipalityId());
+			assertThat(a.getNamespace()).isEqualTo(attachment.getNamespace());
 		});
 	}
 
@@ -517,6 +528,8 @@ class EntityMapperTest {
 			assertThat(obj.getOwnerFullName()).isEqualTo(notificationEntity.getOwnerFullName());
 			assertThat(obj.getOwnerId()).isEqualTo(notificationEntity.getOwnerId());
 			assertThat(obj.getType()).isEqualTo(notificationEntity.getType());
+			assertThat(obj.getMunicipalityId()).isEqualTo(notificationEntity.getMunicipalityId());
+			assertThat(obj.getNamespace()).isEqualTo(notificationEntity.getNamespace());
 		});
 	}
 

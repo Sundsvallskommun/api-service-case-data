@@ -1,6 +1,8 @@
 {
   "id": 5,
   "version": 1,
+  "municipalityId": "2281",
+  "namespace": "my.namespace",
   "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
   "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
   "category": "SIGNATURE",

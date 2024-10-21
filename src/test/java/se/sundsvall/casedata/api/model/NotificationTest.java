@@ -1,5 +1,12 @@
 package se.sundsvall.casedata.api.model;
 
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.time.OffsetDateTime;
+import java.util.Random;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -9,13 +16,6 @@ import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
-
-import java.time.OffsetDateTime;
-import java.util.Random;
-
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 class NotificationTest {
 
@@ -52,6 +52,8 @@ class NotificationTest {
 		final var acknowledged = true;
 		final var errandId = 12345L;
 		final var errandNumber = "PRH-2022-000001";
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
 
 		// Act
 		final var bean = Notification.builder()
@@ -69,6 +71,8 @@ class NotificationTest {
 			.withAcknowledged(acknowledged)
 			.withErrandId(errandId)
 			.withErrandNumber(errandNumber)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.build();
 
 		// Assert
@@ -86,6 +90,8 @@ class NotificationTest {
 		assertThat(bean.isAcknowledged()).isEqualTo(acknowledged);
 		assertThat(bean.getErrandId()).isEqualTo(errandId);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
+		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
+		assertThat(bean.getNamespace()).isEqualTo(namespace);
 	}
 
 	@Test

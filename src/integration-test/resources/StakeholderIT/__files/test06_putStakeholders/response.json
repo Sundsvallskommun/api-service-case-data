@@ -2,6 +2,8 @@
   {
     "id": 1,
     "version": 1,
+    "municipalityId": "2281",
+    "namespace": "my.namespace",
     "created": "${json-unit.any-string}",
     "updated": "${json-unit.any-string}",
     "type": "PERSON",
@@ -19,6 +21,8 @@
   {
     "id": 2,
     "version": 1,
+    "municipalityId": "2281",
+    "namespace": "my.namespace",
     "created": "${json-unit.any-string}",
     "updated": "${json-unit.any-string}",
     "type": "PERSON",

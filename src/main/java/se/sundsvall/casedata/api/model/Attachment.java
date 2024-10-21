@@ -1,15 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-
-import se.sundsvall.casedata.api.model.validation.ValidAttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +7,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import se.sundsvall.casedata.api.model.validation.ValidAttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
+
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @ToString
@@ -31,6 +29,12 @@ public class Attachment {
 
 	@Schema(description = "The version of the attachment", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
 	private int version;
+
+	@Schema(description = "The municipality ID", example = "2281", accessMode = Schema.AccessMode.READ_ONLY)
+	private String municipalityId;
+
+	@Schema(description = "Namespace", example = "my.namespace", accessMode = Schema.AccessMode.READ_ONLY)
+	private String namespace;
 
 	@Schema(description = "The date when this attachment was created", accessMode = Schema.AccessMode.READ_ONLY, example = "2023-10-01T12:00:00Z")
 	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)

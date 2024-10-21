@@ -1,6 +1,8 @@
 {
   "id": 1,
   "version": 1,
+  "municipalityId": "2281",
+  "namespace": "my.namespace",
   "created": "2022-12-02T15:13:45.363+01:00",
   "updated": "${json-unit.any-string}",
   "type": "ORGANIZATION",

@@ -1,6 +1,8 @@
 {
   "id": 1,
   "version": 2,
+  "municipalityId": "2281",
+  "namespace": "my.namespace",
   "created": "2023-10-02T15:13:45.363+02:00",
   "updated": "${json-unit.any-string}",
   "title": "hawk-tuah",

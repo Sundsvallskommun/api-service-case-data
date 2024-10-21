@@ -1,6 +1,8 @@
 {
   "id": 3,
   "version": 4,
+  "municipalityId": "2281",
+  "namespace": "my.namespace",
   "created": "${json-unit.any-string}",
   "updated": "${json-unit.any-string}",
   "errandNumber": "PRH-2024-000001",
@@ -27,6 +29,8 @@
     {
       "id": 2,
       "version": 1,
+      "municipalityId": "2281",
+      "namespace": "my.namespace",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "type": "PERSON",
@@ -81,6 +85,8 @@
     {
       "id": 3,
       "version": 1,
+      "municipalityId": "2281",
+      "namespace": "my.namespace",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "type": "ORGANIZATION",
@@ -137,6 +143,8 @@
     {
       "id": 1,
       "version": 0,
+      "municipalityId": "2281",
+      "namespace": "my.namespace",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "description": "Test facility",
@@ -154,6 +162,8 @@
     {
       "id": "${json-unit.any-number}",
       "version": 1,
+      "municipalityId": "2281",
+      "namespace": "my.namespace",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "decisionType": "FINAL",
@@ -170,6 +180,8 @@
       "decidedBy": {
         "id": 1,
         "version": 1,
+        "municipalityId": "2281",
+        "namespace": "my.namespace",
         "created": "${json-unit.any-string}",
         "updated": "${json-unit.any-string}",
         "type": "PERSON",
@@ -235,6 +247,8 @@
     {
       "id": 1,
       "version": 0,
+      "municipalityId": "2281",
+      "namespace": "my.namespace",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "description": "Appeal description",
@@ -248,6 +262,8 @@
     {
       "id": 1,
       "version": 1,
+      "municipalityId": "2281",
+      "namespace": "my.namespace",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "title": "Test note",
@@ -264,6 +280,8 @@
     {
       "id": 2,
       "version": 1,
+      "municipalityId": "2281",
+      "namespace": "my.namespace",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "title": "sRGrJyRKNn",
@@ -280,6 +298,8 @@
     {
       "id": 3,
       "version": 1,
+      "municipalityId": "2281",
+      "namespace": "my.namespace",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "title": "EzhsmgQlrP",

@@ -1,22 +1,19 @@
 package se.sundsvall.casedata.api.model;
 
-import java.time.OffsetDateTime;
-
-import jakarta.validation.constraints.Size;
-
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-
-import se.sundsvall.casedata.api.model.validation.ValidAppealStatus;
-import se.sundsvall.casedata.api.model.validation.ValidTimelinessReviewValue;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import se.sundsvall.casedata.api.model.validation.ValidAppealStatus;
+import se.sundsvall.casedata.api.model.validation.ValidTimelinessReviewValue;
+
+import java.time.OffsetDateTime;
 
 @Data
 @ToString
@@ -31,6 +28,12 @@ public class Appeal {
 
 	@Schema(description = "The version of the appeal.", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
 	private int version;
+
+	@Schema(description = "The municipality ID", example = "2281", accessMode = Schema.AccessMode.READ_ONLY)
+	private String municipalityId;
+
+	@Schema(description = "Namespace", example = "my.namespace", accessMode = Schema.AccessMode.READ_ONLY)
+	private String namespace;
 
 	@Size(max = 100000)
 	@Schema(description = "Description of the appeal", example = "Some description of the appeal.")

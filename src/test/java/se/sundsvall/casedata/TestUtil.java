@@ -1,26 +1,10 @@
 package se.sundsvall.casedata;
 
-import static java.util.UUID.randomUUID;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.function.Consumer;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.RandomStringUtils;
-
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Appeal;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -69,6 +53,21 @@ import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.function.Consumer;
+
+import static java.util.UUID.randomUUID;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 public final class TestUtil {
 
@@ -148,6 +147,8 @@ public final class TestUtil {
 	public static Decision createDecision() {
 		return Decision.builder()
 			.withId(1L)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
 			.withDecisionType(DecisionType.FINAL)
@@ -165,6 +166,8 @@ public final class TestUtil {
 
 	public static Appeal createAppeal() {
 		return Appeal.builder()
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.withDescription("Appeal description")
 			.withRegisteredAt(getRandomOffsetDateTime())
 			.withAppealConcernCommunicatedAt(getRandomOffsetDateTime())
@@ -183,6 +186,8 @@ public final class TestUtil {
 
 	public static Facility createFacility() {
 		return Facility.builder()
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.withDescription("description")
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
@@ -198,6 +203,8 @@ public final class TestUtil {
 	public static Attachment createAttachment(final AttachmentCategory category) {
 
 		return Attachment.builder()
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
 			.withId(new Random().nextLong(1, 100000))
@@ -255,10 +262,11 @@ public final class TestUtil {
 		return extraParams;
 	}
 
-
 	public static Stakeholder createStakeholder(final StakeholderType stakeholderType, final List<String> stakeholderRoles) {
 		if (StakeholderType.PERSON.equals(stakeholderType)) {
 			return Stakeholder.builder()
+				.withMunicipalityId(MUNICIPALITY_ID)
+				.withNamespace(NAMESPACE)
 				.withCreated(getRandomOffsetDateTime())
 				.withUpdated(getRandomOffsetDateTime())
 				.withType(StakeholderType.PERSON)
@@ -321,6 +329,8 @@ public final class TestUtil {
 
 	public static Note createNote() {
 		return Note.builder()
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
 			.withId(new Random().nextLong(1, 100000))
@@ -375,6 +385,8 @@ public final class TestUtil {
 			.withCreated(getRandomOffsetDateTime())
 			.withText("text")
 			.withTitle("title")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.withErrand(new ErrandEntity())
 			.withNoteType(NoteType.PUBLIC)
 			.withVersion(1)
@@ -475,6 +487,8 @@ public final class TestUtil {
 			.withFacilityType(FacilityType.GARAGE.name())
 			.withErrand(null)
 			.withMainFacility(true)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.build();
 	}
 
@@ -572,6 +586,8 @@ public final class TestUtil {
 			.withVersion(1)
 			.withDecidedAt(getRandomOffsetDateTime())
 			.withDecisionOutcome(DecisionOutcome.APPROVAL)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.withLaw(new ArrayList<>(List.of(createLawEntity())))
 			.withAttachments(new ArrayList<>(List.of(createAttachmentEntity())))
 			.build();
@@ -614,6 +630,8 @@ public final class TestUtil {
 			.withExtension("extension")
 			.withMimeType("mimeType")
 			.withNote("note")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
 			.withErrandNumber("errandNumber")
 			.withCategory(AttachmentCategory.POLICE_REPORT.name())
 			.build();

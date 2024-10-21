@@ -1,5 +1,31 @@
 package se.sundsvall.casedata.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.casedata.TestUtil;
+import se.sundsvall.casedata.api.model.Note;
+import se.sundsvall.casedata.api.model.Notification;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.NoteRepository;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.NoteEntity;
+import se.sundsvall.casedata.integration.db.model.enums.NoteType;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -19,34 +45,6 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteEntity;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.ThrowableProblem;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.api.model.Note;
-import se.sundsvall.casedata.api.model.Notification;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.NoteRepository;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.integration.db.model.NoteEntity;
-import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 
 @ExtendWith(MockitoExtension.class)
 class NoteServiceTest {
@@ -105,6 +103,8 @@ class NoteServiceTest {
 		final Note putDTO = new Note();
 		putDTO.setTitle(RandomStringUtils.secure().next(10, true, false));
 		putDTO.setText(RandomStringUtils.secure().next(10, true, false));
+		putDTO.setMunicipalityId(MUNICIPALITY_ID);
+		putDTO.setNamespace(NAMESPACE);
 		putDTO.setNoteType(NoteType.PUBLIC);
 
 		// Act
