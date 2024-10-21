@@ -34,11 +34,9 @@ public class Decision {
 	private int version;
 
 	@Schema(description = "The municipality ID", example = "2281", accessMode = Schema.AccessMode.READ_ONLY)
-	@Size(max = 255)
 	private String municipalityId;
 
 	@Schema(description = "Namespace", example = "my.namespace", accessMode = Schema.AccessMode.READ_ONLY)
-	@Size(max = 255)
 	private String namespace;
 
 	@Schema(description = "Type of the decision", example = "APPROVAL")

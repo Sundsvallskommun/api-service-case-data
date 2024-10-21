@@ -32,11 +32,9 @@ public class Note {
 	private int version;
 
 	@Schema(description = "The municipality ID", example = "2281", accessMode = Schema.AccessMode.READ_ONLY)
-	@Size(max = 255)
 	private String municipalityId;
 
 	@Schema(description = "Namespace", example = "my.namespace", accessMode = Schema.AccessMode.READ_ONLY)
-	@Size(max = 255)
 	private String namespace;
 
 	@Schema(description = "The title of the note", example = "Motivering till bifall")

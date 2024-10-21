@@ -2,7 +2,6 @@ package se.sundsvall.casedata.api.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,11 +25,9 @@ public class MessageAttachment {
 	private String attachmentId;
 
 	@Schema(description = "The municipality ID", example = "2281", accessMode = Schema.AccessMode.READ_ONLY)
-	@Size(max = 255)
 	private String municipalityId;
 
 	@Schema(description = "Namespace", example = "my.namespace", accessMode = Schema.AccessMode.READ_ONLY)
-	@Size(max = 255)
 	private String namespace;
 
 	@NotBlank
