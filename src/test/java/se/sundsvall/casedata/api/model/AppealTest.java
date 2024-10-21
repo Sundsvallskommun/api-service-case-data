@@ -1,5 +1,12 @@
 package se.sundsvall.casedata.api.model;
 
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.time.OffsetDateTime;
+import java.util.Random;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -11,13 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static se.sundsvall.casedata.integration.db.model.enums.AppealStatus.NEW;
 import static se.sundsvall.casedata.integration.db.model.enums.TimelinessReview.NOT_CONDUCTED;
-
-import java.time.OffsetDateTime;
-import java.util.Random;
-
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 class AppealTest {
 
@@ -49,10 +49,14 @@ class AppealTest {
 		final var timelinessReview = NOT_CONDUCTED.name();
 		final var created = now();
 		final var updated = now();
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
 
 		// Act
 		var result = Appeal.builder()
 			.withId(id)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.withDescription(description)
 			.withRegisteredAt(registeredAt)
 			.withAppealConcernCommunicatedAt(appealConcernCommunicatedAt)
@@ -66,6 +70,8 @@ class AppealTest {
 		// Assert
 		assertThat(result).hasNoNullFieldsOrProperties();
 		assertThat(result.getId()).isEqualTo(id);
+		assertThat(result.getMunicipalityId()).isEqualTo(municipalityId);
+		assertThat(result.getNamespace()).isEqualTo(namespace);
 		assertThat(result.getDescription()).isEqualTo(description);
 		assertThat(result.getRegisteredAt()).isEqualTo(registeredAt);
 		assertThat(result.getAppealConcernCommunicatedAt()).isEqualTo(appealConcernCommunicatedAt);

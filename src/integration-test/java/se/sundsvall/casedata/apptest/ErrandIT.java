@@ -1,5 +1,33 @@
 package se.sundsvall.casedata.apptest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.util.UriComponentsBuilder;
+import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.Decision;
+import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.Note;
+import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.api.model.Stakeholder;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import se.sundsvall.casedata.service.util.Constants;
+import se.sundsvall.dept44.test.AbstractAppTest;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
@@ -30,36 +58,6 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.PARKING_PERMIT_ST
 import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.Decision;
-import se.sundsvall.casedata.api.model.Errand;
-import se.sundsvall.casedata.api.model.Note;
-import se.sundsvall.casedata.api.model.PatchErrand;
-import se.sundsvall.casedata.api.model.Stakeholder;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-import se.sundsvall.casedata.service.util.Constants;
-import se.sundsvall.dept44.test.AbstractAppTest;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
-
 @WireMockAppTestSuite(files = "classpath:/ErrandIT", classes = Application.class)
 class ErrandIT extends AbstractAppTest {
 
@@ -70,6 +68,8 @@ class ErrandIT extends AbstractAppTest {
 		"version",
 		"created",
 		"updated",
+		"municipalityId",
+		"namespace",
 		".*\\.id",
 		".*\\.version",
 		".*\\.created",
@@ -231,10 +231,10 @@ class ErrandIT extends AbstractAppTest {
 		postErrand(inputPostErrand, municipalityId);
 
 		final Page<Errand> resultList = webTestClient.get().uri(
-			uriBuilder -> uriBuilder
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrand.getExternalCaseId()))
-				.build())
+				uriBuilder -> uriBuilder
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrand.getExternalCaseId()))
+					.build())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -271,11 +271,11 @@ class ErrandIT extends AbstractAppTest {
 		postErrand(inputPostErrand, municipalityId);
 
 		final Page<Errand> resultList = webTestClient.get().uri(
-			uriBuilder -> uriBuilder
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("extraParameters[key 1]", "value 1")
-				.queryParam("extraParameters[key 2]", "value 2")
-				.build())
+				uriBuilder -> uriBuilder
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("extraParameters[key 1]", "value 1")
+					.queryParam("extraParameters[key 2]", "value 2")
+					.build())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -309,12 +309,12 @@ class ErrandIT extends AbstractAppTest {
 		postErrand(inputPostErrand, municipalityId);
 
 		webTestClient.get().uri(
-			uriBuilder -> uriBuilder
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("extraParameters[key 1]", "value 1")
-				// One of the extra parameters is wrong
-				.queryParam("extraParameters[key 2]", "value 3")
-				.build())
+				uriBuilder -> uriBuilder
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("extraParameters[key 1]", "value 1")
+					// One of the extra parameters is wrong
+					.queryParam("extraParameters[key 2]", "value 3")
+					.build())
 			.exchange()
 			.expectStatus().isOk();
 	}
@@ -331,12 +331,12 @@ class ErrandIT extends AbstractAppTest {
 		postErrand(inputPostErrand, municipalityId);
 
 		webTestClient.get().uri(
-			uriBuilder -> uriBuilder
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("extraParameters[key 1]", "value 1")
-				// Filter is wrong
-				.queryParam("filter", "externalCaseId:'%s'".formatted(new Random().nextInt(900000000)))
-				.build())
+				uriBuilder -> uriBuilder
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("extraParameters[key 1]", "value 1")
+					// Filter is wrong
+					.queryParam("filter", "externalCaseId:'%s'".formatted(new Random().nextInt(900000000)))
+					.build())
 			.exchange()
 			.expectStatus().isOk();
 	}
@@ -354,14 +354,14 @@ class ErrandIT extends AbstractAppTest {
 		postErrand(inputPostErrand, municipalityId);
 
 		final Page<Errand> resultList = webTestClient.get().uri(
-			uriBuilder -> uriBuilder
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrand.getExternalCaseId()))
-				.queryParam("extraParameters[key 1]", "value 1")
-				.queryParam("page", "0")
-				.queryParam("size", "10")
-				.queryParam("sort", "id,desc")
-				.build())
+				uriBuilder -> uriBuilder
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrand.getExternalCaseId()))
+					.queryParam("extraParameters[key 1]", "value 1")
+					.queryParam("page", "0")
+					.queryParam("size", "10")
+					.queryParam("sort", "id,desc")
+					.build())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -401,10 +401,10 @@ class ErrandIT extends AbstractAppTest {
 		postErrand(anotherErrandWithSameFirstName, municipalityId);
 
 		final Page<Errand> resultPage = webTestClient.get().uri(
-			uriBuilder -> uriBuilder
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("filter", "stakeholders.firstName ~ '*%s*'".formatted(WORD_IN_THE_MIDDLE))
-				.build())
+				uriBuilder -> uriBuilder
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("filter", "stakeholders.firstName ~ '*%s*'".formatted(WORD_IN_THE_MIDDLE))
+					.build())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -436,10 +436,10 @@ class ErrandIT extends AbstractAppTest {
 	})
 	void testGetWithOneQueryParam404(final String municipalityId) {
 		webTestClient.get().uri(
-			uriBuilder -> uriBuilder
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("filter", "externalCaseId:'%s'".formatted(UUID.randomUUID()))
-				.build())
+				uriBuilder -> uriBuilder
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("filter", "externalCaseId:'%s'".formatted(UUID.randomUUID()))
+					.build())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE);
@@ -462,24 +462,24 @@ class ErrandIT extends AbstractAppTest {
 
 		// Get only the first one with query params
 		final Page<Errand> resultList = webTestClient.get().uri(
-			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrand1.getExternalCaseId()) +
-					"and " +
-					"caseType:'%s'".formatted(inputPostErrand1.getCaseType()) +
-					"and " +
-					"priority:'%s'".formatted(inputPostErrand1.getPriority()) +
-					"and " +
-					"description:'%s'".formatted(inputPostErrand1.getDescription()) +
-					"and " +
-					"caseTitleAddition:'%s'".formatted(inputPostErrand1.getCaseTitleAddition()) +
-					"and " +
-					"applicationReceived:'%s'".formatted("{applicationReceived}") +
-					"and " +
-					"created:'%s'".formatted("{created}"))
-				.encode()
-				.buildAndExpand(inputPostErrand1.getApplicationReceived(), requireNonNull(resultPostErrand1).getCreated())
-				.toUri())
+				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("filter", "externalCaseId:'%s'".formatted(inputPostErrand1.getExternalCaseId()) +
+						"and " +
+						"caseType:'%s'".formatted(inputPostErrand1.getCaseType()) +
+						"and " +
+						"priority:'%s'".formatted(inputPostErrand1.getPriority()) +
+						"and " +
+						"description:'%s'".formatted(inputPostErrand1.getDescription()) +
+						"and " +
+						"caseTitleAddition:'%s'".formatted(inputPostErrand1.getCaseTitleAddition()) +
+						"and " +
+						"applicationReceived:'%s'".formatted("{applicationReceived}") +
+						"and " +
+						"created:'%s'".formatted("{created}"))
+					.encode()
+					.buildAndExpand(inputPostErrand1.getApplicationReceived(), requireNonNull(resultPostErrand1).getCreated())
+					.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -520,25 +520,25 @@ class ErrandIT extends AbstractAppTest {
 			.expectBody(Errand.class).returnResult().getResponseBody();
 
 		final Page<Errand> resultList = webTestClient.get().uri(
-			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("filter", // Random UUID = no match, but uses operator "or" and should find an errand anyway.
-					"externalCaseId:'%s'".formatted(UUID.randomUUID()) +
-						"or " +
-						"caseType:'%s'".formatted(inputPostErrand1.getCaseType()) +
-						"and " +
-						"priority:'%s'".formatted(inputPostErrand1.getPriority()) +
-						"and " +
-						"description:'%s'".formatted(inputPostErrand1.getDescription()) +
-						"and " +
-						"caseTitleAddition:'%s'".formatted(inputPostErrand1.getCaseTitleAddition()) +
-						"and " +
-						"applicationReceived:'%s'".formatted("{applicationReceived}") +
-						"and " +
-						"created:'%s'".formatted("{created}"))
-				.encode()
-				.buildAndExpand(inputPostErrand1.getApplicationReceived(), requireNonNull(resultPostErrand1).getCreated())
-				.toUri())
+				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("filter", // Random UUID = no match, but uses operator "or" and should find an errand anyway.
+						"externalCaseId:'%s'".formatted(UUID.randomUUID()) +
+							"or " +
+							"caseType:'%s'".formatted(inputPostErrand1.getCaseType()) +
+							"and " +
+							"priority:'%s'".formatted(inputPostErrand1.getPriority()) +
+							"and " +
+							"description:'%s'".formatted(inputPostErrand1.getDescription()) +
+							"and " +
+							"caseTitleAddition:'%s'".formatted(inputPostErrand1.getCaseTitleAddition()) +
+							"and " +
+							"applicationReceived:'%s'".formatted("{applicationReceived}") +
+							"and " +
+							"created:'%s'".formatted("{created}"))
+					.encode()
+					.buildAndExpand(inputPostErrand1.getApplicationReceived(), requireNonNull(resultPostErrand1).getCreated())
+					.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -571,16 +571,16 @@ class ErrandIT extends AbstractAppTest {
 
 		// Get only the first one with query params
 		final Page<Errand> resultList = webTestClient.get().uri(
-			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("filter", "stakeholders.firstName:'%s'".formatted(person.getFirstName()) +
-					"and " +
-					"stakeholders.lastName:'%s'".formatted(person.getLastName()) +
-					"and " +
-					"stakeholders.personId:'%s'".formatted(person.getPersonId()))
-				.encode()
-				.build()
-				.toUri())
+				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("filter", "stakeholders.firstName:'%s'".formatted(person.getFirstName()) +
+						"and " +
+						"stakeholders.lastName:'%s'".formatted(person.getLastName()) +
+						"and " +
+						"stakeholders.personId:'%s'".formatted(person.getPersonId()))
+					.encode()
+					.build()
+					.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -612,14 +612,14 @@ class ErrandIT extends AbstractAppTest {
 
 		// Get only the first one with query params
 		final Page<Errand> resultList = webTestClient.get().uri(
-			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("filter", "stakeholders.addresses.street:'%s'".formatted(person.getAddresses().getFirst().getStreet()) +
-					"and " +
-					"stakeholders.addresses.houseNumber:'%s'".formatted(person.getAddresses().getFirst().getHouseNumber()))
-				.encode()
-				.build()
-				.toUri())
+				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("filter", "stakeholders.addresses.street:'%s'".formatted(person.getAddresses().getFirst().getStreet()) +
+						"and " +
+						"stakeholders.addresses.houseNumber:'%s'".formatted(person.getAddresses().getFirst().getHouseNumber()))
+					.encode()
+					.build()
+					.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -650,16 +650,16 @@ class ErrandIT extends AbstractAppTest {
 		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst().orElseThrow();
 
 		webTestClient.get().uri(
-			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("filter", "stakeholders.firstName:'%s'".formatted(person.getFirstName()) +
-					"and " +
-					"stakeholders.lastName:'%s'".formatted(person.getLastName()) +
-					"and " +
-					"stakeholders.personId:'%s'".formatted(UUID.randomUUID()))
-				.encode()
-				.build()
-				.toUri())
+				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("filter", "stakeholders.firstName:'%s'".formatted(person.getFirstName()) +
+						"and " +
+						"stakeholders.lastName:'%s'".formatted(person.getLastName()) +
+						"and " +
+						"stakeholders.personId:'%s'".formatted(UUID.randomUUID()))
+					.encode()
+					.build()
+					.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE);
@@ -676,12 +676,12 @@ class ErrandIT extends AbstractAppTest {
 		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst().orElseThrow();
 		// Get only the first one with query params
 		final Page<Errand> resultList = webTestClient.get().uri(
-			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("filter", "stakeholders.personId:'%s'".formatted(person.getPersonId()))
-				.encode()
-				.build()
-				.toUri())
+				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("filter", "stakeholders.personId:'%s'".formatted(person.getPersonId()))
+					.encode()
+					.build()
+					.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -714,12 +714,12 @@ class ErrandIT extends AbstractAppTest {
 			.findFirst().orElseThrow();
 		// Get only the first one with query params
 		final Page<Errand> resultList = webTestClient.get().uri(
-			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
-				.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
-				.queryParam("filter", "stakeholders.organizationNumber:'%s'".formatted(organization.getOrganizationNumber()))
-				.encode()
-				.build()
-				.toUri())
+				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
+					.path(format("/{0}/{1}/errands", municipalityId, NAMESPACE))
+					.queryParam("filter", "stakeholders.organizationNumber:'%s'".formatted(organization.getOrganizationNumber()))
+					.encode()
+					.build()
+					.toUri())
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)

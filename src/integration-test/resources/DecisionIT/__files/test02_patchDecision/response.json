@@ -1,6 +1,8 @@
 {
   "id": 1,
   "version": 2,
+  "municipalityId": "2281",
+  "namespace": "my.namespace",
   "errandNumber": "ERRAND-NUMBER-1",
   "externalCaseId": "",
   "caseType": "PARKING_PERMIT",
@@ -15,6 +17,8 @@
     {
       "id": 1,
       "version": 0,
+      "municipalityId": "2281",
+      "namespace": "my.namespace",
       "type": "PERSON",
       "firstName": "FIRST-NAME-1",
       "lastName": "LAST-NAME-1",
@@ -33,6 +37,8 @@
     {
       "id": 1,
       "version": 2,
+      "municipalityId": "2281",
+      "namespace": "my.namespace",
       "decisionType": "FINAL",
       "decisionOutcome": "DISMISSAL",
       "description": "new description",
@@ -41,6 +47,8 @@
         "id": 2,
         "version": 0,
         "type": "PERSON",
+        "municipalityId": "2281",
+        "namespace": "my.namespace",
         "firstName": "FIRST-NAME-1",
         "lastName": "LAST-NAME-1",
         "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",

@@ -1,5 +1,15 @@
 package se.sundsvall.casedata.api.model;
 
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.api.model.MessageResponse.AttachmentResponse;
+import se.sundsvall.casedata.api.model.validation.enums.MessageType;
+import se.sundsvall.casedata.integration.db.model.enums.Classification;
+import se.sundsvall.casedata.integration.db.model.enums.Direction;
+import se.sundsvall.casedata.integration.db.model.enums.Header;
+
+import java.util.List;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -7,17 +17,6 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
-
-import java.util.List;
-
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Test;
-
-import se.sundsvall.casedata.api.model.MessageResponse.AttachmentResponse;
-import se.sundsvall.casedata.api.model.validation.enums.MessageType;
-import se.sundsvall.casedata.integration.db.model.enums.Classification;
-import se.sundsvall.casedata.integration.db.model.enums.Direction;
-import se.sundsvall.casedata.integration.db.model.enums.Header;
 
 class MessageResponseTest {
 
@@ -64,6 +63,8 @@ class MessageResponseTest {
 				.withHeader(Header.MESSAGE_ID)
 				.withValues(List.of("<test@test>"))
 				.build());
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
 
 		// Act
 		final var bean = MessageResponse.builder()
@@ -86,6 +87,8 @@ class MessageResponseTest {
 			.withViewed(viewed)
 			.withClassification(classification)
 			.withEmailHeaders(headers)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
 			.build();
 
 		// Assert
@@ -109,6 +112,8 @@ class MessageResponseTest {
 		assertThat(bean.isViewed()).isEqualTo(viewed);
 		assertThat(bean.getClassification()).isEqualTo(classification);
 		assertThat(bean.getEmailHeaders()).isEqualTo(headers);
+		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
+		assertThat(bean.getNamespace()).isEqualTo(namespace);
 	}
 
 	@Test
