@@ -69,7 +69,6 @@
       "updated": "${json-unit.any-string}"
     }
   ],
-  "appeals": [],
   "notes": [],
   "suspension": {},
   "createdByClient": "WSO2_test",

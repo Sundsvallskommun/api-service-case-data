@@ -1,21 +1,4 @@
 
-    create table appeal (
-        version integer,
-        appeal_concern_communicated_at datetime(6),
-        created datetime(6),
-        decision_id bigint,
-        errand_id bigint,
-        id bigint not null auto_increment,
-        registered_at datetime(6),
-        updated datetime(6),
-        municipality_id varchar(255),
-        namespace varchar(255),
-        description text,
-        status varchar(255),
-        timeliness_review varchar(255),
-        primary key (id)
-    ) engine=InnoDB;
-
     create table attachment (
         version integer,
         created datetime(6),
@@ -320,12 +303,6 @@
         primary key (role_order, stakeholder_id)
     ) engine=InnoDB;
 
-    create index idx_appeal_municipality_id 
-       on appeal (municipality_id);
-
-    create index idx_appeal_namespace 
-       on appeal (namespace);
-
     create index attachment_errand_number_idx 
        on attachment (errand_number);
 
@@ -394,16 +371,6 @@
 
     create index idx_stakeholder_namespace 
        on stakeholder (namespace);
-
-    alter table if exists appeal 
-       add constraint FK_appeal_decision_id 
-       foreign key (decision_id) 
-       references decision (id);
-
-    alter table if exists appeal 
-       add constraint FK_appeal_errand_id 
-       foreign key (errand_id) 
-       references errand (id);
 
     alter table if exists attachment 
        add constraint FK_decision_id 

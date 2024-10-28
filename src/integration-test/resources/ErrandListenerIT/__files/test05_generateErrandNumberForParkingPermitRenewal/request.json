@@ -1,11 +1,10 @@
 {
-  "errandNumber": "ERRAND-123",
   "externalCaseId": "9527464e-c5a0-4971-a253-8b94a79e74c9",
-  "caseType": "NYBYGGNAD_ANSOKAN_OM_BYGGLOV",
+  "caseType": "PARKING_PERMIT_RENEWAL",
   "channel": "EMAIL",
   "priority": "HIGH",
   "description": "Case description",
-  "caseTitleAddition": "Case title addition",
+  "caseTitleAddition": "Förnyat parkeringstillstånd",
   "diaryNumber": "DIARY-123",
   "phase": "Actualization",
   "statuses": [
@@ -211,25 +210,37 @@
     {
       "title": "Test note",
       "text": "Test text",
-      "createdBy": "UNKNOWN",
-      "updatedBy": "UNKNOWN",
+      "createdBy": "bquKaCeVfU",
+      "updatedBy": "sRXYGByNYE",
       "noteType": "PUBLIC",
       "extraParameters": {
-        "test4": "test4",
         "test2": "test2",
-        "test3": "test3"
+        "test3": "test3",
+        "test4": "test4"
       }
     },
     {
       "title": "sRGrJyRKNn",
       "text": "IHmVWzpAJl",
-      "createdBy": "UNKNOWN",
-      "updatedBy": "UNKNOWN",
+      "createdBy": "INoLNeOKem",
+      "updatedBy": "wZLYbWWWfF",
       "noteType": "PUBLIC",
       "extraParameters": {
-        "test4": "test4",
         "test2": "test2",
-        "test3": "test3"
+        "test3": "test3",
+        "test4": "test4"
+      }
+    },
+    {
+      "title": "EzhsmgQlrP",
+      "text": "OSOCnSgryb",
+      "createdBy": "HnnUnmfcES",
+      "updatedBy": "oHfjmxxKyo",
+      "noteType": "PUBLIC",
+      "extraParameters": {
+        "test2": "test2",
+        "test3": "test3",
+        "test4": "test4"
       }
     }
   ],
@@ -240,24 +251,21 @@
   ],
   "extraParameters": [
     {
-      "key": "test7",
-      "displayName": "Test 7",
+      "key": "test9",
       "values": [
-        "test7"
+        "test9"
       ]
     },
     {
       "key": "test8",
-      "displayName": "Test 8",
       "values": [
         "test8"
       ]
     },
     {
-      "key": "test9",
-      "displayName": "Test 9",
+      "key": "test7",
       "values": [
-        "test9"
+        "test7"
       ]
     }
   ]
