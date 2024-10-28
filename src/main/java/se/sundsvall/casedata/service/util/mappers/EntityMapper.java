@@ -2,7 +2,6 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.api.model.Address;
-import se.sundsvall.casedata.api.model.Appeal;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.ContactInformation;
 import se.sundsvall.casedata.api.model.Coordinates;
@@ -16,7 +15,6 @@ import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.Status;
 import se.sundsvall.casedata.api.model.Suspension;
 import se.sundsvall.casedata.integration.db.model.AddressEntity;
-import se.sundsvall.casedata.integration.db.model.AppealEntity;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
 import se.sundsvall.casedata.integration.db.model.CoordinatesEntity;
@@ -28,8 +26,6 @@ import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.StatusEntity;
-import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
-import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -79,7 +75,6 @@ public final class EntityMapper {
 				.withStakeholders(new ArrayList<>(errandEntity.getStakeholders().stream().map(EntityMapper::toStakeholder).toList()))
 				.withFacilities(new ArrayList<>(errandEntity.getFacilities().stream().map(EntityMapper::toFacility).toList()))
 				.withDecisions(new ArrayList<>(errandEntity.getDecisions().stream().map(EntityMapper::toDecision).toList()))
-				.withAppeals(new ArrayList<>(errandEntity.getAppeals().stream().map(EntityMapper::toAppeal).toList()))
 				.withExtraParameters(toParameterList(errandEntity.getExtraParameters()))
 				.build())
 			.orElse(null);
@@ -130,10 +125,6 @@ public final class EntityMapper {
 					.orElse(emptyList())
 					.stream().map(notesDTO -> toNoteEntity(notesDTO, municipalityId, namespace))
 					.toList()))
-				.withAppeals(new ArrayList<>(Optional.ofNullable(errand.getAppeals())
-					.orElse(emptyList())
-					.stream().map(appealsDTO -> toAppealEntity(appealsDTO, municipalityId, namespace))
-					.toList()))
 				.build());
 
 		errandEntity.ifPresent(entity -> {
@@ -145,7 +136,6 @@ public final class EntityMapper {
 			entity.getFacilities().forEach(facility -> facility.setErrand(entity));
 			entity.getDecisions().forEach(decision -> decision.setErrand(entity));
 			entity.getNotes().forEach(note -> note.setErrand(entity));
-			entity.getAppeals().forEach(appeal -> appeal.setErrand(entity));
 			entity.setExtraParameters(toErrandParameterEntityList(errand.getExtraParameters(), entity));
 		});
 
@@ -331,43 +321,6 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static AppealEntity toAppealEntity(final Appeal appeal, final String municipalityId, final String namespace) {
-		return Optional.ofNullable(appeal)
-			.map(obj -> AppealEntity.builder()
-				.withId(appeal.getId())
-				.withVersion(appeal.getVersion())
-				.withCreated(appeal.getCreated())
-				.withUpdated(appeal.getUpdated())
-				.withDescription(appeal.getDescription())
-				.withRegisteredAt(appeal.getRegisteredAt())
-				.withMunicipalityId(municipalityId)
-				.withNamespace(namespace)
-				.withStatus(AppealStatus.valueOf(appeal.getStatus()))
-				.withAppealConcernCommunicatedAt(appeal.getAppealConcernCommunicatedAt())
-				.withTimelinessReview(TimelinessReview.valueOf(appeal.getTimelinessReview()))
-				.build())
-			.orElse(null);
-	}
-
-	public static Appeal toAppeal(final AppealEntity appealEntity) {
-		return Optional.ofNullable(appealEntity)
-			.map(obj -> Appeal.builder()
-				.withId(appealEntity.getId())
-				.withMunicipalityId(appealEntity.getMunicipalityId())
-				.withNamespace(appealEntity.getNamespace())
-				.withVersion(appealEntity.getVersion())
-				.withCreated(appealEntity.getCreated())
-				.withUpdated(appealEntity.getUpdated())
-				.withDescription(appealEntity.getDescription())
-				.withRegisteredAt(appealEntity.getRegisteredAt())
-				.withStatus(appealEntity.getStatus().name())
-				.withAppealConcernCommunicatedAt(appealEntity.getAppealConcernCommunicatedAt())
-				.withTimelinessReview(Optional.ofNullable(appealEntity.getTimelinessReview()).map(TimelinessReview::name).orElse(null))
-				.withDecisionId(Optional.ofNullable(appealEntity.getDecision()).map(DecisionEntity::getId).orElse(null))
-				.build())
-			.orElse(null);
-	}
-
 	public static StatusEntity toStatusEntity(final Status status) {
 		return Optional.ofNullable(status)
 			.map(obj -> StatusEntity.builder()
@@ -523,7 +476,7 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static NotificationEntity toNotificationEntity(Notification notification, String municipalityId, String namespace, ErrandEntity errand, PortalPersonData creator, PortalPersonData owner) {
+	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace, final ErrandEntity errand, final PortalPersonData creator, final PortalPersonData owner) {
 		return Optional.ofNullable(notification)
 			.map(obj -> NotificationEntity.builder()
 				.withAcknowledged(notification.isAcknowledged())
@@ -568,7 +521,7 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static String toOwnerId(ErrandEntity errandEntity) {
+	public static String toOwnerId(final ErrandEntity errandEntity) {
 		return Optional.ofNullable(errandEntity.getStakeholders()).orElse(emptyList()).stream()
 			.filter(stakeholder -> Optional.ofNullable(stakeholder.getRoles()).orElse(emptyList()).stream()
 				.anyMatch(ADMINISTRATOR.toString()::equalsIgnoreCase))
