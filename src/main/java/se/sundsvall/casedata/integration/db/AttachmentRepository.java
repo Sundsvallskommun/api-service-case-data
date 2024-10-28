@@ -7,19 +7,20 @@ import org.javers.spring.annotation.JaversSpringDataAuditable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import se.sundsvall.casedata.integration.db.model.Attachment;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @JaversSpringDataAuditable
 @CircuitBreaker(name = "attachmentRepository")
-public interface AttachmentRepository extends JpaRepository<Attachment, Long>, JpaSpecificationExecutor<Attachment> {
+public interface AttachmentRepository extends JpaRepository<AttachmentEntity, Long>, JpaSpecificationExecutor<AttachmentEntity> {
 
-	List<Attachment> findAllByErrandNumberAndMunicipalityId(final String errandNumber, final String municipalityId);
+	List<AttachmentEntity> findAllByErrandNumberAndMunicipalityIdAndNamespace(final String errandNumber, final String municipalityId, final String namespace);
 
-	Optional<Attachment> findByIdAndMunicipalityId(final Long id, final String municipalityId);
+	Optional<AttachmentEntity> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
 
-	boolean existsByIdAndMunicipalityId(final Long id, final String municipalityId);
+	boolean existsByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
 
-	void deleteByIdAndMunicipalityId(final Long id, final String municipalityId);
+	void deleteByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
+
 }

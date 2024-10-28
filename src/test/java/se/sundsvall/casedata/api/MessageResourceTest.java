@@ -2,15 +2,16 @@ package se.sundsvall.casedata.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -30,7 +31,7 @@ import se.sundsvall.casedata.service.MessageService;
 @ActiveProfiles("junit")
 class MessageResourceTest {
 
-	private static final String BASE_URL = "/{municipalityId}/messages";
+	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands/{errandId}/messages";
 
 	@MockBean
 	private MessageService messageServiceMock;
@@ -39,18 +40,17 @@ class MessageResourceTest {
 	private WebTestClient webTestClient;
 
 	@Test
-	void getMessagesForErrandNumber() {
+	void getMessagesOnErrand() {
 
 		// Arrange
-		final var errandNumber = RandomStringUtils.randomAlphanumeric(10);
+		final var errandNumber = RandomStringUtils.secure().nextAlphabetic(10);
 		final var messages = List.of(MessageResponse.builder().build());
 
-		when(messageServiceMock.getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID)).thenReturn(messages);
+		when(messageServiceMock.getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
 
 		// Act
-		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandNumber}")
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "errandNumber", errandNumber)))
+		var response = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/{namespace}/messages/{errandNumber}").build(MUNICIPALITY_ID, NAMESPACE, errandNumber))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -60,47 +60,47 @@ class MessageResourceTest {
 
 		// Assert
 		assertThat(response).isEqualTo(messages);
-		verify(messageServiceMock).getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID);
+		verify(messageServiceMock).getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoMoreInteractions(messageServiceMock);
 	}
 
 	@Test
-	void patchMessage() {
+	void patchErrandWithMessage() {
 		// Arrange
+		final var errandId = 123L;
 		final var request = MessageRequest.builder().build();
 
 		// Act
 		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID))
-			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.contentType(APPLICATION_JSON)
 			.bodyValue(request)
 			.exchange()
 			.expectStatus().isNoContent()
-			.expectHeader().contentType(ALL_VALUE)
-			.expectBody().isEmpty();
+			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(messageServiceMock).saveMessage(request, MUNICIPALITY_ID);
+		verify(messageServiceMock).saveMessageOnErrand(errandId, request, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoMoreInteractions(messageServiceMock);
 	}
 
 	@Test
-	void setViewedOnMessage() {
+	void updateViewedStatus() {
 		// Arrange
-		final var messageID = RandomStringUtils.randomAlphabetic(10);
+		final var errandId = 123L;
+		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
 		final var isViewed = new Random().nextBoolean();
 
 		// Act
 		webTestClient.put()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{messageID}/viewed/{isViewed}")
-				.build(Map.of(
-					"municipalityId", MUNICIPALITY_ID,
-					"messageID", messageID,
-					"isViewed", isViewed)))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{messageId}/viewed/{isViewed}").build(MUNICIPALITY_ID, NAMESPACE, errandId, messageId, isViewed))
 			.exchange()
 			.expectStatus().isNoContent()
-			.expectHeader().contentType(ALL_VALUE)
-			.expectBody().isEmpty();
+			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(messageServiceMock).updateViewedStatus(messageID, MUNICIPALITY_ID, isViewed);
+		verify(messageServiceMock).updateViewedStatus(errandId, messageId, MUNICIPALITY_ID, NAMESPACE, isViewed);
+		verifyNoMoreInteractions(messageServiceMock);
 	}
+
 }

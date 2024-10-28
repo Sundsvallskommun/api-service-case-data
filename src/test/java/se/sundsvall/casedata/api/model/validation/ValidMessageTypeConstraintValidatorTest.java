@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
+import se.sundsvall.casedata.api.model.validation.impl.ValidMessageTypeConstraintValidator;
 
 
 class ValidMessageTypeConstraintValidatorTest {

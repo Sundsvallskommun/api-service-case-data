@@ -1,9 +1,13 @@
 {
+  "municipalityId": "2281",
+  "namespace": "my.namespace",
   "attachments": [],
   "created": "2024-01-01T12:00:00+01:00",
   "decidedAt": "2024-01-01T12:00:00+01:00",
   "decidedBy": {
     "adAccount": "AD-1",
+    "municipalityId": "2281",
+    "namespace": "my.namespace",
     "addresses": [],
     "contactInformation": [],
     "created": "2022-12-02T15:13:45.363+01:00",

@@ -14,6 +14,7 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+import se.sundsvall.casedata.api.model.validation.impl.ValidCaseTypeConstraintValidator;
 
 /**
  * The annotated element must be a valid {@link CaseType}.

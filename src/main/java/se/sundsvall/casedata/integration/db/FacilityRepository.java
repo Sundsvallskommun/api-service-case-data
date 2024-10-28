@@ -6,15 +6,16 @@ import org.javers.spring.annotation.JaversSpringDataAuditable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import se.sundsvall.casedata.integration.db.model.Facility;
+import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @JaversSpringDataAuditable
 @CircuitBreaker(name = "facilityRepository")
-public interface FacilityRepository extends JpaRepository<Facility, Long>, JpaSpecificationExecutor<Facility> {
+public interface FacilityRepository extends JpaRepository<FacilityEntity, Long>, JpaSpecificationExecutor<FacilityEntity> {
 
-	Optional<Facility> findByIdAndErrandIdAndMunicipalityId(final Long id, final Long errandId, final String municipalityId);
+	Optional<FacilityEntity> findByIdAndErrandIdAndMunicipalityIdAndNamespace(final Long id, final Long errandId, final String municipalityId, final String namespace);
 
-	Optional<Facility> findByIdAndMunicipalityId(final Long id, final String municipalityId);
+	Optional<FacilityEntity> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
+
 }

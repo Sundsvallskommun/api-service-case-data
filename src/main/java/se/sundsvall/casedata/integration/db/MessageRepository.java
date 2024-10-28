@@ -5,14 +5,15 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import se.sundsvall.casedata.integration.db.model.MessageEntity;
+
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import se.sundsvall.casedata.integration.db.model.Message;
 
 @CircuitBreaker(name = "messageRepository")
-public interface MessageRepository extends JpaRepository<Message, String> {
+public interface MessageRepository extends JpaRepository<MessageEntity, String> {
 
-	List<Message> findAllByErrandNumberAndMunicipalityId(final String errandNumber, final String municipalityId);
+	List<MessageEntity> findAllByErrandNumberAndMunicipalityIdAndNamespace(final String errandNumber, final String municipalityId, final String namespace);
 
-	Optional<Message> findByMessageIDAndMunicipalityId(final String messageId, final String municipalityId);
+	Optional<MessageEntity> findByMessageIdAndMunicipalityIdAndNamespace(final String messageId, final String municipalityId, final String namespace);
 
 }

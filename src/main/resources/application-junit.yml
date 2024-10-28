@@ -10,23 +10,21 @@ spring:
       jakarta:
         persistence:
           schema-generation:
-            database:
-              action: update
             scripts:
               action: create
               create-target: target/database/generated-schema.sql
             create-source: metadata
       hibernate:
+        ddl-auto: validate
         hbm2ddl:
-          charset_name: UTF-8
+          charset_name: 'UTF-8'
           schema-generation:
             script:
-              append: "false"
-        format_sql: "true"
+              append: 'false'
+        format_sql: 'true'
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:mariadb:10.6.4:///junit
-
 
 #----------------------------------------
 # Integration settings
@@ -58,6 +56,11 @@ config:
     client-id: client-id
     client-secret: client-secret
     token-url: token-url
+  employee:
+    base-url: http://localhost:8080
+    client-id: client-id
+    client-secret: client-secret
+    token-url: token-url
 
 #----------------------------------------
 # Scheduler settings
@@ -66,4 +69,8 @@ scheduler:
   message-collector:
     enabled: false
   emailreader:
+    enabled: false
+  suspension:
+    enabled: false
+  notification:
     enabled: false

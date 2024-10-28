@@ -12,7 +12,6 @@ spring:
   flyway:
     enabled: true
   jpa:
-    database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
       ddl-auto: validate
   security:
@@ -27,6 +26,8 @@ spring:
             token-uri: ${config.email-reader.token-url}
           web-message-collector:
             token-uri: ${config.web-message-collector.token-url}
+          employee:
+            token-uri: ${config.employee.token-url}
         registration:
           parkingpermit:
             authorization-grant-type: client_credentials
@@ -48,6 +49,11 @@ spring:
             provider: web-message-collector
             client-id: ${config.web-message-collector.client-id}
             client-secret: ${config.web-message-collector.client-secret}
+          employee:
+            authorization-grant-type: client_credentials
+            provider: employee
+            client-id: ${config.employee.client-id}
+            client-secret: ${config.employee.client-secret}
 
 #----------------------------------------
 # Open API
@@ -56,7 +62,7 @@ openapi:
   name: ${spring.application.name}
   title: ${spring.application.name}
   version: '@project.version@'
-  
+
 springdoc:
   swagger-ui:
     operationsSorter: alpha
@@ -83,7 +89,11 @@ integration:
     readTimeout: 30
     municipality-id: ${config.email-reader.municipality-id}
     namespace: ${config.email-reader.namespace}
-
+  employee:
+    base-url: ${config.employee.base-url}
+    connectTimeout: 5
+    readTimeout: 20
+    
 #----------------------------------------
 # Circuit breakers
 #----------------------------------------
@@ -140,6 +150,12 @@ scheduler:
     initialDelay: PT10M
     shedlock-lock-at-most-for: PT10M
   emailreader:
-    fixedRate: PT10M
-    initialDelay: PT10M
+    fixedRate: PT1S
+    initialDelay: PT1S
+    shedlock-lock-at-most-for: PT10M
+  suspension:
+    cron: 0 */15 * * * *
+    shedlock-lock-at-most-for: PT10M
+  notification:
+    cron: 0 0 0 * * *
     shedlock-lock-at-most-for: PT10M

@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
+import se.sundsvall.casedata.api.model.validation.impl.ValidMapValueSizeValidator;
+
 @Constraint(validatedBy = ValidMapValueSizeValidator.class)
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

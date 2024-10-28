@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.zalando.problem.AbstractThrowableProblem;
 import org.zalando.problem.Problem;
 
-import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 
@@ -17,7 +17,9 @@ import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 public class ParkingPermitIntegration {
 
 	private static final String COULD_NOT_START_PROCESS = "Could not start process for errand with casetype: %s and errandId: %s, with error: %s";
+
 	private static final String COULD_NOT_UPDATE_PROCESS = "Could not update process for errand with casetype: %s and processId: %s, with error: %s";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ParkingPermitIntegration.class);
 
 	private final ParkingPermitClient parkingPermitClient;
@@ -26,7 +28,7 @@ public class ParkingPermitIntegration {
 		this.parkingPermitClient = parkingPermitClient;
 	}
 
-	public StartProcessResponse startProcess(final Errand errand) {
+	public StartProcessResponse startProcess(final ErrandEntity errand) {
 		try {
 			return parkingPermitClient.startProcess(errand.getMunicipalityId(), errand.getId());
 		} catch (final AbstractThrowableProblem e) {
@@ -35,7 +37,7 @@ public class ParkingPermitIntegration {
 		}
 	}
 
-	public void updateProcess(final Errand errand) {
+	public void updateProcess(final ErrandEntity errand) {
 		try {
 			parkingPermitClient.updateProcess(errand.getMunicipalityId(), errand.getProcessId());
 		} catch (final AbstractThrowableProblem e) {
@@ -43,4 +45,5 @@ public class ParkingPermitIntegration {
 			throw Problem.valueOf(SERVICE_UNAVAILABLE, PROCESS_ENGINE_PROBLEM_DETAIL);
 		}
 	}
+
 }

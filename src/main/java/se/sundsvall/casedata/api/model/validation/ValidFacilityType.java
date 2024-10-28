@@ -13,6 +13,7 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
+import se.sundsvall.casedata.api.model.validation.impl.ValidFacilityTypeConstraintValidator;
 
 
 /**

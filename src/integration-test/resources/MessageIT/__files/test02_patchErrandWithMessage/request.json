@@ -1,9 +1,9 @@
 {
-  "messageID": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
+  "messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
   "errandNumber": "ERRAND-NUMBER-2",
   "direction": "INBOUND",
-  "familyID": "123",
-  "externalCaseID": "321",
+  "familyId": "123",
+  "externalCaseId": "321",
   "message": "Message-POST",
   "sent": "2024-01-02T12:00:00.000000",
   "subject": "Subject",
@@ -13,12 +13,12 @@
   "messageType": "EMAIL",
   "mobileNumber": "0701234567",
   "email": "johndoe@email.com",
-  "userID": "userid",
+  "userId": "userId",
   "viewed": false,
   "attachments": [
     {
-      "attachmentid": "c1883fb9-60b4-4f38-9f48-642070ff49ee",
-      "messageid": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
+      "attachmentId": "c1883fb9-60b4-4f38-9f48-642070ff49ee",
+      "messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
       "name": "this-is-an-attachment",
       "content_type": "application/pdf",
       "message_attachment_data_id": 1

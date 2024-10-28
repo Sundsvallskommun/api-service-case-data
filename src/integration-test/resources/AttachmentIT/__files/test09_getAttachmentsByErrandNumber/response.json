@@ -2,6 +2,8 @@
   {
     "id": 2,
     "version": 1,
+    "municipalityId": "2281",
+    "namespace": "my.namespace",
     "created": "2022-12-02T15:13:45.363+01:00",
     "updated": "2022-12-02T15:15:01.563+01:00",
     "category": "PASSPORT_PHOTO",
@@ -16,6 +18,8 @@
   {
     "id": 3,
     "version": 1,
+    "municipalityId": "2281",
+    "namespace": "my.namespace",
     "created": "2022-12-02T15:13:45.363+01:00",
     "updated": "2022-12-02T15:15:01.563+01:00",
     "category": "POLICE_REPORT",
@@ -30,6 +34,8 @@
   {
     "id": 4,
     "version": 1,
+    "municipalityId": "2281",
+    "namespace": "my.namespace",
     "created": "2022-12-02T15:13:45.363+01:00",
     "updated": "2022-12-02T15:15:01.563+01:00",
     "category": "ANSUPA",
