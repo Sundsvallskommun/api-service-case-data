@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.api.model.enums;
 
 import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ANDRING_AVLOPPSANLAGGNING;
@@ -11,6 +12,7 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_INSTALLATION_VARMEPUMP;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANSOKAN_TILLSTAND_VARMEPUMP;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.APPEAL;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.LOST_PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_APPLICATION_FOR_ROAD_ALLOWANCE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_APPLICATION_SQUARE_PLACE;
@@ -35,8 +37,6 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.NYBYGGNA
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.REGISTRERING_AV_LIVSMEDEL;
-
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 class CaseTypeTest {
 
@@ -74,7 +74,8 @@ class CaseTypeTest {
 			MEX_REQUEST_FOR_PUBLIC_DOCUMENT,
 			MEX_TERMINATION_OF_LEASE,
 			MEX_TERMINATION_OF_HUNTING_LEASE,
-			MEX_FORWARDED_FROM_CONTACTSUNDSVALL);
+			MEX_FORWARDED_FROM_CONTACTSUNDSVALL,
+			APPEAL);
 	}
 
 	@Test
@@ -125,6 +126,10 @@ class CaseTypeTest {
 		assertThat(MEX_FORWARDED_FROM_CONTACTSUNDSVALL).hasToString("MEX_FORWARDED_FROM_CONTACTSUNDSVALL");
 	}
 
+	@Test
+	void enumToStringAppeal() {
+		assertThat(APPEAL).hasToString("APPEAL");
+	}
 
 	@Test
 	void getValuesByAbbreviation() {
@@ -164,6 +169,7 @@ class CaseTypeTest {
 			MEX_TERMINATION_OF_LEASE,
 			MEX_TERMINATION_OF_HUNTING_LEASE,
 			MEX_FORWARDED_FROM_CONTACTSUNDSVALL);
+		assertThat(CaseType.getValuesByAbbreviation("O")).containsExactlyInAnyOrder(APPEAL);
 	}
 
 	@Test

@@ -7,7 +7,11 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "9.0"
 servers:
+<<<<<<< HEAD
   - url: http://localhost:61719
+=======
+  - url: http://localhost:56252
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
     description: Generated server url
 tags:
   - name: MessageAttachments
@@ -790,6 +794,15 @@ paths:
           content:
             application/problem+json:
               schema:
+<<<<<<< HEAD
+=======
+                type: string
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
                 $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}:
     get:
@@ -1619,6 +1632,15 @@ paths:
           content:
             application/problem+json:
               schema:
+<<<<<<< HEAD
+=======
+                type: string
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
@@ -1665,14 +1687,22 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "204":
           description: Successful operation
+=======
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "204":
+          description: Successful operation
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
   /{municipalityId}/{namespace}/errands:
     get:
       tags:
@@ -1810,6 +1840,15 @@ paths:
           content:
             application/problem+json:
               schema:
+<<<<<<< HEAD
+=======
+                type: string
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
                 $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/messages:
     post:
@@ -2140,18 +2179,30 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
         "201":
           description: Created - Successful operation
           headers:
             Location:
               description: Location of the created resource
               style: simple
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
   /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}:
     get:
       tags:
@@ -2831,12 +2882,15 @@ paths:
             type: string
           example: 123e4567-e89b-12d3-a456-426614174000
       responses:
+<<<<<<< HEAD
         "200":
           description: Successful operation
           content:
             '*/*':
               schema:
                 $ref: "#/components/schemas/Notification"
+=======
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
         "500":
           description: Internal Server error
           content:
@@ -2851,6 +2905,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
+=======
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Notification"
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
         "404":
           description: Not found
           content:
@@ -2901,14 +2964,22 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "204":
           description: Successful operation
+=======
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "204":
+          description: Successful operation
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
   /{municipalityId}/{namespace}/messages/{errandNumber}:
     get:
       tags:
@@ -3130,14 +3201,8 @@ paths:
           schema:
             type: string
       responses:
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
+=======
         "500":
           description: Internal Server Error
           content:
@@ -3150,6 +3215,30 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
         "200":
           description: OK - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/history:
@@ -4852,6 +4941,7 @@ components:
             - MEX_TERMINATION_OF_LEASE
             - MEX_TERMINATION_OF_HUNTING_LEASE
             - MEX_FORWARDED_FROM_CONTACTSUNDSVALL
+            - APPEAL
         priority:
           type: string
           description: The priority of the case
