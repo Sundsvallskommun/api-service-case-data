@@ -1,23 +1,5 @@
 # API-Changelog: api-service-case-data version 9.0
 
-## Jira issues referenced
-
-- [Link to UF-6172](https://jira.sundsvall.se/browse/UF-6172)
-- [Link to UF-9209](https://jira.sundsvall.se/browse/UF-9209)
-- [Link to UF-10275](https://jira.sundsvall.se/browse/UF-10275)
-- [Link to UF-10287](https://jira.sundsvall.se/browse/UF-10287)
-- [Link to UF-10324](https://jira.sundsvall.se/browse/UF-10324)
-- [Link to UF-10373](https://jira.sundsvall.se/browse/UF-10373)
-- [Link to UF-10374](https://jira.sundsvall.se/browse/UF-10374)
-- [Link to UF-10375](https://jira.sundsvall.se/browse/UF-10375)
-- [Link to UF-10377](https://jira.sundsvall.se/browse/UF-10377)
-- [Link to UF-10389](https://jira.sundsvall.se/browse/UF-10389)
-- [Link to UF-10397](https://jira.sundsvall.se/browse/UF-10397)
-- [Link to UF-10398](https://jira.sundsvall.se/browse/UF-10398)
-- [Link to UF-10440](https://jira.sundsvall.se/browse/UF-10440)
-- [Link to UF-10464](https://jira.sundsvall.se/browse/UF-10464)
-- [Link to UF-10477](https://jira.sundsvall.se/browse/UF-10477)
-
 ## API-endpoints
 
 ### Appeals:
