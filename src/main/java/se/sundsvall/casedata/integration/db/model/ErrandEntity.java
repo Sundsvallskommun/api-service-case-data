@@ -1,19 +1,6 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.javers.core.metamodel.annotation.DiffIgnore;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -40,9 +27,20 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.javers.core.metamodel.annotation.DiffIgnore;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 @Entity
 @Table(name = "errand",
@@ -144,10 +142,6 @@ public class ErrandEntity {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
 	@JsonManagedReference
-	private List<AppealEntity> appeals;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
-	@JsonManagedReference
 	private List<NoteEntity> notes;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
@@ -198,14 +192,39 @@ public class ErrandEntity {
 
 	@Override
 	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("ErrandEntity [id=").append(id).append(", version=").append(version).append(", errandNumber=").append(errandNumber).append(", municipalityId=").append(municipalityId).append(", namespace=").append(namespace).append(
-			", externalCaseId=").append(externalCaseId).append(", caseType=").append(caseType).append(", channel=").append(channel).append(", priority=").append(priority).append(", description=").append(description).append(", caseTitleAddition=").append(
-				caseTitleAddition).append(", diaryNumber=").append(diaryNumber).append(", phase=").append(phase).append(", statuses=").append(statuses).append(", startDate=").append(startDate).append(", endDate=").append(endDate).append(
-					", applicationReceived=").append(applicationReceived).append(", processId=").append(processId).append(", stakeholders=").append(stakeholders).append(", facilities=").append(facilities).append(", decisions=").append(decisions).append(
-						", appeals=").append(appeals).append(", notes=").append(notes).append(", notifications=").append(notifications).append(", createdByClient=").append(createdByClient).append(", updatedByClient=").append(updatedByClient).append(
-							", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append(", created=").append(created).append(", updated=").append(updated).append(", suspendedTo=").append(suspendedTo).append(", suspendedFrom=").append(
-								suspendedFrom).append(", extraParameters=").append(extraParameters).append("]");
-		return builder.toString();
+		return "ErrandEntity{" + "id=" + id
+			+ ", version=" + version
+			+ ", errandNumber='" + errandNumber + '\''
+			+ ", municipalityId='" + municipalityId + '\''
+			+ ", namespace='" + namespace + '\''
+			+ ", externalCaseId='" + externalCaseId + '\''
+			+ ", caseType='" + caseType + '\''
+			+ ", channel=" + channel
+			+ ", priority=" + priority
+			+ ", description='" + description + '\''
+			+ ", caseTitleAddition='" + caseTitleAddition + '\''
+			+ ", diaryNumber='" + diaryNumber + '\''
+			+ ", phase='" + phase + '\''
+			+ ", statuses=" + statuses
+			+ ", startDate=" + startDate
+			+ ", endDate=" + endDate
+			+ ", applicationReceived=" + applicationReceived
+			+ ", processId='" + processId + '\''
+			+ ", stakeholders=" + stakeholders
+			+ ", facilities=" + facilities
+			+ ", decisions=" + decisions
+			+ ", notes=" + notes
+			+ ", notifications=" + notifications
+			+ ", createdByClient='" + createdByClient + '\''
+			+ ", updatedByClient='" + updatedByClient + '\''
+			+ ", createdBy='" + createdBy + '\''
+			+ ", updatedBy='" + updatedBy + '\''
+			+ ", created=" + created
+			+ ", updated=" + updated
+			+ ", suspendedTo=" + suspendedTo
+			+ ", suspendedFrom=" + suspendedFrom
+			+ ", extraParameters=" + extraParameters
+			+ '}';
 	}
+
 }

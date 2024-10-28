@@ -1,42 +1,41 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import generated.se.sundsvall.employee.PortalPersonData;
-import se.sundsvall.casedata.api.model.Attachment;
-import se.sundsvall.casedata.api.model.Facility;
-import se.sundsvall.casedata.api.model.Note;
-import se.sundsvall.casedata.api.model.PatchAppeal;
-import se.sundsvall.casedata.api.model.PatchDecision;
-import se.sundsvall.casedata.api.model.PatchErrand;
-import se.sundsvall.casedata.api.model.PatchNotification;
-import se.sundsvall.casedata.api.model.Stakeholder;
-import se.sundsvall.casedata.integration.db.model.AppealEntity;
-import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
-import se.sundsvall.casedata.integration.db.model.DecisionEntity;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.integration.db.model.FacilityEntity;
-import se.sundsvall.casedata.integration.db.model.NoteEntity;
-import se.sundsvall.casedata.integration.db.model.NotificationEntity;
-import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
-import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
-import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+import generated.se.sundsvall.employee.PortalPersonData;
+import se.sundsvall.casedata.api.model.Attachment;
+import se.sundsvall.casedata.api.model.Facility;
+import se.sundsvall.casedata.api.model.Note;
+import se.sundsvall.casedata.api.model.PatchDecision;
+import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.api.model.PatchNotification;
+import se.sundsvall.casedata.api.model.Stakeholder;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
+import se.sundsvall.casedata.integration.db.model.DecisionEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
+import se.sundsvall.casedata.integration.db.model.FacilityEntity;
+import se.sundsvall.casedata.integration.db.model.NoteEntity;
+import se.sundsvall.casedata.integration.db.model.NotificationEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 
 public final class PatchMapper {
 
 	private PatchMapper() {}
 
 	public static ErrandEntity patchErrand(final ErrandEntity errand, final PatchErrand patch) {
-		ofNullable(errand.getExtraParameters()).ifPresentOrElse(List::clear, () -> errand.setExtraParameters(new ArrayList<>()));
-		errand.getExtraParameters().addAll(toErrandParameterEntityList(patch.getExtraParameters(), errand));
 
+		// ExtraParameters are not patched, they are posted for whatever reason.
+		Optional.ofNullable(patch.getExtraParameters()).ifPresent(extraParams -> {
+			final List<ExtraParameterEntity> newExtraParams = toErrandParameterEntityList(extraParams, errand);
+			errand.getExtraParameters().addAll(newExtraParams);
+		});
 		Optional.ofNullable(patch.getCaseType()).ifPresent(caseType -> errand.setCaseType(caseType.name()));
 		Optional.ofNullable(patch.getExternalCaseId()).ifPresent(errand::setExternalCaseId);
 		Optional.ofNullable(patch.getPriority()).ifPresent(errand::setPriority);
@@ -67,13 +66,6 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getValidFrom()).ifPresent(decision::setValidFrom);
 		Optional.ofNullable(patch.getValidTo()).ifPresent(decision::setValidTo);
 		return decision;
-	}
-
-	public static AppealEntity patchAppeal(final AppealEntity appealEntity, final PatchAppeal patch) {
-		Optional.ofNullable(patch.getDescription()).ifPresent(appealEntity::setDescription);
-		Optional.ofNullable(patch.getStatus()).ifPresent(status -> appealEntity.setStatus(AppealStatus.valueOf(patch.getStatus())));
-		Optional.ofNullable(patch.getTimelinessReview()).ifPresent(timeLinesReview -> appealEntity.setTimelinessReview(TimelinessReview.valueOf(patch.getTimelinessReview())));
-		return appealEntity;
 	}
 
 	public static StakeholderEntity patchStakeholder(final StakeholderEntity stakeholder, final Stakeholder patch) {

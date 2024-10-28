@@ -1,23 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import generated.se.sundsvall.employee.PortalPersonData;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.api.model.Errand;
-import se.sundsvall.casedata.api.model.Stakeholder;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
-import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-import se.sundsvall.casedata.integration.db.model.enums.ContactType;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
-import java.util.List;
-
 import static java.time.OffsetDateTime.now;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,6 +55,25 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakehol
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatusEntity;
 
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import generated.se.sundsvall.employee.PortalPersonData;
+import se.sundsvall.casedata.TestUtil;
+import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.Stakeholder;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
+import se.sundsvall.casedata.integration.db.model.enums.ContactType;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
 @ExtendWith(MockitoExtension.class)
 class EntityMapperTest {
 
@@ -94,7 +95,7 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void toErrandEntityWithNullValuesTest(){
+	void toErrandEntityWithNullValuesTest() {
 
 		// Arrange
 		final var errand = Errand.builder().build();
@@ -123,7 +124,6 @@ class EntityMapperTest {
 		assertThat(entity.getStakeholders()).isEmpty();
 		assertThat(entity.getFacilities()).isEmpty();
 		assertThat(entity.getDecisions()).isEmpty();
-		assertThat(entity.getAppeals()).isEmpty();
 		assertThat(entity.getNotes()).isEmpty();
 		assertThat(entity.getSuspendedFrom()).isNull();
 		assertThat(entity.getSuspendedTo()).isNull();
@@ -153,7 +153,7 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void toErrandWithNullValuesTest(){
+	void toErrandWithNullValuesTest() {
 
 		// Arrange
 		final var entity = ErrandEntity.builder().withId(1L).build();
@@ -179,7 +179,6 @@ class EntityMapperTest {
 		assertThat(dto.getStakeholders()).isEmpty();
 		assertThat(dto.getFacilities()).isEmpty();
 		assertThat(dto.getDecisions()).isEmpty();
-		assertThat(dto.getAppeals()).isEmpty();
 		assertThat(dto.getNotes()).isEmpty();
 		assertThat(dto.getSuspension().getSuspendedFrom()).isNull();
 		assertThat(dto.getSuspension().getSuspendedTo()).isNull();
@@ -323,7 +322,7 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void toStakeholderEntityWitNullValueTest(){
+	void toStakeholderEntityWitNullValueTest() {
 
 		// Arrange
 		final var stakeholder = Stakeholder.builder().build();
@@ -374,7 +373,7 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void toStakeholderWithNullValuesTest(){
+	void toStakeholderWithNullValuesTest() {
 
 		// Arrange
 		final var entity = StakeholderEntity.builder().withId(1L).build();

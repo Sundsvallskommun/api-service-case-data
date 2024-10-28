@@ -243,21 +243,6 @@
       }
     }
   ],
-  "appeals": [
-    {
-      "id": 1,
-      "version": 0,
-      "municipalityId": "2281",
-      "namespace": "SBK_PARKINGPERMIT",
-      "created": "${json-unit.any-string}",
-      "updated": "${json-unit.any-string}",
-      "description": "Appeal description",
-      "registeredAt": "2010-01-15T10:04:04.337+01:00",
-      "appealConcernCommunicatedAt": "2009-02-19T10:04:04.337+01:00",
-      "status": "COMPLETED",
-      "timelinessReview": "NOT_RELEVANT"
-    }
-  ],
   "notes": [
     {
       "id": 1,

@@ -1,4 +1,51 @@
-# API-Changelog: api-service-case-data version 9.0
+# API-Changelog: version 10.0
+
+## API-endpoints
+
+### Appeals:
+
+#### New endpoints:
+
+#### Removed endpoints:
+
+      - [GET] /{municipalityId}/{namespace}/errands/{errandId}/appeals
+      - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/appeals
+      - [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
+      - [GET] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
+      - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
+      - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
+
+## API-Model updates
+
+- **Errand**
+    - **Removed Fields:**
+        - appeals: ``List<Appeal>``
+
+- **ValidAppealStatusConstraintValidator** *(Removed)*
+- **Appeal** *(Removed)*
+    - **Fields:**
+        - appealConcernCommunicatedAt: `OffsetDateTime`
+        - created: `OffsetDateTime`
+        - decisionId: `Long`
+        - description: `String`
+        - id: `Long`
+        - municipalityId: `String`
+        - namespace: `String`
+        - registeredAt: `OffsetDateTime`
+        - status: `String`
+        - timelinessReview: `String`
+        - updated: `OffsetDateTime`
+        - version: `int`
+
+- **PatchAppeal** *(Removed)*
+    - **Fields:**
+        - description: `String`
+        - status: `String`
+        - timelinessReview: `String`
+
+---
+
+# API-Changelog: version 9.0
 
 ## API-endpoints
 
@@ -13,6 +60,7 @@
       - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
       - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
 
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 #### Removed endpoints:
 
       - [GET] /{municipalityId}/appeals/{appealId}

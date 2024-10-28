@@ -1,22 +1,18 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
-import se.sundsvall.casedata.api.model.Appeal;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.api.model.Stakeholder;
-import se.sundsvall.casedata.integration.db.model.AppealEntity;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.DecisionEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
-import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
-import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
+
+import java.util.ArrayList;
+import java.util.Optional;
 
 public final class PutMapper {
 
@@ -69,16 +65,6 @@ public final class PutMapper {
 			newDecision.getAttachments().forEach(attachment -> oldDecision.getAttachments().add(EntityMapper.toAttachmentEntity(attachment, oldDecision.getMunicipalityId(), oldDecision.getNamespace())));
 		});
 		return oldDecision;
-	}
-
-	public static AppealEntity putAppeal(final AppealEntity oldAppealEntity, final Appeal appeal) {
-		Optional.ofNullable(appeal).ifPresent(newAppeal -> {
-			oldAppealEntity.setDescription(appeal.getDescription());
-			oldAppealEntity.setStatus(AppealStatus.valueOf(appeal.getStatus()));
-			oldAppealEntity.setTimelinessReview(TimelinessReview.valueOf(appeal.getTimelinessReview()));
-			oldAppealEntity.setAppealConcernCommunicatedAt(appeal.getAppealConcernCommunicatedAt());
-		});
-		return oldAppealEntity;
 	}
 
 	public static NoteEntity putNote(final NoteEntity oldNoteEntity, final Note note) {

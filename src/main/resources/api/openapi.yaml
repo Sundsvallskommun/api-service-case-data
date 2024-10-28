@@ -5,41 +5,43 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "9.0"
+  version: "10.0"
 servers:
+<<<<<<< HEAD
 <<<<<<< HEAD
   - url: http://localhost:61719
 =======
   - url: http://localhost:56252
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
+=======
+  - url: http://localhost:54946
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
     description: Generated server url
 tags:
   - name: MessageAttachments
     description: MessageAttachment operations
-  - name: Appeals
-    description: Appeal operations
-  - name: Status
-    description: Errand Status operations
-  - name: History
-    description: History operations
-  - name: Parking permit
-    description: Parking permit operations
-  - name: Facilities
-    description: Errand facilities operations
   - name: Notes
     description: Note operations
   - name: Messages
     description: Message operations
   - name: Notifications
     description: User notifications operations
+  - name: Status
+    description: Errand Status operations
+  - name: History
+    description: History operations
   - name: Decisions
     description: Decision operations
   - name: Stakeholders
     description: Stakeholder operations
   - name: Errands
     description: Errand operations
+  - name: Parking permit
+    description: Parking permit operations
   - name: Attachments
     description: Attachment operations
+  - name: Facilities
+    description: Errand facilities operations
 paths:
   /{municipalityId}/{namespace}/errands/{errandId}/statuses:
     put:
@@ -82,6 +84,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -90,12 +101,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
     patch:
@@ -136,6 +150,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -144,12 +167,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/stakeholders:
@@ -186,6 +212,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -257,6 +292,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -265,12 +309,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
     patch:
@@ -313,6 +360,15 @@ paths:
               style: simple
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -366,6 +422,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -437,6 +502,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -445,12 +519,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
     delete:
@@ -491,6 +568,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -499,12 +585,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
     patch:
@@ -551,6 +640,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -559,12 +657,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}/viewed/{isViewed}:
@@ -649,6 +750,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -720,6 +830,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -728,12 +847,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
     post:
@@ -774,6 +896,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "201":
           description: Created - Successful operation
           headers:
@@ -789,6 +920,7 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
@@ -804,6 +936,8 @@ paths:
               schema:
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
   /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}:
     get:
       tags:
@@ -839,6 +973,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -910,6 +1053,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -918,12 +1070,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
     delete:
@@ -964,6 +1119,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -972,12 +1136,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
     patch:
@@ -1024,6 +1191,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -1032,12 +1208,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}:
@@ -1075,6 +1254,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -1146,6 +1334,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -1154,12 +1351,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
     delete:
@@ -1200,6 +1400,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -1208,12 +1417,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
     patch:
@@ -1260,6 +1472,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -1268,6 +1489,7 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
@@ -1510,6 +1732,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
   /{municipalityId}/{namespace}/notifications:
@@ -1546,6 +1770,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -1612,6 +1845,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "201":
           description: Created - Successful operation
           headers:
@@ -1627,6 +1869,7 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
@@ -1642,6 +1885,8 @@ paths:
               schema:
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
     patch:
       tags:
         - Notifications
@@ -1675,6 +1920,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -1687,6 +1941,7 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "204":
           description: Successful operation
@@ -1703,6 +1958,10 @@ paths:
         "204":
           description: Successful operation
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
+=======
+        "204":
+          description: Successful operation
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
   /{municipalityId}/{namespace}/errands:
     get:
       tags:
@@ -1760,6 +2019,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -1820,6 +2088,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "201":
           description: Created - Successful operation
           headers:
@@ -1835,6 +2112,7 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
@@ -1850,6 +2128,8 @@ paths:
               schema:
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
   /{municipalityId}/{namespace}/errands/{errandId}/messages:
     post:
       tags:
@@ -1940,6 +2220,15 @@ paths:
               style: simple
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -1987,6 +2276,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -2052,6 +2350,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -2060,12 +2367,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/notes:
@@ -2102,6 +2412,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -2167,6 +2486,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -2180,6 +2508,7 @@ paths:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
@@ -2188,12 +2517,15 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "201":
           description: Created - Successful operation
           headers:
             Location:
               description: Location of the created resource
               style: simple
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -2203,6 +2535,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
   /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}:
     get:
       tags:
@@ -2238,6 +2572,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -2303,6 +2646,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -2311,12 +2663,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
     patch:
@@ -2363,6 +2718,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -2371,12 +2735,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}:
@@ -2414,6 +2781,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -2479,6 +2855,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -2487,12 +2872,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
     patch:
@@ -2539,6 +2927,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -2547,12 +2944,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "204":
           description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/decisions:
@@ -2584,6 +2984,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -2659,6 +3068,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "400":
           description: Bad request
           content:
@@ -2667,12 +3077,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
   /{municipalityId}/{namespace}/errands/{errandId}/appeals:
     get:
       tags:
@@ -2777,6 +3190,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad request
           content:
@@ -2820,6 +3235,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -2883,6 +3307,7 @@ paths:
           example: 123e4567-e89b-12d3-a456-426614174000
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "200":
           description: Successful operation
           content:
@@ -2891,12 +3316,26 @@ paths:
                 $ref: "#/components/schemas/Notification"
 =======
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Notification"
         "400":
           description: Bad request
           content:
@@ -2952,6 +3391,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -2964,6 +3412,7 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "204":
           description: Successful operation
@@ -2980,6 +3429,10 @@ paths:
         "204":
           description: Successful operation
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
+=======
+        "204":
+          description: Successful operation
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
   /{municipalityId}/{namespace}/messages/{errandNumber}:
     get:
       tags:
@@ -3068,6 +3521,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -3134,6 +3596,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -3202,6 +3673,7 @@ paths:
             type: string
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server Error
@@ -3216,6 +3688,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "400":
           description: Bad Request
           content:
@@ -3237,8 +3711,11 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 =======
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
+=======
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
         "200":
           description: OK - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/history:
@@ -3270,6 +3747,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -3336,6 +3822,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -3402,6 +3897,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -3468,6 +3972,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -3527,6 +4040,15 @@ paths:
       responses:
         "500":
           description: Internal Server error
+<<<<<<< HEAD
+=======
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+>>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
           content:
             application/problem+json:
               schema:
@@ -4290,74 +4812,6 @@ components:
           description: Article of the law
           example: "1"
       description: List of laws related to the decision
-    Appeal:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: The id of the appeal
-          format: int64
-          readOnly: true
-          example: 1
-        version:
-          type: integer
-          description: The version of the appeal.
-          format: int32
-          readOnly: true
-          example: 1
-        municipalityId:
-          type: string
-          description: The municipality ID
-          readOnly: true
-          example: "2281"
-        namespace:
-          type: string
-          description: Namespace
-          readOnly: true
-          example: my.namespace
-        description:
-          maxLength: 100000
-          minLength: 0
-          type: string
-          description: Description of the appeal
-          example: Some description of the appeal.
-        registeredAt:
-          type: string
-          description: "The date when this appeal was first registered (timestamp\
-            \ from e-service, mail or letter)"
-          format: date-time
-        appealConcernCommunicatedAt:
-          type: string
-          description: The date when the decision or corresponding that this appeal
-            concerns was sent out
-          format: date-time
-        status:
-          type: string
-          description: "Current status for this appeal. Values [NEW, REJECTED, SENT_TO_COURT,\
-            \ COMPLETED]"
-          default: NEW
-        timelinessReview:
-          type: string
-          description: "Status of whether measures have been taken within statutory\
-            \ time limits. Values: [NOT_CONDUCTED, NOT_RELEVANT, APPROVED, REJECTED]"
-          default: NOT_CONDUCTED
-        decisionId:
-          type: integer
-          description: Id for decision that is appealed
-          format: int64
-          nullable: true
-        created:
-          type: string
-          description: The date when this appeal was created
-          format: date-time
-          readOnly: true
-          example: 2023-10-01T12:00:00Z
-        updated:
-          type: string
-          description: The date when this appeal was last updated
-          format: date-time
-          readOnly: true
-          example: 2023-10-02T12:00:00Z
     Notification:
       required:
         - description
@@ -4567,11 +5021,6 @@ components:
           description: The decisions connected to the errand
           items:
             $ref: "#/components/schemas/Decision"
-        appeals:
-          type: array
-          description: The appeals connected to the errand
-          items:
-            $ref: "#/components/schemas/Appeal"
         notes:
           type: array
           description: The notes connected to the errand
@@ -5053,25 +5502,6 @@ components:
           example:
             key1: value1
             key2: value2
-    PatchAppeal:
-      type: object
-      properties:
-        description:
-          maxLength: 100000
-          minLength: 0
-          type: string
-          description: Description of the appeal
-          example: The decision is not correct
-        status:
-          type: string
-          description: "Current status for this appeal. Values [NEW, REJECTED, SENT_TO_COURT,\
-            \ COMPLETED]"
-          default: NEW
-        timelinessReview:
-          type: string
-          description: "Status of whether measures have been taken within statutory\
-            \ time limits. Values: [NOT_CONDUCTED, NOT_RELEVANT, APPROVED, REJECTED]"
-          default: NOT_CONDUCTED
     GetParkingPermit:
       type: object
       properties:

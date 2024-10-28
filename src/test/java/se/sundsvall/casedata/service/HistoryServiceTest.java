@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -236,7 +235,6 @@ class HistoryServiceTest {
 	void testFindNoteHistoryOnErrandNothingFound() {
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
 		when(noteRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
-
 
 		// Act & Assert
 		assertThatThrownBy(() -> historyService.findNoteHistoryOnErrand(1L, 1L, MUNICIPALITY_ID, NAMESPACE))
