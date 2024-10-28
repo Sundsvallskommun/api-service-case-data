@@ -1,5 +1,25 @@
 package se.sundsvall.casedata.integration.db;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
+import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
+import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
+import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.NoteEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+
 import static java.time.OffsetDateTime.now;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -12,34 +32,13 @@ import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.integration.db.model.enums.NoteType.INTERNAL;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
-
-import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
-import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
-import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.integration.db.model.NoteEntity;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
 /**
  * ErrandRepository tests.
  *
  * @see <a href="/src/test/resources/db/testdata-junit.sql">/src/test/resources/db/testdata-junit.sql</a> for data setup.
  */
 @DataJpaTest
-@Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
+@Import(value = { JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class })
 @Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
@@ -195,6 +194,7 @@ class ErrandRepositoryTest {
 		final var errandNumber = "errandNumber-123";
 		final var noteText = "noteText";
 		final var noteType = INTERNAL;
+		final var namespace = "SBK_PARKINGPERMIT";
 
 		final var entity = ErrandEntity.builder()
 			.withCaseTitleAddition(caseTitleAddition)
@@ -202,6 +202,8 @@ class ErrandRepositoryTest {
 			.withCreatedByClient(createdBy)
 			.withDescription(description)
 			.withErrandNumber(errandNumber)
+			.withNamespace(namespace)
+			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNotes(List.of(NoteEntity.builder().withText(noteText).withNoteType(noteType).build()))
 			.build();
 
