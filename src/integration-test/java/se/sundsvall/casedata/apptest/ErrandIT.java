@@ -162,7 +162,6 @@ class ErrandIT extends AbstractAppTest {
 		assertThat(getErrand.getNotes()).isEmpty();
 		assertThat(getErrand.getFacilities()).isEmpty();
 		assertThat(getErrand.getDecisions()).isEmpty();
-		assertThat(getErrand.getAppeals()).isEmpty();
 	}
 
 	@ParameterizedTest

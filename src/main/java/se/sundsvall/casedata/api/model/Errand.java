@@ -104,10 +104,6 @@ public class Errand {
 	@Valid
 	private List<Decision> decisions;
 
-	@Schema(description = "The appeals connected to the errand")
-	@Valid
-	private List<Appeal> appeals;
-
 	@Schema(description = "The notes connected to the errand")
 	@Valid
 	private List<Note> notes;

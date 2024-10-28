@@ -206,16 +206,6 @@
       }
     }
   ],
-  "appeals": [
-    {
-      "description": "Appeal description",
-      "registeredAt": "2010-01-15T10:04:04.337+01:00",
-      "appealConcernCommunicatedAt": "2009-02-19T10:04:04.337+01:00",
-      "status": "COMPLETED",
-      "timelinessReview": "NOT_RELEVANT",
-      "decisionId": 123
-    }
-  ],
   "notes": [
     {
       "title": "Test note",
