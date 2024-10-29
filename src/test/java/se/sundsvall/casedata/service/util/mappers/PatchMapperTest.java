@@ -58,6 +58,7 @@ class PatchMapperTest {
 			assertThat(e.getSuspendedFrom()).isEqualTo(patch.getSuspension().getSuspendedFrom());
 			assertThat(e.getSuspendedTo()).isEqualTo(patch.getSuspension().getSuspendedTo());
 			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(facilityDTO -> toFacilityEntity(facilityDTO, MUNICIPALITY_ID, NAMESPACE)).toList());
+			assertThat(e.getRelatesTo()).hasSize(2).containsAll(patch.getRelatesTo().stream().map(EntityMapper::toRelatedErrandEntity).toList());
 		});
 	}
 

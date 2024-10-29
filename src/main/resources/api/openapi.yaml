@@ -10,6 +10,7 @@ servers:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   - url: http://localhost:61719
 =======
   - url: http://localhost:56252
@@ -20,6 +21,9 @@ servers:
 =======
   - url: http://localhost:64784
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+  - url: http://localhost:57634
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     description: Generated server url
 tags:
   - name: MessageAttachments
@@ -83,12 +87,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -100,6 +108,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -110,14 +120,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -131,6 +147,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     patch:
       tags:
         - Status
@@ -164,12 +182,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -181,6 +203,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -191,14 +215,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -212,6 +242,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands/{errandId}/stakeholders:
     get:
       tags:
@@ -245,14 +277,20 @@ paths:
             type: string
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -262,6 +300,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -277,6 +317,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -285,6 +326,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -333,12 +376,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -350,6 +397,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -360,14 +409,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -381,6 +436,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     patch:
       tags:
         - Stakeholders
@@ -414,6 +471,9 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "201":
           description: Created - Successful operation
           headers:
@@ -423,11 +483,15 @@ paths:
         "500":
           description: Internal Server error
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -437,6 +501,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -452,6 +518,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -466,6 +533,8 @@ paths:
               description: Location of the created resource.
               style: simple
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}:
     get:
       tags:
@@ -500,14 +569,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -517,6 +592,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -532,6 +609,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -540,6 +618,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -588,12 +668,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -605,6 +689,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -615,14 +701,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -636,6 +728,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     delete:
       tags:
         - Stakeholders
@@ -669,12 +763,16 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -686,6 +784,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -696,14 +796,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -717,6 +823,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     patch:
       tags:
         - Stakeholders
@@ -756,12 +864,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -773,6 +885,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -783,14 +897,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -804,6 +924,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}/viewed/{isViewed}:
     put:
       tags:
@@ -841,6 +963,12 @@ paths:
           schema:
             type: boolean
       responses:
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -849,12 +977,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/facilities:
@@ -885,14 +1007,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -902,6 +1030,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -917,6 +1047,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -925,6 +1056,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -973,12 +1106,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -990,6 +1127,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -1000,14 +1139,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -1021,6 +1166,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     post:
       tags:
         - Facilities
@@ -1053,6 +1200,12 @@ paths:
               $ref: "#/components/schemas/Facility"
         required: true
       responses:
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -1061,6 +1214,7 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
@@ -1081,6 +1235,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "201":
           description: Created - Successful operation
           headers:
@@ -1088,6 +1244,7 @@ paths:
               style: simple
               schema:
                 type: string
+<<<<<<< HEAD
 <<<<<<< HEAD
         "400":
           description: Bad request
@@ -1098,11 +1255,14 @@ paths:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
                 type: string
@@ -1117,6 +1277,9 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+                $ref: "#/components/schemas/Problem"
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}:
     get:
       tags:
@@ -1151,14 +1314,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -1168,6 +1337,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -1183,6 +1354,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -1191,6 +1363,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -1239,12 +1413,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -1256,6 +1434,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -1266,14 +1446,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -1287,6 +1473,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     delete:
       tags:
         - Decisions
@@ -1320,12 +1508,16 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -1337,6 +1529,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -1347,14 +1541,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -1368,6 +1568,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     patch:
       tags:
         - Decisions
@@ -1407,12 +1609,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -1424,6 +1630,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -1434,14 +1642,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -1455,6 +1669,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}:
     get:
       tags:
@@ -1489,14 +1705,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -1506,6 +1728,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -1521,6 +1745,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -1529,6 +1754,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -1577,12 +1804,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -1594,6 +1825,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -1604,14 +1837,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -1625,6 +1864,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     delete:
       tags:
         - Attachments
@@ -1658,12 +1899,16 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -1675,6 +1920,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -1685,14 +1932,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -1706,6 +1959,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     patch:
       tags:
         - Attachments
@@ -1745,12 +2000,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -1818,6 +2077,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -1826,12 +2087,15 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "200":
           description: OK - Successful operation
@@ -2023,6 +2287,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/notifications:
     get:
       tags:
@@ -2056,14 +2322,20 @@ paths:
           example: AD01
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -2073,6 +2345,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -2088,6 +2362,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -2096,6 +2371,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -2138,6 +2415,12 @@ paths:
               $ref: "#/components/schemas/Notification"
         required: true
       responses:
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -2146,6 +2429,7 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
@@ -2166,6 +2450,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "201":
           description: Created - Successful operation
           headers:
@@ -2173,6 +2459,7 @@ paths:
               style: simple
               schema:
                 type: string
+<<<<<<< HEAD
 <<<<<<< HEAD
         "400":
           description: Bad request
@@ -2183,11 +2470,14 @@ paths:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
                 type: string
@@ -2202,6 +2492,9 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+                $ref: "#/components/schemas/Problem"
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     patch:
       tags:
         - Notifications
@@ -2234,14 +2527,20 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -2251,6 +2550,10 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -2269,6 +2572,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -2295,6 +2599,8 @@ paths:
         "204":
           description: Successful operation
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands:
     get:
       tags:
@@ -2351,14 +2657,20 @@ paths:
               type: string
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -2368,6 +2680,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -2383,6 +2697,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -2391,6 +2706,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -2427,6 +2744,12 @@ paths:
               $ref: "#/components/schemas/Errand"
         required: true
       responses:
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -2435,6 +2758,7 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
         "404":
           description: Not found
           content:
@@ -2455,6 +2779,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "201":
           description: Created - Successful operation
           headers:
@@ -2462,6 +2788,7 @@ paths:
               style: simple
               schema:
                 type: string
+<<<<<<< HEAD
 <<<<<<< HEAD
         "400":
           description: Bad request
@@ -2472,11 +2799,14 @@ paths:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
                 type: string
@@ -2491,6 +2821,9 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+                $ref: "#/components/schemas/Problem"
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands/{errandId}/messages:
     post:
       tags:
@@ -2524,6 +2857,12 @@ paths:
               $ref: "#/components/schemas/MessageRequest"
         required: true
       responses:
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -2532,12 +2871,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/attachments:
@@ -2574,6 +2907,9 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "201":
           description: Created - Successful operation
           headers:
@@ -2583,11 +2919,15 @@ paths:
         "500":
           description: Internal Server error
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -2597,6 +2937,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -2612,6 +2954,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -2626,6 +2969,8 @@ paths:
               description: Location of the created resource.
               style: simple
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands/{errandId}:
     get:
       tags:
@@ -2654,14 +2999,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -2671,6 +3022,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -2686,6 +3039,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -2694,6 +3048,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -2736,12 +3092,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -2753,6 +3113,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -2763,14 +3125,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -2784,6 +3152,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands/{errandId}/notes:
     get:
       tags:
@@ -2817,14 +3187,20 @@ paths:
             $ref: "#/components/schemas/NoteType"
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -2834,6 +3210,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -2849,6 +3227,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -2857,6 +3236,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -2925,7 +3306,16 @@ paths:
             Location:
               description: Location of the created resource
               style: simple
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -2945,6 +3335,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
@@ -2975,6 +3366,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}:
     get:
       tags:
@@ -3009,14 +3402,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -3026,6 +3425,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -3041,6 +3442,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -3049,6 +3451,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -3091,12 +3495,16 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -3108,6 +3516,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -3118,14 +3528,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -3139,6 +3555,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     patch:
       tags:
         - Notes
@@ -3178,12 +3596,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -3195,6 +3617,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -3205,14 +3629,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -3226,6 +3656,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}:
     get:
       tags:
@@ -3260,14 +3692,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -3277,6 +3715,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -3292,6 +3732,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -3300,6 +3741,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -3342,12 +3785,16 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -3359,6 +3806,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -3369,14 +3818,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -3390,6 +3845,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     patch:
       tags:
         - Facilities
@@ -3429,12 +3886,16 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         "404":
@@ -3446,6 +3907,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -3456,14 +3919,20 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: No content - Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -3477,6 +3946,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/errands/{errandId}/decisions:
     get:
       tags:
@@ -3505,14 +3976,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -3522,6 +3999,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -3537,6 +4016,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -3545,6 +4025,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -3591,6 +4073,9 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "201":
           description: Created - Successful operation
           headers:
@@ -3603,6 +4088,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "400":
           description: Bad request
@@ -3656,6 +4142,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -3670,6 +4158,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "200":
           description: OK - Successful operation
@@ -3755,6 +4244,8 @@ paths:
               description: Location of the created resource.
               style: simple
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/parking-permits:
     get:
       tags:
@@ -3783,14 +4274,20 @@ paths:
             type: string
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -3800,6 +4297,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -3815,6 +4314,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -3823,6 +4323,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -3870,12 +4372,16 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: Successful operation
           content:
             '*/*':
               schema:
                 $ref: "#/components/schemas/Notification"
+<<<<<<< HEAD
 =======
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
 =======
@@ -3883,6 +4389,14 @@ paths:
         "500":
           description: Internal Server error
 =======
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -3898,6 +4412,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -3936,6 +4451,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
     delete:
       tags:
         - Notifications
@@ -3967,14 +4484,20 @@ paths:
           example: 123e4567-e89b-12d3-a456-426614174000
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -3984,6 +4507,10 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "204":
+          description: Successful operation
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -4002,6 +4529,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -4028,6 +4556,8 @@ paths:
         "204":
           description: Successful operation
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
   /{municipalityId}/{namespace}/messages/{errandNumber}:
     get:
       tags:
@@ -4054,6 +4584,12 @@ paths:
           schema:
             type: string
       responses:
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -4062,12 +4598,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "200":
           description: OK - Successful operation
           content:
@@ -4115,14 +4645,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -4132,6 +4668,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -4147,6 +4685,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -4155,6 +4694,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -4202,14 +4743,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -4219,6 +4766,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -4234,6 +4783,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -4242,6 +4792,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -4294,6 +4846,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
@@ -4315,6 +4868,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad Request
           content:
@@ -4325,12 +4880,15 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "404":
           description: Not Found
           content:
@@ -4338,14 +4896,23 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/history:
     get:
       tags:
@@ -4374,14 +4941,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -4391,6 +4964,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -4406,6 +4981,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -4414,6 +4990,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -4461,14 +5039,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -4478,6 +5062,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -4493,6 +5079,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -4501,6 +5088,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -4548,14 +5137,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -4565,6 +5160,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -4580,6 +5177,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -4588,6 +5186,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -4635,14 +5235,20 @@ paths:
             format: int64
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -4652,6 +5258,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -4667,6 +5275,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -4675,6 +5284,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -4715,14 +5326,20 @@ paths:
             type: string
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "500":
+          description: Internal Server error
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -4732,6 +5349,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "400":
           description: Bad request
           content:
@@ -4747,6 +5366,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "500":
           description: Internal Server error
@@ -4755,6 +5375,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+>>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "200":
           description: OK - Successful operation
           content:
@@ -4819,12 +5441,12 @@ components:
           type: object
           additionalProperties:
             type: object
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
     StatusType:
       type: object
       properties:
@@ -4954,12 +5576,12 @@ components:
           type: object
           additionalProperties:
             type: object
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
         suppressed:
           type: array
           items:
@@ -5724,6 +6346,11 @@ components:
             description: Messages connected to this errand. Get message information
               from Message-API
             readOnly: true
+        relatesTo:
+          type: array
+          description: Other errands related to the errand
+          items:
+            $ref: "#/components/schemas/RelatedErrand"
         createdByClient:
           type: string
           description: The client who created the errand. WSO2-username
@@ -5857,6 +6484,25 @@ components:
       enum:
         - INTERNAL
         - PUBLIC
+    RelatedErrand:
+      required:
+        - errandNumber
+      type: object
+      properties:
+        errandId:
+          type: integer
+          description: Errand id
+          format: int64
+          example: 123
+        errandNumber:
+          type: string
+          description: Errand number
+          example: PRH-2022-000001
+        relationReason:
+          type: string
+          description: Relation reason
+          example: Related because of appealed decision on errand
+      description: Related errand for errand
     Suspension:
       type: object
       properties:
@@ -6139,6 +6785,11 @@ components:
           description: Extra parameters for the errand
           items:
             $ref: "#/components/schemas/ExtraParameter"
+        relatesTo:
+          type: array
+          description: Other errands related to the errand
+          items:
+            $ref: "#/components/schemas/RelatedErrand"
     PatchDecision:
       type: object
       properties:

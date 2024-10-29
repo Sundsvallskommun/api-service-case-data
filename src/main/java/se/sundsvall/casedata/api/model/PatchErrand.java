@@ -1,25 +1,22 @@
 package se.sundsvall.casedata.api.model;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -75,5 +72,9 @@ public class PatchErrand {
 
 	@Schema(description = "Extra parameters for the errand")
 	private List<ExtraParameter> extraParameters;
+
+	@Valid
+	@Schema(description = "Other errands related to the errand")
+	private List<RelatedErrand> relatesTo;
 
 }

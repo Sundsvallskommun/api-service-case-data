@@ -74,6 +74,7 @@ class ErrandEntityTest {
 		final var updated = now();
 		final var suspensionFrom = now();
 		final var suspensionTo = now();
+		final var relatesTo = List.of(new RelatedErrandEntity());
 
 		// Act
 		final var bean = ErrandEntity.builder()
@@ -108,13 +109,14 @@ class ErrandEntityTest {
 			.withUpdated(updated)
 			.withSuspendedFrom(suspensionFrom)
 			.withSuspendedTo(suspensionTo)
+			.withRelatesTo(relatesTo)
 			.build();
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertBasicFields(bean, id, errandNumber, municipalityId, namespace, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase);
 		assertDates(bean, startDate, endDate, applicationReceived, created, updated, suspensionFrom, suspensionTo);
-		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, notifications, extraParameters);
+		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, notifications, extraParameters, relatesTo);
 		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
 	}
 
@@ -147,7 +149,7 @@ class ErrandEntityTest {
 	}
 
 	private void assertCollections(final ErrandEntity bean, final List<StatusEntity> statuses, final List<StakeholderEntity> stakeholders, final List<FacilityEntity> facilities, final List<DecisionEntity> decisions, final List<NoteEntity> notes,
-		final List<NotificationEntity> notifications, final List<ExtraParameterEntity> extraParameters) {
+		final List<NotificationEntity> notifications, final List<ExtraParameterEntity> extraParameters, final List<RelatedErrandEntity> relatesTo) {
 
 		assertThat(bean.getStatuses()).isEqualTo(statuses);
 		assertThat(bean.getStakeholders()).isEqualTo(stakeholders);
@@ -156,6 +158,7 @@ class ErrandEntityTest {
 		assertThat(bean.getNotes()).isEqualTo(notes);
 		assertThat(bean.getNotifications()).isEqualTo(notifications);
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
+		assertThat(bean.getRelatesTo()).isEqualTo(relatesTo);
 	}
 
 	private void assertClients(final ErrandEntity bean, final String createdByClient, final String updatedByClient, final String createdBy, final String updatedBy) {

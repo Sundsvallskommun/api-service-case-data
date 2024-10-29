@@ -86,6 +86,7 @@ class ErrandIT extends AbstractAppTest {
 		"createdBy",
 		"updatedBy",
 		"stakeholders",
+		"relatesTo",
 		"statuses",
 		"notes",
 		"facilities",
@@ -159,6 +160,7 @@ class ErrandIT extends AbstractAppTest {
 				EXCLUDE_FIELDS)
 			.isEqualTo(getErrand);
 
+		assertThat(getErrand.getRelatesTo()).isEmpty();
 		assertThat(getErrand.getStakeholders()).isEmpty();
 		assertThat(getErrand.getStatuses()).isEmpty();
 		assertThat(getErrand.getNotes()).isEmpty();

@@ -19,6 +19,7 @@
   "facilities": [],
   "decisions": [],
   "notes": [],
+  "relatesTo": [],
   "suspension": {},
   "createdByClient": "WSO2_test",
   "updatedByClient": "WSO2_MS_caseManagement",
