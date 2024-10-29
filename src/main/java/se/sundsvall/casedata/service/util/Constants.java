@@ -1,9 +1,5 @@
 package se.sundsvall.casedata.service.util;
 
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
-
-import java.util.List;
-
 public final class Constants {
 
 	public static final String ERRAND_WAS_NOT_FOUND = "Errand with id: %s was not found";
@@ -22,13 +18,9 @@ public final class Constants {
 	public static final String AD_USER_HEADER_KEY = "sentbyuser";
 	public static final String X_JWT_ASSERTION_HEADER_KEY = "x-jwt-assertion";
 	public static final String CAMUNDA_USER = "WSO2_Camunda";
-	public static final List<CaseType> PARKING_PERMIT_CASE_TYPES = CaseType.getParkingPermitCaseTypes();
-	public static final List<CaseType> MEX_CASE_TYPES = CaseType.getMexCaseTypes();
 
 	public static final String NOTIFICATION_ERRAND_CREATED = "Ärende skapat";
 	public static final String NOTIFICATION_ERRAND_UPDATED = "Ärende uppdaterat";
-	public static final String NOTIFICATION_APPEAL_CREATED = "Överklagan skapad";
-	public static final String NOTIFICATION_APPEAL_UPDATED = "Överklagan uppdaterad";
 	public static final String NOTIFICATION_NOTE_CREATED = "Notering skapad";
 	public static final String NOTIFICATION_NOTE_UPDATED = "Notering uppdaterad";
 	public static final String NOTIFICATION_DECISION_CREATED = "Beslut skapat";
