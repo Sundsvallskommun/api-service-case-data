@@ -6,8 +6,7 @@ import java.util.Arrays;
 public enum Shortcode {
 
 	MEX("SBK_MEX"),
-	PRH("SBK_PARKINGPERMIT"),
-	O("UNKNOWN");
+	PRH("SBK_PARKINGPERMIT");
 
 	final String namespace;
 
@@ -19,6 +18,6 @@ public enum Shortcode {
 		return Arrays.stream(Shortcode.values())
 			.filter(shortcode -> shortcode.namespace.equals(namespace))
 			.findFirst()
-			.orElse(O);
+			.orElseThrow(() -> new IllegalArgumentException("No Shortcode found for namespace: " + namespace));
 	}
 }

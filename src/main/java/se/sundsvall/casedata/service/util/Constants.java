@@ -1,8 +1,8 @@
 package se.sundsvall.casedata.service.util;
 
-import java.util.List;
-
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+
+import java.util.List;
 
 public final class Constants {
 
@@ -22,8 +22,8 @@ public final class Constants {
 	public static final String AD_USER_HEADER_KEY = "sentbyuser";
 	public static final String X_JWT_ASSERTION_HEADER_KEY = "x-jwt-assertion";
 	public static final String CAMUNDA_USER = "WSO2_Camunda";
-	public static final List<CaseType> PARKING_PERMIT_CASE_TYPES = CaseType.getValuesByAbbreviation("PRH");
-	public static final List<CaseType> MEX_CASE_TYPES = CaseType.getValuesByAbbreviation("MEX");
+	public static final List<CaseType> PARKING_PERMIT_CASE_TYPES = CaseType.getParkingPermitCaseTypes();
+	public static final List<CaseType> MEX_CASE_TYPES = CaseType.getMexCaseTypes();
 
 	public static final String NOTIFICATION_ERRAND_CREATED = "Ärende skapat";
 	public static final String NOTIFICATION_ERRAND_UPDATED = "Ärende uppdaterat";

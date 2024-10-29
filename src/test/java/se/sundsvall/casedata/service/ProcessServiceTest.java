@@ -1,14 +1,6 @@
 package se.sundsvall.casedata.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.TestUtil.createErrandEntity;
-
-import java.util.stream.Stream;
-
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,12 +9,18 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
 
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessServiceTest {
@@ -37,13 +35,13 @@ class ProcessServiceTest {
 	private ProcessService processService;
 
 	private static Stream<Arguments> mexTypesProvider() {
-		return CaseType.getValuesByAbbreviation("MEX").stream()
+		return CaseType.getMexCaseTypes().stream()
 			.map(Object::toString)
 			.map(Arguments::of);
 	}
 
 	private static Stream<Arguments> parkingPermitTypesProvider() {
-		return CaseType.getValuesByAbbreviation("PRH").stream()
+		return CaseType.getParkingPermitCaseTypes().stream()
 			.map(Object::toString)
 			.map(Arguments::of);
 	}
@@ -58,7 +56,7 @@ class ProcessServiceTest {
 		when(parkingPermitIntegration.startProcess(errand)).thenReturn(result);
 
 		// Act
-		var result1 = processService.startProcess(errand);
+		final var result1 = processService.startProcess(errand);
 
 		// Assert
 		assertThat(result1).isEqualTo(result);
@@ -77,7 +75,7 @@ class ProcessServiceTest {
 		when(landAndExploitationIntegration.startProcess(errand)).thenReturn(result);
 
 		// Act
-		var result1 = processService.startProcess(errand);
+		final var result1 = processService.startProcess(errand);
 
 		// Assert
 		assertThat(result1).isEqualTo(result);
