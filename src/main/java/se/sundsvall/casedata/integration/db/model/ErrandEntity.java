@@ -147,6 +147,10 @@ public class ErrandEntity {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
 	private List<NotificationEntity> notifications;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "errand_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_errand_related_errands_errand_id"))
+	private List<RelatedErrandEntity> relatesTo;
+
 	// WSO2-client
 	@Column(name = "created_by_client")
 	@DiffIgnore
@@ -215,6 +219,7 @@ public class ErrandEntity {
 			+ ", decisions=" + decisions
 			+ ", notes=" + notes
 			+ ", notifications=" + notifications
+			+ ", relatesTo=" + relatesTo
 			+ ", createdByClient='" + createdByClient + '\''
 			+ ", updatedByClient='" + updatedByClient + '\''
 			+ ", createdBy='" + createdBy + '\''
@@ -226,5 +231,4 @@ public class ErrandEntity {
 			+ ", extraParameters=" + extraParameters
 			+ '}';
 	}
-
 }

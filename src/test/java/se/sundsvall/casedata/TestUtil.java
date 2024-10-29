@@ -20,6 +20,7 @@ import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.api.model.PatchNotification;
+import se.sundsvall.casedata.api.model.RelatedErrand;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.Status;
 import se.sundsvall.casedata.api.model.Suspension;
@@ -38,6 +39,7 @@ import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.LawEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
+import se.sundsvall.casedata.integration.db.model.RelatedErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.StatusEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
@@ -78,7 +80,7 @@ public final class TestUtil {
 	public static Errand createErrand() {
 		return Errand.builder()
 			.withId(new Random().nextLong(1, 100000))
-			.withExternalCaseId(UUID.randomUUID().toString())
+			.withExternalCaseId(randomUUID().toString())
 			.withCaseType(CaseType.PARKING_PERMIT.name())
 			.withChannel(Channel.EMAIL)
 			.withPriority(Priority.HIGH)
@@ -100,6 +102,7 @@ public final class TestUtil {
 			.withProcessId(RandomStringUtils.secure().next(10, true, true))
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
+			.withRelatesTo(new ArrayList<>(List.of(RelatedErrand.builder().withErrandId(new Random().nextLong()).withErrandNumber("ErrandNumber").withRelationReason("Relation reason").build())))
 			.withNotes(new ArrayList<>(List.of(createNote(), createNote(), createNote())))
 			.withStakeholders(new ArrayList<>(List.of(
 				createStakeholder(StakeholderType.PERSON, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole(), ADMINISTRATOR.toString()))),
@@ -328,6 +331,7 @@ public final class TestUtil {
 			.withExtraParameters(createExtraParametersList())
 			.withFacilities(new ArrayList<>(List.of(createFacility())))
 			.withSuspension(Suspension.builder().withSuspendedFrom(OffsetDateTime.now()).withSuspendedTo(OffsetDateTime.now().plusDays(5)).build())
+			.withRelatesTo(new ArrayList<>(List.of(new RelatedErrand())))
 			.build();
 	}
 
@@ -623,6 +627,7 @@ public final class TestUtil {
 			.withPriority(Priority.HIGH)
 			.withChannel(Channel.EMAIL)
 			.withCaseType(CaseType.PARKING_PERMIT.name())
+			.withRelatesTo(new ArrayList<>(List.of(RelatedErrandEntity.builder().build())))
 			.build();
 	}
 

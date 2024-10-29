@@ -73,6 +73,7 @@ class ErrandTest {
 		final var suspension = new Suspension();
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
+		final var relatesTo = List.of(new RelatedErrand());
 
 		// Act
 		final var bean = Errand.builder()
@@ -107,13 +108,14 @@ class ErrandTest {
 			.withSuspension(suspension)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
+			.withRelatesTo(relatesTo)
 			.build();
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertBasicFields(bean, id, errandNumber, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase, suspension, municipalityId, namespace);
 		assertDates(bean, startDate, endDate, applicationReceived, created, updated);
-		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, extraParameters);
+		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, extraParameters, relatesTo);
 		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
 	}
 
@@ -143,13 +145,15 @@ class ErrandTest {
 		assertThat(bean.getUpdated()).isEqualTo(updated);
 	}
 
-	private void assertCollections(final Errand bean, final List<Status> statuses, final List<Stakeholder> stakeholders, final List<Facility> facilities, final List<Decision> decisions, final List<Note> notes, final List<ExtraParameter> extraParameters) {
+	private void assertCollections(final Errand bean, final List<Status> statuses, final List<Stakeholder> stakeholders, final List<Facility> facilities, final List<Decision> decisions, final List<Note> notes, final List<ExtraParameter> extraParameters,
+		final List<RelatedErrand> relatesTo) {
 		assertThat(bean.getStatuses()).isEqualTo(statuses);
 		assertThat(bean.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(bean.getFacilities()).isEqualTo(facilities);
 		assertThat(bean.getDecisions()).isEqualTo(decisions);
 		assertThat(bean.getNotes()).isEqualTo(notes);
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
+		assertThat(bean.getRelatesTo()).isEqualTo(relatesTo);
 	}
 
 	private void assertClients(final Errand bean, final String createdByClient, final String updatedByClient, final String createdBy, final String updatedBy) {

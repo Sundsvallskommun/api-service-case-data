@@ -15,18 +15,29 @@
 
 ## API-Model updates
 
-- **Errand**
-    - **Removed Fields:**
-        - appeals: ``List<Appeal>``
+- **PatchErrand**
+    - **Added Fields:**
+        - relatesTo: `List<RelatedErrand>`
 
-- **ValidAppealStatusConstraintValidator** *(Removed)*
+- **Errand**
+    - **Added Fields:**
+        - relatesTo: `List<RelatedErrand>`
+    - **Removed Fields:**
+        - appeals: `List<Appeal>`
+
+- **RelatedErrand** *(Added)*
+    - **Fields:**
+        - errandId: `Long`
+        - errandNumber: `String`
+        - relationReason: `String`
+
 - **Appeal** *(Removed)*
     - **Fields:**
         - appealConcernCommunicatedAt: `OffsetDateTime`
         - created: `OffsetDateTime`
         - decisionId: `Long`
         - description: `String`
-        - id: `Long`
+        - id: `long`
         - municipalityId: `String`
         - namespace: `String`
         - registeredAt: `OffsetDateTime`
@@ -40,6 +51,8 @@
         - description: `String`
         - status: `String`
         - timelinessReview: `String`
+
+- **ValidAppealStatusConstraintValidator** *(Removed)*
 
 ---
 
