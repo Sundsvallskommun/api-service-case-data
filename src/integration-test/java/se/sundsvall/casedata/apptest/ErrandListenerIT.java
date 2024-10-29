@@ -39,7 +39,7 @@ class ErrandListenerIT extends AbstractAppTest {
 
 	@Test
 	void test01_persistErrandUnknown() {
-		namespace = NAMESPACE;
+		namespace = "SBK_PARKINGPERMIT";
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(getPath())
