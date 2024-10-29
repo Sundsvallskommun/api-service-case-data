@@ -2,16 +2,16 @@
   "id": 3,
   "version": 4,
   "municipalityId": "2281",
-  "namespace": "my.namespace",
+  "namespace": "SBK_MEX",
   "created": "${json-unit.any-string}",
   "updated": "${json-unit.any-string}",
-  "errandNumber": "PRH-2024-000001",
+  "errandNumber": "MEX-2024-000001",
   "externalCaseId": "9527464e-c5a0-4971-a253-8b94a79e74c9",
-  "caseType": "PARKING_PERMIT_RENEWAL",
+  "caseType": "MEX_LEASE_REQUEST",
   "channel": "EMAIL",
   "priority": "HIGH",
   "description": "Case description",
-  "caseTitleAddition": "Förnyat parkeringstillstånd",
+  "caseTitleAddition": "Case title addition",
   "diaryNumber": "DIARY-123",
   "phase": "Actualization",
   "statuses": [
@@ -28,9 +28,9 @@
   "stakeholders": [
     {
       "id": 2,
-      "version": 0,
+      "version": 1,
       "municipalityId": "2281",
-      "namespace": "my.namespace",
+      "namespace": "SBK_MEX",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "type": "PERSON",
@@ -84,9 +84,9 @@
     },
     {
       "id": 3,
-      "version": 0,
+      "version": 1,
       "municipalityId": "2281",
-      "namespace": "my.namespace",
+      "namespace": "SBK_MEX",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "type": "ORGANIZATION",
@@ -144,7 +144,7 @@
       "id": 1,
       "version": 0,
       "municipalityId": "2281",
-      "namespace": "my.namespace",
+      "namespace": "SBK_MEX",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "description": "Test facility",
@@ -161,9 +161,9 @@
   "decisions": [
     {
       "id": "${json-unit.any-number}",
-      "version": 0,
+      "version": 1,
       "municipalityId": "2281",
-      "namespace": "my.namespace",
+      "namespace": "SBK_MEX",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "decisionType": "FINAL",
@@ -179,9 +179,9 @@
       ],
       "decidedBy": {
         "id": 1,
-        "version": 0,
+        "version": 1,
         "municipalityId": "2281",
-        "namespace": "my.namespace",
+        "namespace": "SBK_MEX",
         "created": "${json-unit.any-string}",
         "updated": "${json-unit.any-string}",
         "type": "PERSON",
@@ -248,7 +248,7 @@
       "id": 1,
       "version": 1,
       "municipalityId": "2281",
-      "namespace": "my.namespace",
+      "namespace": "SBK_MEX",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "title": "Test note",
@@ -266,7 +266,7 @@
       "id": 2,
       "version": 1,
       "municipalityId": "2281",
-      "namespace": "my.namespace",
+      "namespace": "SBK_MEX",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "title": "sRGrJyRKNn",
@@ -284,7 +284,7 @@
       "id": 3,
       "version": 1,
       "municipalityId": "2281",
-      "namespace": "my.namespace",
+      "namespace": "SBK_MEX",
       "created": "${json-unit.any-string}",
       "updated": "${json-unit.any-string}",
       "title": "EzhsmgQlrP",
@@ -299,14 +299,29 @@
       }
     }
   ],
-  "messageIds": [],
+  "suspension": {},
   "createdByClient": "UNKNOWN",
   "updatedByClient": "UNKNOWN",
   "createdBy": "UNKNOWN",
   "updatedBy": "UNKNOWN",
-  "extraParameters": {
-    "test8": "test8",
-    "test9": "test9",
-    "test7": "test7"
-  }
+  "extraParameters": [
+    {
+      "key": "test7",
+      "values": [
+        "test7"
+      ]
+    },
+    {
+      "key": "test8",
+      "values": [
+        "test8"
+      ]
+    },
+    {
+      "key": "test9",
+      "values": [
+        "test9"
+      ]
+    }
+  ]
 }

@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.api.model.enums;
 
 import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ANDRING_AVLOPPSANLAGGNING;
@@ -11,6 +12,7 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_INSTALLATION_VARMEPUMP;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANSOKAN_TILLSTAND_VARMEPUMP;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.APPEAL;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.LOST_PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_APPLICATION_FOR_ROAD_ALLOWANCE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_APPLICATION_SQUARE_PLACE;
@@ -25,7 +27,7 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LEASE_REQUEST;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_OTHER;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_PROTECTIVE_HUNTING;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOUGE_PLANNING_NOTICE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOGUE_PLANNING_NOTICE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_REQUEST_FOR_PUBLIC_DOCUMENT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_SELL_LAND_TO_THE_MUNICIPALITY;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_TERMINATION_OF_HUNTING_LEASE;
@@ -35,8 +37,6 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.NYBYGGNA
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.REGISTRERING_AV_LIVSMEDEL;
-
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 class CaseTypeTest {
 
@@ -69,12 +69,13 @@ class CaseTypeTest {
 			MEX_LAND_INSTRUCTION,
 			MEX_OTHER,
 			MEX_LAND_SURVEYING_OFFICE,
-			MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOUGE_PLANNING_NOTICE,
+			MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOGUE_PLANNING_NOTICE,
 			MEX_INVOICE,
 			MEX_REQUEST_FOR_PUBLIC_DOCUMENT,
 			MEX_TERMINATION_OF_LEASE,
 			MEX_TERMINATION_OF_HUNTING_LEASE,
-			MEX_FORWARDED_FROM_CONTACTSUNDSVALL);
+			MEX_FORWARDED_FROM_CONTACTSUNDSVALL,
+			APPEAL);
 	}
 
 	@Test
@@ -117,7 +118,7 @@ class CaseTypeTest {
 		assertThat(MEX_LAND_INSTRUCTION).hasToString("MEX_LAND_INSTRUCTION");
 		assertThat(MEX_OTHER).hasToString("MEX_OTHER");
 		assertThat(MEX_LAND_SURVEYING_OFFICE).hasToString("MEX_LAND_SURVEYING_OFFICE");
-		assertThat(MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOUGE_PLANNING_NOTICE).hasToString("MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOUGE_PLANNING_NOTICE");
+		assertThat(MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOGUE_PLANNING_NOTICE).hasToString("MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOGUE_PLANNING_NOTICE");
 		assertThat(MEX_INVOICE).hasToString("MEX_INVOICE");
 		assertThat(MEX_REQUEST_FOR_PUBLIC_DOCUMENT).hasToString("MEX_REQUEST_FOR_PUBLIC_DOCUMENT");
 		assertThat(MEX_TERMINATION_OF_LEASE).hasToString("MEX_TERMINATION_OF_LEASE");
@@ -125,60 +126,9 @@ class CaseTypeTest {
 		assertThat(MEX_FORWARDED_FROM_CONTACTSUNDSVALL).hasToString("MEX_FORWARDED_FROM_CONTACTSUNDSVALL");
 	}
 
-
 	@Test
-	void getValuesByAbbreviation() {
-		assertThat(CaseType.getValuesByAbbreviation("BUILD")).containsExactlyInAnyOrder(
-			NYBYGGNAD_ANSOKAN_OM_BYGGLOV,
-			ANMALAN_ATTEFALL);
-		assertThat(CaseType.getValuesByAbbreviation("ENV")).containsExactlyInAnyOrder(
-			REGISTRERING_AV_LIVSMEDEL,
-			ANMALAN_INSTALLATION_VARMEPUMP,
-			ANSOKAN_TILLSTAND_VARMEPUMP,
-			ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP,
-			ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC,
-			ANMALAN_ANDRING_AVLOPPSANLAGGNING,
-			ANMALAN_ANDRING_AVLOPPSANORDNING,
-			ANMALAN_HALSOSKYDDSVERKSAMHET);
-		assertThat(CaseType.getValuesByAbbreviation("PRH")).containsExactlyInAnyOrder(
-			PARKING_PERMIT,
-			PARKING_PERMIT_RENEWAL,
-			LOST_PARKING_PERMIT);
-		assertThat(CaseType.getValuesByAbbreviation("MEX")).containsExactlyInAnyOrder(
-			MEX_LEASE_REQUEST,
-			MEX_BUY_LAND_FROM_THE_MUNICIPALITY,
-			MEX_SELL_LAND_TO_THE_MUNICIPALITY,
-			MEX_APPLICATION_SQUARE_PLACE,
-			MEX_BUY_SMALL_HOUSE_PLOT,
-			MEX_APPLICATION_FOR_ROAD_ALLOWANCE,
-			MEX_UNAUTHORIZED_RESIDENCE,
-			MEX_LAND_RIGHT,
-			MEX_EARLY_DIALOG_PLAN_NOTIFICATION,
-			MEX_PROTECTIVE_HUNTING,
-			MEX_LAND_INSTRUCTION,
-			MEX_OTHER,
-			MEX_LAND_SURVEYING_OFFICE,
-			MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOUGE_PLANNING_NOTICE,
-			MEX_INVOICE,
-			MEX_REQUEST_FOR_PUBLIC_DOCUMENT,
-			MEX_TERMINATION_OF_LEASE,
-			MEX_TERMINATION_OF_HUNTING_LEASE,
-			MEX_FORWARDED_FROM_CONTACTSUNDSVALL);
-	}
-
-	@Test
-	void getValuesByAbbreviation_empty() {
-		assertThat(CaseType.getValuesByAbbreviation("")).isEmpty();
-	}
-
-	@Test
-	void getValuesByAbbreviation_null() {
-		assertThat(CaseType.getValuesByAbbreviation(null)).isEmpty();
-	}
-
-	@Test
-	void getValuesByAbbreviation_unknown() {
-		assertThat(CaseType.getValuesByAbbreviation("UNKNOWN")).isEmpty();
+	void enumToStringAppeal() {
+		assertThat(APPEAL).hasToString("APPEAL");
 	}
 
 }

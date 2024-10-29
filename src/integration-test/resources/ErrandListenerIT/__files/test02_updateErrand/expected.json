@@ -5,7 +5,7 @@
   "namespace": "my.namespace",
   "created": "2022-12-02T15:13:45.363+01:00",
   "updated": "${json-unit.any-string}",
-  "errandNumber": "ERRAND-NUMBER-2",
+  "errandNumber": "PRH-2022-000030",
   "externalCaseId": "",
   "caseType": "PARKING_PERMIT",
   "priority": "HIGH",
