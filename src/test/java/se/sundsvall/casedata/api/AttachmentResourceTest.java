@@ -1,5 +1,18 @@
 package se.sundsvall.casedata.api;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.Attachment;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.service.AttachmentService;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -11,20 +24,6 @@ import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.TestUtil.createAttachmentEntity;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
-import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.Attachment;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.service.AttachmentService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -47,7 +46,7 @@ class AttachmentResourceTest {
 		when(attachmentServiceMock.findByIdAndMunicipalityIdAndNamespace(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachment);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/attachments/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
 			.exchange()
 			.expectStatus().isOk()
@@ -66,11 +65,11 @@ class AttachmentResourceTest {
 	void getAttachmentsByErrandNumber() {
 		// Arrange
 		final var errandNumber = "12345";
-		final var attachment = createAttachment(AttachmentCategory.NOTIFICATION);
+		final var attachment = createAttachment(AttachmentCategory.OTHER_ATTACHMENT);
 		when(attachmentServiceMock.findByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(attachment));
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/{namespace}/attachments/errand/{errandNumber}").build(MUNICIPALITY_ID, NAMESPACE, errandNumber))
 			.exchange()
 			.expectStatus().isOk()
@@ -90,7 +89,7 @@ class AttachmentResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-		final var body = createAttachment(AttachmentCategory.PO_IT);
+		final var body = createAttachment(AttachmentCategory.MEDICAL_CONFIRMATION);
 		final var attachment = createAttachmentEntity();
 		attachment.setId(attachmentId);
 		body.setId(attachmentId);
@@ -116,7 +115,7 @@ class AttachmentResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-		final var body = createAttachment(AttachmentCategory.ADDRESS_SHEET);
+		final var body = createAttachment(AttachmentCategory.OTHER);
 		body.setId(attachmentId);
 
 		// Act
@@ -137,7 +136,7 @@ class AttachmentResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-		final var body = createAttachment(AttachmentCategory.AIRFLOW_PROTOCOL);
+		final var body = createAttachment(AttachmentCategory.CORPORATE_TAX_CARD);
 		body.setId(attachmentId);
 
 		// Act
