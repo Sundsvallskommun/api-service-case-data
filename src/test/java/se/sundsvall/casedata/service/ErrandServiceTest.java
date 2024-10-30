@@ -1,5 +1,35 @@
 package se.sundsvall.casedata.service;
 
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.casedata.api.model.Notification;
+import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.FacilityRepository;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.Stream;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -16,42 +46,9 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createPatchErrand;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ATTEFALL;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.zalando.problem.ThrowableProblem;
-
-import com.turkraft.springfilter.converter.FilterSpecificationConverter;
-
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
-import se.sundsvall.casedata.api.model.Notification;
-import se.sundsvall.casedata.api.model.PatchErrand;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
 
 @ExtendWith(MockitoExtension.class)
 class ErrandServiceTest {
@@ -107,32 +104,6 @@ class ErrandServiceTest {
 		verify(processServiceMock).startProcess(inputErrand);
 		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 		verify(errandRepositoryMock, times(2)).save(any());
-		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
-
-		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende skapat");
-		assertThat(notificationCaptor.getValue().getType()).isEqualTo("CREATE");
-		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(inputErrand.getCreatedBy());
-		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(inputErrand.getId());
-	}
-
-	@Test
-	void postWhenAnmalanAttefall() {
-		// Arrange
-		final var inputErrandDTO = createErrand();
-		inputErrandDTO.setCaseType(ANMALAN_ATTEFALL.name());
-		final var inputErrand = toErrandEntity(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
-		inputErrand.setId(new Random().nextLong(1, 1000));
-
-		when(errandRepositoryMock.save(any())).thenReturn(inputErrand);
-		when(processServiceMock.startProcess(inputErrand)).thenReturn(null);
-
-		// Act
-		errandService.createErrand(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
-
-		// Assert
-		verify(processServiceMock).startProcess(inputErrand);
-		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
-		verify(errandRepositoryMock).save(any());
 		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende skapat");

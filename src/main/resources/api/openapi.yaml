@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "10.0"
 servers:
-  - url: http://localhost:64784
+  - url: http://localhost:57950
     description: Generated server url
 tags:
   - name: MessageAttachments
@@ -1888,12 +1888,6 @@ paths:
               $ref: "#/components/schemas/Note"
         required: true
       responses:
-        "201":
-          description: Created - Successful operation
-          headers:
-            Location:
-              description: Location of the created resource
-              style: simple
         "400":
           description: Bad request
           content:
@@ -1908,6 +1902,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "201":
+          description: Created - Successful operation
+          headers:
+            Location:
+              description: Location of the created resource
+              style: simple
         "500":
           description: Internal Server error
           content:
@@ -4367,16 +4367,6 @@ components:
           description: The type of case
           example: PARKING_PERMIT
           enum:
-            - NYBYGGNAD_ANSOKAN_OM_BYGGLOV
-            - ANMALAN_ATTEFALL
-            - REGISTRERING_AV_LIVSMEDEL
-            - ANMALAN_INSTALLATION_VARMEPUMP
-            - ANSOKAN_TILLSTAND_VARMEPUMP
-            - ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP
-            - ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC
-            - ANMALAN_ANDRING_AVLOPPSANLAGGNING
-            - ANMALAN_ANDRING_AVLOPPSANORDNING
-            - ANMALAN_HALSOSKYDDSVERKSAMHET
             - PARKING_PERMIT
             - PARKING_PERMIT_RENEWAL
             - LOST_PARKING_PERMIT
@@ -4687,8 +4677,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
-        unpaged:
-          type: boolean
         paged:
           type: boolean
         pageNumber:
@@ -4697,6 +4685,8 @@ components:
         pageSize:
           type: integer
           format: int32
+        unpaged:
+          type: boolean
     SortObject:
       type: object
       properties:

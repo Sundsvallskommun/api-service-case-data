@@ -41,7 +41,7 @@ import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createNote;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ATTEFALL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_RIGHT;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteEntity;
@@ -218,7 +218,7 @@ class NoteServiceTest {
 	void deleteNoteOnErrand() {
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
-		errand.setCaseType(ANMALAN_ATTEFALL.name());
+		errand.setCaseType(MEX_LAND_RIGHT.name());
 		// Set ID on every note
 		errand.getNotes().forEach(note -> note.setId(new Random().nextLong()));
 

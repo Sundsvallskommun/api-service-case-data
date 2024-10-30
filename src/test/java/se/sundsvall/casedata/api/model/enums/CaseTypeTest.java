@@ -4,14 +4,6 @@ import org.junit.jupiter.api.Test;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ANDRING_AVLOPPSANLAGGNING;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ANDRING_AVLOPPSANORDNING;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ATTEFALL;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_HALSOSKYDDSVERKSAMHET;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_INSTALLATION_VARMEPUMP;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANSOKAN_TILLSTAND_VARMEPUMP;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.APPEAL;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.LOST_PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_APPLICATION_FOR_ROAD_ALLOWANCE;
@@ -33,26 +25,14 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_SELL
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_TERMINATION_OF_HUNTING_LEASE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_TERMINATION_OF_LEASE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_UNAUTHORIZED_RESIDENCE;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.NYBYGGNAD_ANSOKAN_OM_BYGGLOV;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.REGISTRERING_AV_LIVSMEDEL;
 
 class CaseTypeTest {
 
 	@Test
 	void enumValues() {
 		assertThat(CaseType.values()).containsExactlyInAnyOrder(
-			ANMALAN_ATTEFALL,
-			ANMALAN_ANDRING_AVLOPPSANLAGGNING,
-			ANMALAN_ANDRING_AVLOPPSANORDNING,
-			ANMALAN_HALSOSKYDDSVERKSAMHET,
-			ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC,
-			ANMALAN_INSTALLATION_VARMEPUMP,
-			ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP,
-			ANSOKAN_TILLSTAND_VARMEPUMP,
-			NYBYGGNAD_ANSOKAN_OM_BYGGLOV,
-			REGISTRERING_AV_LIVSMEDEL,
 			PARKING_PERMIT,
 			PARKING_PERMIT_RENEWAL,
 			LOST_PARKING_PERMIT,
@@ -76,24 +56,6 @@ class CaseTypeTest {
 			MEX_TERMINATION_OF_HUNTING_LEASE,
 			MEX_FORWARDED_FROM_CONTACTSUNDSVALL,
 			APPEAL);
-	}
-
-	@Test
-	void enumToStringByggR() {
-		assertThat(ANMALAN_ATTEFALL).hasToString("ANMALAN_ATTEFALL");
-		assertThat(NYBYGGNAD_ANSOKAN_OM_BYGGLOV).hasToString("NYBYGGNAD_ANSOKAN_OM_BYGGLOV");
-	}
-
-	@Test
-	void enumToStringEcos() {
-		assertThat(ANMALAN_ANDRING_AVLOPPSANLAGGNING).hasToString("ANMALAN_ANDRING_AVLOPPSANLAGGNING");
-		assertThat(ANMALAN_ANDRING_AVLOPPSANORDNING).hasToString("ANMALAN_ANDRING_AVLOPPSANORDNING");
-		assertThat(ANMALAN_HALSOSKYDDSVERKSAMHET).hasToString("ANMALAN_HALSOSKYDDSVERKSAMHET");
-		assertThat(ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC).hasToString("ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC");
-		assertThat(ANMALAN_INSTALLATION_VARMEPUMP).hasToString("ANMALAN_INSTALLATION_VARMEPUMP");
-		assertThat(ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP).hasToString("ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP");
-		assertThat(ANSOKAN_TILLSTAND_VARMEPUMP).hasToString("ANSOKAN_TILLSTAND_VARMEPUMP");
-		assertThat(REGISTRERING_AV_LIVSMEDEL).hasToString("REGISTRERING_AV_LIVSMEDEL");
 	}
 
 	@Test
