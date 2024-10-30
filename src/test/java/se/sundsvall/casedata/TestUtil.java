@@ -48,7 +48,6 @@ import se.sundsvall.casedata.integration.db.model.enums.ContactType;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 import java.time.LocalDate;
@@ -63,7 +62,9 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static java.util.UUID.randomUUID;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
 import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 public final class TestUtil {
@@ -83,7 +84,7 @@ public final class TestUtil {
 			.withExternalCaseId(randomUUID().toString())
 			.withCaseType(CaseType.PARKING_PERMIT.name())
 			.withChannel(Channel.EMAIL)
-			.withPriority(Priority.HIGH)
+			.withPriority(HIGH)
 			.withErrandNumber(RandomStringUtils.secure().next(10, true, true))
 			.withDescription(RandomStringUtils.secure().next(20, true, false))
 			.withCaseTitleAddition(RandomStringUtils.secure().next(10, true, false))
@@ -319,8 +320,8 @@ public final class TestUtil {
 	public static PatchErrand createPatchErrand() {
 		return PatchErrand.builder()
 			.withExternalCaseId("externalCaseId")
-			.withCaseType(CaseType.ANMALAN_ATTEFALL)
-			.withPriority(Priority.HIGH)
+			.withCaseType(MEX_BUY_LAND_FROM_THE_MUNICIPALITY)
+			.withPriority(HIGH)
 			.withDescription("description")
 			.withCaseTitleAddition("caseTitleAddition")
 			.withDiaryNumber("diaryNumber")
@@ -624,7 +625,7 @@ public final class TestUtil {
 			.withStartDate(LocalDate.now())
 			.withId(1L)
 			.withVersion(1)
-			.withPriority(Priority.HIGH)
+			.withPriority(HIGH)
 			.withChannel(Channel.EMAIL)
 			.withCaseType(CaseType.PARKING_PERMIT.name())
 			.withRelatesTo(new ArrayList<>(List.of(RelatedErrandEntity.builder().build())))

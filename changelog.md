@@ -17,42 +17,47 @@
 
 ## API-Model updates
 
-- **PatchErrand**
-    - **Added Fields:**
-        - relatesTo: `List<RelatedErrand>`
+- **AttachmentCategory**
+	- **Removed Values:**
+		- Removed 231 unused values. See API documentation for full list.
+
+- **CaseType**
+	- **Removed Values:**
+		- `NYBYGGNAD_ANSOKAN_OM_BYGGLOV`
+		- `ANMALAN_ATTEFALL`
+		- `REGISTRERING_AV_LIVSMEDEL`
+		- `ANMALAN_INSTALLATION_VARMEPUMP`
+		- `ANSOKAN_TILLSTAND_VARMEPUMP`
+		- `ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP`
+		- `ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC`
+		- `ANMALAN_ANDRING_AVLOPPSANLAGGNING`
+		- `ANMALAN_ANDRING_AVLOPPSANORDNING`
+		- `ANMALAN_HALSOSKYDDSVERKSAMHET`
 
 - **Errand**
-    - **Added Fields:**
-        - relatesTo: `List<RelatedErrand>`
-    - **Removed Fields:**
-        - appeals: `List<Appeal>`
-
-- **RelatedErrand** *(Added)*
-    - **Fields:**
-        - errandId: `Long`
-        - errandNumber: `String`
-        - relationReason: `String`
+	- **Removed Fields:**
+		- appeals: ``List<Appeal>``
 
 - **Appeal** *(Removed)*
-    - **Fields:**
-        - appealConcernCommunicatedAt: `OffsetDateTime`
-        - created: `OffsetDateTime`
-        - decisionId: `Long`
-        - description: `String`
-        - id: `long`
-        - municipalityId: `String`
-        - namespace: `String`
-        - registeredAt: `OffsetDateTime`
-        - status: `String`
-        - timelinessReview: `String`
-        - updated: `OffsetDateTime`
-        - version: `int`
+	- **Fields:**
+		- appealConcernCommunicatedAt: `OffsetDateTime`
+		- created: `OffsetDateTime`
+		- decisionId: `Long`
+		- description: `String`
+		- id: `Long`
+		- municipalityId: `String`
+		- namespace: `String`
+		- registeredAt: `OffsetDateTime`
+		- status: `String`
+		- timelinessReview: `String`
+		- updated: `OffsetDateTime`
+		- version: `int`
 
 - **PatchAppeal** *(Removed)*
-    - **Fields:**
-        - description: `String`
-        - status: `String`
-        - timelinessReview: `String`
+	- **Fields:**
+		- description: `String`
+		- status: `String`
+		- timelinessReview: `String`
 
 - **ValidAppealStatusConstraintValidator** *(Removed)*
 
@@ -273,35 +278,35 @@
 ## API-Model updates
 
 - **MessageRequest**
-    - **Renamed Fields:**
-        - familyID (`String`) -> familyId (`String`)
-        - userID (`String`) -> userId (`String`)
-        - externalCaseID (`String`) -> externalCaseId (`String`)
-        - messageID (`String`) -> messageId (`String`)
-    - **Fields with Changed Types:**
-        - emailHeaders: `List<EmailHeaderDTO>` -> `List<EmailHeader>`
+	- **Renamed Fields:**
+		- familyID (`String`) -> familyId (`String`)
+		- userID (`String`) -> userId (`String`)
+		- externalCaseID (`String`) -> externalCaseId (`String`)
+		- messageID (`String`) -> messageId (`String`)
+	- **Fields with Changed Types:**
+		- emailHeaders: `List<EmailHeaderDTO>` -> `List<EmailHeader>`
 
 - **AttachmentResponse**
-    - **Renamed Fields:**
-        - attachmentID (`String`) -> attachmentId (`String`)
+	- **Renamed Fields:**
+		- attachmentID (`String`) -> attachmentId (`String`)
 
 - **MessageResponse**
-    - **Added Fields:**
-        - municipalityId: `String`
-        - namespace: `String`
-    - **Renamed Fields:**
-        - messageID (`String`) -> messageId (`String`)
-        - externalCaseID (`String`) -> externalCaseId (`String`)
-        - userID (`String`) -> userId (`String`)
-        - familyID (`String`) -> familyId (`String`)
-    - **Fields with Changed Types:**
-        - emailHeaders: `List<EmailHeaderDTO>` -> `List<EmailHeader>`
+	- **Added Fields:**
+		- municipalityId: `String`
+		- namespace: `String`
+	- **Renamed Fields:**
+		- messageID (`String`) -> messageId (`String`)
+		- externalCaseID (`String`) -> externalCaseId (`String`)
+		- userID (`String`) -> userId (`String`)
+		- familyID (`String`) -> familyId (`String`)
+	- **Fields with Changed Types:**
+		- emailHeaders: `List<EmailHeaderDTO>` -> `List<EmailHeader>`
 
 - **ContactInformationDTO** *(Renamed to ContactInformation)*
 
 - **GetParkingPermitDTO** *(Renamed to GetParkingPermit)*
-    - **Fields with Changed Types:**
-        - errandDecision: `DecisionDTO` -> `Decision`
+	- **Fields with Changed Types:**
+		- errandDecision: `DecisionDTO` -> `Decision`
 
 - **PatchDecisionDTO** *(Renamed to PatchDecision)*
 
@@ -314,158 +319,158 @@
 - **HistoryDTO** *(Renamed to History)*
 
 - **AddressDTO** *(Renamed to Address)*
-    - **Fields with Changed Types:**
-        - location: `CoordinatesDTO` -> `Coordinates`
+	- **Fields with Changed Types:**
+		- location: `CoordinatesDTO` -> `Coordinates`
 
 - **PatchErrandDTO** *(Renamed to PatchErrand)*
-    - **Added Fields:**
-        - suspension: `Suspension`
-    - **Fields with Changed Types:**
-        - extraParameters: `Map<String, String>` -> `List<ExtraParameter>`
-        - facilities: `List<FacilityDTO>` -> `List<Facility>`
+	- **Added Fields:**
+		- suspension: `Suspension`
+	- **Fields with Changed Types:**
+		- extraParameters: `Map<String, String>` -> `List<ExtraParameter>`
+		- facilities: `List<FacilityDTO>` -> `List<Facility>`
 
 - **StatusDTO** *(Renamed to Status)*
 
 - **LawDTO** *(Renamed to Law)*
 
 - **ErrandDTO** *(Renamed to Errand)*
-    - **Added Fields:**
-        - created: `OffsetDateTime`
-        - id: `Long`
-        - municipalityId: `String`
-        - namespace: `String`
-        - suspension: `Suspension`
-        - updated: `OffsetDateTime`
-        - version: `int`
-    - **Fields with Changed Types:**
-        - statuses: `List<StatusDTO>` -> `List<Status>`
-        - notes: `List<NoteDTO>` -> `List<Note>`
-        - appeals: `List<AppealDTO>` -> `List<Appeal>`
-        - decisions: `List<DecisionDTO>` -> `List<Decision>`
-        - stakeholders: `List<StakeholderDTO>` -> `List<Stakeholder>`
-        - facilities: `List<FacilityDTO>` -> `List<Facility>`
-        - extraParameters: `Map<String, String>` -> `List<ExtraParameter>`
+	- **Added Fields:**
+		- created: `OffsetDateTime`
+		- id: `Long`
+		- municipalityId: `String`
+		- namespace: `String`
+		- suspension: `Suspension`
+		- updated: `OffsetDateTime`
+		- version: `int`
+	- **Fields with Changed Types:**
+		- statuses: `List<StatusDTO>` -> `List<Status>`
+		- notes: `List<NoteDTO>` -> `List<Note>`
+		- appeals: `List<AppealDTO>` -> `List<Appeal>`
+		- decisions: `List<DecisionDTO>` -> `List<Decision>`
+		- stakeholders: `List<StakeholderDTO>` -> `List<Stakeholder>`
+		- facilities: `List<FacilityDTO>` -> `List<Facility>`
+		- extraParameters: `Map<String, String>` -> `List<ExtraParameter>`
 
 - **StakeholderDTO** *(Renamed to Stakeholder)*
-    - **Added Fields:**
-        - created: `OffsetDateTime`
-        - id: `Long`
-        - municipalityId: `String`
-        - namespace: `String`
-        - updated: `OffsetDateTime`
-        - version: `int`
-    - **Fields with Changed Types:**
-        - addresses: `List<AddressDTO>` -> `List<Address>`
-        - contactInformation: `List<ContactInformationDTO>` -> `List<ContactInformation>`
+	- **Added Fields:**
+		- created: `OffsetDateTime`
+		- id: `Long`
+		- municipalityId: `String`
+		- namespace: `String`
+		- updated: `OffsetDateTime`
+		- version: `int`
+	- **Fields with Changed Types:**
+		- addresses: `List<AddressDTO>` -> `List<Address>`
+		- contactInformation: `List<ContactInformationDTO>` -> `List<ContactInformation>`
 
 - **DecisionDTO** *(Renamed to Decision)*
-    - **Added Fields:**
-        - created: `OffsetDateTime`
-        - id: `Long`
-        - municipalityId: `String`
-        - namespace: `String`
-        - updated: `OffsetDateTime`
-        - version: `int`
-    - **Fields with Changed Types:**
-        - decidedBy: `StakeholderDTO` -> `Stakeholder`
-        - attachments: `List<AttachmentDTO>` -> `List<Attachment>`
-        - law: `List<LawDTO>` -> `List<Law>`
+	- **Added Fields:**
+		- created: `OffsetDateTime`
+		- id: `Long`
+		- municipalityId: `String`
+		- namespace: `String`
+		- updated: `OffsetDateTime`
+		- version: `int`
+	- **Fields with Changed Types:**
+		- decidedBy: `StakeholderDTO` -> `Stakeholder`
+		- attachments: `List<AttachmentDTO>` -> `List<Attachment>`
+		- law: `List<LawDTO>` -> `List<Law>`
 
 - **AttachmentDTO** *(Renamed to Attachment)*
-    - **Added Fields:**
-        - created: `OffsetDateTime`
-        - id: `Long`
-        - municipalityId: `String`
-        - namespace: `String`
-        - updated: `OffsetDateTime`
-        - version: `int`
+	- **Added Fields:**
+		- created: `OffsetDateTime`
+		- id: `Long`
+		- municipalityId: `String`
+		- namespace: `String`
+		- updated: `OffsetDateTime`
+		- version: `int`
 
 - **MessageAttachmentDTO** *(Renamed to MessageAttachment)*
-    - **Added Fields:**
-        - municipalityId: `String`
-        - namespace: `String`
-    - **Renamed Fields:**
-        - attachmentID (`String`) -> attachmentId (`String`)
+	- **Added Fields:**
+		- municipalityId: `String`
+		- namespace: `String`
+	- **Renamed Fields:**
+		- attachmentID (`String`) -> attachmentId (`String`)
 
 - **FacilityDTO** *(Renamed to Facility)*
-    - **Added Fields:**
-        - created: `OffsetDateTime`
-        - id: `Long`
-        - municipalityId: `String`
-        - namespace: `String`
-        - updated: `OffsetDateTime`
-        - version: `int`
-    - **Fields with Changed Types:**
-        - address: `AddressDTO` -> `Address`
+	- **Added Fields:**
+		- created: `OffsetDateTime`
+		- id: `Long`
+		- municipalityId: `String`
+		- namespace: `String`
+		- updated: `OffsetDateTime`
+		- version: `int`
+	- **Fields with Changed Types:**
+		- address: `AddressDTO` -> `Address`
 
 - **AppealDTO** *(Renamed to Appeal)*
-    - **Added Fields:**
-        - created: `OffsetDateTime`
-        - id: `Long`
-        - municipalityId: `String`
-        - namespace: `String`
-        - updated: `OffsetDateTime`
-        - version: `int`
+	- **Added Fields:**
+		- created: `OffsetDateTime`
+		- id: `Long`
+		- municipalityId: `String`
+		- namespace: `String`
+		- updated: `OffsetDateTime`
+		- version: `int`
 
 - **NoteDTO** *(Renamed to Note)*
-    - **Added Fields:**
-        - created: `OffsetDateTime`
-        - id: `Long`
-        - municipalityId: `String`
-        - namespace: `String`
-        - updated: `OffsetDateTime`
-        - version: `int`
+	- **Added Fields:**
+		- created: `OffsetDateTime`
+		- id: `Long`
+		- municipalityId: `String`
+		- namespace: `String`
+		- updated: `OffsetDateTime`
+		- version: `int`
 
 - **PatchNotification** *(Added)*
-    - **Fields:**
-        - acknowledged: `Boolean`
-        - content: `String`
-        - description: `String`
-        - expires: `OffsetDateTime`
-        - id: `String`
-        - ownerId: `String`
-        - type: `String`
+	- **Fields:**
+		- acknowledged: `Boolean`
+		- content: `String`
+		- description: `String`
+		- expires: `OffsetDateTime`
+		- id: `String`
+		- ownerId: `String`
+		- type: `String`
 
 - **ValidSuspensionConstraintValidator** *(Added)*
-    - No fields
+	- No fields
 
 - **Suspension** *(Added)*
-    - **Fields:**
-        - suspendedFrom: `OffsetDateTime`
-        - suspendedTo: `OffsetDateTime`
+	- **Fields:**
+		- suspendedFrom: `OffsetDateTime`
+		- suspendedTo: `OffsetDateTime`
 
 - **Notification** *(Added)*
-    - **Fields:**
-        - acknowledged: `boolean`
-        - content: `String`
-        - created: `OffsetDateTime`
-        - createdBy: `String`
-        - createdByFullName: `String`
-        - description: `String`
-        - errandId: `Long`
-        - errandNumber: `String`
-        - expires: `OffsetDateTime`
-        - id: `String`
-        - modified: `OffsetDateTime`
-        - municipalityId: `String`
-        - namespace: `String`
-        - ownerFullName: `String`
-        - ownerId: `String`
-        - type: `String`
+	- **Fields:**
+		- acknowledged: `boolean`
+		- content: `String`
+		- created: `OffsetDateTime`
+		- createdBy: `String`
+		- createdByFullName: `String`
+		- description: `String`
+		- errandId: `Long`
+		- errandNumber: `String`
+		- expires: `OffsetDateTime`
+		- id: `String`
+		- modified: `OffsetDateTime`
+		- municipalityId: `String`
+		- namespace: `String`
+		- ownerFullName: `String`
+		- ownerId: `String`
+		- type: `String`
 
 - **ExtraParameter** *(Added)*
-    - **Fields:**
-        - displayName: `String`
-        - key: `String`
-        - values: `List<String>`
+	- **Fields:**
+		- displayName: `String`
+		- key: `String`
+		- values: `List<String>`
 
 - **BaseDTO** *(Removed)*
-    - **Fields:**
-        - created: `OffsetDateTime`
-        - id: `Long`
-        - updated: `OffsetDateTime`
-        - version: `int`
+	- **Fields:**
+		- created: `OffsetDateTime`
+		- id: `Long`
+		- updated: `OffsetDateTime`
+		- version: `int`
 
 - **ExtraParameterDTO** *(Removed)*
-    - **Fields:**
-        - extraParameters: `Map<String, String>`
+	- **Fields:**
+		- extraParameters: `Map<String, String>`

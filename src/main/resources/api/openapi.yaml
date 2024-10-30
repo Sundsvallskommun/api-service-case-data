@@ -11,6 +11,7 @@ servers:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   - url: http://localhost:61719
 =======
   - url: http://localhost:56252
@@ -24,6 +25,9 @@ servers:
 =======
   - url: http://localhost:57634
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+  - url: http://localhost:57950
+>>>>>>> 2da68bd (UF-10673: Removed enum values not used in service)
     description: Generated server url
 tags:
   - name: MessageAttachments
@@ -3284,6 +3288,7 @@ paths:
         required: true
       responses:
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -3316,6 +3321,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 2da68bd (UF-10673: Removed enum values not used in service)
         "400":
           description: Bad request
           content:
@@ -3337,10 +3344,13 @@ paths:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> b1a82d0 (UF-10651: Add new casetype and modify errandNumber generation to be based on namespace)
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
+=======
+>>>>>>> 2da68bd (UF-10673: Removed enum values not used in service)
         "201":
           description: Created - Successful operation
           headers:
@@ -3349,10 +3359,13 @@ paths:
               style: simple
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         "404":
           description: Not found
 =======
+=======
+>>>>>>> 2da68bd (UF-10673: Removed enum values not used in service)
         "500":
           description: Internal Server error
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
@@ -6692,16 +6705,6 @@ components:
           description: The type of case
           example: PARKING_PERMIT
           enum:
-            - NYBYGGNAD_ANSOKAN_OM_BYGGLOV
-            - ANMALAN_ATTEFALL
-            - REGISTRERING_AV_LIVSMEDEL
-            - ANMALAN_INSTALLATION_VARMEPUMP
-            - ANSOKAN_TILLSTAND_VARMEPUMP
-            - ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP
-            - ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC
-            - ANMALAN_ANDRING_AVLOPPSANLAGGNING
-            - ANMALAN_ANDRING_AVLOPPSANORDNING
-            - ANMALAN_HALSOSKYDDSVERKSAMHET
             - PARKING_PERMIT
             - PARKING_PERMIT_RENEWAL
             - LOST_PARKING_PERMIT
@@ -7014,11 +7017,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
+<<<<<<< HEAD
         offset:
           type: integer
           format: int64
         unpaged:
           type: boolean
+=======
+>>>>>>> 2da68bd (UF-10673: Removed enum values not used in service)
         paged:
           type: boolean
         pageNumber:
@@ -7027,6 +7033,8 @@ components:
         pageSize:
           type: integer
           format: int32
+        unpaged:
+          type: boolean
     SortObject:
       type: object
       properties:

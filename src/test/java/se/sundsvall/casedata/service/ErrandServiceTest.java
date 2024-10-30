@@ -46,7 +46,6 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createPatchErrand;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ATTEFALL;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
@@ -105,32 +104,6 @@ class ErrandServiceTest {
 		verify(processServiceMock).startProcess(inputErrand);
 		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 		verify(errandRepositoryMock, times(2)).save(any());
-		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
-
-		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende skapat");
-		assertThat(notificationCaptor.getValue().getType()).isEqualTo("CREATE");
-		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(inputErrand.getCreatedBy());
-		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(inputErrand.getId());
-	}
-
-	@Test
-	void postWhenAnmalanAttefall() {
-		// Arrange
-		final var inputErrandDTO = createErrand();
-		inputErrandDTO.setCaseType(ANMALAN_ATTEFALL.name());
-		final var inputErrand = toErrandEntity(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
-		inputErrand.setId(new Random().nextLong(1, 1000));
-
-		when(errandRepositoryMock.save(any())).thenReturn(inputErrand);
-		when(processServiceMock.startProcess(inputErrand)).thenReturn(null);
-
-		// Act
-		errandService.createErrand(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
-
-		// Assert
-		verify(processServiceMock).startProcess(inputErrand);
-		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
-		verify(errandRepositoryMock).save(any());
 		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende skapat");

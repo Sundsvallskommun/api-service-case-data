@@ -6,7 +6,7 @@ VALUES (1, '2024-04-17 11:42:42.339545', '2024-04-17 11:50:31.705008', 4, '2024-
         'Eldstad/rökkanal, Skylt', 'UNKNOWN', 'UNKNOWN', 'Some description of the case.', '123',
         '2022-06-01', 'BUILD-2024-000001', 'caa230c6-abb4-4592-ad9a-34e263c2787b', '2281',
         'Aktualisering', 'MEDIUM', NULL, '2022-01-01', 'UNKNOWN', 'UNKNOWN', 'EMAIL',
-        'NYBYGGNAD_ANSOKAN_OM_BYGGLOV', 'my.namespace');
+        'MEX_EARLY_DIALOG_PLAN_NOTIFICATION', 'my.namespace');
 
 INSERT INTO stakeholder (id, created, updated, version, ad_account, authorized_signatory,
                          first_name, last_name, organization_name, organization_number, person_id,
