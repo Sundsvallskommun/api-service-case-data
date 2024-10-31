@@ -1,5 +1,23 @@
 package se.sundsvall.casedata.service;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.zalando.problem.Status;
+import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.casedata.api.model.Attachment;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
+
+import java.util.List;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,25 +34,6 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachmentEntity;
-
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
-
-import se.sundsvall.casedata.api.model.Attachment;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.integration.db.AttachmentRepository;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 
 @ExtendWith(MockitoExtension.class)
 class AttachmentServiceTest {
@@ -83,7 +82,7 @@ class AttachmentServiceTest {
 	void putAttachment() {
 		// Arrange
 		final AttachmentEntity attachmentEntity = toAttachmentEntity(createAttachment(AttachmentCategory.PASSPORT_PHOTO), MUNICIPALITY_ID, NAMESPACE);
-		final Attachment attachment = createAttachment(AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT);
+		final Attachment attachment = createAttachment(AttachmentCategory.LEASE_REQUEST);
 		when(errandRepository.existsByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
 		when(attachmentRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(attachmentEntity));
 
@@ -152,7 +151,7 @@ class AttachmentServiceTest {
 	@Test
 	void testFindByErrandNumberAndMunicipalityId() {
 		// Arrange
-		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT), MUNICIPALITY_ID, NAMESPACE);
+		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.MEX_PROTOCOL), MUNICIPALITY_ID, NAMESPACE);
 		attachment.setErrandNumber("someErrandNumber");
 		doReturn(List.of(attachment)).when(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 
@@ -182,12 +181,12 @@ class AttachmentServiceTest {
 	@Test
 	void testPost() {
 		// Arrange
-		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.ANMALAN_ANDRING_AVLOPPSANLAGGNING), MUNICIPALITY_ID, NAMESPACE);
+		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.POWER_OF_ATTORNEY), MUNICIPALITY_ID, NAMESPACE);
 		attachment.setErrandNumber("someErrandNumber");
 		doReturn(attachment).when(attachmentRepository).save(any(AttachmentEntity.class));
 
 		// Act
-		final var result = attachmentService.createAttachment(createAttachment(AttachmentCategory.ADDRESS_SHEET), MUNICIPALITY_ID, NAMESPACE);
+		final var result = attachmentService.createAttachment(createAttachment(AttachmentCategory.ROAD_ALLOWANCE_APPROVAL), MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertEquals(attachment, result);

@@ -7,7 +7,7 @@
   "updated": "${json-unit.any-string}",
   "errandNumber": "PRH-2024-000001",
   "externalCaseId": "9527464e-c5a0-4971-a253-8b94a79e74c9",
-  "caseType": "NYBYGGNAD_ANSOKAN_OM_BYGGLOV",
+  "caseType": "APPEAL",
   "channel": "EMAIL",
   "priority": "HIGH",
   "description": "Case description",

@@ -1,5 +1,12 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.TestUtil.createAttachmentEntity;
@@ -14,20 +21,12 @@ import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putNote;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putStakeholder;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
 class PutMapperTest {
 
 	@Test
 	void putAttachmentTest() {
 		final var attachment = createAttachmentEntity();
-		final var attachmentDTO = createAttachment(AttachmentCategory.NOTIFICATION_WITHOUT_PERSONAL_NUMBER);
+		final var attachmentDTO = createAttachment(AttachmentCategory.RECEIVED_CONTRACT);
 
 		assertThat(attachment).satisfies(a -> {
 			assertThat(a.getCategory()).isNotEqualTo(attachmentDTO.getCategory());
