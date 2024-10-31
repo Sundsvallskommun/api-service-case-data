@@ -1,13 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.Facility;
@@ -21,7 +13,6 @@ import se.sundsvall.casedata.integration.db.model.AppealEntity;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.DecisionEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
@@ -29,16 +20,23 @@ import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+
 public final class PatchMapper {
 
 	private PatchMapper() {}
 
 	public static ErrandEntity patchErrand(final ErrandEntity errand, final PatchErrand patch) {
-		// ExtraParameters are not patched, they are posted for whatever reason.
-		Optional.ofNullable(patch.getExtraParameters()).ifPresent(extraParams -> {
-			List<ExtraParameterEntity> newExtraParams = toErrandParameterEntityList(extraParams, errand);
-			errand.getExtraParameters().addAll(newExtraParams);
-		});
+		ofNullable(errand.getExtraParameters()).ifPresentOrElse(List::clear, () -> errand.setExtraParameters(new ArrayList<>()));
+		errand.getExtraParameters().addAll(toErrandParameterEntityList(patch.getExtraParameters(), errand));
+
 		Optional.ofNullable(patch.getCaseType()).ifPresent(caseType -> errand.setCaseType(caseType.name()));
 		Optional.ofNullable(patch.getExternalCaseId()).ifPresent(errand::setExternalCaseId);
 		Optional.ofNullable(patch.getPriority()).ifPresent(errand::setPriority);
@@ -129,7 +127,7 @@ public final class PatchMapper {
 		return facility;
 	}
 
-	public static NotificationEntity patchNotification(final NotificationEntity notificationEntity, final PatchNotification patch, PortalPersonData owner) {
+	public static NotificationEntity patchNotification(final NotificationEntity notificationEntity, final PatchNotification patch, final PortalPersonData owner) {
 		Optional.ofNullable(patch.getAcknowledged()).ifPresent(notificationEntity::setAcknowledged);
 		Optional.ofNullable(patch.getContent()).ifPresent(notificationEntity::setContent);
 		Optional.ofNullable(patch.getDescription()).ifPresent(notificationEntity::setDescription);
