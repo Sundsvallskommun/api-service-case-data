@@ -111,6 +111,10 @@ public class Errand {
 	@Schema(description = "Messages connected to this errand. Get message information from Message-API", accessMode = Schema.AccessMode.READ_ONLY)
 	private List<String> messageIds;
 
+	@Valid
+	@Schema(description = "Other errands related to the errand")
+	private List<RelatedErrand> relatesTo;
+
 	@Schema(description = "The client who created the errand. WSO2-username", accessMode = Schema.AccessMode.READ_ONLY)
 	private String createdByClient;
 

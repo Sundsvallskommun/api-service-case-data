@@ -11,6 +11,7 @@ import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.api.model.Law;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.api.model.Notification;
+import se.sundsvall.casedata.api.model.RelatedErrand;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.Status;
 import se.sundsvall.casedata.api.model.Suspension;
@@ -24,6 +25,7 @@ import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.LawEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
+import se.sundsvall.casedata.integration.db.model.RelatedErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.StatusEntity;
 
@@ -75,6 +77,7 @@ public final class EntityMapper {
 				.withStakeholders(new ArrayList<>(errandEntity.getStakeholders().stream().map(EntityMapper::toStakeholder).toList()))
 				.withFacilities(new ArrayList<>(errandEntity.getFacilities().stream().map(EntityMapper::toFacility).toList()))
 				.withDecisions(new ArrayList<>(errandEntity.getDecisions().stream().map(EntityMapper::toDecision).toList()))
+				.withRelatesTo(new ArrayList<>(errandEntity.getRelatesTo().stream().map(EntityMapper::toRelatedErrand).toList()))
 				.withExtraParameters(toParameterList(errandEntity.getExtraParameters()))
 				.build())
 			.orElse(null);
@@ -124,6 +127,10 @@ public final class EntityMapper {
 				.withNotes(new ArrayList<>(Optional.ofNullable(errand.getNotes())
 					.orElse(emptyList())
 					.stream().map(notesDTO -> toNoteEntity(notesDTO, municipalityId, namespace))
+					.toList()))
+				.withRelatesTo(new ArrayList<>(Optional.ofNullable(errand.getRelatesTo())
+					.orElse(emptyList())
+					.stream().map(EntityMapper::toRelatedErrandEntity)
 					.toList()))
 				.build());
 
@@ -529,4 +536,25 @@ public final class EntityMapper {
 			.map(StakeholderEntity::getAdAccount)
 			.orElse(null);
 	}
+
+	public static RelatedErrand toRelatedErrand(final RelatedErrandEntity relatedErrandEntity) {
+		return Optional.ofNullable(relatedErrandEntity)
+			.map(obj -> RelatedErrand.builder()
+				.withErrandNumber(relatedErrandEntity.getRelatedErrandNumber())
+				.withErrandId(relatedErrandEntity.getRelatedErrandId())
+				.withRelationReason(relatedErrandEntity.getRelationReason())
+				.build())
+			.orElse(null);
+	}
+
+	public static RelatedErrandEntity toRelatedErrandEntity(final RelatedErrand relatedErrand) {
+		return Optional.ofNullable(relatedErrand)
+			.map(obj -> RelatedErrandEntity.builder()
+				.withRelatedErrandNumber(relatedErrand.getErrandNumber())
+				.withRelatedErrandId(relatedErrand.getErrandId())
+				.withRelationReason(relatedErrand.getRelationReason())
+				.build())
+			.orElse(null);
+	}
+
 }

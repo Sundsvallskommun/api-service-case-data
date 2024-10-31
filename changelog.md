@@ -15,6 +15,10 @@
 
 ## API-Model updates
 
+- **PatchErrand**
+    - **Added Fields:**
+        - relatesTo: `List<RelatedErrand>`
+
 - **AttachmentCategory**
 	- **Removed Values:**
 		- Removed 231 unused values. See API documentation for full list.
@@ -33,17 +37,24 @@
 		- `ANMALAN_HALSOSKYDDSVERKSAMHET`
 
 - **Errand**
-	- **Removed Fields:**
-		- appeals: ``List<Appeal>``
+	- **Added Fields:**
+        - relatesTo: `List<RelatedErrand>`
+    - **Removed Fields:**
+		- appeals: `List<Appeal>`
 
-- **ValidAppealStatusConstraintValidator** *(Removed)*
+- **RelatedErrand** *(Added)*
+    - **Fields:**
+        - errandId: `Long`
+        - errandNumber: `String`
+        - relationReason: `String`
+
 - **Appeal** *(Removed)*
 	- **Fields:**
 		- appealConcernCommunicatedAt: `OffsetDateTime`
 		- created: `OffsetDateTime`
 		- decisionId: `Long`
 		- description: `String`
-		- id: `Long`
+		- id: `long`
 		- municipalityId: `String`
 		- namespace: `String`
 		- registeredAt: `OffsetDateTime`
@@ -57,6 +68,8 @@
 		- description: `String`
 		- status: `String`
 		- timelinessReview: `String`
+
+- **ValidAppealStatusConstraintValidator** *(Removed)*
 
 ---
 

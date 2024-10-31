@@ -1,5 +1,13 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import generated.se.sundsvall.employee.PortalPersonData;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
@@ -26,15 +34,6 @@ import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacili
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNote;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import generated.se.sundsvall.employee.PortalPersonData;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
 class PatchMapperTest {
 
 	@Test
@@ -59,6 +58,7 @@ class PatchMapperTest {
 			assertThat(e.getSuspendedFrom()).isEqualTo(patch.getSuspension().getSuspendedFrom());
 			assertThat(e.getSuspendedTo()).isEqualTo(patch.getSuspension().getSuspendedTo());
 			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(facilityDTO -> toFacilityEntity(facilityDTO, MUNICIPALITY_ID, NAMESPACE)).toList());
+			assertThat(e.getRelatesTo()).hasSize(2).containsAll(patch.getRelatesTo().stream().map(EntityMapper::toRelatedErrandEntity).toList());
 		});
 	}
 
