@@ -5,10 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.casedata.TestUtil;
+import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
 import se.sundsvall.casedata.integration.db.model.enums.ContactType;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 import java.util.List;
@@ -89,6 +94,46 @@ class EntityMapperTest {
 	}
 
 	@Test
+	void toErrandEntityWithNullValuesTest(){
+
+		// Arrange
+		final var errand = Errand.builder().build();
+
+		// Act
+		final var entity = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
+		assertThat(entity).hasAllNullFieldsOrPropertiesExcept("id",
+			"version",
+			"statuses",
+			"stakeholders",
+			"facilities",
+			"decisions",
+			"appeals",
+			"notes",
+			"suspension",
+			"extraParameters",
+			"municipalityId",
+			"namespace",
+			"priority");
+
+		assertThat(entity.getId()).isZero();
+		assertThat(entity.getVersion()).isZero();
+		assertThat(entity.getStatuses()).isEmpty();
+		assertThat(entity.getStakeholders()).isEmpty();
+		assertThat(entity.getFacilities()).isEmpty();
+		assertThat(entity.getDecisions()).isEmpty();
+		assertThat(entity.getAppeals()).isEmpty();
+		assertThat(entity.getNotes()).isEmpty();
+		assertThat(entity.getSuspendedFrom()).isNull();
+		assertThat(entity.getSuspendedTo()).isNull();
+		assertThat(entity.getExtraParameters()).isEmpty();
+		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+		assertThat(entity.getNamespace()).isEqualTo(NAMESPACE);
+		assertThat(entity.getPriority()).isEqualTo(Priority.MEDIUM);
+	}
+
+	@Test
 	void toErrandTest() {
 		final var errand = createErrandEntity();
 		final var errandDto = toErrand(errand);
@@ -105,6 +150,40 @@ class EntityMapperTest {
 			assertThat(e.getNamespace()).isEqualTo(errand.getNamespace());
 			assertThat(e.getMunicipalityId()).isEqualTo(errand.getMunicipalityId());
 		});
+	}
+
+	@Test
+	void toErrandWithNullValuesTest(){
+
+		// Arrange
+		final var entity = ErrandEntity.builder().withId(1L).build();
+
+		// Act
+		final var dto = toErrand(entity);
+
+		// Assert
+		assertThat(dto).hasAllNullFieldsOrPropertiesExcept("id",
+			"version",
+			"statuses",
+			"stakeholders",
+			"facilities",
+			"decisions",
+			"appeals",
+			"notes",
+			"suspension",
+			"extraParameters");
+
+		assertThat(dto.getId()).isEqualTo(entity.getId());
+		assertThat(dto.getVersion()).isEqualTo(entity.getVersion());
+		assertThat(dto.getStatuses()).isEmpty();
+		assertThat(dto.getStakeholders()).isEmpty();
+		assertThat(dto.getFacilities()).isEmpty();
+		assertThat(dto.getDecisions()).isEmpty();
+		assertThat(dto.getAppeals()).isEmpty();
+		assertThat(dto.getNotes()).isEmpty();
+		assertThat(dto.getSuspension().getSuspendedFrom()).isNull();
+		assertThat(dto.getSuspension().getSuspendedTo()).isNull();
+		assertThat(dto.getExtraParameters()).isEmpty();
 	}
 
 	@Test
@@ -244,6 +323,34 @@ class EntityMapperTest {
 	}
 
 	@Test
+	void toStakeholderEntityWitNullValueTest(){
+
+		// Arrange
+		final var stakeholder = Stakeholder.builder().build();
+
+		// Act
+		final var entity = toStakeholderEntity(stakeholder, MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
+		assertThat(entity).hasAllNullFieldsOrPropertiesExcept("id",
+			"municipalityId",
+			"namespace",
+			"version",
+			"addresses",
+			"contactInformation",
+			"extraParameters");
+
+		assertThat(entity.getId()).isZero();
+		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+		assertThat(entity.getNamespace()).isEqualTo(NAMESPACE);
+		assertThat(entity.getVersion()).isZero();
+		assertThat(entity.getAddresses()).isEmpty();
+		assertThat(entity.getContactInformation()).isEmpty();
+		assertThat(entity.getExtraParameters()).isEmpty();
+
+	}
+
+	@Test
 	void toStakeholderTest() {
 		final var stakeholder = createStakeholderEntity();
 		final var stakeholderDto = toStakeholder(stakeholder);
@@ -264,6 +371,33 @@ class EntityMapperTest {
 			assertThat(s.getMunicipalityId()).isEqualTo(stakeholder.getMunicipalityId());
 			assertThat(s.getNamespace()).isEqualTo(stakeholder.getNamespace());
 		});
+	}
+
+	@Test
+	void toStakeholderWithNullValuesTest(){
+
+		// Arrange
+		final var entity = StakeholderEntity.builder().withId(1L).build();
+
+		// Act
+		final var dto = toStakeholder(entity);
+
+		// Assert
+		assertThat(dto).hasAllNullFieldsOrPropertiesExcept("id",
+			"municipalityId",
+			"namespace",
+			"version",
+			"addresses",
+			"contactInformation",
+			"extraParameters");
+
+		assertThat(dto.getId()).isEqualTo(entity.getId());
+		assertThat(dto.getMunicipalityId()).isEqualTo(entity.getMunicipalityId());
+		assertThat(dto.getNamespace()).isEqualTo(entity.getNamespace());
+		assertThat(dto.getVersion()).isEqualTo(entity.getVersion());
+		assertThat(dto.getAddresses()).isEmpty();
+		assertThat(dto.getContactInformation()).isEmpty();
+		assertThat(dto.getExtraParameters()).isEmpty();
 	}
 
 	@Test
