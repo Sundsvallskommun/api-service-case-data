@@ -10,17 +10,21 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
+import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.service.ErrandService;
 
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 
@@ -131,5 +135,38 @@ class ErrandResourceFailureTest {
 		// Assert
 		verifyNoInteractions(errandServiceMock);
 	}
+
+	@Test
+	void postErrandWithDuplicateDecisionTypes() {
+		// Arrange
+		final var body = createErrand();
+		final var decision1 = Decision.builder()
+			.withDecisionType(DecisionType.FINAL)
+			.build();
+		final var decision2 = Decision.builder()
+			.withDecisionType(DecisionType.FINAL)
+			.build();
+		body.setDecisions(List.of(decision1, decision2));
+
+		// Act
+		final var result = webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		verifyNoInteractions(errandServiceMock);
+		assertThat(result).isNotNull();
+		assertThat(result.getViolations()).hasSize(1);
+		assertThat(result.getViolations().getFirst().getField()).isEqualTo("decisions");
+		assertThat(result.getViolations().getFirst().getMessage()).isEqualTo("Errand can contain one decision of each DecisionType");
+	}
+	
+
 
 }
