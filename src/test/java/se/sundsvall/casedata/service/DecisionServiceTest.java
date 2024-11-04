@@ -21,6 +21,7 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEn
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -42,7 +43,9 @@ import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.integration.db.DecisionRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.DecisionEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
+import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -124,6 +127,19 @@ class DecisionServiceTest {
 		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
 		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
 		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
+	}
+
+	@Test
+	void testPatchDuplicateDecisionType() {
+		// Arrange
+		final var patchDecision = PatchDecision.builder().withDecisionType(DecisionType.FINAL).build();
+		final var decision = DecisionEntity.builder().withId(1L).withDecisionType(DecisionType.FINAL).build();
+		final var errand = ErrandEntity.builder().withDecisions(List.of(decision)).build();
+
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+
+		// Act/Assert
+		assertThrows(ThrowableProblem.class, () -> decisionService.updateDecisionOnErrand(1L, 2L, MUNICIPALITY_ID, NAMESPACE, patchDecision));
 	}
 
 	@Test

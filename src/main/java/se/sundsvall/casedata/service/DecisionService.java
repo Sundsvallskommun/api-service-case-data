@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service;
 
 import static java.text.MessageFormat.format;
+import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
@@ -13,6 +14,7 @@ import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecisi
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
@@ -87,10 +89,16 @@ public class DecisionService {
 	public void updateDecisionOnErrand(final Long errandId, final Long id, final String municipalityId, final String namespace, final PatchDecision decision) {
 		final var errand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
 		final var decisionList = errand.getDecisions();
+
 		final var entity = decisionList.stream()
 			.filter(decisionEntity -> decisionEntity.getId().equals(id))
 			.findFirst()
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, id, errandId)));
+
+		if (decisionList.stream()
+			.anyMatch(decisionEntity -> decisionEntity.getDecisionType().equals(decision.getDecisionType()) && !decisionEntity.getId().equals(id))) {
+			throw Problem.valueOf(BAD_REQUEST, format("Decision with type: {0} already exists on errand with id: {1}", decision.getDecisionType(), errandId));
+		}
 
 		decisionRepository.save(patchDecision(entity, decision));
 

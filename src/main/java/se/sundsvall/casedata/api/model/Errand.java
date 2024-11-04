@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
+import se.sundsvall.casedata.api.model.validation.UniqueDecisionType;
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
@@ -100,8 +101,9 @@ public class Errand {
 	@Valid
 	private List<Facility> facilities;
 
-	@Schema(description = "The decisions connected to the errand")
 	@Valid
+	@UniqueDecisionType
+	@Schema(description = "The decisions connected to the errand")
 	private List<Decision> decisions;
 
 	@Schema(description = "The notes connected to the errand")
