@@ -31,7 +31,9 @@ import se.sundsvall.casedata.service.NotificationService;
 @ActiveProfiles("junit")
 class NotificationResourceFailuresTest {
 
-	private static final String PATH = "/{municipalityId}/{namespace}/notifications";
+	private static final String BASE_PATH = "/{municipalityId}/{namespace}";
+	private static final String NOTIFICATIONS_PATH = BASE_PATH + "/notifications";
+	private static final String ERRAND_NOTIFICATIONS_PATH = BASE_PATH + "/errands/{errandId}/notifications";
 	private static final String NAMESPACE = "namespace";
 	private static final String MUNICIPALITY_ID = "2281";
 
@@ -44,9 +46,13 @@ class NotificationResourceFailuresTest {
 	@Test
 	void createWithMissingBody() {
 
+		// Arrange
+		final var errandId = 12345L;
+
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
+			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId))
+			)
 			.contentType(APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -60,7 +66,7 @@ class NotificationResourceFailuresTest {
 		assertThat(response.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getDetail()).isEqualTo(
-			"Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.NotificationResource.createNotification(java.lang.String,java.lang.String,se.sundsvall.casedata.api.model.Notification)");
+			"Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.NotificationResource.createNotification(java.lang.String,java.lang.String,java.lang.Long,se.sundsvall.casedata.api.model.Notification)");
 
 		verifyNoInteractions(notificationServiceMock);
 	}
@@ -70,6 +76,7 @@ class NotificationResourceFailuresTest {
 
 		// Arrange
 		final var municipalityId = "invalid";
+		final var errandId = 12345L;
 		final var requestBody = Notification.builder()
 			.withOwnerId("SomeOwnerId")
 			.withOwnerFullName("SomeOwnerFullName")
@@ -82,7 +89,8 @@ class NotificationResourceFailuresTest {
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH).build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE)))
+			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH).build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE, "errandId", errandId))
+			)
 			.contentType(APPLICATION_JSON)
 			.bodyValue(requestBody)
 			.exchange()
@@ -111,7 +119,8 @@ class NotificationResourceFailuresTest {
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
+			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 12345L))
+			)
 			.contentType(APPLICATION_JSON)
 			.bodyValue(requestBody)
 			.exchange()
@@ -141,7 +150,7 @@ class NotificationResourceFailuresTest {
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
+			.uri(builder -> builder.path(NOTIFICATIONS_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
 			.contentType(APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -176,7 +185,7 @@ class NotificationResourceFailuresTest {
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH).build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE)))
+			.uri(builder -> builder.path(NOTIFICATIONS_PATH).build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(requestBody)
 			.exchange()
@@ -208,7 +217,7 @@ class NotificationResourceFailuresTest {
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
+			.uri(builder -> builder.path(NOTIFICATIONS_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(requestBody)
 			.exchange()
@@ -238,7 +247,7 @@ class NotificationResourceFailuresTest {
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH).queryParam("ownerId", ownerId).build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE)))
+			.uri(builder -> builder.path(NOTIFICATIONS_PATH).queryParam("ownerId", ownerId).build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
@@ -252,7 +261,7 @@ class NotificationResourceFailuresTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("getNotifications.municipalityId", "not a valid municipality ID"));
+			.containsExactlyInAnyOrder(tuple("getNotificationsForOwner.municipalityId", "not a valid municipality ID"));
 
 		verifyNoInteractions(notificationServiceMock);
 	}
@@ -262,7 +271,7 @@ class NotificationResourceFailuresTest {
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
+			.uri(builder -> builder.path(NOTIFICATIONS_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
@@ -285,10 +294,11 @@ class NotificationResourceFailuresTest {
 		// Arrange
 		final var notificationId = randomUUID().toString();
 		final var municipalityId = "invalid";
+		final var errandId = 12345L;
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH + "/{notificationId}").build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE, "notificationId", notificationId)))
+			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH + "/{notificationId}").build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE, "errandId", errandId, "notificationId", notificationId)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
