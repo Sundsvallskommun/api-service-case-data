@@ -3,6 +3,7 @@ package se.sundsvall.casedata.api.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -70,7 +71,7 @@ public class Notification {
 	private boolean acknowledged;
 
 	@NotNull
-	@Schema(description = "Errand id of the notification", example = "1234")
+	@Schema(description = "Errand id of the notification", example = "1234", accessMode = READ_ONLY)
 	private Long errandId;
 
 	@Schema(description = "Errand number of the notification", example = "PRH-2022-000001", accessMode = READ_ONLY)

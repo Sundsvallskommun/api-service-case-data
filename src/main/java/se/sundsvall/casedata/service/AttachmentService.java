@@ -1,5 +1,17 @@
 package se.sundsvall.casedata.service;
 
+import io.github.resilience4j.retry.annotation.Retry;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import org.zalando.problem.Problem;
+import se.sundsvall.casedata.api.model.Attachment;
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+
+import java.util.List;
+
 import static java.text.MessageFormat.format;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
@@ -7,21 +19,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachme
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachmentEntity;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchAttachment;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putAttachment;
-
-import java.util.List;
-
-import jakarta.transaction.Transactional;
-
-import org.springframework.stereotype.Service;
-import org.zalando.problem.Problem;
-
-import se.sundsvall.casedata.api.model.Attachment;
-import se.sundsvall.casedata.integration.db.AttachmentRepository;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 @Transactional

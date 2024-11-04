@@ -70,7 +70,7 @@ class AttachmentResourceTest {
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/{namespace}/attachments/errand/{errandNumber}").build(MUNICIPALITY_ID, NAMESPACE, errandNumber))
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/{namespace}/errand/{errandNumber}/attachments").build(MUNICIPALITY_ID, NAMESPACE, errandNumber))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)

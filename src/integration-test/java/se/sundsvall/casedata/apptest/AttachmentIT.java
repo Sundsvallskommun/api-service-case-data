@@ -1,5 +1,14 @@
 package se.sundsvall.casedata.apptest;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.service.util.Constants;
+import se.sundsvall.dept44.test.AbstractAppTest;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+
 import static java.text.MessageFormat.format;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.GET;
@@ -16,16 +25,6 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
-
-import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.service.util.Constants;
-import se.sundsvall.dept44.test.AbstractAppTest;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/AttachmentIT", classes = Application.class)
 @Sql({
@@ -157,7 +156,7 @@ class AttachmentIT extends AbstractAppTest {
 	void test09_getAttachmentsByErrandNumber() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(format("/{0}/{1}/attachments/errand/{2}", MUNICIPALITY_ID, NAMESPACE, "ERRAND-NUMBER-2"))
+			.withServicePath(format("/{0}/{1}/errand/{2}/attachments", MUNICIPALITY_ID, NAMESPACE, "ERRAND-NUMBER-2"))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
