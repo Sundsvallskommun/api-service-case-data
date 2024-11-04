@@ -2,6 +2,11 @@
 
 ## API-endpoints
 
+### Attachments:
+#### New endpoints:
+      - [GET] /{municipalityId}/{namespace}/errand/{errandNumber}/attachments
+#### Removed endpoints:
+      - [GET] /{municipalityId}/{namespace}/attachments/errand/{errandNumber}
 ### Appeals:
 
 #### Removed endpoints:
@@ -12,6 +17,17 @@
       - [GET] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
       - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
       - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
+
+### Notifications:
+#### New endpoints:
+      - [GET] /{municipalityId}/{namespace}/errands/{errandId}/notifications
+      - [POST] /{municipalityId}/{namespace}/errands/{errandId}/notifications
+      - [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}
+      - [GET] /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}
+#### Removed endpoints:
+      - [POST] /{municipalityId}/{namespace}/notifications
+      - [DELETE] /{municipalityId}/{namespace}/notifications/{notificationId}
+      - [GET] /{municipalityId}/{namespace}/notifications/{notificationId}
 
 ## API-Model updates
 
@@ -41,6 +57,10 @@
         - relatesTo: `List<RelatedErrand>`
     - **Removed Fields:**
 		- appeals: `List<Appeal>`
+      
+- **PatchNotification**
+	- **Added Fields:**
+		- errandId: `Long`
 
 - **RelatedErrand** *(Added)*
     - **Fields:**
