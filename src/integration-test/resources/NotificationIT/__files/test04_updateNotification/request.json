@@ -4,6 +4,7 @@
 		"ownerId": "someUser123",
 		"type": "UPDATE",
 		"description": "Updated description",
+	  	"errandId": 1,
 		"content": "Updated content",
 		"expires": "2062-10-31T01:30:00+02:00",
 		"acknowledged": true

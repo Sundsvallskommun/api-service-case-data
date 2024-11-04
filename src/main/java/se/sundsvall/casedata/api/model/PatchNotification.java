@@ -23,6 +23,9 @@ public class PatchNotification {
 	@Schema(description = "Unique identifier for the notification", example = "123e4567-e89b-12d3-a456-426614174000")
 	private String id;
 
+	@Schema(description = "The Errand Id", example = "123", accessMode = Schema.AccessMode.READ_ONLY)
+	private Long errandId;
+
 	@Schema(description = "Owner id of the notification", example = "AD01")
 	private String ownerId;
 

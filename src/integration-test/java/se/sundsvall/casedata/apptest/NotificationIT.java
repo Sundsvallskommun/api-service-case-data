@@ -34,8 +34,9 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 class NotificationIT extends AbstractAppTest {
 
 	private static final String NOTIFICATION_ID = "25d818b7-763e-4b77-9fce-1c7dfc42deb2";
-	private static final String NOTIFICATIONS_PATH = "/{municipalityId}/{namespace}/notifications";
-	private static final String NOTIFICATION_PATH = "/{municipalityId}/{namespace}/notifications/{notificationId}";
+	private static final String NOTIFICATIONS_PATH =  "/{municipalityId}/{namespace}/notifications";
+	private static final String ERRAND_NOTIFICATIONS_PATH = "/{municipalityId}/{namespace}/errands/{errandId}/notifications";
+	private static final String NOTIFICATION_PATH = "/{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}";
 
 	@Test
 	void test01_getNotificationsByOwnerId() {
@@ -53,7 +54,7 @@ class NotificationIT extends AbstractAppTest {
 	void test02_getNotificationById() {
 		setupCall()
 			.withServicePath(builder -> fromPath(NOTIFICATION_PATH)
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID)))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID, "errandId", 1)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -63,8 +64,8 @@ class NotificationIT extends AbstractAppTest {
 	@Test
 	void test03_createNotification() {
 		final var location = setupCall()
-			.withServicePath(builder -> fromPath(NOTIFICATIONS_PATH)
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
+			.withServicePath(builder -> fromPath(ERRAND_NOTIFICATIONS_PATH)
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 1)))
 			.withHttpMethod(POST)
 			.withHeader("sentbyuser", "creator123")
 			.withExpectedResponseStatus(CREATED)
@@ -93,7 +94,7 @@ class NotificationIT extends AbstractAppTest {
 
 		setupCall()
 			.withServicePath(builder -> fromPath(NOTIFICATION_PATH)
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID)))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID, "errandId", 1)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -105,23 +106,34 @@ class NotificationIT extends AbstractAppTest {
 
 		setupCall()
 			.withServicePath(builder -> fromPath(NOTIFICATION_PATH)
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID)))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID, "errandId", 1)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
 			.withServicePath(builder -> fromPath(NOTIFICATION_PATH)
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID)))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID, "errandId", 1)))
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
 			.withServicePath(builder -> fromPath(NOTIFICATION_PATH)
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID)))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID, "errandId", 1)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(NOT_FOUND)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test06_getNotificationsByErrandId() {
+		setupCall()
+			.withServicePath(builder -> fromPath(ERRAND_NOTIFICATIONS_PATH)
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 1)))
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 }

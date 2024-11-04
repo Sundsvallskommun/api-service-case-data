@@ -433,6 +433,7 @@ public final class TestUtil {
 			.withId(randomUUID().toString())
 			.withOwnerId(RandomStringUtils.secure().next(10, true, false))
 			.withType(RandomStringUtils.secure().next(10, true, false))
+			.withErrandId(1L)
 			.build();
 
 		if (modifier != null) {

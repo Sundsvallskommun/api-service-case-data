@@ -12,6 +12,7 @@ servers:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   - url: http://localhost:61719
 =======
   - url: http://localhost:56252
@@ -28,6 +29,9 @@ servers:
 =======
   - url: http://localhost:57950
 >>>>>>> 2da68bd (UF-10673: Removed enum values not used in service)
+=======
+  - url: http://localhost:59900
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     description: Generated server url
 tags:
   - name: MessageAttachments
@@ -92,6 +96,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -114,6 +119,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -125,6 +132,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -142,17 +150,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     patch:
       tags:
         - Status
@@ -187,6 +208,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -209,6 +231,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -220,6 +244,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -237,17 +262,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}/stakeholders:
     get:
       tags:
@@ -282,6 +320,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -294,6 +349,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -332,6 +388,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -381,6 +439,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -403,6 +462,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -414,6 +475,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -431,17 +493,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     patch:
       tags:
         - Stakeholders
@@ -476,6 +551,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "201":
@@ -526,6 +602,18 @@ paths:
 =======
         "500":
           description: Internal Server error
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
           content:
             application/problem+json:
               schema:
@@ -536,9 +624,20 @@ paths:
             Location:
               description: Location of the created resource.
               style: simple
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+              schema:
+                type: string
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}:
     get:
       tags:
@@ -574,6 +673,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -586,6 +702,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -624,6 +741,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -673,6 +792,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -695,6 +815,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -706,6 +828,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -723,17 +846,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     delete:
       tags:
         - Stakeholders
@@ -768,6 +904,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -790,6 +927,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -801,6 +940,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -818,17 +958,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     patch:
       tags:
         - Stakeholders
@@ -869,6 +1022,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -891,6 +1045,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -902,6 +1058,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -919,17 +1076,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}/viewed/{isViewed}:
     put:
       tags:
@@ -967,12 +1137,6 @@ paths:
           schema:
             type: boolean
       responses:
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -983,6 +1147,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "204":
           description: No content - Successful operation
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/facilities:
     get:
       tags:
@@ -1012,6 +1182,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -1024,6 +1211,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -1062,6 +1250,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -1111,6 +1301,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -1133,6 +1324,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -1144,6 +1337,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -1161,17 +1355,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     post:
       tags:
         - Facilities
@@ -1204,12 +1411,26 @@ paths:
               $ref: "#/components/schemas/Facility"
         required: true
       responses:
+<<<<<<< HEAD
         "500":
           description: Internal Server error
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "400":
           description: Bad request
           content:
@@ -1284,6 +1505,21 @@ paths:
 =======
                 $ref: "#/components/schemas/Problem"
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+        "201":
+          description: Created - Successful operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}:
     get:
       tags:
@@ -1319,6 +1555,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -1331,6 +1584,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -1369,6 +1623,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -1418,6 +1674,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -1440,6 +1697,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -1451,6 +1710,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -1468,17 +1728,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     delete:
       tags:
         - Decisions
@@ -1513,6 +1786,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -1535,6 +1809,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -1546,6 +1822,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -1563,17 +1840,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     patch:
       tags:
         - Decisions
@@ -1614,6 +1904,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -1636,6 +1927,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -1647,6 +1940,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -1664,17 +1958,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}:
     get:
       tags:
@@ -1710,6 +2017,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -1722,6 +2046,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -1760,6 +2085,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -1809,6 +2136,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -1831,6 +2159,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -1842,6 +2172,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -1859,17 +2190,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     delete:
       tags:
         - Attachments
@@ -1904,6 +2248,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -1926,6 +2271,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -1937,6 +2284,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -1954,17 +2302,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     patch:
       tags:
         - Attachments
@@ -2003,6 +2364,7 @@ paths:
               $ref: "#/components/schemas/Attachment"
         required: true
       responses:
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -2211,6 +2573,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -2227,6 +2591,7 @@ paths:
                 $ref: "#/components/schemas/Problem"
         "204":
           description: No content - Successful operation
+<<<<<<< HEAD
     patch:
       tags:
         - Appeals
@@ -2327,6 +2692,8 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -2339,6 +2706,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -2605,6 +2973,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands:
     get:
       tags:
@@ -2662,6 +3032,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -2674,6 +3061,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -2712,6 +3100,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -2748,12 +3138,147 @@ paths:
               $ref: "#/components/schemas/Errand"
         required: true
       responses:
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "201":
+          description: Created - Successful operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/notifications:
+    get:
+      tags:
+        - Notifications
+      summary: Get notifications
+      description: "Get notifications for the provided namespace, municipality and\
+        \ ownerId"
+      operationId: getNotificationsForErrand
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
+        - name: errandId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: sort
+          in: query
+          description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
+=======
+        "200":
+          description: OK - Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+            application/problem+json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+    post:
+      tags:
+        - Notifications
+      summary: Create notification
+      description: Create new notification for the namespace and municipality
+      operationId: createNotification
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
+        - name: errandId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Notification"
+        required: true
+      responses:
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -2763,12 +3288,16 @@ paths:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -2785,6 +3314,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "201":
           description: Created - Successful operation
           headers:
@@ -2792,6 +3323,7 @@ paths:
               style: simple
               schema:
                 type: string
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         "400":
@@ -2828,6 +3360,14 @@ paths:
 =======
                 $ref: "#/components/schemas/Problem"
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}/messages:
     post:
       tags:
@@ -2861,12 +3401,6 @@ paths:
               $ref: "#/components/schemas/MessageRequest"
         required: true
       responses:
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -2877,6 +3411,12 @@ paths:
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "204":
           description: No content - Successful operation
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/attachments:
     post:
       tags:
@@ -2912,6 +3452,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "201":
@@ -2943,6 +3484,68 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "201":
+          description: Created - Successful operation
+          headers:
+            Location:
+              description: Location of the created resource.
+              style: simple
+              schema:
+                type: string
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/notifications:
+    get:
+      tags:
+        - Notifications
+      summary: Get notifications
+      description: "Get notifications for the provided namespace, municipality and\
+        \ ownerId"
+      operationId: getNotificationsForOwner
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
+        - name: ownerId
+          in: query
+          description: ownerId
+          required: true
+          schema:
+            type: string
+          example: AD01
+      responses:
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -2966,6 +3569,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "201":
           description: Created - Successful operation
           headers:
@@ -2975,6 +3579,74 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+        "200":
+          description: OK - Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+            application/problem+json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+    patch:
+      tags:
+        - Notifications
+      summary: Update notification
+      description: Update notifications for the namespace and municipality
+      operationId: updateNotifications
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/PatchNotification"
+        required: true
+      responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: Successful operation
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}:
     get:
       tags:
@@ -3004,6 +3676,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -3016,6 +3705,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -3054,6 +3744,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -3097,6 +3789,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -3119,6 +3812,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -3130,6 +3825,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -3147,17 +3843,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}/notes:
     get:
       tags:
@@ -3192,6 +3901,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -3204,6 +3930,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -3242,6 +3969,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -3289,10 +4018,31 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
 =======
+=======
+        "201":
+          description: Created - Successful operation
+          headers:
+            Location:
+              description: Location of the created resource
+              style: simple
+              schema:
+                type: string
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
           content:
             application/problem+json:
               schema:
@@ -3320,6 +4070,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
 =======
 >>>>>>> 2da68bd (UF-10673: Removed enum values not used in service)
@@ -3381,6 +4132,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}:
     get:
       tags:
@@ -3416,6 +4169,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -3428,6 +4198,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -3466,6 +4237,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -3509,6 +4282,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -3531,6 +4305,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -3542,6 +4318,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -3559,17 +4336,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     patch:
       tags:
         - Notes
@@ -3610,6 +4400,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -3632,6 +4423,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -3643,6 +4436,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -3660,17 +4454,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}:
     get:
       tags:
@@ -3706,6 +4513,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -3718,6 +4542,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -3756,6 +4581,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -3799,6 +4626,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -3821,6 +4649,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -3832,6 +4662,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -3849,17 +4680,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     patch:
       tags:
         - Facilities
@@ -3900,6 +4744,7 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
         "500":
@@ -3922,6 +4767,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "400":
           description: Bad request
           content:
@@ -3933,6 +4780,7 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
@@ -3950,17 +4798,30 @@ paths:
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
         "204":
           description: No content - Successful operation
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}/decisions:
     get:
       tags:
@@ -3990,6 +4851,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -4002,6 +4880,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -4040,6 +4919,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -4087,14 +4968,32 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "201":
           description: Created - Successful operation
           headers:
             Location:
               description: Location of the created resource.
               style: simple
+<<<<<<< HEAD
         "500":
           description: Internal Server error
           content:
@@ -4259,6 +5158,16 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+              schema:
+                type: string
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/parking-permits:
     get:
       tags:
@@ -4288,6 +5197,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -4300,6 +5226,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -4338,6 +5265,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -4351,6 +5280,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/GetParkingPermit"
+<<<<<<< HEAD
   /{municipalityId}/{namespace}/notifications/{notificationId}:
     get:
       tags:
@@ -4571,6 +5501,8 @@ paths:
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/messages/{errandNumber}:
     get:
       tags:
@@ -4597,12 +5529,6 @@ paths:
           schema:
             type: string
       responses:
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -4611,6 +5537,12 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "200":
           description: OK - Successful operation
           content:
@@ -4659,6 +5591,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -4671,6 +5620,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -4709,6 +5659,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -4719,9 +5671,133 @@ paths:
                   $ref: "#/components/schemas/History"
             application/problem+json:
               schema:
+<<<<<<< HEAD
                 type: array
                 items:
                   $ref: "#/components/schemas/History"
+=======
+                type: string
+  /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}:
+    get:
+      tags:
+        - Notifications
+      summary: Get notification
+      description: Get a specific notification for the namespace and municipality
+      operationId: getNotification
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
+        - name: notificationId
+          in: path
+          description: notificationId
+          required: true
+          schema:
+            type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+        - name: errandId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Notification"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    delete:
+      tags:
+        - Notifications
+      summary: Delete notification
+      description: Delete notification for the namespace and municipality
+      operationId: deleteNotification
+      parameters:
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: errandId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: notificationId
+          in: path
+          description: Notification ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: Successful operation
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
   /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}/history:
     get:
       tags:
@@ -4757,6 +5833,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -4769,6 +5862,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -4807,6 +5901,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -4894,8 +5990,19 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "500":
           description: Internal Server Error
+=======
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
           content:
             application/problem+json:
               schema:
@@ -4955,6 +6062,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -4967,6 +6091,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -5005,6 +6130,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -5053,6 +6180,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -5065,6 +6209,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -5103,6 +6248,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -5151,6 +6298,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -5163,6 +6327,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -5201,6 +6366,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -5249,6 +6416,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -5261,6 +6445,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -5299,6 +6484,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -5309,14 +6496,19 @@ paths:
                   $ref: "#/components/schemas/History"
             application/problem+json:
               schema:
+<<<<<<< HEAD
                 type: array
                 items:
                   $ref: "#/components/schemas/History"
   /{municipalityId}/{namespace}/attachments/errand/{errandNumber}:
+=======
+                type: string
+  /{municipalityId}/{namespace}/errand/{errandNumber}/attachments:
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
     get:
       tags:
         - Attachments
-      description: Get attachment by errand number.
+      description: Get attachments by errand number.
       operationId: getAttachmentsByErrandNumber
       parameters:
         - name: municipalityId
@@ -5340,6 +6532,23 @@ paths:
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -5352,6 +6561,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "404":
           description: Not found
@@ -5390,6 +6600,8 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
         "200":
           description: OK - Successful operation
           content:
@@ -6135,90 +7347,6 @@ components:
           description: Article of the law
           example: "1"
       description: List of laws related to the decision
-    Notification:
-      required:
-        - description
-        - errandId
-        - ownerId
-        - type
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the notification
-          readOnly: true
-          example: 123e4567-e89b-12d3-a456-426614174000
-        municipalityId:
-          type: string
-          description: The municipality ID
-          readOnly: true
-          example: "2281"
-        namespace:
-          type: string
-          description: Namespace
-          readOnly: true
-          example: my.namespace
-        created:
-          type: string
-          description: Timestamp when the notification was created
-          format: date-time
-          readOnly: true
-          example: 2000-10-31T01:30:00+02:00
-        modified:
-          type: string
-          description: Timestamp when the notification was last modified
-          format: date-time
-          readOnly: true
-          example: 2000-10-31T01:30:00+02:00
-        ownerFullName:
-          type: string
-          description: Name of the owner of the notification
-          readOnly: true
-          example: Test Testorsson
-        ownerId:
-          type: string
-          description: Owner id of the notification
-          example: AD01
-        createdBy:
-          type: string
-          description: User who created the notification
-          example: TestUser
-        createdByFullName:
-          type: string
-          description: Full name of the user who created the notification
-          readOnly: true
-          example: Test Testorsson
-        type:
-          type: string
-          description: Type of the notification
-          example: CREATE
-        description:
-          type: string
-          description: Description of the notification
-          example: Some description of the notification
-        content:
-          type: string
-          description: Content of the notification
-          example: Some content of the notification
-        expires:
-          type: string
-          description: Timestamp when the notification expires
-          format: date-time
-          example: 2000-10-31T01:30:00+02:00
-        acknowledged:
-          type: boolean
-          description: Acknowledged status of the notification
-          example: true
-        errandId:
-          type: integer
-          description: Errand id of the notification
-          format: int64
-          example: 1234
-        errandNumber:
-          type: string
-          description: Errand number of the notification
-          readOnly: true
-          example: PRH-2022-000001
     Errand:
       type: object
       properties:
@@ -6530,6 +7658,91 @@ components:
           format: date-time
           example: 2000-10-31T01:30:00+02:00
       description: Suspension information
+    Notification:
+      required:
+        - description
+        - errandId
+        - ownerId
+        - type
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the notification
+          readOnly: true
+          example: 123e4567-e89b-12d3-a456-426614174000
+        municipalityId:
+          type: string
+          description: The municipality ID
+          readOnly: true
+          example: "2281"
+        namespace:
+          type: string
+          description: Namespace
+          readOnly: true
+          example: my.namespace
+        created:
+          type: string
+          description: Timestamp when the notification was created
+          format: date-time
+          readOnly: true
+          example: 2000-10-31T01:30:00+02:00
+        modified:
+          type: string
+          description: Timestamp when the notification was last modified
+          format: date-time
+          readOnly: true
+          example: 2000-10-31T01:30:00+02:00
+        ownerFullName:
+          type: string
+          description: Name of the owner of the notification
+          readOnly: true
+          example: Test Testorsson
+        ownerId:
+          type: string
+          description: Owner id of the notification
+          example: AD01
+        createdBy:
+          type: string
+          description: User who created the notification
+          example: TestUser
+        createdByFullName:
+          type: string
+          description: Full name of the user who created the notification
+          readOnly: true
+          example: Test Testorsson
+        type:
+          type: string
+          description: Type of the notification
+          example: CREATE
+        description:
+          type: string
+          description: Description of the notification
+          example: Some description of the notification
+        content:
+          type: string
+          description: Content of the notification
+          example: Some content of the notification
+        expires:
+          type: string
+          description: Timestamp when the notification expires
+          format: date-time
+          example: 2000-10-31T01:30:00+02:00
+        acknowledged:
+          type: boolean
+          description: Acknowledged status of the notification
+          example: true
+        errandId:
+          type: integer
+          description: Errand id of the notification
+          format: int64
+          readOnly: true
+          example: 1234
+        errandNumber:
+          type: string
+          description: Errand number of the notification
+          readOnly: true
+          example: PRH-2022-000001
     Classification:
       type: string
       description: Message classification
@@ -6666,6 +7879,12 @@ components:
           type: string
           description: Unique identifier for the notification
           example: 123e4567-e89b-12d3-a456-426614174000
+        errandId:
+          type: integer
+          description: The Errand Id
+          format: int64
+          readOnly: true
+          example: 123
         ownerId:
           type: string
           description: Owner id of the notification
