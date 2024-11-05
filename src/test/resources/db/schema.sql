@@ -115,6 +115,13 @@
         primary key (id)
     ) engine=InnoDB;
 
+    create table errand_labels (
+        value_order integer not null,
+        errand_id bigint not null,
+        value varchar(255),
+        primary key (value_order, errand_id)
+    ) engine=InnoDB;
+
     create table errand_statuses (
         status_order integer not null,
         date_time datetime(6),
@@ -428,6 +435,11 @@
 
     alter table if exists errand_extra_parameters 
        add constraint fk_extra_parameter_errand_id 
+       foreign key (errand_id) 
+       references errand (id);
+
+    alter table if exists errand_labels 
+       add constraint FK_errand_labels_errand_id 
        foreign key (errand_id) 
        references errand (id);
 

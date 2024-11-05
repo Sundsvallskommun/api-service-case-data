@@ -1,5 +1,13 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.Facility;
@@ -16,14 +24,6 @@ import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 
 public final class PatchMapper {
 
@@ -47,6 +47,7 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getApplicationReceived()).ifPresent(errand::setApplicationReceived);
 		Optional.ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(patch.getFacilities().stream().map(facility -> toFacilityEntity(facility, errand.getMunicipalityId(), errand.getNamespace())).toList()));
 		Optional.ofNullable(patch.getRelatesTo()).ifPresent(relatesTo -> errand.getRelatesTo().addAll(patch.getRelatesTo().stream().map(EntityMapper::toRelatedErrandEntity).toList()));
+		Optional.ofNullable(patch.getLabels()).ifPresent(labels -> errand.setLabels(patch.getLabels()));
 		Optional.ofNullable(patch.getSuspension()).ifPresent(
 			suspension -> {
 				errand.setSuspendedFrom(suspension.getSuspendedFrom());
