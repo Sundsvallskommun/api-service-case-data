@@ -1,5 +1,15 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import static java.time.OffsetDateTime.now;
+import static java.util.Collections.emptyList;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Optional;
+
 import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -28,16 +38,6 @@ import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.integration.db.model.RelatedErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.StatusEntity;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Optional;
-
-import static java.time.OffsetDateTime.now;
-import static java.util.Collections.emptyList;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
 
 public final class EntityMapper {
 
@@ -79,6 +79,7 @@ public final class EntityMapper {
 				.withDecisions(new ArrayList<>(errandEntity.getDecisions().stream().map(EntityMapper::toDecision).toList()))
 				.withRelatesTo(new ArrayList<>(errandEntity.getRelatesTo().stream().map(EntityMapper::toRelatedErrand).toList()))
 				.withExtraParameters(toParameterList(errandEntity.getExtraParameters()))
+				.withLabels(errandEntity.getLabels())
 				.build())
 			.orElse(null);
 	}
@@ -132,6 +133,7 @@ public final class EntityMapper {
 					.orElse(emptyList())
 					.stream().map(EntityMapper::toRelatedErrandEntity)
 					.toList()))
+				.withLabels(errand.getLabels())
 				.build());
 
 		errandEntity.ifPresent(entity -> {
