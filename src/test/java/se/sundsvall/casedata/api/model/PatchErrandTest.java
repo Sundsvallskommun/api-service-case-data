@@ -1,17 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -22,6 +10,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 import static se.sundsvall.casedata.TestUtil.createExtraParametersList;
 import static se.sundsvall.casedata.TestUtil.createFacility;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 class PatchErrandTest {
 
@@ -58,6 +59,7 @@ class PatchErrandTest {
 		final var facilities = List.of(createFacility());
 		final var suspension = new Suspension();
 		final var relatesTo = List.of(new RelatedErrand());
+		final var labels = List.of("label");
 
 		// Act
 		final var result = PatchErrand.builder()
@@ -75,6 +77,7 @@ class PatchErrandTest {
 			.withFacilities(facilities)
 			.withSuspension(suspension)
 			.withRelatesTo(relatesTo)
+			.withLabels(labels)
 			.build();
 
 		// Assert
@@ -93,6 +96,7 @@ class PatchErrandTest {
 		assertThat(result.getFacilities()).isEqualTo(facilities);
 		assertThat(result.getSuspension()).isEqualTo(suspension);
 		assertThat(result.getRelatesTo()).isEqualTo(relatesTo);
+		assertThat(result.getLabels()).isEqualTo(labels);
 	}
 
 	@Test
@@ -100,5 +104,4 @@ class PatchErrandTest {
 		assertThat(PatchErrand.builder().build()).hasAllNullFieldsOrProperties();
 		assertThat(new PatchErrand()).hasAllNullFieldsOrProperties();
 	}
-
 }

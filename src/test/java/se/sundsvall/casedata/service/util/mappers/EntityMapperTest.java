@@ -1,18 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import generated.se.sundsvall.employee.PortalPersonData;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-import se.sundsvall.casedata.integration.db.model.enums.ContactType;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
-import java.util.List;
-
 import static java.time.OffsetDateTime.now;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,6 +55,20 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakehol
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatusEntity;
 
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import generated.se.sundsvall.employee.PortalPersonData;
+import se.sundsvall.casedata.TestUtil;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
+import se.sundsvall.casedata.integration.db.model.enums.ContactType;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
 @ExtendWith(MockitoExtension.class)
 class EntityMapperTest {
 
@@ -101,7 +102,8 @@ class EntityMapperTest {
 		final var errandDto = toErrand(errand);
 
 		// Assert
-		assertThat(errandDto).hasNoNullFieldsOrPropertiesExcept("messageIds").satisfies(e -> {
+		// TODO: labels will be removed from exclusion in UF-10736
+		assertThat(errandDto).hasNoNullFieldsOrPropertiesExcept("messageIds", "labels").satisfies(e -> {
 			assertThat(e.getErrandNumber()).isEqualTo(errand.getErrandNumber());
 			assertThat(e.getUpdatedByClient()).isEqualTo(errand.getUpdatedByClient());
 			assertThat(e.getUpdatedBy()).isEqualTo(errand.getUpdatedBy());
