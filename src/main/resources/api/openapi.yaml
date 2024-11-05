@@ -14,6 +14,7 @@ servers:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   - url: http://localhost:61719
 =======
   - url: http://localhost:56252
@@ -38,6 +39,10 @@ servers:
 - url: http://localhost:8080
   description: Generated server url
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+- url: http://localhost:8080
+  description: Generated server url
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
 tags:
 - name: MessageAttachments
   description: MessageAttachment operations
@@ -133,6 +138,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -142,6 +148,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -264,6 +274,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -273,6 +284,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -372,6 +387,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 =======
@@ -447,6 +463,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -528,6 +548,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -537,6 +558,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -629,14 +654,18 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "201":
           description: Created - Successful operation
           headers:
             Location:
               description: Location of the created resource.
               style: simple
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -652,22 +681,73 @@ paths:
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
+=======
+        "404":
+          description: Not found
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "400":
           description: Bad request
           content:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+  /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}:
+    get:
+      tags:
+      - Stakeholders
+      description: Get stakeholder on errand by stakeholder id.
+      operationId: getStakeholderOnErrand
+      parameters:
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: errandId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: stakeholderId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "404":
           description: Not found
           content:
@@ -779,6 +859,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 =======
@@ -854,6 +935,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -935,6 +1020,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -944,6 +1030,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -1066,6 +1156,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -1075,6 +1166,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -1203,6 +1298,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -1212,6 +1308,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -1312,32 +1412,45 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
   /{municipalityId}/{namespace}/errands/{errandId}/facilities:
     get:
       tags:
-        - Facilities
+      - Facilities
       description: Get all facilities on errand
       operationId: getFacilities
       parameters:
-        - name: municipalityId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
-        - name: errandId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: errandId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1420,6 +1533,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
@@ -1453,6 +1567,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -1534,6 +1652,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -1543,6 +1662,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -1642,6 +1765,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
@@ -1752,38 +1876,42 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
   /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}:
     get:
       tags:
-        - Decisions
+      - Decisions
       description: Get decision on errand by decision id.
       operationId: getDecisionById
       parameters:
-        - name: municipalityId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
-        - name: errandId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: decisionId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: errandId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: decisionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1870,6 +1998,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
@@ -1903,6 +2032,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -1984,6 +2117,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -1993,6 +2127,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -2115,6 +2253,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -2124,6 +2263,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -2252,6 +2395,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -2261,6 +2405,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -2361,6 +2509,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 =======
@@ -2436,6 +2585,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -2517,6 +2670,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -2526,6 +2680,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -2648,6 +2806,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -2657,6 +2816,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -2744,6 +2907,7 @@ paths:
         schema:
           type: integer
           format: int64
+<<<<<<< HEAD
       requestBody:
         content:
           application/json:
@@ -2891,6 +3055,8 @@ paths:
           schema:
             type: integer
             format: int64
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
       requestBody:
         content:
           application/json:
@@ -3066,34 +3232,34 @@ paths:
   /{municipalityId}/{namespace}/notifications:
     get:
       tags:
-        - Notifications
+      - Notifications
       summary: Get notifications
       description: "Get notifications for the provided namespace, municipality and\
         \ ownerId"
       operationId: getNotifications
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
-        - name: ownerId
-          in: query
-          description: ownerId
-          required: true
-          schema:
-            type: string
-          example: AD01
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: ownerId
+        in: query
+        description: ownerId
+        required: true
+        schema:
+          type: string
+        example: AD01
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -3130,6 +3296,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
@@ -3150,6 +3317,10 @@ paths:
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -3165,26 +3336,26 @@ paths:
                   $ref: "#/components/schemas/Notification"
     post:
       tags:
-        - Notifications
+      - Notifications
       summary: Create notification
       description: Create new notification for the namespace and municipality
       operationId: createNotification
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
       requestBody:
         content:
           application/json:
@@ -3204,6 +3375,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -3272,28 +3444,32 @@ paths:
 =======
                 $ref: "#/components/schemas/Problem"
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
     patch:
       tags:
-        - Notifications
+      - Notifications
       summary: Update notification
       description: Update notifications for the namespace and municipality
       operationId: updateNotifications
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
       requestBody:
         content:
           application/json:
@@ -3318,6 +3494,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
         "404":
           description: Not found
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
@@ -3331,12 +3508,17 @@ paths:
         "204":
           description: Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+        "204":
+          description: Successful operation
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "400":
           description: Bad request
           content:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -3380,60 +3562,64 @@ paths:
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
 =======
 >>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
   /{municipalityId}/{namespace}/errands:
     get:
       tags:
-        - Errands
+      - Errands
       description: Get errands with or without query. The query is very flexible and
         allows you as a client to control a lot yourself.
       operationId: getErrands
       parameters:
-        - name: municipalityId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
-        - name: filter
-          in: query
-          description: "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)"
-          required: true
-          schema:
-            type: string
-          example: caseType:'PARKING_PERMIT' and stakeholders.firstName~'*mar*' and
-            applicationReceived>'2022-09-08T12:18:03.747+02:00'
-        - name: page
-          in: query
-          description: Zero-based page index (0..N)
-          required: false
-          schema:
-            minimum: 0
-            type: integer
-            default: 0
-        - name: size
-          in: query
-          description: The size of the page to be returned
-          required: false
-          schema:
-            minimum: 1
-            type: integer
-            default: 20
-        - name: sort
-          in: query
-          description: "Sorting criteria in the format: property,(asc|desc). Default\
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: filter
+        in: query
+        description: "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)"
+        required: true
+        schema:
+          type: string
+        example: caseType:'PARKING_PERMIT' and stakeholders.firstName~'*mar*' and
+          applicationReceived>'2022-09-08T12:18:03.747+02:00'
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
           \ sort order is ascending. Multiple sort criteria are supported."
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -3445,6 +3631,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
@@ -3507,6 +3694,10 @@ paths:
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
 =======
 >>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -3518,24 +3709,24 @@ paths:
                 $ref: "#/components/schemas/PageErrand"
     post:
       tags:
-        - Errands
+      - Errands
       description: "Create errand (without attachments). Add attachments to errand\
         \ with PATCH /errands/{id}/attachments afterwards."
       operationId: postErrands
       parameters:
-        - name: municipalityId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
       requestBody:
         content:
           application/json:
@@ -3686,6 +3877,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -3780,32 +3972,36 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
   /{municipalityId}/{namespace}/errands/{errandId}/messages:
     post:
       tags:
-        - Messages
+      - Messages
       description: Save a message on an errand
       operationId: patchErrandWithMessage
       parameters:
-        - name: municipalityId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
-        - name: errandId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: errandId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -3822,8 +4018,13 @@ paths:
               schema:
                 oneOf:
 <<<<<<< HEAD
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
         "500":
@@ -3835,29 +4036,29 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/attachments:
     post:
       tags:
-        - Attachments
+      - Attachments
       description: Create attachment on errand.
       operationId: postAttachment
       parameters:
-        - name: municipalityId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
-        - name: errandId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: errandId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -3868,14 +4069,18 @@ paths:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "201":
           description: Created - Successful operation
           headers:
             Location:
               description: Location of the created resource.
               style: simple
+<<<<<<< HEAD
         "500":
           description: Internal Server error
 <<<<<<< HEAD
@@ -4043,6 +4248,8 @@ paths:
                 $ref: "#/components/schemas/PatchNotification"
         required: true
       responses:
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "404":
           description: Not found
           content:
@@ -4055,6 +4262,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "204":
           description: Successful operation
 <<<<<<< HEAD
@@ -4065,32 +4273,42 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
+=======
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
   /{municipalityId}/{namespace}/errands/{errandId}:
     get:
       tags:
-        - Errands
+      - Errands
       description: Get errand by ID.
       operationId: getErrandById
       parameters:
-        - name: municipalityId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
-        - name: errandId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: errandId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -4402,6 +4620,7 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
   /{municipalityId}/{namespace}/errands/{errandId}:
     get:
       tags:
@@ -4450,6 +4669,8 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -4525,6 +4746,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -4534,6 +4756,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -4633,6 +4859,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 =======
@@ -4708,6 +4935,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -4775,7 +5006,10 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "201":
           description: Created - Successful operation
           headers:
@@ -4789,8 +5023,46 @@ paths:
               schema:
                 oneOf:
 <<<<<<< HEAD
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+  /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}:
+    get:
+      tags:
+      - Notes
+      description: Get note on errand by note id
+      operationId: getNoteById
+      parameters:
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: errandId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "404":
           description: Not found
 >>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
@@ -4831,6 +5103,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -5008,6 +5281,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -5083,6 +5360,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -5092,6 +5370,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -5220,6 +5502,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -5229,6 +5512,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -5329,6 +5616,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 =======
@@ -5404,6 +5692,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -5479,6 +5771,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -5488,6 +5781,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -5616,6 +5913,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -5625,6 +5923,10 @@ paths:
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "204":
           description: No content - Successful operation
 >>>>>>> bd4d475 (UF-10652: Add RelatesTo to relate errands to each other)
@@ -5707,6 +6009,7 @@ paths:
         schema:
           type: integer
           format: int64
+<<<<<<< HEAD
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -5922,6 +6225,8 @@ paths:
           schema:
             type: integer
             format: int64
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
       responses:
         "500":
           description: Internal Server error
@@ -5939,6 +6244,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
@@ -5949,6 +6255,10 @@ paths:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -5964,29 +6274,35 @@ paths:
                   $ref: "#/components/schemas/Appeal"
     patch:
       tags:
+<<<<<<< HEAD
         - Appeals
       description: Create and add appeal to errand.
       operationId: updateErrandWithAppeal
+=======
+      - Decisions
+      description: Create and add decision to errand.
+      operationId: createDecision
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
       parameters:
-        - name: municipalityId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
-        - name: errandId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: errandId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -6000,8 +6316,17 @@ paths:
             Location:
               description: Location of the created resource.
               style: simple
+<<<<<<< HEAD
 =======
 >>>>>>> 53a8023 (Cleaned up unused shortcode)
+=======
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "500":
           description: Internal Server error
           content:
@@ -6009,14 +6334,18 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 1bc0676 (UF-10650: Removed appeal object, entity and supporting classes)
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "400":
           description: Bad request
           content:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
@@ -6045,32 +6374,36 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 >>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
   /{municipalityId}/{namespace}/parking-permits:
     get:
       tags:
-        - Parking permit
+      - Parking permit
       description: Get all issued parking permits.
       operationId: getAllParkingPermits
       parameters:
-        - name: municipalityId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
-        - name: personId
-          in: query
-          description: personId of the applicant
-          required: false
-          schema:
-            type: string
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: personId
+        in: query
+        description: personId of the applicant
+        required: false
+        schema:
+          type: string
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -6203,7 +6536,10 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+<<<<<<< HEAD
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -6222,34 +6558,35 @@ paths:
   /{municipalityId}/{namespace}/notifications/{notificationId}:
     get:
       tags:
-        - Notifications
+      - Notifications
       summary: Get notification
       description: Get a specific notification for the namespace and municipality
       operationId: getNotification
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
-        - name: notificationId
-          in: path
-          description: notificationId
-          required: true
-          schema:
-            type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: notificationId
+        in: path
+        description: notificationId
+        required: true
+        schema:
+          type: string
+        example: 123e4567-e89b-12d3-a456-426614174000
       responses:
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -6300,12 +6637,15 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: Successful operation
           content:
             '*/*':
               schema:
                 $ref: "#/components/schemas/Notification"
+<<<<<<< HEAD
 <<<<<<< HEAD
         "400":
           description: Bad request
@@ -6481,6 +6821,8 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/Notification"
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "404":
           description: Not found
           content:
@@ -6650,10 +6992,57 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 =======
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "200":
+          description: OK - Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+            application/problem+json:
+              schema:
+                type: string
+  /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}/history:
+    get:
+      tags:
+      - History
+      description: Get note history for an errand
+      operationId: getNoteHistory
+      parameters:
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: errandId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "404":
           description: Not found
           content:
@@ -6692,6 +7081,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
@@ -6725,6 +7115,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -6745,6 +7139,7 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}:
     get:
       tags:
+<<<<<<< HEAD
         - Notifications
       summary: Get notification
       description: Get a specific notification for the namespace and municipality
@@ -6839,6 +7234,40 @@ paths:
           required: true
           schema:
             type: string
+=======
+      - MessageAttachments
+      summary: Get a streamed messageAttachment.
+      description: Fetches the message attachment that matches the provided id in
+        a streamed manner
+      operationId: getMessageAttachmentStreamed
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: errandId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: attachmentId
+        in: path
+        required: true
+        schema:
+          type: string
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
       responses:
         "400":
           description: Bad request
@@ -7077,6 +7506,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 <<<<<<< HEAD
@@ -7086,12 +7516,25 @@ paths:
         "500":
           description: Internal Server Error
 =======
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: OK - Successful operation
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+<<<<<<< HEAD
         "404":
           description: Not Found
 >>>>>>> 70da958 (UF-10369: API corrections and new notification resource)
@@ -7126,32 +7569,34 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
   /{municipalityId}/{namespace}/errands/{errandId}/history:
     get:
       tags:
-        - History
+      - History
       description: Get errand history for an errand
       operationId: getErrandHistory
       parameters:
-        - name: municipalityId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\.|\\-]+"
-            type: string
-          example: my.namespace
-        - name: errandId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\.|\\-]+"
+          type: string
+        example: my.namespace
+      - name: errandId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -7230,6 +7675,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
@@ -7263,6 +7709,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -7320,6 +7770,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 =======
@@ -7395,6 +7846,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -7452,6 +7907,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 =======
@@ -7527,6 +7983,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -7584,6 +8044,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 =======
@@ -7659,6 +8120,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -7718,6 +8183,7 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+<<<<<<< HEAD
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
 =======
@@ -7793,6 +8259,10 @@ paths:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         "200":
           description: OK - Successful operation
           content:
@@ -9409,12 +9879,15 @@ components:
           type: integer
           format: int64
 <<<<<<< HEAD
+<<<<<<< HEAD
         sort:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
 =======
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         size:
           type: integer
           format: int32
@@ -9431,16 +9904,22 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
+<<<<<<< HEAD
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         first:
           type: boolean
         last:
           type: boolean
 <<<<<<< HEAD
+<<<<<<< HEAD
         pageable:
           $ref: "#/components/schemas/PageableObject"
 =======
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         numberOfElements:
           type: integer
           format: int32
@@ -9455,6 +9934,7 @@ components:
             $ref: "#/components/schemas/SortObject"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         offset:
           type: integer
           format: int64
@@ -9464,17 +9944,25 @@ components:
 >>>>>>> 2da68bd (UF-10673: Removed enum values not used in service)
 =======
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         paged:
           type: boolean
         pageSize:
           type: integer
           format: int32
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         pageNumber:
           type: integer
           format: int32
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+        pageNumber:
+          type: integer
+          format: int32
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
         unpaged:
           type: boolean
     SortObject:
@@ -9490,6 +9978,7 @@ components:
           type: string
         ignoreCase:
           type: boolean
+<<<<<<< HEAD
 <<<<<<< HEAD
     CommitMetadata:
       type: object
@@ -9577,3 +10066,6 @@ components:
 =======
   securitySchemes: {}
 >>>>>>> ec9d60f (UF-10734: Added API-modifications)
+=======
+  securitySchemes: {}
+>>>>>>> 5ec0520 (UF-10734: Added API-modifications)
