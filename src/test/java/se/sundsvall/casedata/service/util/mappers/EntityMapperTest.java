@@ -147,8 +147,7 @@ class EntityMapperTest {
 		final var errandDto = toErrand(errand);
 
 		// Assert
-		// TODO: labels will be removed from exclusion in UF-10736
-		assertThat(errandDto).hasNoNullFieldsOrPropertiesExcept("messageIds", "labels").satisfies(e -> {
+		assertThat(errandDto).hasNoNullFieldsOrPropertiesExcept("messageIds").satisfies(e -> {
 			assertThat(e.getErrandNumber()).isEqualTo(errand.getErrandNumber());
 			assertThat(e.getUpdatedByClient()).isEqualTo(errand.getUpdatedByClient());
 			assertThat(e.getUpdatedBy()).isEqualTo(errand.getUpdatedBy());
