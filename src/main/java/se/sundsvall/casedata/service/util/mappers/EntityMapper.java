@@ -80,6 +80,7 @@ public final class EntityMapper {
 				.withDecisions(new ArrayList<>(errandEntity.getDecisions().stream().map(EntityMapper::toDecision).toList()))
 				.withRelatesTo(new ArrayList<>(errandEntity.getRelatesTo().stream().map(EntityMapper::toRelatedErrand).toList()))
 				.withExtraParameters(toParameterList(errandEntity.getExtraParameters()))
+				.withLabels(errandEntity.getLabels())
 				.build())
 			.orElse(null);
 	}
@@ -133,6 +134,7 @@ public final class EntityMapper {
 					.orElse(emptyList())
 					.stream().map(EntityMapper::toRelatedErrandEntity)
 					.toList()))
+				.withLabels(errand.getLabels())
 				.build());
 
 		errandEntity.ifPresent(entity -> {

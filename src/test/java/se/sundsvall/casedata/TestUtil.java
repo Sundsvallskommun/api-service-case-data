@@ -1,10 +1,29 @@
 package se.sundsvall.casedata;
 
+import static java.util.UUID.randomUUID;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
+import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.function.Consumer;
+
+import org.apache.commons.lang3.RandomStringUtils;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.commons.lang3.RandomStringUtils;
+
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.ContactInformation;
@@ -49,23 +68,6 @@ import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.function.Consumer;
-
-import static java.util.UUID.randomUUID;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
-import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 public final class TestUtil {
 
@@ -114,6 +116,7 @@ public final class TestUtil {
 				RandomStringUtils.secure().next(10, true, true))))
 			.withSuspension(Suspension.builder().withSuspendedFrom(OffsetDateTime.now()).withSuspendedTo(OffsetDateTime.now().plusDays(5)).build())
 			.withExtraParameters(createExtraParametersList())
+			.withLabels(new ArrayList<>(List.of("label1", "label2")))
 			.build();
 	}
 
@@ -333,6 +336,7 @@ public final class TestUtil {
 			.withFacilities(new ArrayList<>(List.of(createFacility())))
 			.withSuspension(Suspension.builder().withSuspendedFrom(OffsetDateTime.now()).withSuspendedTo(OffsetDateTime.now().plusDays(5)).build())
 			.withRelatesTo(new ArrayList<>(List.of(new RelatedErrand())))
+			.withLabels(new ArrayList<>(List.of("label-xxx", "label-yyy")))
 			.build();
 	}
 
@@ -630,6 +634,7 @@ public final class TestUtil {
 			.withChannel(Channel.EMAIL)
 			.withCaseType(CaseType.PARKING_PERMIT.name())
 			.withRelatesTo(new ArrayList<>(List.of(RelatedErrandEntity.builder().build())))
+			.withLabels(new ArrayList<>(List.of("label1", "label2")))
 			.build();
 	}
 

@@ -95,6 +95,7 @@ class EntityMapperTest {
 			assertThat(e.getCreatedByClient()).isEqualTo(errandDto.getCreatedByClient());
 			assertThat(e.getCaseTitleAddition()).isEqualTo(errandDto.getCaseTitleAddition());
 			assertThat(e.getDescription()).isEqualTo(errandDto.getDescription());
+			assertThat(e.getLabels()).isEqualTo(errandDto.getLabels());
 		});
 	}
 

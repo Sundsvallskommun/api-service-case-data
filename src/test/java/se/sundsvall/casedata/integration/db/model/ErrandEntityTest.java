@@ -1,16 +1,5 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.integration.db.model.enums.Channel;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Random;
-
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -20,6 +9,18 @@ import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Random;
+
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 class ErrandEntityTest {
 
@@ -75,6 +76,7 @@ class ErrandEntityTest {
 		final var suspensionFrom = now();
 		final var suspensionTo = now();
 		final var relatesTo = List.of(new RelatedErrandEntity());
+		final var labels = List.of("label");
 
 		// Act
 		final var bean = ErrandEntity.builder()
@@ -110,13 +112,14 @@ class ErrandEntityTest {
 			.withSuspendedFrom(suspensionFrom)
 			.withSuspendedTo(suspensionTo)
 			.withRelatesTo(relatesTo)
+			.withLabels(labels)
 			.build();
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertBasicFields(bean, id, errandNumber, municipalityId, namespace, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase);
 		assertDates(bean, startDate, endDate, applicationReceived, created, updated, suspensionFrom, suspensionTo);
-		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, notifications, extraParameters, relatesTo);
+		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, notifications, extraParameters, relatesTo, labels);
 		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
 	}
 
@@ -149,7 +152,7 @@ class ErrandEntityTest {
 	}
 
 	private void assertCollections(final ErrandEntity bean, final List<StatusEntity> statuses, final List<StakeholderEntity> stakeholders, final List<FacilityEntity> facilities, final List<DecisionEntity> decisions, final List<NoteEntity> notes,
-		final List<NotificationEntity> notifications, final List<ExtraParameterEntity> extraParameters, final List<RelatedErrandEntity> relatesTo) {
+		final List<NotificationEntity> notifications, final List<ExtraParameterEntity> extraParameters, final List<RelatedErrandEntity> relatesTo, final List<String> labels) {
 
 		assertThat(bean.getStatuses()).isEqualTo(statuses);
 		assertThat(bean.getStakeholders()).isEqualTo(stakeholders);
@@ -159,6 +162,7 @@ class ErrandEntityTest {
 		assertThat(bean.getNotifications()).isEqualTo(notifications);
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(bean.getRelatesTo()).isEqualTo(relatesTo);
+		assertThat(bean.getLabels()).isEqualTo(labels);
 	}
 
 	private void assertClients(final ErrandEntity bean, final String createdByClient, final String updatedByClient, final String createdBy, final String updatedBy) {

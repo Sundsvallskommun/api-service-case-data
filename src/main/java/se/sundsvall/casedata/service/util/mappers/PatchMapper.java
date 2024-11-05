@@ -48,6 +48,7 @@ public final class PatchMapper {
 		Optional.ofNullable(patch.getApplicationReceived()).ifPresent(errand::setApplicationReceived);
 		Optional.ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(patch.getFacilities().stream().map(facility -> toFacilityEntity(facility, errand.getMunicipalityId(), errand.getNamespace())).toList()));
 		Optional.ofNullable(patch.getRelatesTo()).ifPresent(relatesTo -> errand.getRelatesTo().addAll(patch.getRelatesTo().stream().map(EntityMapper::toRelatedErrandEntity).toList()));
+		Optional.ofNullable(patch.getLabels()).ifPresent(labels -> errand.setLabels(patch.getLabels()));
 		Optional.ofNullable(patch.getSuspension()).ifPresent(
 			suspension -> {
 				errand.setSuspendedFrom(suspension.getSuspendedFrom());

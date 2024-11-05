@@ -1,6 +1,19 @@
 package se.sundsvall.casedata.integration.db.model;
 
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.javers.core.metamodel.annotation.DiffIgnore;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -9,6 +22,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,24 +37,11 @@ import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.javers.core.metamodel.annotation.DiffIgnore;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 @Entity
 @Table(name = "errand",
@@ -54,11 +55,9 @@ import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 		})
 	})
 @EntityListeners(ErrandListener.class)
-@Getter
-@Setter
+@Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-@EqualsAndHashCode
 @Builder(setterPrefix = "with")
 public class ErrandEntity {
 
@@ -151,6 +150,13 @@ public class ErrandEntity {
 	@JoinColumn(name = "errand_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_errand_related_errands_errand_id"))
 	private List<RelatedErrandEntity> relatesTo;
 
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "errand_labels",
+		joinColumns = @JoinColumn(name = "errand_id", foreignKey = @ForeignKey(name = "FK_errand_labels_errand_id")))
+	@OrderColumn(name = "value_order")
+	@Column(name = "value")
+	private List<String> labels;
+
 	// WSO2-client
 	@Column(name = "created_by_client")
 	@DiffIgnore
@@ -193,42 +199,4 @@ public class ErrandEntity {
 
 	@OneToMany(mappedBy = "errandEntity", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExtraParameterEntity> extraParameters;
-
-	@Override
-	public String toString() {
-		return "ErrandEntity{" + "id=" + id
-			+ ", version=" + version
-			+ ", errandNumber='" + errandNumber + '\''
-			+ ", municipalityId='" + municipalityId + '\''
-			+ ", namespace='" + namespace + '\''
-			+ ", externalCaseId='" + externalCaseId + '\''
-			+ ", caseType='" + caseType + '\''
-			+ ", channel=" + channel
-			+ ", priority=" + priority
-			+ ", description='" + description + '\''
-			+ ", caseTitleAddition='" + caseTitleAddition + '\''
-			+ ", diaryNumber='" + diaryNumber + '\''
-			+ ", phase='" + phase + '\''
-			+ ", statuses=" + statuses
-			+ ", startDate=" + startDate
-			+ ", endDate=" + endDate
-			+ ", applicationReceived=" + applicationReceived
-			+ ", processId='" + processId + '\''
-			+ ", stakeholders=" + stakeholders
-			+ ", facilities=" + facilities
-			+ ", decisions=" + decisions
-			+ ", notes=" + notes
-			+ ", notifications=" + notifications
-			+ ", relatesTo=" + relatesTo
-			+ ", createdByClient='" + createdByClient + '\''
-			+ ", updatedByClient='" + updatedByClient + '\''
-			+ ", createdBy='" + createdBy + '\''
-			+ ", updatedBy='" + updatedBy + '\''
-			+ ", created=" + created
-			+ ", updated=" + updated
-			+ ", suspendedTo=" + suspendedTo
-			+ ", suspendedFrom=" + suspendedFrom
-			+ ", extraParameters=" + extraParameters
-			+ '}';
-	}
 }
