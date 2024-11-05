@@ -1,6 +1,14 @@
 package se.sundsvall.casedata.api.model;
 
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -10,15 +18,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @Data
 @ToString
@@ -111,6 +113,9 @@ public class Errand {
 	@Schema(description = "Messages connected to this errand. Get message information from Message-API", accessMode = Schema.AccessMode.READ_ONLY)
 	private List<String> messageIds;
 
+	@Schema(description = "List of labels for the errand", example = "[\"label1\",\"label2\"]")
+	private List<String> labels;
+
 	@Valid
 	@Schema(description = "Other errands related to the errand")
 	private List<RelatedErrand> relatesTo;
@@ -141,5 +146,4 @@ public class Errand {
 	@Schema(description = "Date and time when the errand was last updated", accessMode = Schema.AccessMode.READ_ONLY, example = "2023-10-02T12:00:00Z")
 	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)
 	private OffsetDateTime updated;
-
 }
