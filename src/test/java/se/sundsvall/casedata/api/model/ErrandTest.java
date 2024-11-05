@@ -1,16 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.integration.db.model.enums.Channel;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Random;
-
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -19,6 +8,18 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Random;
+
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 class ErrandTest {
 
@@ -74,6 +75,7 @@ class ErrandTest {
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
 		final var relatesTo = List.of(new RelatedErrand());
+		final var labels = List.of("label");
 
 		// Act
 		final var bean = Errand.builder()
@@ -109,13 +111,14 @@ class ErrandTest {
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.withRelatesTo(relatesTo)
+			.withLabels(labels)
 			.build();
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertBasicFields(bean, id, errandNumber, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase, suspension, municipalityId, namespace);
 		assertDates(bean, startDate, endDate, applicationReceived, created, updated);
-		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, extraParameters, relatesTo);
+		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, extraParameters, relatesTo, labels);
 		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
 	}
 
@@ -146,7 +149,7 @@ class ErrandTest {
 	}
 
 	private void assertCollections(final Errand bean, final List<Status> statuses, final List<Stakeholder> stakeholders, final List<Facility> facilities, final List<Decision> decisions, final List<Note> notes, final List<ExtraParameter> extraParameters,
-		final List<RelatedErrand> relatesTo) {
+		final List<RelatedErrand> relatesTo, final List<String> labels) {
 		assertThat(bean.getStatuses()).isEqualTo(statuses);
 		assertThat(bean.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(bean.getFacilities()).isEqualTo(facilities);
@@ -154,6 +157,7 @@ class ErrandTest {
 		assertThat(bean.getNotes()).isEqualTo(notes);
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(bean.getRelatesTo()).isEqualTo(relatesTo);
+		assertThat(bean.getLabels()).isEqualTo(labels);
 	}
 
 	private void assertClients(final Errand bean, final String createdByClient, final String updatedByClient, final String createdBy, final String updatedBy) {
