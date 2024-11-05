@@ -1,160 +1,154 @@
 [
   {
-    "changeType": "NewObject",
-    "commitMetadata": {
-      "author": "ANDSOD",
-      "commitDate": "2024-01-25T12:00:00",
-      "commitDateInstant": "2024-01-25T12:00:00Z",
-      "id": 4.00,
-      "properties": []
-    },
-    "globalId": {
-      "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
-    }
+	"changeType": "NewObject",
+	"commitMetadata": {
+	  "author": "ANDSOD",
+	  "commitDate": "2024-01-25T12:00:00",
+	  "commitDateInstant": "2024-01-25T12:00:00Z",
+	  "id": 4.0,
+	  "properties": []
+	},
+	"globalId": {
+	  "cdoId": 4,
+	  "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
+	}
   },
   {
-    "changeType": "ReferenceChange",
-    "commitMetadata": {
-      "author": "ANDSOD",
-      "commitDate": "2024-01-25T12:00:00",
-      "commitDateInstant": "2024-01-25T12:00:00Z",
-      "id": 4.00,
-      "properties": []
-    },
-    "globalId": {
-      "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
-    },
-    "left": null,
-    "property": "errand",
-    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
-    "right": {
-      "cdoId": 406,
-      "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
-    }
+	"changeType": "ReferenceChange",
+	"commitMetadata": {
+	  "author": "ANDSOD",
+	  "commitDate": "2024-01-25T12:00:00",
+	  "commitDateInstant": "2024-01-25T12:00:00Z",
+	  "id": 4.0,
+	  "properties": []
+	},
+	"globalId": {
+	  "cdoId": 4,
+	  "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
+	},
+	"property": "errand",
+	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+	"right": {
+	  "cdoId": 406,
+	  "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
+	}
   },
   {
-    "changeType": "InitialValueChange",
-    "commitMetadata": {
-      "author": "ANDSOD",
-      "commitDate": "2024-01-25T12:00:00",
-      "commitDateInstant": "2024-01-25T12:00:00Z",
-      "id": 4.00,
-      "properties": []
-    },
-    "globalId": {
-      "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
-    },
-    "left": null,
-    "property": "description",
-    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
-    "right": "En fritextbeskrivning av facility."
+	"changeType": "InitialValueChange",
+	"commitMetadata": {
+	  "author": "ANDSOD",
+	  "commitDate": "2024-01-25T12:00:00",
+	  "commitDateInstant": "2024-01-25T12:00:00Z",
+	  "id": 4.0,
+	  "properties": []
+	},
+	"globalId": {
+	  "cdoId": 4,
+	  "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
+	},
+	"property": "description",
+	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+	"right": "En fritextbeskrivning av facility."
   },
   {
-    "changeType": "InitialValueChange",
-    "commitMetadata": {
-      "author": "ANDSOD",
-      "commitDate": "2024-01-25T12:00:00",
-      "commitDateInstant": "2024-01-25T12:00:00Z",
-      "id": 4.00,
-      "properties": []
-    },
-    "globalId": {
-      "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
-    },
-    "left": null,
-    "property": "municipalityId",
-    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
-    "right": "2281"
+	"changeType": "InitialValueChange",
+	"commitMetadata": {
+	  "author": "ANDSOD",
+	  "commitDate": "2024-01-25T12:00:00",
+	  "commitDateInstant": "2024-01-25T12:00:00Z",
+	  "id": 4.0,
+	  "properties": []
+	},
+	"globalId": {
+	  "cdoId": 4,
+	  "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
+	},
+	"property": "municipalityId",
+	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+	"right": "2281"
   },
   {
-    "changeType": "InitialValueChange",
-    "commitMetadata": {
-      "author": "ANDSOD",
-      "commitDate": "2024-01-25T12:00:00",
-      "commitDateInstant": "2024-01-25T12:00:00Z",
-      "id": 4.00,
-      "properties": []
-    },
-    "globalId": {
-      "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
-    },
-    "left": null,
-    "property": "facilityCollectionName",
-    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
-    "right": "Sundsvalls testfabrik"
+	"changeType": "InitialValueChange",
+	"commitMetadata": {
+	  "author": "ANDSOD",
+	  "commitDate": "2024-01-25T12:00:00",
+	  "commitDateInstant": "2024-01-25T12:00:00Z",
+	  "id": 4.0,
+	  "properties": []
+	},
+	"globalId": {
+	  "cdoId": 4,
+	  "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
+	},
+	"property": "facilityCollectionName",
+	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+	"right": "Sundsvalls testfabrik"
   },
   {
-    "changeType": "InitialValueChange",
-    "commitMetadata": {
-      "author": "ANDSOD",
-      "commitDate": "2024-01-25T12:00:00",
-      "commitDateInstant": "2024-01-25T12:00:00Z",
-      "id": 4.00,
-      "properties": []
-    },
-    "globalId": {
-      "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
-    },
-    "left": null,
-    "property": "mainFacility",
-    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
-    "right": true
+	"changeType": "InitialValueChange",
+	"commitMetadata": {
+	  "author": "ANDSOD",
+	  "commitDate": "2024-01-25T12:00:00",
+	  "commitDateInstant": "2024-01-25T12:00:00Z",
+	  "id": 4.0,
+	  "properties": []
+	},
+	"globalId": {
+	  "cdoId": 4,
+	  "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
+	},
+	"property": "mainFacility",
+	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+	"right": true
   },
   {
-    "changeType": "InitialValueChange",
-    "commitMetadata": {
-      "author": "ANDSOD",
-      "commitDate": "2024-01-25T12:00:00",
-      "commitDateInstant": "2024-01-25T12:00:00Z",
-      "id": 4.00,
-      "properties": []
-    },
-    "globalId": {
-      "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
-    },
-    "left": null,
-    "property": "facilityType",
-    "propertyChangeType": "PROPERTY_VALUE_CHANGED",
-    "right": "ONE_FAMILY_HOUSE"
+	"changeType": "InitialValueChange",
+	"commitMetadata": {
+	  "author": "ANDSOD",
+	  "commitDate": "2024-01-25T12:00:00",
+	  "commitDateInstant": "2024-01-25T12:00:00Z",
+	  "id": 4.0,
+	  "properties": []
+	},
+	"globalId": {
+	  "cdoId": 4,
+	  "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
+	},
+	"property": "facilityType",
+	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+	"right": "ONE_FAMILY_HOUSE"
   },
   {
-    "changeType": "MapChange",
-    "commitMetadata": {
-      "author": "ANDSOD",
-      "commitDate": "2024-01-25T12:00:00",
-      "commitDateInstant": "2024-01-25T12:00:00Z",
-      "id": 4.00,
-      "properties": []
-    },
-    "entryChanges": [
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "additionalProp1",
-        "value": "string"
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "additionalProp3",
-        "value": "string"
-      },
-      {
-        "entryChangeType": "EntryAdded",
-        "key": "additionalProp2",
-        "value": "string"
-      }
-    ],
-    "globalId": {
-      "cdoId": 4,
-      "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
-    },
-    "property": "extraParameters",
-    "propertyChangeType": "PROPERTY_VALUE_CHANGED"
+	"changeType": "MapChange",
+	"commitMetadata": {
+	  "author": "ANDSOD",
+	  "commitDate": "2024-01-25T12:00:00",
+	  "commitDateInstant": "2024-01-25T12:00:00Z",
+	  "id": 4.0,
+	  "properties": []
+	},
+	"entryChanges": [
+	  {
+		"entryChangeType": "EntryAdded",
+		"key": "additionalProp1",
+		"value": "string"
+	  },
+	  {
+		"entryChangeType": "EntryAdded",
+		"key": "additionalProp3",
+		"value": "string"
+	  },
+	  {
+		"entryChangeType": "EntryAdded",
+		"key": "additionalProp2",
+		"value": "string"
+	  }
+	],
+	"globalId": {
+	  "cdoId": 4,
+	  "entity": "se.sundsvall.casedata.integration.db.model.FacilityEntity"
+	},
+	"property": "extraParameters",
+	"propertyChangeType": "PROPERTY_VALUE_CHANGED"
   }
 ]

@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.api.model.history;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Data;
 
@@ -19,9 +20,9 @@ public class History {
 
 	private List<EntryChangesItem> entryChanges;
 
-	private String left;
+	private Object left;
 
-	private String right;
+	private Object right;
 
 	private List<ElementChangesItem> elementChanges;
 
