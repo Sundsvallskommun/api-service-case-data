@@ -9,6 +9,6 @@ public class ElementChangesItem {
 
 	private int index;
 
-	private Value value;
+	private Object value;
 
 }

@@ -17,7 +17,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.history.History;
 import se.sundsvall.casedata.service.HistoryService;
+
+import java.util.List;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -36,21 +39,23 @@ class HistoryResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-		final var history = "attachment history";
-		when(historyServiceMock.findAttachmentHistoryOnErrand(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
+		final var history = new History();
+		final var historyList = List.of(history);
+		when(historyServiceMock.findAttachmentHistoryOnErrand(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(historyList);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/attachments/{attachmentId}/history").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(String.class)
+			.expectBodyList(History.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert
-		assertThat(response).isEqualTo(history);
+		assertThat(response).isNotNull().hasSize(1);
+		assertThat(response.getFirst()).isEqualTo(history);
 		verify(historyServiceMock).findAttachmentHistoryOnErrand(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
 	}
@@ -60,21 +65,23 @@ class HistoryResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var decisionId = 456L;
-		final var history = "decision history";
-		when(historyServiceMock.findDecisionHistoryOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
+		final var history = new History();
+		final var historyList = List.of(history);
+		when(historyServiceMock.findDecisionHistoryOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(historyList);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/decisions/{decisionId}/history").build(MUNICIPALITY_ID, NAMESPACE, errandId, decisionId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(String.class)
+			.expectBodyList(History.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert
-		assertThat(response).isEqualTo(history);
+		assertThat(response).isNotNull().hasSize(1);
+		assertThat(response.getFirst()).isEqualTo(history);
 		verify(historyServiceMock).findDecisionHistoryOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
 	}
@@ -83,21 +90,23 @@ class HistoryResourceTest {
 	void getErrandHistory() {
 		// Arrange
 		final var errandId = 123L;
-		final var history = "errand history";
-		when(historyServiceMock.findErrandHistory(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
+		final var history = new History();
+		final var historyList = List.of(history);
+		when(historyServiceMock.findErrandHistory(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(historyList);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/history").build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(String.class)
+			.expectBodyList(History.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert
-		assertThat(response).isEqualTo(history);
+		assertThat(response).isNotNull().hasSize(1);
+		assertThat(response.getFirst()).isEqualTo(history);
 		verify(historyServiceMock).findErrandHistory(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
 	}
@@ -107,21 +116,23 @@ class HistoryResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var facilityId = 456L;
-		final var history = "facility history";
-		when(historyServiceMock.findFacilityHistoryOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
+		final var history = new History();
+		final var historyList = List.of(history);
+		when(historyServiceMock.findFacilityHistoryOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(historyList);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/facilities/{facilityId}/history").build(MUNICIPALITY_ID, NAMESPACE, errandId, facilityId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(String.class)
+			.expectBodyList(History.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert
-		assertThat(response).isEqualTo(history);
+		assertThat(response).isNotNull().hasSize(1);
+		assertThat(response.getFirst()).isEqualTo(history);
 		verify(historyServiceMock).findFacilityHistoryOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
 	}
@@ -131,21 +142,23 @@ class HistoryResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var noteId = 456L;
-		final var history = "note history";
-		when(historyServiceMock.findNoteHistoryOnErrand(errandId, noteId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
+		final var history = new History();
+		final var historyList = List.of(history);
+		when(historyServiceMock.findNoteHistoryOnErrand(errandId, noteId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(historyList);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/notes/{noteId}/history").build(MUNICIPALITY_ID, NAMESPACE, errandId, noteId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(String.class)
+			.expectBodyList(History.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert
-		assertThat(response).isEqualTo(history);
+		assertThat(response).isNotNull().hasSize(1);
+		assertThat(response.getFirst()).isEqualTo(history);
 		verify(historyServiceMock).findNoteHistoryOnErrand(errandId, noteId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
 	}
@@ -155,21 +168,23 @@ class HistoryResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var stakeholderId = 456L;
-		final var history = "stakeholder history";
-		when(historyServiceMock.findStakeholderHistoryOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(history);
+		final var history = new History();
+		final var historyList = List.of(history);
+		when(historyServiceMock.findStakeholderHistoryOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(historyList);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/stakeholders/{stakeholderId}/history").build(MUNICIPALITY_ID, NAMESPACE, errandId, stakeholderId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(String.class)
+			.expectBodyList(History.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert
-		assertThat(response).isEqualTo(history);
+		assertThat(response).isNotNull().hasSize(1);
+		assertThat(response.getFirst()).isEqualTo(history);
 		verify(historyServiceMock).findStakeholderHistoryOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(historyServiceMock);
 	}
