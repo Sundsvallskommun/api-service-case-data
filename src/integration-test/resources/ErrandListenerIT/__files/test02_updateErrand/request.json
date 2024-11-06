@@ -1,5 +1,6 @@
 {
   "diaryNumber": "Patch",
   "description": "New description",
-  "priority": "HIGH"
+  "priority": "HIGH",
+  "labels": ["updated-label-1", "updated-label-2"]
 }

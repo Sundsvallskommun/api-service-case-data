@@ -129,5 +129,4 @@ public class HistoryService {
 			throw Problem.valueOf(NOT_FOUND, format(ERRAND_WAS_NOT_FOUND, errandId));
 		}
 	}
-
 }
