@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.apptest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -23,6 +24,7 @@ import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
+import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -31,7 +33,9 @@ import java.util.UUID;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static java.lang.Long.parseLong;
 import static java.text.MessageFormat.format;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
@@ -821,6 +826,34 @@ class ErrandIT extends AbstractAppTest {
 
 		assertThat(result).isNotNull().isNotEqualTo(errand);
 		assertThat(result.getStatuses()).contains(status);
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"2281", "2061", "2062"
+	})
+	void testPatchErrandWithExtraParameters(final String municipalityId) throws JsonProcessingException {
+		final var errand = createErrand();
+		final var errandId = postErrand(errand, municipalityId);
+
+		final var extraParameters = createExtraParametersList();
+
+		final var patchErrand = PatchErrand.builder().withExtraParameters(extraParameters).withExternalCaseId("externalCaseId").withPhase("phase").build();
+
+		setupCall()
+			.withHttpMethod(PATCH)
+			.withServicePath(format("/{0}/{1}/errands/{2}", municipalityId, NAMESPACE, errandId))
+			.withRequest(OBJECT_MAPPER.writeValueAsString(patchErrand))
+			.withExpectedResponseStatus(NO_CONTENT)
+			.sendRequestAndVerifyResponse();
+
+		final var patchedErrand = errandRepository.findById(parseLong(errandId));
+		assertThat(patchedErrand).isPresent();
+		assertThat(patchedErrand.get().getUpdatedByClient()).isEqualTo(Constants.UNKNOWN);
+		assertThat(patchedErrand.get().getUpdatedBy()).isEqualTo(Constants.UNKNOWN);
+		assertThat(patchedErrand.get().getExternalCaseId()).isEqualTo("externalCaseId");
+		assertThat(patchedErrand.get().getPhase()).isEqualTo("phase");
+		assertThat(patchedErrand.get().getUpdated()).isCloseTo(OffsetDateTime.now(), Assertions.within(2, SECONDS));
 	}
 
 	@ParameterizedTest

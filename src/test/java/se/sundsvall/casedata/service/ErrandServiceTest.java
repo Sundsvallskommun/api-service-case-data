@@ -1,5 +1,35 @@
 package se.sundsvall.casedata.service;
 
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.casedata.api.model.Notification;
+import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.FacilityRepository;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.Stream;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,38 +50,6 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.zalando.problem.ThrowableProblem;
-
-import com.turkraft.springfilter.converter.FilterSpecificationConverter;
-
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
-import se.sundsvall.casedata.api.model.Notification;
-import se.sundsvall.casedata.api.model.PatchErrand;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
 
 @ExtendWith(MockitoExtension.class)
 class ErrandServiceTest {
@@ -211,8 +209,10 @@ class ErrandServiceTest {
 
 		// Arrange
 		final var errand = createErrandEntity();
+		final var updatedErrand = createErrandEntity();
 		final var patch = createPatchErrand();
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.save(errand)).thenReturn(updatedErrand);
 
 		// Act
 		errandService.updateErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
@@ -237,7 +237,7 @@ class ErrandServiceTest {
 
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
+		verify(processServiceMock).updateProcess(updatedErrand);
 		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
