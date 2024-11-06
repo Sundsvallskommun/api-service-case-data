@@ -1,28 +1,29 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import java.util.List;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
-import org.hibernate.annotations.UuidGenerator;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import org.hibernate.annotations.UuidGenerator;
+import se.sundsvall.casedata.integration.db.listeners.ExtraParameterListener;
+
+import java.util.List;
 
 @Entity
 @Table(name = "errand_extra_parameters")
+@EntityListeners(ExtraParameterListener.class)
 @Data
 @Builder(setterPrefix = "with")
 @NoArgsConstructor
