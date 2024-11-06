@@ -1,13 +1,12 @@
 package se.sundsvall.casedata.api.model.validation.impl;
 
+import java.util.HashSet;
+import java.util.List;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.validation.UniqueDecisionType;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class UniqueDecisionTypeValidator implements ConstraintValidator<UniqueDecisionType, List<Decision>> {
 

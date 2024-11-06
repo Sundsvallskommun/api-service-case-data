@@ -26,5 +26,5 @@
   "createdBy": "UNKNOWN",
   "updatedBy": "PatchUser",
   "extraParameters": [],
-  "labels": []
+  "labels": ["updated-label-1", "updated-label-2"]
 }

@@ -8,7 +8,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -125,7 +124,7 @@ class ErrandIT extends AbstractAppTest {
 			.returnResult()
 			.getResponseBody();
 
-		assertNotNull(requireNonNull(getErrand).getProcessId());
+		assertThat(getErrand.getProcessId()).isNotNull();
 		assertThat(inputErrand)
 			.usingRecursiveComparison()
 			.ignoringFieldsMatchingRegexes(
@@ -154,8 +153,7 @@ class ErrandIT extends AbstractAppTest {
 			.returnResult()
 			.getResponseBody();
 
-		assertNotNull(requireNonNull(getErrand).getProcessId());
-
+		assertThat(getErrand.getProcessId()).isNotNull();
 		assertThat(inputErrand)
 			.usingRecursiveComparison()
 			.ignoringFieldsMatchingRegexes(
@@ -194,6 +192,7 @@ class ErrandIT extends AbstractAppTest {
 		inputPatchErrand.setApplicationReceived(getRandomOffsetDateTime());
 		inputPatchErrand.setExtraParameters(createExtraParametersList());
 		inputPatchErrand.setFacilities(List.of(createFacility()));
+		inputPatchErrand.setLabels(List.of("updated-label-1", "updated-label-1"));
 
 		// Patch the object
 		webTestClient.patch().uri(format("/{0}/{1}/errands/{2}", municipalityId, namespace, id))
@@ -211,12 +210,13 @@ class ErrandIT extends AbstractAppTest {
 			.getResponseBody();
 
 		// Update fields of the originally posted object, so we can compare with the patched object.
-		assertNotNull(resultPostErrand);
+		assertThat(resultPostErrand).isNotNull();
 		resultPostErrand.setDiaryNumber(inputPatchErrand.getDiaryNumber());
 		resultPostErrand.setApplicationReceived(inputPatchErrand.getApplicationReceived());
 		resultPostErrand.setUpdatedByClient(Constants.UNKNOWN);
 		resultPostErrand.setUpdatedBy(Constants.UNKNOWN);
 		resultPostErrand.getExtraParameters().addAll(inputPatchErrand.getExtraParameters());
+		resultPostErrand.setLabels(inputPatchErrand.getLabels());
 
 		assertThat(resultPostErrand)
 			.usingRecursiveComparison()
@@ -253,10 +253,43 @@ class ErrandIT extends AbstractAppTest {
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
 		final Errand result = resultList.getContent().getFirst();
 
-		assertNotNull(result.getProcessId());
+		assertThat(result.getProcessId()).isNotNull();
+		assertThat(inputPostErrand)
+			.usingRecursiveComparison()
+			.ignoringFieldsMatchingRegexes(
+				EXCLUDE_FIELDS)
+			.isEqualTo(result);
+	}
 
-		assertNotNull(result.getProcessId());
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"2281", "2061", "2062"
+	})
+	void testGetWithFilterOnLabels(final String municipalityId) {
 
+		final var label = "the-label";
+		final var inputPostErrand = createErrand();
+		inputPostErrand.setCaseType(PARKING_PERMIT.name());
+		inputPostErrand.getLabels().add(label);
+		// Create initial errand
+		postErrand(inputPostErrand, municipalityId);
+
+		final Page<Errand> resultList = webTestClient.get().uri(
+			uriBuilder -> uriBuilder
+				.path(format("/{0}/{1}/errands", municipalityId, namespace))
+				.queryParam("filter", "labels~'%s'".formatted(label))
+				.build())
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON_VALUE)
+			.expectBody(new ParameterizedTypeReference<Page<Errand>>() {})
+			.returnResult()
+			.getResponseBody();
+
+		assertEquals(1, requireNonNull(resultList).getTotalElements());
+		final Errand result = resultList.getContent().getFirst();
+
+		assertThat(result.getLabels()).contains(label);
 		assertThat(inputPostErrand)
 			.usingRecursiveComparison()
 			.ignoringFieldsMatchingRegexes(
@@ -294,8 +327,7 @@ class ErrandIT extends AbstractAppTest {
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
 		final Errand result = resultList.getContent().getFirst();
 
-		assertNotNull(result.getProcessId());
-
+		assertThat(result.getProcessId()).isNotNull();
 		assertThat(inputPostErrand)
 			.usingRecursiveComparison()
 			.ignoringFieldsMatchingRegexes(
@@ -380,8 +412,7 @@ class ErrandIT extends AbstractAppTest {
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
 		final Errand result = resultList.getContent().getFirst();
 
-		assertNotNull(result.getProcessId());
-
+		assertThat(result.getProcessId()).isNotNull();
 		assertThat(inputPostErrand)
 			.usingRecursiveComparison()
 			.ignoringFieldsMatchingRegexes(
@@ -498,7 +529,7 @@ class ErrandIT extends AbstractAppTest {
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
 		final Errand result = resultList.getContent().getFirst();
 
-		assertNotNull(result.getProcessId());
+		assertThat(result.getProcessId()).isNotNull();
 		assertThat(inputPostErrand1)
 			.usingRecursiveComparison()
 			.ignoringFieldsMatchingRegexes(
@@ -557,7 +588,7 @@ class ErrandIT extends AbstractAppTest {
 		assertEquals(1, requireNonNull(resultList).getTotalElements());
 		final Errand result = resultList.getContent().getFirst();
 
-		assertNotNull(result.getProcessId());
+		assertThat(result.getProcessId()).isNotNull();
 		assertThat(inputPostErrand1)
 			.usingRecursiveComparison()
 			.ignoringFieldsMatchingRegexes(
@@ -893,8 +924,7 @@ class ErrandIT extends AbstractAppTest {
 			.getResponseHeaders()
 			.getLocation();
 
-		assertNotNull(location);
+		assertThat(location).isNotNull();
 		return location.toString().substring(location.toString().lastIndexOf("/") + 1);
 	}
-
 }
