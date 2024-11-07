@@ -8,7 +8,6 @@
 #### Removed endpoints:
       - [GET] /{municipalityId}/{namespace}/attachments/errand/{errandNumber}
 ### Appeals:
-
 #### New endpoints:
 
 #### Removed endpoints:
@@ -52,7 +51,8 @@
 
 - **Errand**
 	- **Added Fields:**
-        - relatesTo: `List<RelatedErrand>`
+      - relatesTo: `List<RelatedErrand>`
+      - labels: `List<String>`
     - **Removed Fields:**
 		- appeals: `List<Appeal>`
       

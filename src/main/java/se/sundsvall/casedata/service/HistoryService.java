@@ -1,12 +1,20 @@
 package se.sundsvall.casedata.service;
 
-import com.google.gson.reflect.TypeToken;
+import static java.text.MessageFormat.format;
+import static org.javers.repository.jql.QueryBuilder.byInstance;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
+
+import java.util.List;
 
 import org.javers.core.Changes;
 import org.javers.core.Javers;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
+
+import com.google.gson.reflect.TypeToken;
+
 import se.sundsvall.casedata.api.model.history.History;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.DecisionRepository;
@@ -14,13 +22,6 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.FacilityRepository;
 import se.sundsvall.casedata.integration.db.NoteRepository;
 import se.sundsvall.casedata.integration.db.StakeholderRepository;
-
-import java.util.List;
-
-import static java.text.MessageFormat.format;
-import static org.javers.repository.jql.QueryBuilder.byInstance;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
 
 @Service
 public class HistoryService {
@@ -114,8 +115,9 @@ public class HistoryService {
 			throw notFoundProblem;
 		}
 		final var prettyJavers = javers.getJsonConverter().toJson(changes);
-		final var historyType = new TypeToken<List<History>>(){}.getType();
+		final var historyType = new TypeToken<List<History>>() {}.getType();
 
+		@SuppressWarnings("unchecked")
 		final List<History> historyList = (List<History>) javers.getJsonConverter().fromJson(prettyJavers, historyType);
 		if (historyList.isEmpty()) {
 			throw notFoundProblem;

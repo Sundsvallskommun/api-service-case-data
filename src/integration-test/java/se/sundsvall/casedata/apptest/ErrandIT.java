@@ -879,7 +879,7 @@ class ErrandIT extends AbstractAppTest {
 
 		setupCall()
 			.withHttpMethod(PATCH)
-			.withServicePath(format("/{0}/{1}/errands/{2}", municipalityId, NAMESPACE, errandId))
+			.withServicePath(format("/{0}/{1}/errands/{2}", municipalityId, namespace, errandId))
 			.withRequest(OBJECT_MAPPER.writeValueAsString(patchErrand))
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
