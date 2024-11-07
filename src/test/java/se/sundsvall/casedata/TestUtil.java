@@ -5,26 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.RandomStringUtils;
-import se.sundsvall.casedata.api.model.Address;
-import se.sundsvall.casedata.api.model.Appeal;
-import se.sundsvall.casedata.api.model.Attachment;
-import se.sundsvall.casedata.api.model.ContactInformation;
-import se.sundsvall.casedata.api.model.Coordinates;
-import se.sundsvall.casedata.api.model.Decision;
-import se.sundsvall.casedata.api.model.Errand;
-import se.sundsvall.casedata.api.model.ExtraParameter;
-import se.sundsvall.casedata.api.model.Facility;
-import se.sundsvall.casedata.api.model.GetParkingPermit;
-import se.sundsvall.casedata.api.model.Law;
-import se.sundsvall.casedata.api.model.Note;
-import se.sundsvall.casedata.api.model.Notification;
-import se.sundsvall.casedata.api.model.PatchAppeal;
-import se.sundsvall.casedata.api.model.PatchDecision;
-import se.sundsvall.casedata.api.model.PatchErrand;
-import se.sundsvall.casedata.api.model.PatchNotification;
-import se.sundsvall.casedata.api.model.Stakeholder;
-import se.sundsvall.casedata.api.model.Status;
-import se.sundsvall.casedata.api.model.Suspension;
+import se.sundsvall.casedata.api.model.*;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
@@ -673,7 +654,7 @@ public final class TestUtil {
 			.build();
 	}
 
-	private static List<ExtraParameterEntity> createExtraParameterEntityList() {
+	public static List<ExtraParameterEntity> createExtraParameterEntityList() {
 		var listy = new ArrayList<ExtraParameterEntity>();
 		listy.add(
 			ExtraParameterEntity.builder()

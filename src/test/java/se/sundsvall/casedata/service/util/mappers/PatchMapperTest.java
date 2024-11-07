@@ -2,29 +2,19 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import generated.se.sundsvall.employee.PortalPersonData;
 import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.api.model.ExtraParameter;
+import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createAttachment;
-import static se.sundsvall.casedata.TestUtil.createAttachmentEntity;
-import static se.sundsvall.casedata.TestUtil.createDecisionEntity;
-import static se.sundsvall.casedata.TestUtil.createErrandEntity;
-import static se.sundsvall.casedata.TestUtil.createFacility;
-import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
-import static se.sundsvall.casedata.TestUtil.createNote;
-import static se.sundsvall.casedata.TestUtil.createNoteEntity;
-import static se.sundsvall.casedata.TestUtil.createNotificationEntity;
-import static se.sundsvall.casedata.TestUtil.createPatchDecision;
-import static se.sundsvall.casedata.TestUtil.createPatchErrand;
-import static se.sundsvall.casedata.TestUtil.createPatchNotification;
-import static se.sundsvall.casedata.TestUtil.createStakeholder;
-import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
+import static org.assertj.core.groups.Tuple.tuple;
+import static se.sundsvall.casedata.TestUtil.*;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchAttachment;
@@ -54,11 +44,27 @@ class PatchMapperTest {
 			assertThat(e.getStartDate()).isEqualTo(patch.getStartDate());
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
 			assertThat(e.getApplicationReceived()).isEqualTo(patch.getApplicationReceived());
-			assertThat(e.getExtraParameters()).hasSize(3).containsAll(patch.getExtraParameters().stream().map(parameter -> ErrandExtraParameterMapper.toErrandParameterEntity(parameter).withErrandEntity(errand)).toList());
+			assertThat(e.getExtraParameters()).hasSize(5).containsAll(patch.getExtraParameters().stream().map(parameter -> ErrandExtraParameterMapper.toErrandParameterEntity(parameter).withErrandEntity(errand)).toList());
 			assertThat(e.getSuspendedFrom()).isEqualTo(patch.getSuspension().getSuspendedFrom());
 			assertThat(e.getSuspendedTo()).isEqualTo(patch.getSuspension().getSuspendedTo());
 			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(facilityDTO -> toFacilityEntity(facilityDTO, MUNICIPALITY_ID, NAMESPACE)).toList());
 		});
+	}
+
+	@Test
+	void patchErrandExtraParameterTest() {
+		final var errand = ErrandEntity.builder().withId(1L).withExtraParameters(createExtraParameterEntityList()).build();
+
+		final var newExtraParameter = (ExtraParameter.builder().withKey("key3").withValues(List.of("newValue3")).build());
+		final var updateExtraParameter = (ExtraParameter.builder().withKey("key1").withValues(List.of("newValueOfKey1")).build());
+		final var patch = PatchErrand.builder().withExtraParameters(List.of(newExtraParameter, updateExtraParameter)).build();
+
+		final var patchedErrand = patchErrand(errand, patch);
+
+		assertThat(patchedErrand.getExtraParameters()).hasSize(3).extracting(ExtraParameterEntity::getKey, ExtraParameterEntity::getValues).containsExactlyInAnyOrder(
+			tuple("key1", List.of("newValueOfKey1")),
+					tuple("key2", null),
+					tuple("key3", List.of("newValue3")));
 	}
 
 	@Test
