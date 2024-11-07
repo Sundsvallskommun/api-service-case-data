@@ -9,6 +9,11 @@
       - [GET] /{municipalityId}/{namespace}/attachments/errand/{errandNumber}
 ### Appeals:
 #### New endpoints:
+      - [GET] /{municipalityId}/{namespace}/errand/{errandNumber}/attachments
+#### Removed endpoints:
+      - [GET] /{municipalityId}/{namespace}/attachments/errand/{errandNumber}
+### Appeals:
+>>>>>>> branch '10.0' of git@github.com:Sundsvallskommun/api-service-case-data.git
 
 #### Removed endpoints:
 
