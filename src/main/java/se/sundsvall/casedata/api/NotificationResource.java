@@ -76,9 +76,7 @@ class NotificationResource {
 		return ok(notificationService.getNotification(municipalityId, namespace, errandId, notificationId));
 	}
 
-	@GetMapping(path = "/errands/{errandId}/notifications", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(path = "/errands/{errandId}/notifications", produces = APPLICATION_JSON_VALUE)
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	@Operation(summary = "Get notifications", description = "Get notifications for the provided namespace, municipality and ownerId")
 	ResponseEntity<List<Notification>> getNotificationsForErrand(
@@ -90,7 +88,7 @@ class NotificationResource {
 		return ok(notificationService.getNotificationsByErrandId(municipalityId, namespace, errandId, sort));
 	}
 
-	@PostMapping("/errands/{errandId}/notifications")
+	@PostMapping(path = "/errands/{errandId}/notifications", produces = ALL_VALUE)
 	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
 	@Operation(summary = "Create notification", description = "Create new notification for the namespace and municipality")
 	ResponseEntity<Void> createNotification(
@@ -99,14 +97,14 @@ class NotificationResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@Valid @NotNull @RequestBody final Notification notification) {
 		notification.setErrandId(errandId);
-		final var result = notificationService.createNotification(municipalityId, namespace,notification);
+		final var result = notificationService.createNotification(municipalityId, namespace, notification);
 		return created(fromPath("/{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}")
-			.buildAndExpand(municipalityId, namespace,result.getErrandId(), result.getId()).toUri())
+			.buildAndExpand(municipalityId, namespace, result.getErrandId(), result.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
 
-	@DeleteMapping("/errands/{errandId}/notifications/{notificationId}")
+	@DeleteMapping(path = "/errands/{errandId}/notifications/{notificationId}", produces = ALL_VALUE)
 	@ApiResponse(responseCode = "204", description = "Successful operation", useReturnTypeSchema = true)
 	@Operation(summary = "Delete notification", description = "Delete notification for the namespace and municipality")
 	ResponseEntity<Void> deleteNotification(
@@ -121,9 +119,7 @@ class NotificationResource {
 			.build();
 	}
 
-	@GetMapping(path = "/notifications", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(path = "/notifications", produces = APPLICATION_JSON_VALUE)
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	@Operation(summary = "Get notifications", description = "Get notifications for the provided namespace, municipality and ownerId")
 	ResponseEntity<List<Notification>> getNotificationsForOwner(
@@ -134,7 +130,7 @@ class NotificationResource {
 		return ok(notificationService.getNotificationsByOwnerId(municipalityId, namespace, ownerId));
 	}
 
-	@PatchMapping("/notifications")
+	@PatchMapping(path = "/notifications", produces = ALL_VALUE)
 	@ApiResponse(responseCode = "204", description = "Successful operation", useReturnTypeSchema = true)
 	@Operation(summary = "Update notification", description = "Update notifications for the namespace and municipality")
 	ResponseEntity<Void> updateNotifications(
@@ -147,5 +143,4 @@ class NotificationResource {
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
-
 }

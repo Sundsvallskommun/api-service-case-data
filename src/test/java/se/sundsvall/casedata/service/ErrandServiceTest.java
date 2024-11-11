@@ -182,8 +182,10 @@ class ErrandServiceTest {
 
 		// Arrange
 		final var errand = createErrandEntity();
+		final var updatedErrand = createErrandEntity();
 		final var patch = createPatchErrand();
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.save(errand)).thenReturn(updatedErrand);
 
 		// Act
 		errandService.updateErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
@@ -208,7 +210,7 @@ class ErrandServiceTest {
 
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
+		verify(processServiceMock).updateProcess(updatedErrand);
 		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");

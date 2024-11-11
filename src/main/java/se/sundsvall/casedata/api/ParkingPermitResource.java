@@ -8,8 +8,6 @@ import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_VALIDATION_
 
 import java.util.List;
 
-import jakarta.validation.constraints.Pattern;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,22 +18,24 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import se.sundsvall.casedata.api.model.GetParkingPermit;
-import se.sundsvall.casedata.service.ParkingPermitErrandService;
-import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Pattern;
+import se.sundsvall.casedata.api.model.GetParkingPermit;
+import se.sundsvall.casedata.service.ParkingPermitErrandService;
+import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}/parking-permits")
 @Tag(name = "Parking permit", description = "Parking permit operations")
-@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
+@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
+	Problem.class, ConstraintViolationProblem.class
+})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 class ParkingPermitResource {
@@ -46,8 +46,8 @@ class ParkingPermitResource {
 		this.parkingPermitService = parkingPermitService;
 	}
 
+	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	@Operation(description = "Get all issued parking permits.")
-	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<List<GetParkingPermit>> getAllParkingPermits(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -56,5 +56,4 @@ class ParkingPermitResource {
 
 		return ok(parkingPermitService.findAllByPersonIdAndMunicipalityId(personId, municipalityId, namespace));
 	}
-
 }

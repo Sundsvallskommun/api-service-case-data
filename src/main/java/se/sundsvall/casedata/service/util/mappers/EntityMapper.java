@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import static java.time.OffsetDateTime.now;
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
@@ -46,7 +47,7 @@ public final class EntityMapper {
 	private EntityMapper() {}
 
 	public static Errand toErrand(final ErrandEntity errandEntity) {
-		return Optional.ofNullable(errandEntity)
+		return ofNullable(errandEntity)
 			.map(obj -> Errand.builder()
 				.withId(errandEntity.getId())
 				.withVersion(errandEntity.getVersion())
@@ -72,12 +73,12 @@ public final class EntityMapper {
 				.withMunicipalityId(errandEntity.getMunicipalityId())
 				.withNamespace(errandEntity.getNamespace())
 				.withSuspension(Suspension.builder().withSuspendedFrom(errandEntity.getSuspendedFrom()).withSuspendedTo(errandEntity.getSuspendedTo()).build())
-				.withNotes(new ArrayList<>(errandEntity.getNotes().stream().map(EntityMapper::toNote).toList()))
-				.withStatuses(new ArrayList<>(errandEntity.getStatuses().stream().map(EntityMapper::toStatus).toList()))
-				.withStakeholders(new ArrayList<>(errandEntity.getStakeholders().stream().map(EntityMapper::toStakeholder).toList()))
-				.withFacilities(new ArrayList<>(errandEntity.getFacilities().stream().map(EntityMapper::toFacility).toList()))
-				.withDecisions(new ArrayList<>(errandEntity.getDecisions().stream().map(EntityMapper::toDecision).toList()))
-				.withRelatesTo(new ArrayList<>(errandEntity.getRelatesTo().stream().map(EntityMapper::toRelatedErrand).toList()))
+				.withNotes(new ArrayList<>(Optional.ofNullable(errandEntity.getNotes()).orElse(emptyList()).stream().map(EntityMapper::toNote).toList()))
+				.withStatuses(new ArrayList<>(Optional.ofNullable(errandEntity.getStatuses()).orElse(emptyList()).stream().map(EntityMapper::toStatus).toList()))
+				.withStakeholders(new ArrayList<>(Optional.ofNullable(errandEntity.getStakeholders()).orElse(emptyList()).stream().map(EntityMapper::toStakeholder).toList()))
+				.withFacilities(new ArrayList<>(Optional.ofNullable(errandEntity.getFacilities()).orElse(emptyList()).stream().map(EntityMapper::toFacility).toList()))
+				.withDecisions(new ArrayList<>(Optional.ofNullable(errandEntity.getDecisions()).orElse(emptyList()).stream().map(EntityMapper::toDecision).toList()))
+				.withRelatesTo(new ArrayList<>(Optional.ofNullable(errandEntity.getRelatesTo()).orElse(emptyList()).stream().map(EntityMapper::toRelatedErrand).toList()))
 				.withExtraParameters(toParameterList(errandEntity.getExtraParameters()))
 				.withLabels(errandEntity.getLabels())
 				.build())
@@ -85,7 +86,7 @@ public final class EntityMapper {
 	}
 
 	public static ErrandEntity toErrandEntity(final Errand errand, final String municipalityId, final String namespace) {
-		final var errandEntity = Optional.ofNullable(errand)
+		final var errandEntity = ofNullable(errand)
 			.map(obj -> ErrandEntity.builder()
 				.withId(errand.getId())
 				.withVersion(errand.getVersion())
@@ -110,22 +111,22 @@ public final class EntityMapper {
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
 				.withUpdatedBy(errand.getUpdatedBy())
-				.withSuspendedFrom(Optional.ofNullable(errand.getSuspension()).map(Suspension::getSuspendedFrom).orElse(null))
-				.withSuspendedTo(Optional.ofNullable(errand.getSuspension()).map(Suspension::getSuspendedTo).orElse(null))
-				.withStatuses(new ArrayList<>(Optional.ofNullable(errand.getStatuses())
+				.withSuspendedFrom(ofNullable(errand.getSuspension()).map(Suspension::getSuspendedFrom).orElse(null))
+				.withSuspendedTo(ofNullable(errand.getSuspension()).map(Suspension::getSuspendedTo).orElse(null))
+				.withStatuses(new ArrayList<>(ofNullable(errand.getStatuses())
 					.orElse(emptyList())
 					.stream()
 					.map(EntityMapper::toStatusEntity)
 					.toList()))
-				.withStakeholders(new ArrayList<>(Optional.ofNullable(errand.getStakeholders())
+				.withStakeholders(new ArrayList<>(ofNullable(errand.getStakeholders())
 					.orElse(emptyList())
 					.stream().map(stakeholderDTO -> toStakeholderEntity(stakeholderDTO, municipalityId, namespace))
 					.toList()))
-				.withFacilities(new ArrayList<>(Optional.ofNullable(errand.getFacilities())
+				.withFacilities(new ArrayList<>(ofNullable(errand.getFacilities())
 					.orElse(emptyList())
 					.stream().map(facilityDTO -> toFacilityEntity(facilityDTO, municipalityId, namespace))
 					.toList()))
-				.withNotes(new ArrayList<>(Optional.ofNullable(errand.getNotes())
+				.withNotes(new ArrayList<>(ofNullable(errand.getNotes())
 					.orElse(emptyList())
 					.stream().map(notesDTO -> toNoteEntity(notesDTO, municipalityId, namespace))
 					.toList()))
@@ -137,7 +138,7 @@ public final class EntityMapper {
 				.build());
 
 		errandEntity.ifPresent(entity -> {
-			entity.setDecisions(new ArrayList<>(Optional.ofNullable(errand.getDecisions())
+			entity.setDecisions(new ArrayList<>(ofNullable(errand.getDecisions())
 				.orElse(emptyList())
 				.stream().map(decisionDTO -> toDecisionEntity(decisionDTO, entity, municipalityId, namespace))
 				.toList()));
@@ -152,7 +153,7 @@ public final class EntityMapper {
 	}
 
 	public static StakeholderEntity toStakeholderEntity(final Stakeholder stakeholder, final String municipalityId, final String namespace) {
-		return Optional.ofNullable(stakeholder)
+		return ofNullable(stakeholder)
 			.map(obj -> StakeholderEntity.builder()
 				.withId(stakeholder.getId())
 				.withVersion(stakeholder.getVersion())
@@ -168,8 +169,8 @@ public final class EntityMapper {
 				.withAdAccount(stakeholder.getAdAccount())
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
-				.withAddresses(new ArrayList<>(stakeholder.getAddresses().stream().map(EntityMapper::toAddressEntity).toList()))
-				.withContactInformation(new ArrayList<>(stakeholder.getContactInformation().stream().map(EntityMapper::toContactInformationEntity).toList()))
+				.withAddresses(new ArrayList<>(ofNullable(stakeholder.getAddresses()).orElse(emptyList()).stream().map(EntityMapper::toAddressEntity).toList()))
+				.withContactInformation(new ArrayList<>(ofNullable(stakeholder.getContactInformation()).orElse(emptyList()).stream().map(EntityMapper::toContactInformationEntity).toList()))
 				.withRoles(stakeholder.getRoles())
 				.withExtraParameters(Optional.of(stakeholder.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
@@ -177,7 +178,7 @@ public final class EntityMapper {
 	}
 
 	public static Stakeholder toStakeholder(final StakeholderEntity stakeholderEntity) {
-		return Optional.ofNullable(stakeholderEntity)
+		return ofNullable(stakeholderEntity)
 			.map(obj -> Stakeholder.builder()
 				.withId(stakeholderEntity.getId())
 				.withMunicipalityId(stakeholderEntity.getMunicipalityId())
@@ -193,8 +194,8 @@ public final class EntityMapper {
 				.withOrganizationNumber(stakeholderEntity.getOrganizationNumber())
 				.withAuthorizedSignatory(stakeholderEntity.getAuthorizedSignatory())
 				.withAdAccount(stakeholderEntity.getAdAccount())
-				.withAddresses(new ArrayList<>(stakeholderEntity.getAddresses().stream().map(EntityMapper::toAddress).toList()))
-				.withContactInformation(new ArrayList<>(stakeholderEntity.getContactInformation().stream().map(EntityMapper::toContactInformation).toList()))
+				.withAddresses(new ArrayList<>(ofNullable(stakeholderEntity.getAddresses()).orElse(emptyList()).stream().map(EntityMapper::toAddress).toList()))
+				.withContactInformation(new ArrayList<>(ofNullable(stakeholderEntity.getContactInformation()).orElse(emptyList()).stream().map(EntityMapper::toContactInformation).toList()))
 				.withRoles(stakeholderEntity.getRoles())
 				.withExtraParameters(Optional.of(stakeholderEntity.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
@@ -202,7 +203,7 @@ public final class EntityMapper {
 	}
 
 	public static AttachmentEntity toAttachmentEntity(final Attachment attachment, final String municipalityId, final String namespace) {
-		return Optional.ofNullable(attachment)
+		return ofNullable(attachment)
 			.map(obj -> AttachmentEntity.builder()
 				.withId(attachment.getId())
 				.withVersion(attachment.getVersion())
@@ -217,13 +218,13 @@ public final class EntityMapper {
 				.withNamespace(namespace)
 				.withMimeType(attachment.getMimeType())
 				.withFile(attachment.getFile())
-				.withExtraParameters(Optional.ofNullable(attachment.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.withExtraParameters(ofNullable(attachment.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
 	}
 
 	public static Attachment toAttachment(final AttachmentEntity attachmentEntity) {
-		return Optional.ofNullable(attachmentEntity)
+		return ofNullable(attachmentEntity)
 			.map(obj -> Attachment.builder()
 				.withId(attachmentEntity.getId())
 				.withMunicipalityId(attachmentEntity.getMunicipalityId())
@@ -238,13 +239,13 @@ public final class EntityMapper {
 				.withMimeType(attachmentEntity.getMimeType())
 				.withErrandNumber(attachmentEntity.getErrandNumber())
 				.withFile(attachmentEntity.getFile())
-				.withExtraParameters(Optional.ofNullable(attachmentEntity.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.withExtraParameters(ofNullable(attachmentEntity.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
 	}
 
 	public static DecisionEntity toDecisionEntity(final Decision decision, final ErrandEntity errand, final String municipalityId, final String namespace) {
-		return Optional.ofNullable(decision)
+		return ofNullable(decision)
 			.map(obj -> DecisionEntity.builder()
 				.withId(decision.getId())
 				.withVersion(decision.getVersion())
@@ -260,15 +261,15 @@ public final class EntityMapper {
 				.withValidTo(decision.getValidTo())
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
-				.withLaw(new ArrayList<>(decision.getLaw().stream().map(EntityMapper::toLawEntity).toList()))
-				.withAttachments(new ArrayList<>(decision.getAttachments().stream().map(e -> toAttachmentEntity(e, municipalityId, namespace)).toList()))
-				.withExtraParameters(Optional.ofNullable(decision.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.withLaw(new ArrayList<>(Optional.ofNullable(decision.getLaw()).orElse(emptyList()).stream().map(EntityMapper::toLawEntity).toList()))
+				.withAttachments(new ArrayList<>(Optional.ofNullable(decision.getAttachments()).orElse(emptyList()).stream().map(e -> toAttachmentEntity(e, municipalityId, namespace)).toList()))
+				.withExtraParameters(ofNullable(decision.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
 	}
 
 	public static Decision toDecision(final DecisionEntity decisionEntity) {
-		return Optional.ofNullable(decisionEntity)
+		return ofNullable(decisionEntity)
 			.map(obj -> Decision.builder()
 				.withId(decisionEntity.getId())
 				.withMunicipalityId(decisionEntity.getMunicipalityId())
@@ -285,13 +286,13 @@ public final class EntityMapper {
 				.withValidTo(decisionEntity.getValidTo())
 				.withLaw(new ArrayList<>(decisionEntity.getLaw().stream().map(EntityMapper::toLaw).toList()))
 				.withAttachments(new ArrayList<>(decisionEntity.getAttachments().stream().map(EntityMapper::toAttachment).toList()))
-				.withExtraParameters(Optional.ofNullable(decisionEntity.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.withExtraParameters(ofNullable(decisionEntity.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
 	}
 
 	public static Note toNote(final NoteEntity noteEntity) {
-		return Optional.ofNullable(noteEntity)
+		return ofNullable(noteEntity)
 			.map(obj -> Note.builder()
 				.withId(noteEntity.getId())
 				.withMunicipalityId(noteEntity.getMunicipalityId())
@@ -305,7 +306,7 @@ public final class EntityMapper {
 				.withCreatedBy(noteEntity.getCreatedBy())
 				.withUpdatedBy(noteEntity.getUpdatedBy())
 				.withNoteType(noteEntity.getNoteType())
-				.withExtraParameters(Optional.ofNullable(noteEntity.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.withExtraParameters(ofNullable(noteEntity.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
 	}
@@ -325,13 +326,13 @@ public final class EntityMapper {
 				.withNoteType(note.getNoteType())
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
-				.withExtraParameters(Optional.ofNullable(note.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.withExtraParameters(ofNullable(note.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
 	}
 
 	public static StatusEntity toStatusEntity(final Status status) {
-		return Optional.ofNullable(status)
+		return ofNullable(status)
 			.map(obj -> StatusEntity.builder()
 				.withStatusType(status.getStatusType())
 				.withDescription(status.getDescription())
@@ -341,7 +342,7 @@ public final class EntityMapper {
 	}
 
 	public static Status toStatus(final StatusEntity entity) {
-		return Optional.ofNullable(entity)
+		return ofNullable(entity)
 			.map(obj -> Status.builder()
 				.withStatusType(entity.getStatusType())
 				.withDescription(entity.getDescription())
@@ -351,7 +352,7 @@ public final class EntityMapper {
 	}
 
 	public static FacilityEntity toFacilityEntity(final Facility facility, final String municipalityId, final String namespace) {
-		return Optional.ofNullable(facility)
+		return ofNullable(facility)
 			.map(obj -> FacilityEntity.builder()
 				.withId(facility.getId())
 				.withVersion(facility.getVersion())
@@ -364,13 +365,13 @@ public final class EntityMapper {
 				.withFacilityType(facility.getFacilityType())
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
-				.withExtraParameters(Optional.ofNullable(facility.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.withExtraParameters(ofNullable(facility.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
 	}
 
 	public static Facility toFacility(final FacilityEntity facilityEntity) {
-		return Optional.ofNullable(facilityEntity)
+		return ofNullable(facilityEntity)
 			.map(obj -> Facility.builder()
 				.withId(facilityEntity.getId())
 				.withMunicipalityId(facilityEntity.getMunicipalityId())
@@ -383,13 +384,13 @@ public final class EntityMapper {
 				.withFacilityCollectionName(facilityEntity.getFacilityCollectionName())
 				.withMainFacility(facilityEntity.isMainFacility())
 				.withFacilityType(facilityEntity.getFacilityType())
-				.withExtraParameters(Optional.ofNullable(facilityEntity.getExtraParameters()).orElse(new LinkedHashMap<>()))
+				.withExtraParameters(ofNullable(facilityEntity.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
 	}
 
 	public static CoordinatesEntity toCoordinatesEntity(final Coordinates coordinates) {
-		return Optional.ofNullable(coordinates)
+		return ofNullable(coordinates)
 			.map(obj -> CoordinatesEntity.builder()
 				.withLatitude(coordinates.getLatitude())
 				.withLongitude(coordinates.getLongitude())
@@ -398,7 +399,7 @@ public final class EntityMapper {
 	}
 
 	public static Coordinates toCoordinates(final CoordinatesEntity coordinatesEntity) {
-		return Optional.ofNullable(coordinatesEntity)
+		return ofNullable(coordinatesEntity)
 			.map(obj -> Coordinates.builder()
 				.withLatitude(coordinatesEntity.getLatitude())
 				.withLongitude(coordinatesEntity.getLongitude())
@@ -407,7 +408,7 @@ public final class EntityMapper {
 	}
 
 	public static AddressEntity toAddressEntity(final Address address) {
-		return Optional.ofNullable(address)
+		return ofNullable(address)
 			.map(obj -> AddressEntity.builder()
 				.withAddressCategory(address.getAddressCategory())
 				.withStreet(address.getStreet())
@@ -427,7 +428,7 @@ public final class EntityMapper {
 	}
 
 	public static Address toAddress(final AddressEntity addressEntity) {
-		return Optional.ofNullable(addressEntity)
+		return ofNullable(addressEntity)
 			.map(obj -> Address.builder()
 				.withAddressCategory(addressEntity.getAddressCategory())
 				.withStreet(addressEntity.getStreet())
@@ -447,7 +448,7 @@ public final class EntityMapper {
 	}
 
 	public static ContactInformation toContactInformation(final ContactInformationEntity contactInformationEntity) {
-		return Optional.ofNullable(contactInformationEntity)
+		return ofNullable(contactInformationEntity)
 			.map(obj -> ContactInformation.builder()
 				.withContactType(contactInformationEntity.getContactType())
 				.withValue(contactInformationEntity.getValue()).build())
@@ -455,7 +456,7 @@ public final class EntityMapper {
 	}
 
 	public static ContactInformationEntity toContactInformationEntity(final ContactInformation contactInformation) {
-		return Optional.ofNullable(contactInformation)
+		return ofNullable(contactInformation)
 			.map(obj -> ContactInformationEntity.builder()
 				.withContactType(contactInformation.getContactType())
 				.withValue(contactInformation.getValue())
@@ -464,7 +465,7 @@ public final class EntityMapper {
 	}
 
 	public static LawEntity toLawEntity(final Law law) {
-		return Optional.ofNullable(law)
+		return ofNullable(law)
 			.map(obj -> LawEntity.builder()
 				.withArticle(law.getArticle())
 				.withChapter(law.getChapter())
@@ -475,7 +476,7 @@ public final class EntityMapper {
 	}
 
 	public static Law toLaw(final LawEntity lawEntity) {
-		return Optional.ofNullable(lawEntity)
+		return ofNullable(lawEntity)
 			.map(obj -> Law.builder()
 				.withArticle(lawEntity.getArticle())
 				.withChapter(lawEntity.getChapter())
@@ -492,15 +493,15 @@ public final class EntityMapper {
 				.withContent(notification.getContent())
 				.withCreated(notification.getCreated())
 				.withCreatedBy(notification.getCreatedBy())
-				.withCreatedByFullName(Optional.ofNullable(creator).map(PortalPersonData::getFullname).orElse("unknown"))
+				.withCreatedByFullName(ofNullable(creator).map(PortalPersonData::getFullname).orElse("unknown"))
 				.withDescription(notification.getDescription())
-				.withExpires(Optional.ofNullable(notification.getExpires()).orElse(now().plusDays(DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS)))
+				.withExpires(ofNullable(notification.getExpires()).orElse(now().plusDays(DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS)))
 				.withErrand(errand)
 				.withId(notification.getId())
 				.withModified(notification.getModified())
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
-				.withOwnerFullName(Optional.ofNullable(owner).map(PortalPersonData::getFullname).orElse("unknown"))
+				.withOwnerFullName(ofNullable(owner).map(PortalPersonData::getFullname).orElse("unknown"))
 				.withOwnerId(notification.getOwnerId())
 				.withType(notification.getType())
 				.build())
@@ -508,7 +509,7 @@ public final class EntityMapper {
 	}
 
 	public static Notification toNotification(final NotificationEntity notificationEntity) {
-		return Optional.ofNullable(notificationEntity)
+		return ofNullable(notificationEntity)
 			.map(obj -> Notification.builder()
 				.withAcknowledged(notificationEntity.isAcknowledged())
 				.withContent(notificationEntity.getContent())

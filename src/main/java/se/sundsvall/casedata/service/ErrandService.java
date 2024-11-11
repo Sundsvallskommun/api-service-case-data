@@ -1,5 +1,22 @@
 package se.sundsvall.casedata.service;
 
+import io.github.resilience4j.retry.annotation.Retry;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.zalando.problem.Problem;
+import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.Notification;
+import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import se.sundsvall.casedata.service.util.mappers.PatchMapper;
+
+import java.util.List;
+
 import static java.text.MessageFormat.format;
 import static java.util.Objects.isNull;
 import static org.zalando.problem.Status.NOT_FOUND;
@@ -10,24 +27,6 @@ import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_U
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
-
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.zalando.problem.Problem;
-
-import io.github.resilience4j.retry.annotation.Retry;
-import jakarta.transaction.Transactional;
-import se.sundsvall.casedata.api.model.Errand;
-import se.sundsvall.casedata.api.model.Notification;
-import se.sundsvall.casedata.api.model.PatchErrand;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-import se.sundsvall.casedata.service.util.mappers.PatchMapper;
 
 @Service
 public class ErrandService {
@@ -97,8 +96,8 @@ public class ErrandService {
 	public void updateErrand(final Long errandId, final String municipalityId, final String namespace, final PatchErrand patchErrand) {
 		final var oldErrand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
 		final var updatedErrand = PatchMapper.patchErrand(oldErrand, patchErrand);
-		errandRepository.save(updatedErrand);
-		processService.updateProcess(updatedErrand);
+
+		processService.updateProcess(errandRepository.save(updatedErrand));
 
 		// Create notification
 		notificationService.createNotification(municipalityId, namespace, Notification.builder()

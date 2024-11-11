@@ -14,7 +14,6 @@ import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecisi
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;

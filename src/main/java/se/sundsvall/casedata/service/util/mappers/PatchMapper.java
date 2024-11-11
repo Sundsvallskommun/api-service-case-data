@@ -30,6 +30,7 @@ public final class PatchMapper {
 	private PatchMapper() {}
 
 	public static ErrandEntity patchErrand(final ErrandEntity errand, final PatchErrand patch) {
+
 		// ExtraParameters are not patched, they are posted for whatever reason.
 		Optional.ofNullable(patch.getExtraParameters()).ifPresent(extraParams -> {
 			final List<ExtraParameterEntity> newExtraParams = toErrandParameterEntityList(extraParams, errand);

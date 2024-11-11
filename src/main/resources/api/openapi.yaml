@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "10.0"
 servers:
-  - url: http://localhost:54924
+  - url: http://localhost:55275
     description: Generated server url
 tags:
   - name: MessageAttachments
@@ -82,8 +82,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -92,6 +90,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
     patch:
       tags:
         - Status
@@ -136,8 +136,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -146,6 +144,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/stakeholders:
     get:
       tags:
@@ -206,11 +206,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Stakeholder"
-            application/problem+json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Stakeholder"
     put:
       tags:
         - Stakeholders
@@ -257,8 +252,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -267,6 +260,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
     patch:
       tags:
         - Stakeholders
@@ -386,9 +381,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Stakeholder"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Stakeholder"
     put:
       tags:
         - Stakeholders
@@ -439,8 +431,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -449,6 +439,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
     delete:
       tags:
         - Stakeholders
@@ -493,8 +485,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -503,6 +493,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
     patch:
       tags:
         - Stakeholders
@@ -553,8 +545,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -563,6 +553,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}/viewed/{isViewed}:
     put:
       tags:
@@ -606,8 +598,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -616,6 +606,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/facilities:
     get:
       tags:
@@ -671,11 +663,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Facility"
-            application/problem+json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Facility"
     put:
       tags:
         - Facilities
@@ -722,8 +709,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -732,6 +717,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
     post:
       tags:
         - Facilities
@@ -850,9 +837,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Decision"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Decision"
     put:
       tags:
         - Decisions
@@ -903,8 +887,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -913,6 +895,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
     delete:
       tags:
         - Decisions
@@ -957,8 +941,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -967,6 +949,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
     patch:
       tags:
         - Decisions
@@ -1017,8 +1001,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -1027,6 +1009,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}:
     get:
       tags:
@@ -1086,9 +1070,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Attachment"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Attachment"
     put:
       tags:
         - Attachments
@@ -1139,8 +1120,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -1149,6 +1128,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
     delete:
       tags:
         - Attachments
@@ -1193,8 +1174,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -1203,6 +1182,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
     patch:
       tags:
         - Attachments
@@ -1253,8 +1234,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -1263,6 +1242,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
   /{municipalityId}/{namespace}/errands:
     get:
       tags:
@@ -1342,9 +1323,6 @@ paths:
           description: OK - Successful operation
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/PageErrand"
-            application/problem+json:
               schema:
                 $ref: "#/components/schemas/PageErrand"
     post:
@@ -1469,11 +1447,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Notification"
-            application/problem+json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Notification"
     post:
       tags:
         - Notifications
@@ -1575,8 +1548,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -1585,6 +1556,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/attachments:
     post:
       tags:
@@ -1706,11 +1679,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Notification"
-            application/problem+json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Notification"
     patch:
       tags:
         - Notifications
@@ -1817,9 +1785,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Errand"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Errand"
     patch:
       tags:
         - Errands
@@ -1864,8 +1829,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -1874,6 +1837,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/notes:
     get:
       tags:
@@ -1934,11 +1899,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Note"
-            application/problem+json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Note"
     patch:
       tags:
         - Notes
@@ -1971,6 +1931,12 @@ paths:
               $ref: "#/components/schemas/Note"
         required: true
       responses:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "201":
           description: Created - Successful operation
           headers:
@@ -1979,12 +1945,6 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
@@ -2058,9 +2018,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Note"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Note"
     delete:
       tags:
         - Notes
@@ -2105,8 +2062,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -2115,6 +2070,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
     patch:
       tags:
         - Notes
@@ -2165,8 +2122,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -2175,6 +2130,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}:
     get:
       tags:
@@ -2234,9 +2191,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Facility"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Facility"
     delete:
       tags:
         - Facilities
@@ -2281,8 +2235,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -2291,6 +2243,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
     patch:
       tags:
         - Facilities
@@ -2341,8 +2295,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -2351,6 +2303,8 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No content - Successful operation
   /{municipalityId}/{namespace}/errands/{errandId}/decisions:
     get:
       tags:
@@ -2402,11 +2356,6 @@ paths:
           description: OK - Successful operation
           content:
             application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Decision"
-            application/problem+json:
               schema:
                 type: array
                 items:
@@ -2526,11 +2475,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/GetParkingPermit"
-            application/problem+json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/GetParkingPermit"
   /{municipalityId}/{namespace}/messages/{errandNumber}:
     get:
       tags:
@@ -2575,11 +2519,6 @@ paths:
           description: OK - Successful operation
           content:
             application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MessageResponse"
-            application/problem+json:
               schema:
                 type: array
                 items:
@@ -2642,10 +2581,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-            application/problem+json:
-              schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/History"
   /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}:
     get:
       tags:
@@ -2683,18 +2621,18 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
-          description: Successful operation
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/Notification"
         "404":
           description: Not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful operation
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Notification"
         "500":
           description: Internal Server error
           content:
@@ -2824,10 +2762,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-            application/problem+json:
-              schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/History"
   /{municipalityId}/{namespace}/errands/{errandId}/messageattachments/{attachmentId}/streamed:
     get:
       tags:
@@ -2864,6 +2801,12 @@ paths:
           schema:
             type: string
       responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2872,12 +2815,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "404":
           description: Not Found
           content:
@@ -2938,10 +2875,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-            application/problem+json:
-              schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/History"
   /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}/history:
     get:
       tags:
@@ -3000,10 +2936,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-            application/problem+json:
-              schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/History"
   /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}/history:
     get:
       tags:
@@ -3062,10 +2997,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-            application/problem+json:
-              schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/History"
   /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}/history:
     get:
       tags:
@@ -3124,10 +3058,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-            application/problem+json:
-              schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/History"
   /{municipalityId}/{namespace}/errand/{errandNumber}/attachments:
     get:
       tags:
@@ -3178,11 +3111,6 @@ paths:
           description: OK - Successful operation
           content:
             application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Attachment"
-            application/problem+json:
               schema:
                 type: array
                 items:
@@ -3247,11 +3175,11 @@ components:
     StatusType:
       type: object
       properties:
+        reasonPhrase:
+          type: string
         statusCode:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -4808,20 +4736,20 @@ components:
     PageErrand:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
-        first:
-          type: boolean
-        last:
-          type: boolean
+        totalPages:
+          type: integer
+          format: int32
         content:
           type: array
           items:
             $ref: "#/components/schemas/Errand"
+        first:
+          type: boolean
+        last:
+          type: boolean
         number:
           type: integer
           format: int32
@@ -4832,11 +4760,11 @@ components:
         size:
           type: integer
           format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         numberOfElements:
           type: integer
           format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageableObject:
@@ -4872,4 +4800,86 @@ components:
           type: string
         ignoreCase:
           type: boolean
+    CommitMetadata:
+      type: object
+      properties:
+        author:
+          type: string
+        commitDateInstant:
+          type: string
+        id:
+          type: number
+          format: double
+        properties:
+          type: array
+          items:
+            type: object
+        commitDate:
+          type: string
+    ElementChangesItem:
+      type: object
+      properties:
+        elementChangeType:
+          type: string
+        index:
+          type: integer
+          format: int32
+        value:
+          type: object
+    EntryChangesItem:
+      type: object
+      properties:
+        entryChangeType:
+          type: string
+        value:
+          type: string
+        key:
+          type: string
+    GlobalId:
+      type: object
+      properties:
+        cdoId:
+          type: integer
+          format: int32
+        entity:
+          type: string
+        valueObject:
+          type: string
+        fragment:
+          type: string
+        ownerId:
+          $ref: "#/components/schemas/OwnerId"
+    History:
+      type: object
+      properties:
+        changeType:
+          type: string
+        commitMetadata:
+          $ref: "#/components/schemas/CommitMetadata"
+        globalId:
+          $ref: "#/components/schemas/GlobalId"
+        property:
+          type: string
+        propertyChangeType:
+          type: string
+        entryChanges:
+          type: array
+          items:
+            $ref: "#/components/schemas/EntryChangesItem"
+        left:
+          type: object
+        right:
+          type: object
+        elementChanges:
+          type: array
+          items:
+            $ref: "#/components/schemas/ElementChangesItem"
+    OwnerId:
+      type: object
+      properties:
+        cdoId:
+          type: integer
+          format: int32
+        entity:
+          type: string
   securitySchemes: {}

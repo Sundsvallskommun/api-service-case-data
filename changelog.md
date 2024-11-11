@@ -8,6 +8,12 @@
 #### Removed endpoints:
       - [GET] /{municipalityId}/{namespace}/attachments/errand/{errandNumber}
 ### Appeals:
+#### New endpoints:
+      - [GET] /{municipalityId}/{namespace}/errand/{errandNumber}/attachments
+#### Removed endpoints:
+      - [GET] /{municipalityId}/{namespace}/attachments/errand/{errandNumber}
+### Appeals:
+>>>>>>> branch '10.0' of git@github.com:Sundsvallskommun/api-service-case-data.git
 
 #### Removed endpoints:
 
@@ -31,10 +37,6 @@
 
 ## API-Model updates
 
-- **PatchErrand**
-    - **Added Fields:**
-        - relatesTo: `List<RelatedErrand>`
-
 - **AttachmentCategory**
 	- **Removed Values:**
 		- Removed 231 unused values. See API documentation for full list.
@@ -54,7 +56,8 @@
 
 - **Errand**
 	- **Added Fields:**
-        - relatesTo: `List<RelatedErrand>`
+      - relatesTo: `List<RelatedErrand>`
+      - labels: `List<String>`
     - **Removed Fields:**
 		- appeals: `List<Appeal>`
       
@@ -74,7 +77,7 @@
 		- created: `OffsetDateTime`
 		- decisionId: `Long`
 		- description: `String`
-		- id: `long`
+		- id: `Long`
 		- municipalityId: `String`
 		- namespace: `String`
 		- registeredAt: `OffsetDateTime`

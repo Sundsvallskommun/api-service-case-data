@@ -9,6 +9,7 @@ truncate table errand;
 truncate table errand_extra_parameters;
 truncate table errand_message_ids;
 truncate table errand_statuses;
+truncate table errand_labels;
 truncate table facility;
 truncate table facility_extra_parameters;
 truncate table jv_commit;
