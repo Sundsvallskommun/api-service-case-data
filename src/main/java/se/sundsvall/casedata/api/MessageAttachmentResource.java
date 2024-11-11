@@ -40,10 +40,8 @@ class MessageAttachmentResource {
 		this.service = service;
 	}
 
+	@GetMapping(path = "/{attachmentId}/streamed", produces = ALL_VALUE)
 	@Operation(summary = "Get a streamed messageAttachment.", description = "Fetches the message attachment that matches the provided id in a streamed manner")
-	@GetMapping(path = "/{attachmentId}/streamed", produces = {
-		ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 		Problem.class, ConstraintViolationProblem.class
