@@ -3,7 +3,9 @@ package se.sundsvall.casedata.integration.db.model;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -95,6 +97,13 @@ public class MessageEntity {
 	@Column(name = "email")
 	private String email;
 
+	@ElementCollection
+	@CollectionTable(name = "message_recipients",
+		joinColumns = @JoinColumn(name = "message_id"),
+		foreignKey = @ForeignKey(name = "fk_message_recipients_message_id"))
+	@Column(name = "recipient_email")
+	private List<String> recipients;
+
 	@Column(name = "userID")
 	private String userId;
 
@@ -112,5 +121,6 @@ public class MessageEntity {
 	@JoinColumn(name = "message_id", referencedColumnName = "messageID",
 		foreignKey = @ForeignKey(name = "fk_message_header_message_id"))
 	private List<EmailHeaderEntity> headers;
+
 
 }

@@ -33,3 +33,7 @@ VALUES (1, '<test123@domain.com>', 0),
        (3, '<123test@domain.com>', 0),
        (3, '<123@domain.com>', 1),
        (3, '<456@domain.com>', 2);
+
+INSERT INTO message_recipients(message_id, recipient_email)
+VALUES ('a8883fb9-60b4-4f38-9f48-642070ff49ee', 'johndoe@email.com'),
+       ('a8883fb9-60b4-4f38-9f48-642070ff49ee', 'someemail@sundsvall.se');

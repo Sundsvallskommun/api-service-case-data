@@ -21,6 +21,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(setterPrefix = "with")
 public class MessageRequest {
 
@@ -66,6 +68,9 @@ public class MessageRequest {
 
 	@Schema(description = "The email of the user that sent the message", example = "kalle.anka@ankeborg.se")
 	private String email;
+
+	@Schema(description = "List of email recipients", example = "[\"kalle.anka@ankeborg.se\"]")
+	private List<String> recipients;
 
 	@Schema(description = "The user ID of the user that sent the message", example = "12")
 	private String userId;

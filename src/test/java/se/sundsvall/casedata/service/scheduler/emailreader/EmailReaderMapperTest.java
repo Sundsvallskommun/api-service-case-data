@@ -121,7 +121,8 @@ class EmailReaderMapperTest {
 				"textmessage",
 				"messageType",
 				"email",
-				"municipalityId")
+				"municipalityId",
+				"recipients")
 			.containsExactlyInAnyOrder(
 				email.getId(),
 				INBOUND,
@@ -129,7 +130,8 @@ class EmailReaderMapperTest {
 				"someMessage",
 				EMAIL.name(),
 				"someSender",
-				"someMunicipalityId");
+				"someMunicipalityId",
+				List.of("someRecipient"));
 
 		assertThat(result.getHeaders()).hasSize(3).containsExactlyInAnyOrder(
 			EmailHeaderEntity.builder()
@@ -195,7 +197,8 @@ class EmailReaderMapperTest {
 				"textmessage",
 				"messageType",
 				"email",
-				"municipalityId")
+				"municipalityId",
+				"recipients")
 			.containsExactlyInAnyOrder(
 				email.getId(),
 				INBOUND,
@@ -203,7 +206,8 @@ class EmailReaderMapperTest {
 				"someMessage",
 				EMAIL.name(),
 				"someSender",
-				"someMunicipalityId");
+				"someMunicipalityId",
+				List.of("someRecipient"));
 
 		assertThat(result.getSent())
 			.isEqualTo(email.getReceivedAt()
