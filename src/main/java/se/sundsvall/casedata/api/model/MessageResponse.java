@@ -77,6 +77,9 @@ public class MessageResponse {
 	@Schema(description = "The mobile number of the recipient", example = "+46701234567")
 	private String mobileNumber;
 
+	@Schema(description = "The recipients of the message, if email", example = "[\"kalle.anka@ankeborg.se\"]")
+	private List<String> recipients;
+
 	@Schema(description = "The email of the user that sent the message", example = "kalle.anka@ankeborg.se")
 	private String email;
 

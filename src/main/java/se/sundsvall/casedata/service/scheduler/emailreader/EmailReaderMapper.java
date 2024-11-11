@@ -56,6 +56,7 @@ public class EmailReaderMapper {
 			.withExternalCaseId("")
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
+			.withRecipients(email.getRecipients())
 			.withSubject(email.getSubject())
 			.withTextmessage(email.getMessage())
 			.withSent(email.getReceivedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))

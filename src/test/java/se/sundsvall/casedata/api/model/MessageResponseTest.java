@@ -65,6 +65,7 @@ class MessageResponseTest {
 				.build());
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
+		final var recipients = List.of("recipient");
 
 		// Act
 		final var bean = MessageResponse.builder()
@@ -89,6 +90,7 @@ class MessageResponseTest {
 			.withEmailHeaders(headers)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
+			.withRecipients(recipients)
 			.build();
 
 		// Assert
@@ -114,6 +116,7 @@ class MessageResponseTest {
 		assertThat(bean.getEmailHeaders()).isEqualTo(headers);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getNamespace()).isEqualTo(namespace);
+		assertThat(bean.getRecipients()).isEqualTo(recipients);
 	}
 
 	@Test

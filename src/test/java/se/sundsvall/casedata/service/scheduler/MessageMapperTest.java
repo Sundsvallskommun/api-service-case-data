@@ -87,7 +87,8 @@ class MessageMapperTest {
 				MessageResponse::getSent,
 				MessageResponse::getSubject,
 				MessageResponse::getUserId,
-				MessageResponse::getUsername)
+				MessageResponse::getUsername,
+				MessageResponse::getRecipients)
 			.containsExactly(tuple(
 				bean.getDirection(),
 				bean.getEmail(),
@@ -103,7 +104,8 @@ class MessageMapperTest {
 				bean.getSent(),
 				bean.getSubject(),
 				bean.getUserId(),
-				bean.getUsername()));
+				bean.getUsername(),
+				bean.getRecipients()));
 		assertThat(dto.getFirst().getEmailHeaders()).allSatisfy(s -> {
 			assertThat(s.getHeader()).isNotNull().isInstanceOf(Header.class);
 			assertThat(s.getValues()).isNotNull().isNotEmpty();
@@ -135,7 +137,8 @@ class MessageMapperTest {
 				MessageResponse::getSent,
 				MessageResponse::getSubject,
 				MessageResponse::getUserId,
-				MessageResponse::getUsername)
+				MessageResponse::getUsername,
+				MessageResponse::getRecipients)
 			.containsExactly(
 				bean.getDirection(),
 				bean.getEmail(),
@@ -151,7 +154,8 @@ class MessageMapperTest {
 				bean.getSent(),
 				bean.getSubject(),
 				bean.getUserId(),
-				bean.getUsername());
+				bean.getUsername(),
+				bean.getRecipients());
 
 		assertThat(dto.getEmailHeaders()).allSatisfy(s -> {
 			assertThat(s.getHeader()).isNotNull().isInstanceOf(Header.class);

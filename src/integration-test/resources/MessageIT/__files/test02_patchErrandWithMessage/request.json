@@ -1,6 +1,6 @@
 {
   "messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
-  "errandNumber": "ERRAND-NUMBER-2",
+  "errandNumber": "ERRAND-NUMBER-1",
   "direction": "INBOUND",
   "familyId": "123",
   "externalCaseId": "321",
@@ -8,6 +8,8 @@
   "sent": "2024-01-02T12:00:00.000000",
   "subject": "Subject",
   "username": "kctest",
+  "recipients": [
+	"patch@sundsvall.se"],
   "firstName": "john",
   "lastName": "doe",
   "messageType": "EMAIL",
@@ -16,12 +18,12 @@
   "userId": "userId",
   "viewed": false,
   "attachments": [
-    {
-      "attachmentId": "c1883fb9-60b4-4f38-9f48-642070ff49ee",
-      "messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
-      "name": "this-is-an-attachment",
-      "content_type": "application/pdf",
-      "message_attachment_data_id": 1
-    }
+	{
+	  "attachmentId": "c1883fb9-60b4-4f38-9f48-642070ff49ee",
+	  "messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
+	  "name": "this-is-an-attachment",
+	  "content_type": "application/pdf",
+	  "message_attachment_data_id": 1
+	}
   ]
 }

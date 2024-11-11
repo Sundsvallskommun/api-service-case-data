@@ -59,8 +59,8 @@ class MessageResource {
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandNumber") final String errandNumber) {
-
-		return ok(service.getMessagesByErrandNumber(errandNumber, municipalityId, namespace));
+		final var messages = service.getMessagesByErrandNumber(errandNumber, municipalityId, namespace);
+		return ok(messages);
 	}
 
 	@Operation(description = "Save a message on an errand")
