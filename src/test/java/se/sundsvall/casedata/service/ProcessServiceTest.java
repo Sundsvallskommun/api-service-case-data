@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -53,15 +54,16 @@ class ProcessServiceTest {
 	void startProcess_whenParkingPermit(final String enumValue) {
 		// Arrange
 		final var errand = createErrandEntity();
-		final var result = new StartProcessResponse();
+		final var processId = UUID.randomUUID().toString();
+		final var response = new StartProcessResponse().processId(processId);
 		errand.setCaseType(enumValue);
-		when(parkingPermitIntegration.startProcess(errand)).thenReturn(result);
+		when(parkingPermitIntegration.startProcess(errand)).thenReturn(response);
 
 		// Act
-		var result1 = processService.startProcess(errand);
+		var result = processService.startProcess(errand);
 
 		// Assert
-		assertThat(result1).isEqualTo(result);
+		assertThat(result).isEqualTo(processId);
 		verify(parkingPermitIntegration).startProcess(errand);
 		verifyNoMoreInteractions(parkingPermitIntegration);
 		verifyNoInteractions(landAndExploitationIntegration);
@@ -72,15 +74,16 @@ class ProcessServiceTest {
 	void startProcess_whenMEX(final String enumValue) {
 		// Arrange
 		final var errand = createErrandEntity();
-		final var result = new StartProcessResponse();
+		final var processId = UUID.randomUUID().toString();
+		final var response = new generated.se.sundsvall.mex.StartProcessResponse().processId(processId);
 		errand.setCaseType(enumValue);
-		when(landAndExploitationIntegration.startProcess(errand)).thenReturn(result);
+		when(landAndExploitationIntegration.startProcess(errand)).thenReturn(response);
 
 		// Act
-		var result1 = processService.startProcess(errand);
+		var result = processService.startProcess(errand);
 
 		// Assert
-		assertThat(result1).isEqualTo(result);
+		assertThat(result).isEqualTo(processId);
 		verify(landAndExploitationIntegration).startProcess(errand);
 		verifyNoMoreInteractions(landAndExploitationIntegration);
 		verifyNoInteractions(parkingPermitIntegration);

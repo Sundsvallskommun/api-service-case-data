@@ -24,7 +24,7 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 public class NotificationService {
 
 	private static final String NOTIFICATION_ENTITY_NOT_FOUND = "Notification with id '%s' not found in namespace '%s' for municipality with id '%s'";
-	private static final String ERRAND_ENTITY_NOT_FOUND = "Errand with id '%'s not found in namespace '%s' for municipality with id '%s'";
+	private static final String ERRAND_ENTITY_NOT_FOUND = "Errand with id '%s' not found in namespace '%s' for municipality with id '%s'";
 
 	private final IncomingRequestFilter incomingRequestFilter;
 	private final NotificationRepository notificationRepository;

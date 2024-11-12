@@ -31,12 +31,12 @@ public class ProcessService {
 		this.landAndExploitationIntegration = landAndExploitationIntegration;
 	}
 
-	public StartProcessResponse startProcess(final ErrandEntity errand) {
+	public String startProcess(final ErrandEntity errand) {
 		if (PARKING_PERMIT_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType()))) {
-			return parkingPermitIntegration.startProcess(errand);
+			return parkingPermitIntegration.startProcess(errand).getProcessId();
 		}
 		if (MEX_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType()))) {
-			return landAndExploitationIntegration.startProcess(errand);
+			return landAndExploitationIntegration.startProcess(errand).getProcessId();
 		}
 		LOGGER.info("No camunda process found for caseType: {}", errand.getCaseType());
 		return null;
