@@ -21,13 +21,13 @@ public class ExtraParameterListener {
 
 	@PostPersist
 	private void postPersist(final ExtraParameterEntity extraParameterEntity) {
-		errandListener.updateErrandFields(extraParameterEntity.getErrandEntity());
+		errandListener.updateErrandFields(extraParameterEntity.getErrand());
 	}
 
 	@PreUpdate
 	@PreRemove
 	private void preUpdate(final ExtraParameterEntity extraParameterEntity) {
-		errandListener.updateErrandFields(extraParameterEntity.getErrandEntity());
+		errandListener.updateErrandFields(extraParameterEntity.getErrand());
 	}
 
 }

@@ -483,7 +483,7 @@ public final class TestUtil {
 			.withId(1L)
 			.withVersion(1)
 			.withExtraParameters(createExtraParameters())
-			.withAddressEntity(createAddressEntity())
+			.withAddress(createAddressEntity())
 			.withFacilityType(FacilityType.GARAGE.name())
 			.withErrand(null)
 			.withMainFacility(true)

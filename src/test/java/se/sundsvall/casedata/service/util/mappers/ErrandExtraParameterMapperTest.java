@@ -31,7 +31,7 @@ class ErrandExtraParameterMapperTest {
 		assertThat(result.getFirst().getDisplayName()).isEqualTo("Test Display Name");
 		assertThat(result.getFirst().getKey()).isEqualTo("TestKey");
 		assertThat(result.getFirst().getValues()).containsExactly("Value1", "Value2");
-		assertThat(result.getFirst().getErrandEntity()).isEqualTo(errandEntity);
+		assertThat(result.getFirst().getErrand()).isEqualTo(errandEntity);
 	}
 
 	@Test
@@ -60,7 +60,7 @@ class ErrandExtraParameterMapperTest {
 		assertThat(result.getFirst().getDisplayName()).isEqualTo("New Display Name");
 		assertThat(result.getFirst().getKey()).isEqualTo("TestKey");
 		assertThat(result.getFirst().getValues()).containsExactly("NewValue1", "NewValue2");
-		assertThat(result.getFirst().getErrandEntity()).isEqualTo(errandEntity);
+		assertThat(result.getFirst().getErrand()).isEqualTo(errandEntity);
 	}
 
 	@Test

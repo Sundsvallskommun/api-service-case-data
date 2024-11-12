@@ -20,7 +20,7 @@ public final class ErrandExtraParameterMapper {
 
 	public static List<ExtraParameterEntity> toErrandParameterEntityList( List<ExtraParameter> parameters, ErrandEntity entity) {
 		return new ArrayList<>(toUniqueKeyList(parameters).stream()
-			.map(parameter -> toErrandParameterEntity(parameter).withErrandEntity(entity))
+			.map(parameter -> toErrandParameterEntity(parameter).withErrand(entity))
 			.toList());
 	}
 

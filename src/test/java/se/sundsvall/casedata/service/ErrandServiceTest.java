@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.service;
 
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -230,7 +229,7 @@ class ErrandServiceTest {
 			assertThat(e.getExtraParameters())
 				.containsAll(patch.getExtraParameters().stream()
 					.map(parameter -> ErrandExtraParameterMapper.toErrandParameterEntity(parameter)
-						.withErrandEntity(errand))
+						.withErrand(errand))
 					.toList());
 		});
 

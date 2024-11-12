@@ -193,7 +193,7 @@ public class ErrandEntity {
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime suspendedFrom;
 
-	@OneToMany(mappedBy = "errandEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "errand", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExtraParameterEntity> extraParameters;
 
 	@Override
