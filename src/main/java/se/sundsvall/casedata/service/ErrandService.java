@@ -121,11 +121,12 @@ public class ErrandService {
 	@Retry(name = "OptimisticLocking")
 	private void startProcess(final ErrandEntity errand) {
 		try {
-			final var startProcessResponse = processService.startProcess(errand);
-			if (!isNull(startProcessResponse)) {
-				errand.setProcessId(startProcessResponse.getProcessId());
+			final var startProcessId = processService.startProcess(errand);
+			if (!isNull(startProcessId)) {
+				errand.setProcessId(startProcessId);
 				errandRepository.save(errand);
 			}
+
 		} catch (final Exception e) {
 			errandRepository.delete(errand);
 			throw e;

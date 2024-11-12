@@ -94,9 +94,8 @@ class ErrandServiceTest {
 		inputErrand.setId(new Random().nextLong(1, 1000));
 
 		when(errandRepositoryMock.save(any())).thenReturn(inputErrand);
-		final var startProcessResponse = new StartProcessResponse();
-		startProcessResponse.setProcessId(UUID.randomUUID().toString());
-		when(processServiceMock.startProcess(inputErrand)).thenReturn(startProcessResponse);
+		final var processId = UUID.randomUUID().toString();
+		when(processServiceMock.startProcess(inputErrand)).thenReturn(processId);
 
 		// Act
 		errandService.createErrand(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
