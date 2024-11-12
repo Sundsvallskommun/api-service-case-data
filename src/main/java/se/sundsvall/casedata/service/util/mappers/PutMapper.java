@@ -97,7 +97,7 @@ public final class PutMapper {
 			oldFacility.setFacilityType(facility.getFacilityType());
 			oldFacility.setMainFacility(facility.isMainFacility());
 			oldFacility.setDescription(facility.getDescription());
-			oldFacility.setAddressEntity(EntityMapper.toAddressEntity(facility.getAddress()));
+			oldFacility.setAddress(EntityMapper.toAddressEntity(facility.getAddress()));
 			oldFacility.setFacilityCollectionName(facility.getFacilityCollectionName());
 			oldFacility.setExtraParameters(facility.getExtraParameters());
 		});

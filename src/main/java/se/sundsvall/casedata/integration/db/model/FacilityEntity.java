@@ -79,7 +79,7 @@ public class FacilityEntity {
 	private String namespace;
 
 	@Embedded
-	private AddressEntity addressEntity;
+	private AddressEntity address;
 
 	@Column(name = "facility_collection_name")
 	private String facilityCollectionName;
@@ -120,7 +120,7 @@ public class FacilityEntity {
 			", description='" + description + '\'' +
 			", municipalityId='" + municipalityId + '\'' +
 			", namespace='" + namespace + '\'' +
-			", addressEntity=" + addressEntity +
+			", address=" + address +
 			", facilityCollectionName='" + facilityCollectionName + '\'' +
 			", mainFacility=" + mainFacility +
 			", facilityType='" + facilityType + '\'' +

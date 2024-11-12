@@ -120,7 +120,7 @@ public final class PatchMapper {
 		// ExtraParameters are not patched, they are posted for whatever reason.
 		Optional.ofNullable(patch.getExtraParameters()).ifPresent(obj -> facility.getExtraParameters().putAll(obj));
 		Optional.ofNullable(patch.getDescription()).ifPresent(facility::setDescription);
-		Optional.ofNullable(patch.getAddress()).ifPresent(obj -> facility.setAddressEntity(toAddressEntity(obj)));
+		Optional.ofNullable(patch.getAddress()).ifPresent(obj -> facility.setAddress(toAddressEntity(obj)));
 		Optional.ofNullable(patch.getFacilityCollectionName()).ifPresent(facility::setFacilityCollectionName);
 		Optional.ofNullable(patch.getFacilityType()).ifPresent(facility::setFacilityType);
 		Optional.of(patch.isMainFacility()).ifPresent(facility::setMainFacility);

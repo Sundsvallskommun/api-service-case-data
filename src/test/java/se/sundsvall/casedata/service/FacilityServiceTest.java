@@ -141,7 +141,7 @@ class FacilityServiceTest {
 			assertThat(facility.getFacilityType()).isInstanceOf(String.class).isNotNull();
 			assertThat(facility.isMainFacility()).isInstanceOf(Boolean.class).isNotNull();
 			assertThat(facility.getDescription()).isInstanceOf(String.class).isNotBlank();
-			assertThat(facility.getAddressEntity()).isInstanceOf(AddressEntity.class).isNotNull();
+			assertThat(facility.getAddress()).isInstanceOf(AddressEntity.class).isNotNull();
 			assertThat(facility.getExtraParameters()).isInstanceOf(HashMap.class).isNotNull();
 			assertThat(facility.getFacilityCollectionName()).isInstanceOf(String.class).isNotBlank();
 			assertThat(facility.getVersion()).isInstanceOf(Integer.class).isNotNull();
