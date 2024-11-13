@@ -8,15 +8,7 @@
 #### Removed endpoints:
       - [GET] /{municipalityId}/{namespace}/attachments/errand/{errandNumber}
 ### Appeals:
-#### New endpoints:
-      - [GET] /{municipalityId}/{namespace}/errand/{errandNumber}/attachments
 #### Removed endpoints:
-      - [GET] /{municipalityId}/{namespace}/attachments/errand/{errandNumber}
-### Appeals:
->>>>>>> branch '10.0' of git@github.com:Sundsvallskommun/api-service-case-data.git
-
-#### Removed endpoints:
-
       - [GET] /{municipalityId}/{namespace}/errands/{errandId}/appeals
       - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/appeals
       - [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
@@ -34,6 +26,10 @@
       - [POST] /{municipalityId}/{namespace}/notifications
       - [DELETE] /{municipalityId}/{namespace}/notifications/{notificationId}
       - [GET] /{municipalityId}/{namespace}/notifications/{notificationId}
+
+### Parking permit:
+#### Removed endpoints:
+      - [GET] /{municipalityId}/{namespace}/parking-permits
 
 ## API-Model updates
 
@@ -60,6 +56,13 @@
       - labels: `List<String>`
     - **Removed Fields:**
 		- appeals: `List<Appeal>`
+
+- **GetParkingPermit** *(Removed)*
+	- **Fields:**
+		- artefactPermitNumber: `String`
+		- artefactPermitStatus: `String`
+		- errandDecision: `Decision`
+		- errandId: `Long`
       
 - **PatchNotification**
 	- **Added Fields:**

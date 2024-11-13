@@ -32,7 +32,6 @@ import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Errand;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.api.model.Facility;
-import se.sundsvall.casedata.api.model.GetParkingPermit;
 import se.sundsvall.casedata.api.model.Law;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.api.model.Notification;
@@ -650,14 +649,5 @@ public final class TestUtil {
 				.withKey("key2")
 				.build());
 		return list;
-	}
-
-	public static GetParkingPermit createGetParkingPermitDTO() {
-		return GetParkingPermit.builder()
-			.withArtefactPermitNumber("123")
-			.withArtefactPermitStatus("status")
-			.withErrandId(1L)
-			.withErrandDecision(createDecision())
-			.build();
 	}
 }
