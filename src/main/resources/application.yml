@@ -104,10 +104,9 @@ resilience4j:
         ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
       landandexploitation:
         ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
-      errandRepository:
-        ignoreExceptions: org.springframework.data.mapping.PropertyReferenceException
-
-
+    configs:
+      default:
+        ignore-exceptions: org.springframework.data.mapping.PropertyReferenceException
   #----------------------------------------
   # Retry
   #----------------------------------------
