@@ -1,35 +1,5 @@
 package se.sundsvall.casedata.apptest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.util.UriComponentsBuilder;
-import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.Decision;
-import se.sundsvall.casedata.api.model.Errand;
-import se.sundsvall.casedata.api.model.Note;
-import se.sundsvall.casedata.api.model.PatchErrand;
-import se.sundsvall.casedata.api.model.Stakeholder;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-import se.sundsvall.casedata.service.util.Constants;
-import se.sundsvall.dept44.test.AbstractAppTest;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
-
-import java.time.OffsetDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
@@ -62,6 +32,35 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.PARKING_PERMIT_START_URL;
 import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.time.OffsetDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.util.UriComponentsBuilder;
+import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.Decision;
+import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.Note;
+import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.api.model.Stakeholder;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import se.sundsvall.casedata.service.util.Constants;
+import se.sundsvall.dept44.test.AbstractAppTest;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/ErrandIT", classes = Application.class)
 class ErrandIT extends AbstractAppTest {
@@ -572,7 +571,8 @@ class ErrandIT extends AbstractAppTest {
 		final Errand inputPostErrand1 = createErrand();
 		postErrand(inputPostErrand1, municipalityId);
 
-		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst().orElseThrow();
+		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst()
+			.orElseThrow();
 
 		// Get only the first one with query params
 		final Page<Errand> resultList = webTestClient.get().uri(
@@ -613,7 +613,8 @@ class ErrandIT extends AbstractAppTest {
 		final Errand inputPostErrand1 = createErrand();
 		postErrand(inputPostErrand1, municipalityId);
 
-		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst().orElseThrow();
+		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst()
+			.orElseThrow();
 
 		// Get only the first one with query params
 		final Page<Errand> resultList = webTestClient.get().uri(
@@ -652,7 +653,8 @@ class ErrandIT extends AbstractAppTest {
 		final Errand inputPostErrand1 = createErrand();
 		postErrand(inputPostErrand1, municipalityId);
 
-		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst().orElseThrow();
+		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst()
+			.orElseThrow();
 
 		webTestClient.get().uri(
 				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
@@ -678,7 +680,8 @@ class ErrandIT extends AbstractAppTest {
 		final Errand inputPostErrand1 = createErrand();
 		postErrand(inputPostErrand1, municipalityId);
 
-		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst().orElseThrow();
+		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst()
+			.orElseThrow();
 		// Get only the first one with query params
 		final Page<Errand> resultList = webTestClient.get().uri(
 				uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())

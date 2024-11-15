@@ -4,18 +4,16 @@ import static java.time.OffsetDateTime.now;
 import static java.time.ZoneId.systemDefault;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-
-import jakarta.persistence.PostPersist;
-import jakarta.persistence.PostUpdate;
-import jakarta.persistence.PrePersist;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -38,7 +36,7 @@ public class ErrandListener {
 	}
 
 	@PrePersist
-	private void beforePersist(final ErrandEntity errand) {
+	private void prePersist(final ErrandEntity errand) {
 		errand.setErrandNumber(generateErrandNumber(errand.getCaseType()));
 	}
 
@@ -46,12 +44,15 @@ public class ErrandListener {
 	private void postPersist(final ErrandEntity errand) {
 		errand.setCreatedByClient(incomingRequestFilter.getSubscriber());
 		errand.setCreatedBy(incomingRequestFilter.getAdUser());
-		LOG.info("Created errand with errandNumber: {}. Subscriber: {}. AD-user: {}", errand.getErrandNumber(), incomingRequestFilter.getSubscriber(), incomingRequestFilter.getAdUser());
+		LOG.info("Created errand with errandNumber: {}. Subscriber: {}. AD-user: {}", errand.getErrandNumber(), incomingRequestFilter.getSubscriber(),
+			incomingRequestFilter.getAdUser());
 	}
 
-	@PostUpdate
-	private void beforeUpdate(final ErrandEntity errand) {
+	@PreUpdate
+	private void preUpdate(final ErrandEntity errand) {
 		updateErrandFields(errand);
+		LOG.info("Updated errand with updated: {}. errandNumber: {}. Subscriber: {}. AD-user: {}", errand.getUpdated(), errand.getErrandNumber(),
+			incomingRequestFilter.getSubscriber(), incomingRequestFilter.getAdUser());
 	}
 
 	void updateErrandFields(final ErrandEntity errand) {
@@ -60,7 +61,6 @@ public class ErrandListener {
 			errand.setUpdated(now(systemDefault()));
 			errand.setUpdatedByClient(incomingRequestFilter.getSubscriber());
 			errand.setUpdatedBy(incomingRequestFilter.getAdUser());
-			LOG.info("Updated errand with updated: {}. errandNumber: {}. Subscriber: {}. AD-user: {}", errand.getUpdated(), errand.getErrandNumber(), incomingRequestFilter.getSubscriber(), incomingRequestFilter.getAdUser());
 		}
 	}
 
@@ -88,7 +88,7 @@ public class ErrandListener {
 			String.format("%06d", nextSequenceNumber);
 	}
 
-	private int extractYearFromErrandNumber(ErrandEntity errand) {
+	private int extractYearFromErrandNumber(final ErrandEntity errand) {
 		return Integer.parseInt(errand.getErrandNumber().substring(errand.getErrandNumber().lastIndexOf(DELIMITER) - 4, errand.getErrandNumber().lastIndexOf(DELIMITER)));
 	}
 
