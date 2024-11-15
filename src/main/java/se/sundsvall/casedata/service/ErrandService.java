@@ -1,10 +1,26 @@
 package se.sundsvall.casedata.service;
 
+import static java.text.MessageFormat.format;
+import static java.util.Objects.isNull;
+import static org.zalando.problem.Status.BAD_REQUEST;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.NotificationService.EventType.CREATE;
+import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_CREATED;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
+
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import org.hibernate.query.sqm.PathElementException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Errand;
@@ -14,19 +30,6 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
-
-import java.util.List;
-
-import static java.text.MessageFormat.format;
-import static java.util.Objects.isNull;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.NotificationService.EventType.CREATE;
-import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_CREATED;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 
 @Service
 public class ErrandService {
@@ -61,14 +64,17 @@ public class ErrandService {
 	 */
 	public Page<Errand> findAll(final Specification<ErrandEntity> specification, final String municipalityId, final String namespace, final Pageable pageable) {
 		// Extract all ID's and remove duplicates
-		final List<Long> allIds = errandRepository.findAll(specification).stream()
-			.filter(errand -> municipalityId.equals(errand.getMunicipalityId()))
-			.map(ErrandEntity::getId)
-			.distinct()
-			.toList();
+		try {
+			final List<Long> allIds = errandRepository.findAll(specification).stream()
+				.filter(errand -> municipalityId.equals(errand.getMunicipalityId()))
+				.map(ErrandEntity::getId)
+				.distinct()
+				.toList();
 
-		return errandRepository.findAllByIdInAndMunicipalityIdAndNamespace(allIds, municipalityId, namespace, pageable)
-			.map(EntityMapper::toErrand);
+			return errandRepository.findAllByIdInAndMunicipalityIdAndNamespace(allIds, municipalityId, namespace, pageable).map(EntityMapper::toErrand);
+		} catch (final PropertyReferenceException | PathElementException | InvalidDataAccessApiUsageException e) {
+			throw Problem.valueOf(BAD_REQUEST, "Invalid filter parameter: " + e.getMessage());
+		}
 	}
 
 	/**
