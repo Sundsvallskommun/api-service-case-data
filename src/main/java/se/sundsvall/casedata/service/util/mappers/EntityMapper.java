@@ -7,11 +7,10 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.A
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
 
+import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Optional;
-
-import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.ContactInformation;
@@ -88,10 +87,6 @@ public final class EntityMapper {
 	public static ErrandEntity toErrandEntity(final Errand errand, final String municipalityId, final String namespace) {
 		final var errandEntity = ofNullable(errand)
 			.map(obj -> ErrandEntity.builder()
-				.withId(errand.getId())
-				.withVersion(errand.getVersion())
-				.withCreated(errand.getCreated())
-				.withUpdated(errand.getUpdated())
 				.withErrandNumber(errand.getErrandNumber())
 				.withExternalCaseId(errand.getExternalCaseId())
 				.withCaseType(errand.getCaseType())
@@ -155,10 +150,6 @@ public final class EntityMapper {
 	public static StakeholderEntity toStakeholderEntity(final Stakeholder stakeholder, final String municipalityId, final String namespace) {
 		return ofNullable(stakeholder)
 			.map(obj -> StakeholderEntity.builder()
-				.withId(stakeholder.getId())
-				.withVersion(stakeholder.getVersion())
-				.withCreated(stakeholder.getCreated())
-				.withUpdated(stakeholder.getUpdated())
 				.withType(stakeholder.getType())
 				.withFirstName(stakeholder.getFirstName())
 				.withLastName(stakeholder.getLastName())
@@ -205,10 +196,6 @@ public final class EntityMapper {
 	public static AttachmentEntity toAttachmentEntity(final Attachment attachment, final String municipalityId, final String namespace) {
 		return ofNullable(attachment)
 			.map(obj -> AttachmentEntity.builder()
-				.withId(attachment.getId())
-				.withVersion(attachment.getVersion())
-				.withCreated(attachment.getCreated())
-				.withUpdated(attachment.getUpdated())
 				.withCategory(attachment.getCategory())
 				.withName(attachment.getName())
 				.withNote(attachment.getNote())
@@ -247,10 +234,6 @@ public final class EntityMapper {
 	public static DecisionEntity toDecisionEntity(final Decision decision, final ErrandEntity errand, final String municipalityId, final String namespace) {
 		return ofNullable(decision)
 			.map(obj -> DecisionEntity.builder()
-				.withId(decision.getId())
-				.withVersion(decision.getVersion())
-				.withCreated(decision.getCreated())
-				.withUpdated(decision.getUpdated())
 				.withErrand(errand)
 				.withDecisionType(decision.getDecisionType())
 				.withDecisionOutcome(decision.getDecisionOutcome())
@@ -314,10 +297,6 @@ public final class EntityMapper {
 	public static NoteEntity toNoteEntity(final Note note, final String municipalityId, final String namespace) {
 		return Optional.of(note)
 			.map(obj -> NoteEntity.builder()
-				.withId(note.getId())
-				.withVersion(note.getVersion())
-				.withCreated(note.getCreated())
-				.withUpdated(note.getUpdated())
 				.withTitle(note.getTitle())
 				.withText(note.getText())
 				.withNoteType(note.getNoteType())
@@ -354,10 +333,6 @@ public final class EntityMapper {
 	public static FacilityEntity toFacilityEntity(final Facility facility, final String municipalityId, final String namespace) {
 		return ofNullable(facility)
 			.map(obj -> FacilityEntity.builder()
-				.withId(facility.getId())
-				.withVersion(facility.getVersion())
-				.withCreated(facility.getCreated())
-				.withUpdated(facility.getUpdated())
 				.withDescription(facility.getDescription())
 				.withAddressEntity(toAddressEntity(facility.getAddress()))
 				.withFacilityCollectionName(facility.getFacilityCollectionName())
@@ -491,14 +466,11 @@ public final class EntityMapper {
 			.map(obj -> NotificationEntity.builder()
 				.withAcknowledged(notification.isAcknowledged())
 				.withContent(notification.getContent())
-				.withCreated(notification.getCreated())
 				.withCreatedBy(notification.getCreatedBy())
 				.withCreatedByFullName(ofNullable(creator).map(PortalPersonData::getFullname).orElse("unknown"))
 				.withDescription(notification.getDescription())
 				.withExpires(ofNullable(notification.getExpires()).orElse(now().plusDays(DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS)))
 				.withErrand(errand)
-				.withId(notification.getId())
-				.withModified(notification.getModified())
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
 				.withOwnerFullName(ofNullable(owner).map(PortalPersonData::getFullname).orElse("unknown"))

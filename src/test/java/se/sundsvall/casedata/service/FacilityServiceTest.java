@@ -1,22 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.AddressEntity;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -25,13 +8,33 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createAddress;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.TestUtil.createExtraParameters;
 import static se.sundsvall.casedata.TestUtil.createFacility;
 import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.api.model.Facility;
+import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.FacilityRepository;
+import se.sundsvall.casedata.integration.db.model.AddressEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
 class FacilityServiceTest {
@@ -61,7 +64,17 @@ class FacilityServiceTest {
 		// Arrange
 		final var errand = createErrandEntity();
 		final var errandId = errand.getId();
-		final var facility = createFacility();
+		final var facility = Facility.builder()
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withDescription("description")
+			.withExtraParameters(createExtraParameters())
+			.withAddress(createAddress(AddressCategory.VISITING_ADDRESS))
+			.withFacilityType(FacilityType.GARAGE.name())
+			.withFacilityCollectionName("facilityCollectionName")
+			.withMainFacility(true)
+			.build();
+		
 		final var facilityEntity = toFacilityEntity(facility, MUNICIPALITY_ID, NAMESPACE);
 
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
@@ -145,8 +158,6 @@ class FacilityServiceTest {
 			assertThat(facility.getExtraParameters()).isInstanceOf(HashMap.class).isNotNull();
 			assertThat(facility.getFacilityCollectionName()).isInstanceOf(String.class).isNotBlank();
 			assertThat(facility.getVersion()).isInstanceOf(Integer.class).isNotNull();
-			assertThat(facility.getCreated()).isInstanceOf(OffsetDateTime.class).isNotNull();
-			assertThat(facility.getUpdated()).isInstanceOf(OffsetDateTime.class).isNotNull();
 		});
 
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);

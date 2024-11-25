@@ -1,23 +1,20 @@
 package se.sundsvall.casedata.api.model;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
 import se.sundsvall.casedata.api.model.validation.UniqueDecisionType;
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
@@ -32,7 +29,7 @@ import se.sundsvall.casedata.integration.db.model.enums.Priority;
 public class Errand {
 
 	@Schema(description = "The id of the errand", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
-	private long id;
+	private Long id;
 
 	@Schema(description = "The version of the errand", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
 	private int version;

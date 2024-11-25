@@ -12,20 +12,21 @@ import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
-import static se.sundsvall.casedata.TestUtil.createDecision;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createExtraParameters;
+import static se.sundsvall.casedata.TestUtil.createLaw;
+import static se.sundsvall.casedata.TestUtil.getRandomOffsetDateTime;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,9 +36,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.ThrowableProblem;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
+import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.integration.db.DecisionRepository;
@@ -77,8 +76,11 @@ class DecisionServiceTest {
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		final var decision = errand.getDecisions().getFirst();
+		decision.setId(123L);
 		final var mockDecision = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(decision), DecisionEntity.class);
 		mockDecision.setErrand(errand);
+		errand.setId(new Random().nextLong(1, 1000));
+
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(decisionRepository.save(any())).thenReturn(mockDecision);
 		final PatchDecision patch = new PatchDecision();
@@ -87,7 +89,7 @@ class DecisionServiceTest {
 		patch.setExtraParameters(createExtraParameters());
 
 		// Act
-		decisionService.updateDecisionOnErrand(errand.getId(), decision.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
+		decisionService.updateDecisionOnErrand(errand.getId(), 123L, MUNICIPALITY_ID, NAMESPACE, patch);
 
 		// Assert
 		verify(decisionRepository).save(decisionCaptor.capture());
@@ -193,7 +195,20 @@ class DecisionServiceTest {
 	void addDecisionToErrandTest() {
 		// Arrange
 		final var errand = createErrandEntity();
-		final var newDecision = createDecision();
+		final var newDecision = Decision.builder()
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withDecisionType(DecisionType.FINAL)
+			.withDecisionOutcome(DecisionOutcome.CANCELLATION)
+			.withDescription(RandomStringUtils.secure().next(30, true, false))
+			.withDecidedAt(getRandomOffsetDateTime())
+			.withValidFrom(getRandomOffsetDateTime())
+			.withValidTo(getRandomOffsetDateTime())
+			.withLaw(new ArrayList<>(List.of(createLaw())))
+			.withAttachments(new ArrayList<>(List.of()))
+			.withExtraParameters(createExtraParameters())
+			.build();
+
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
