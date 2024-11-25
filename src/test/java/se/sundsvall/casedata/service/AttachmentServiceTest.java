@@ -1,23 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
-import se.sundsvall.casedata.api.model.Attachment;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.integration.db.AttachmentRepository;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
-
-import java.util.List;
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,6 +16,23 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachmentEntity;
+
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.zalando.problem.Status;
+import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.casedata.api.model.Attachment;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 
 @ExtendWith(MockitoExtension.class)
 class AttachmentServiceTest {
@@ -81,8 +80,9 @@ class AttachmentServiceTest {
 	@Test
 	void putAttachment() {
 		// Arrange
-		final AttachmentEntity attachmentEntity = toAttachmentEntity(createAttachment(AttachmentCategory.PASSPORT_PHOTO), MUNICIPALITY_ID, NAMESPACE);
-		final Attachment attachment = createAttachment(AttachmentCategory.LEASE_REQUEST);
+		final var attachmentEntity = toAttachmentEntity(createAttachment(AttachmentCategory.PASSPORT_PHOTO), MUNICIPALITY_ID, NAMESPACE);
+		attachmentEntity.setId(2L);
+		final var attachment = createAttachment(AttachmentCategory.LEASE_REQUEST);
 		when(errandRepository.existsByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
 		when(attachmentRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(attachmentEntity));
 

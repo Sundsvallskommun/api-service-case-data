@@ -13,11 +13,9 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Random;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
@@ -169,15 +167,13 @@ class ErrandTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(Errand.builder().build()).hasAllNullFieldsOrPropertiesExcept("id", "priority", "version")
+		assertThat(Errand.builder().build()).hasAllNullFieldsOrPropertiesExcept("priority", "version")
 			.satisfies(bean -> {
-				assertThat(bean.getId()).isZero();
 				assertThat(bean.getPriority()).isEqualTo(Priority.MEDIUM);
 				assertThat(bean.getVersion()).isZero();
 			});
-		assertThat(new Errand()).hasAllNullFieldsOrPropertiesExcept("id", "priority", "version")
+		assertThat(new Errand()).hasAllNullFieldsOrPropertiesExcept("priority", "version")
 			.satisfies(bean -> {
-				assertThat(bean.getId()).isZero();
 				assertThat(bean.getPriority()).isEqualTo(Priority.MEDIUM);
 				assertThat(bean.getVersion()).isZero();
 			});

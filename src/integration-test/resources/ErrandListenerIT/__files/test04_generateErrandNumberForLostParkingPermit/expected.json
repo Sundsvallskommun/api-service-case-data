@@ -28,7 +28,7 @@
   "stakeholders": [
     {
       "id": 2,
-      "version": 1,
+      "version": 0,
       "municipalityId": "2281",
       "namespace": "SBK_PARKINGPERMIT",
       "created": "${json-unit.any-string}",
@@ -84,7 +84,7 @@
     },
     {
       "id": 3,
-      "version": 1,
+      "version": 0,
       "municipalityId": "2281",
       "namespace": "SBK_PARKINGPERMIT",
       "created": "${json-unit.any-string}",
@@ -161,7 +161,7 @@
   "decisions": [
     {
       "id": 1,
-      "version": 1,
+      "version": 0,
       "municipalityId": "2281",
       "namespace": "SBK_PARKINGPERMIT",
       "created": "${json-unit.any-string}",
@@ -179,7 +179,7 @@
       ],
       "decidedBy": {
         "id": 1,
-        "version": 1,
+        "version": 0,
         "municipalityId": "2281",
         "namespace": "SBK_PARKINGPERMIT",
         "created": "${json-unit.any-string}",
