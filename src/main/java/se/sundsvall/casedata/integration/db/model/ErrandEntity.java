@@ -1,19 +1,9 @@
 package se.sundsvall.casedata.integration.db.model;
 
+import static org.hibernate.Length.LONG32;
 import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.javers.core.metamodel.annotation.DiffIgnore;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -33,6 +23,9 @@ import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +33,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.javers.core.metamodel.annotation.DiffIgnore;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
@@ -98,7 +96,7 @@ public class ErrandEntity {
 	@Column(name = "priority")
 	private Priority priority;
 
-	@Column(name = "description", length = 8192)
+	@Column(name = "description", length = LONG32)
 	private String description;
 
 	@Column(name = "case_title_addition")

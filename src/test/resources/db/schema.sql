@@ -102,7 +102,6 @@
         updated datetime(6),
         created_by varchar(36),
         updated_by varchar(36),
-        description varchar(8192),
         case_title_addition varchar(255),
         case_type varchar(255),
         created_by_client varchar(255),
@@ -115,6 +114,7 @@
         process_id varchar(255),
         updated_by_client varchar(255),
         channel enum ('EMAIL','ESERVICE','MOBILE','SYSTEM','WEB_UI'),
+        description longtext,
         priority enum ('HIGH','LOW','MEDIUM'),
         primary key (id)
     ) engine=InnoDB;

@@ -1,6 +1,16 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import static java.time.OffsetDateTime.now;
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
+
 import generated.se.sundsvall.employee.PortalPersonData;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Optional;
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Appeal;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -30,18 +40,6 @@ import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.StatusEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Optional;
-
-import static java.time.OffsetDateTime.now;
-import static java.time.OffsetDateTime.of;
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
 
 public final class EntityMapper {
 

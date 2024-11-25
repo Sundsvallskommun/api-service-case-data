@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -16,7 +15,6 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
-
 import org.javers.common.string.PrettyValuePrinter;
 import org.javers.core.Changes;
 import org.javers.core.Javers;
@@ -30,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-
 import se.sundsvall.casedata.api.model.history.History;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.DecisionRepository;
@@ -236,7 +233,6 @@ class HistoryServiceTest {
 	void testFindNoteHistoryOnErrandNothingFound() {
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
 		when(noteRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
-
 
 		// Act & Assert
 		assertThatThrownBy(() -> historyService.findNoteHistoryOnErrand(1L, 1L, MUNICIPALITY_ID, NAMESPACE))
