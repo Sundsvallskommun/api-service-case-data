@@ -1,5 +1,14 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+
+import generated.se.sundsvall.employee.PortalPersonData;
+import java.util.ArrayList;
+import java.util.List;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.api.model.Note;
@@ -15,44 +24,31 @@ import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
-import java.util.Optional;
-
-import generated.se.sundsvall.employee.PortalPersonData;
-
 public final class PatchMapper {
 
 	private PatchMapper() {}
 
 	public static ErrandEntity patchErrand(final ErrandEntity errand, final PatchErrand patch) {
-		ofNullable(patch.getExtraParameters()).ifPresent(extraParameters ->
-		{
+
+		ofNullable(patch.getExtraParameters()).ifPresent(extraParameters -> {
 			ofNullable(errand.getExtraParameters()).ifPresentOrElse(List::clear, () -> errand.setExtraParameters(new ArrayList<>()));
 			errand.getExtraParameters().addAll(toErrandParameterEntityList(extraParameters, errand));
 		});
 
-		Optional.ofNullable(patch.getCaseType()).ifPresent(caseType -> errand.setCaseType(caseType.name()));
-		Optional.ofNullable(patch.getExternalCaseId()).ifPresent(errand::setExternalCaseId);
-		Optional.ofNullable(patch.getPriority()).ifPresent(errand::setPriority);
-		Optional.ofNullable(patch.getDescription()).ifPresent(errand::setDescription);
-		Optional.ofNullable(patch.getCaseTitleAddition()).ifPresent(errand::setCaseTitleAddition);
-		Optional.ofNullable(patch.getDiaryNumber()).ifPresent(errand::setDiaryNumber);
-		Optional.ofNullable(patch.getPhase()).ifPresent(errand::setPhase);
-		Optional.ofNullable(patch.getStartDate()).ifPresent(errand::setStartDate);
-		Optional.ofNullable(patch.getEndDate()).ifPresent(errand::setEndDate);
-		Optional.ofNullable(patch.getApplicationReceived()).ifPresent(errand::setApplicationReceived);
-		Optional.ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(patch.getFacilities().stream().map(facility -> toFacilityEntity(facility, errand.getMunicipalityId(), errand.getNamespace())).toList()));
-		Optional.ofNullable(patch.getRelatesTo()).ifPresent(relatesTo -> errand.getRelatesTo().addAll(patch.getRelatesTo().stream().map(EntityMapper::toRelatedErrandEntity).toList()));
-		Optional.ofNullable(patch.getLabels()).ifPresent(labels -> errand.setLabels(patch.getLabels()));
-		Optional.ofNullable(patch.getSuspension()).ifPresent(
+		ofNullable(patch.getCaseType()).ifPresent(caseType -> errand.setCaseType(caseType.name()));
+		ofNullable(patch.getExternalCaseId()).ifPresent(errand::setExternalCaseId);
+		ofNullable(patch.getPriority()).ifPresent(errand::setPriority);
+		ofNullable(patch.getDescription()).ifPresent(errand::setDescription);
+		ofNullable(patch.getCaseTitleAddition()).ifPresent(errand::setCaseTitleAddition);
+		ofNullable(patch.getDiaryNumber()).ifPresent(errand::setDiaryNumber);
+		ofNullable(patch.getPhase()).ifPresent(errand::setPhase);
+		ofNullable(patch.getStartDate()).ifPresent(errand::setStartDate);
+		ofNullable(patch.getEndDate()).ifPresent(errand::setEndDate);
+		ofNullable(patch.getApplicationReceived()).ifPresent(errand::setApplicationReceived);
+		ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(patch.getFacilities().stream().map(facility -> toFacilityEntity(facility, errand.getMunicipalityId(), errand.getNamespace())).toList()));
+		ofNullable(patch.getRelatesTo()).ifPresent(relatesTo -> errand.getRelatesTo().addAll(patch.getRelatesTo().stream().map(EntityMapper::toRelatedErrandEntity).toList()));
+		ofNullable(patch.getLabels()).ifPresent(labels -> errand.setLabels(patch.getLabels()));
+		ofNullable(patch.getSuspension()).ifPresent(
 			suspension -> {
 				errand.setSuspendedFrom(suspension.getSuspendedFrom());
 				errand.setSuspendedTo(suspension.getSuspendedTo());
@@ -134,5 +130,4 @@ public final class PatchMapper {
 		ofNullable(patch.getType()).ifPresent(notificationEntity::setType);
 		return notificationEntity;
 	}
-
 }

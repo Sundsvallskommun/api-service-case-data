@@ -6,14 +6,12 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotifica
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotificationEntity;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNotification;
 
+import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
-
-import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchNotification;
@@ -69,11 +67,10 @@ public class NotificationService {
 			.toList();
 	}
 
-
-	public Notification getNotification(final String municipalityId, final String namespace,final Long errandId, final String notificationId) {
+	public Notification getNotification(final String municipalityId, final String namespace, final Long errandId, final String notificationId) {
 		return notificationRepository.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId)
 			.map(EntityMapper::toNotification)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTIFICATION_ENTITY_NOT_FOUND.formatted(notificationId, namespace, municipalityId,errandId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTIFICATION_ENTITY_NOT_FOUND.formatted(notificationId, namespace, municipalityId, errandId)));
 	}
 
 	public Notification createNotification(final String municipalityId, final String namespace, final Notification notification) {
