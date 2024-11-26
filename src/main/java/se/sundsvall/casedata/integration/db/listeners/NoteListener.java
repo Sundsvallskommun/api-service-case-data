@@ -1,11 +1,9 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
-import jakarta.persistence.PostPersist;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
-
 import org.springframework.stereotype.Component;
-
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 
@@ -21,7 +19,7 @@ public class NoteListener {
 		this.errandListener = errandListener;
 	}
 
-	@PostPersist
+	@PrePersist
 	private void postPersist(final NoteEntity noteEntity) {
 		noteEntity.setCreatedBy(incomingRequestFilter.getAdUser());
 		errandListener.updateErrandFields(noteEntity.getErrand());

@@ -1,6 +1,6 @@
 {
   "id": 2,
-  "version": 3,
+  "version": 2,
   "municipalityId": "2281",
   "namespace": "my.namespace",
   "created": "2022-12-02T15:13:45.363+01:00",
@@ -28,3 +28,4 @@
   "extraParameters": [],
   "labels": ["updated-label-1", "updated-label-2"]
 }
+

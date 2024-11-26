@@ -59,7 +59,6 @@ public class Errand {
 	private Priority priority = Priority.MEDIUM;
 
 	@Schema(description = "Description of the errand", example = "Some description of the case.")
-	@Size(max = 8192)
 	private String description;
 
 	@Schema(description = "Additions to the case title. Right now only applicable to cases of CaseType: NYBYGGNAD_ANSOKAN_OM_BYGGLOV.", example = "Eldstad/rökkanal, Skylt")

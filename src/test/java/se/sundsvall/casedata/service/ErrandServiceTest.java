@@ -21,7 +21,6 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -92,9 +91,8 @@ class ErrandServiceTest {
 		inputErrand.setId(new Random().nextLong(1, 1000));
 
 		when(errandRepositoryMock.save(any())).thenReturn(inputErrand);
-		final var startProcessResponse = new StartProcessResponse();
-		startProcessResponse.setProcessId(UUID.randomUUID().toString());
-		when(processServiceMock.startProcess(inputErrand)).thenReturn(startProcessResponse);
+		final var processId = UUID.randomUUID().toString();
+		when(processServiceMock.startProcess(inputErrand)).thenReturn(processId);
 
 		// Act
 		errandService.createErrand(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
@@ -203,7 +201,7 @@ class ErrandServiceTest {
 			assertThat(e.getExtraParameters())
 				.containsAll(patch.getExtraParameters().stream()
 					.map(parameter -> ErrandExtraParameterMapper.toErrandParameterEntity(parameter)
-						.withErrandEntity(errand))
+						.withErrand(errand))
 					.toList());
 		});
 
@@ -228,8 +226,7 @@ class ErrandServiceTest {
 			.toList();
 
 		returnErrands.forEach(
-			errandEntity -> errandEntity.setId(errandDTO.getId())
-		);
+			errandEntity -> errandEntity.setId(errandDTO.getId()));
 
 		when(errandRepositoryMock.findAll(ArgumentMatchers.<Specification<ErrandEntity>>any())).thenReturn(returnErrands);
 		when(errandRepositoryMock.findAllByIdInAndMunicipalityIdAndNamespace(anyList(), eq(MUNICIPALITY_ID), eq(NAMESPACE), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(returnErrands.getFirst())));
