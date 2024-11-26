@@ -1,6 +1,15 @@
 package se.sundsvall.casedata.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,15 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
-
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessServiceTest {
@@ -51,15 +51,16 @@ class ProcessServiceTest {
 	void startProcess_whenParkingPermit(final String enumValue) {
 		// Arrange
 		final var errand = createErrandEntity();
-		final var result = new StartProcessResponse();
+		final var processId = UUID.randomUUID().toString();
+		final var response = new StartProcessResponse().processId(processId);
 		errand.setCaseType(enumValue);
-		when(parkingPermitIntegration.startProcess(errand)).thenReturn(result);
+		when(parkingPermitIntegration.startProcess(errand)).thenReturn(response);
 
 		// Act
-		final var result1 = processService.startProcess(errand);
+		final var result = processService.startProcess(errand);
 
 		// Assert
-		assertThat(result1).isEqualTo(result);
+		assertThat(result).isEqualTo(processId);
 		verify(parkingPermitIntegration).startProcess(errand);
 		verifyNoMoreInteractions(parkingPermitIntegration);
 		verifyNoInteractions(landAndExploitationIntegration);
@@ -70,15 +71,16 @@ class ProcessServiceTest {
 	void startProcess_whenMEX(final String enumValue) {
 		// Arrange
 		final var errand = createErrandEntity();
-		final var result = new StartProcessResponse();
+		final var processId = UUID.randomUUID().toString();
+		final var response = new generated.se.sundsvall.mex.StartProcessResponse().processId(processId);
 		errand.setCaseType(enumValue);
-		when(landAndExploitationIntegration.startProcess(errand)).thenReturn(result);
+		when(landAndExploitationIntegration.startProcess(errand)).thenReturn(response);
 
 		// Act
-		final var result1 = processService.startProcess(errand);
+		final var result = processService.startProcess(errand);
 
 		// Assert
-		assertThat(result1).isEqualTo(result);
+		assertThat(result).isEqualTo(processId);
 		verify(landAndExploitationIntegration).startProcess(errand);
 		verifyNoMoreInteractions(landAndExploitationIntegration);
 		verifyNoInteractions(parkingPermitIntegration);

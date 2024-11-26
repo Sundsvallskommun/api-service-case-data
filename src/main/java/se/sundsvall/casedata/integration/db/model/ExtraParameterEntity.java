@@ -37,7 +37,7 @@ public class ExtraParameterEntity {
 	@With
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "errand_id", nullable = false, foreignKey = @ForeignKey(name = "fk_extra_parameter_errand_id"))
-	private ErrandEntity errandEntity;
+	private ErrandEntity errand;
 
 	@Column(name = "display_name")
 	private String displayName;
@@ -55,11 +55,11 @@ public class ExtraParameterEntity {
 
 	@Override
 	public String toString() {
-		final var errandId = Objects.requireNonNullElse(errandEntity, new ErrandEntity()).getId() == null ? 0 : errandEntity.getId();
+		final var errandId = Objects.requireNonNullElse(errand, new ErrandEntity()).getId() == null ? 0 : errand.getId();
 
 		return "ExtraParameterEntity{" +
 			"id='" + id + '\'' +
-			", errandEntity=" + errandId +
+			", errand=" + errandId +
 			", displayName='" + displayName + '\'' +
 			", key='" + key + '\'' +
 			", values=" + values +

@@ -7,7 +7,7 @@
 		<groupId>se.sundsvall.dept44</groupId>
 		<artifactId>dept44-service-parent</artifactId>
 		<version>6.0.2</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-case-data</artifactId>
@@ -17,9 +17,9 @@
 	<properties>
 		<generated-sources-path>${project.build.directory}/generated-sources</generated-sources-path>
 		<generated-sources-java-path>src/main/java</generated-sources-java-path>
-		<javers.version>7.6.3</javers.version>
-		<spring-filter.version>3.1.7</spring-filter.version>
-		<shedlock.version>5.16.0</shedlock.version>
+		<javers.version>7.7.0</javers.version>
+		<spring-filter.version>3.1.8</spring-filter.version>
+		<shedlock.version>6.0.1</shedlock.version>
 	</properties>
 	<dependencies>
 		<!-- Dept44-->
@@ -108,6 +108,34 @@
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<executions>
+					<execution>
+						<id>land-and-exploitation</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>
+								${project.basedir}/src/main/resources/contract/pw-land-and-exploitation.yml
+							</inputSpec>
+							<generateSupportingFiles>false</generateSupportingFiles>
+							<output>${generated-sources-path}</output>
+							<generatorName>spring</generatorName>
+							<generateApis>false</generateApis>
+							<output>${generated-sources-path}</output>
+							<generateSupportingFiles>false</generateSupportingFiles>
+							<configOptions>
+								<useSpringBoot3>true</useSpringBoot3>
+								<sourceFolder>${generated-sources-java-path}</sourceFolder>
+								<dateLibrary>java8</dateLibrary>
+								<modelPackage>generated.se.sundsvall.mex</modelPackage>
+								<openApiNullable>false</openApiNullable>
+								<generatePom>false</generatePom>
+								<useBeanValidation>false</useBeanValidation>
+								<useSwaggerAnnotations>false</useSwaggerAnnotations>
+								<interfaceOnly>true</interfaceOnly>
+							</configOptions>
+						</configuration>
+					</execution>
 					<execution>
 						<id>parking-permit</id>
 						<goals>
