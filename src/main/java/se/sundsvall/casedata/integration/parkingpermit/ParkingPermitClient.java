@@ -16,8 +16,7 @@ import io.github.resilience4j.retry.annotation.Retry;
 @FeignClient(
 	name = CLIENT_ID,
 	url = "${integration.parkingpermit.base-url}",
-	configuration = ParkingPermitConfiguration.class
-)
+	configuration = ParkingPermitConfiguration.class)
 public interface ParkingPermitClient {
 
 	@Retry(name = CLIENT_ID)

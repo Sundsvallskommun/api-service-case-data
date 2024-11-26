@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 class UniqueDecisionTypeValidatorTest {
 
-
 	private UniqueDecisionTypeValidator validator;
 
 	@BeforeEach
@@ -35,8 +34,7 @@ class UniqueDecisionTypeValidatorTest {
 				.build(),
 			Decision.builder()
 				.withDecisionType(DecisionType.PROPOSED)
-				.build()
-		);
+				.build());
 		assertThat(validator.isValid(decisions, null)).isTrue();
 	}
 
@@ -51,8 +49,7 @@ class UniqueDecisionTypeValidatorTest {
 				.build(),
 			Decision.builder()
 				.withDecisionType(DecisionType.FINAL)
-				.build()
-		);
+				.build());
 		assertThat(validator.isValid(decisions, null)).isFalse();
 	}
 

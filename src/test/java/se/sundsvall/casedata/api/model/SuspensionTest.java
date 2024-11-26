@@ -37,7 +37,7 @@ class SuspensionTest {
 
 	@Test
 	void builder() {
-		
+
 		// Arrange
 		var suspensionStart = OffsetDateTime.of(2024, 1, 1, 12, 0, 0, 0, ZoneOffset.ofHours(1));
 		var suspensionEnd = OffsetDateTime.of(2024, 1, 1, 14, 0, 0, 0, ZoneOffset.ofHours(1));
@@ -53,7 +53,6 @@ class SuspensionTest {
 		assertThat(result.getSuspendedTo()).isEqualTo(suspensionEnd);
 		assertThat(result.getSuspendedFrom()).isEqualTo(suspensionStart);
 	}
-
 
 	@Test
 	void testNoDirtOnCreatedBean() {

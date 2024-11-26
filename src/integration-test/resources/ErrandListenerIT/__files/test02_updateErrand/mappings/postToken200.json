@@ -1,13 +1,11 @@
 {
-  "request": {
-    "method": "POST",
-    "url": "/token"
-  },
-  "response": {
-    "status": 200,
-    "bodyFileName": "common/response/postToken200.json",
-    "headers": {
-      "Content-Type": "application/json"
-    }
-  }
+	"request": {
+		"method": "POST",
+		"url": "/token"
+	},
+	"response": {
+		"headers": {"Content-Type": "application/json"},
+		"bodyFileName": "common/response/postToken200.json",
+		"status": 200
+	}
 }

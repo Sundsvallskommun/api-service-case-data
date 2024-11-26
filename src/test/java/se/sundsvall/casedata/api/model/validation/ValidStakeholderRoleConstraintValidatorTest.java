@@ -21,7 +21,6 @@ import se.sundsvall.casedata.api.model.validation.impl.ValidStakeholderRoleConst
 
 class ValidStakeholderRoleConstraintValidatorTest {
 
-
 	private ValidStakeholderRoleConstraintValidator validator;
 
 	private ConstraintValidatorContext context;

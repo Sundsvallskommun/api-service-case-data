@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.api.model.validation;
 
-
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
@@ -21,7 +20,9 @@ import se.sundsvall.casedata.api.model.validation.impl.ValidAttachmentCategoryCo
  * Not allowed to be null or empty.
  */
 @Documented
-@Target({FIELD, CONSTRUCTOR, PARAMETER})
+@Target({
+	FIELD, CONSTRUCTOR, PARAMETER
+})
 @Retention(RUNTIME)
 @Constraint(validatedBy = ValidAttachmentCategoryConstraintValidator.class)
 public @interface ValidAttachmentCategory {

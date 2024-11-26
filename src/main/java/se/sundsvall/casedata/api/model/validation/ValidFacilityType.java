@@ -15,13 +15,14 @@ import jakarta.validation.Payload;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 import se.sundsvall.casedata.api.model.validation.impl.ValidFacilityTypeConstraintValidator;
 
-
 /**
  * The annotated element must be a valid {@link FacilityType}.
  * Not allowed to be null or empty.
  */
 @Documented
-@Target({FIELD, CONSTRUCTOR, PARAMETER})
+@Target({
+	FIELD, CONSTRUCTOR, PARAMETER
+})
 @Retention(RUNTIME)
 @Constraint(validatedBy = ValidFacilityTypeConstraintValidator.class)
 public @interface ValidFacilityType {

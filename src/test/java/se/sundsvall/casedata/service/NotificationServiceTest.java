@@ -62,10 +62,10 @@ class NotificationServiceTest {
 		final var notificationId = randomUUID().toString();
 		final var notificationEntity = createNotificationEntity(n -> {});
 
-		when(notificationRepositoryMock.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId,errandId)).thenReturn(Optional.of(notificationEntity));
+		when(notificationRepositoryMock.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId)).thenReturn(Optional.of(notificationEntity));
 
 		// Act
-		final var result = notificationService.getNotification(municipalityId, namespace, errandId,notificationId);
+		final var result = notificationService.getNotification(municipalityId, namespace, errandId, notificationId);
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -82,12 +82,12 @@ class NotificationServiceTest {
 		final var notificationId = randomUUID().toString();
 
 		// Act
-		assertThatThrownBy(() -> notificationService.getNotification(municipalityId, namespace, errandId,notificationId))
+		assertThatThrownBy(() -> notificationService.getNotification(municipalityId, namespace, errandId, notificationId))
 			.isInstanceOf(Problem.class)
-			.hasMessage(String.format("Not Found: Notification with id:'%s' not found in namespace:'%s' for municipality with id:'%s' and errand with id:'%s'", notificationId, namespace, municipalityId,errandId));
+			.hasMessage(String.format("Not Found: Notification with id:'%s' not found in namespace:'%s' for municipality with id:'%s' and errand with id:'%s'", notificationId, namespace, municipalityId, errandId));
 
 		// Assert
-		verify(notificationRepositoryMock).findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId,errandId);
+		verify(notificationRepositoryMock).findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId);
 	}
 
 	@Test
@@ -214,10 +214,10 @@ class NotificationServiceTest {
 		when(notificationRepositoryMock.existsByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId)).thenReturn(true);
 
 		// Act
-		notificationService.deleteNotification(municipalityId, namespace, errandId,notificationId);
+		notificationService.deleteNotification(municipalityId, namespace, errandId, notificationId);
 
 		// Assert
-		verify(notificationRepositoryMock).existsByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId,errandId);
+		verify(notificationRepositoryMock).existsByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId);
 		verify(notificationRepositoryMock).deleteById(notificationId);
 	}
 
@@ -231,12 +231,12 @@ class NotificationServiceTest {
 		final var notificationId = randomUUID().toString();
 
 		// Act
-		assertThatThrownBy(() -> notificationService.deleteNotification(municipalityId, namespace, errandId,notificationId))
+		assertThatThrownBy(() -> notificationService.deleteNotification(municipalityId, namespace, errandId, notificationId))
 			.isInstanceOf(Problem.class)
-			.hasMessage("Not Found: Notification with id:'%s' not found in namespace:'%s' for municipality with id:'%s' and errand with id:'%s'".formatted(notificationId, namespace, municipalityId,errandId));
+			.hasMessage("Not Found: Notification with id:'%s' not found in namespace:'%s' for municipality with id:'%s' and errand with id:'%s'".formatted(notificationId, namespace, municipalityId, errandId));
 
 		// Assert
-		verify(notificationRepositoryMock).existsByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId,errandId);
+		verify(notificationRepositoryMock).existsByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId);
 		verifyNoMoreInteractions(notificationRepositoryMock);
 	}
 }

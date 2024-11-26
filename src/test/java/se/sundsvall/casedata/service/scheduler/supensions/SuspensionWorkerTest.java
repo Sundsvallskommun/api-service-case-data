@@ -23,7 +23,6 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.service.NotificationService;
 
-
 @ExtendWith(MockitoExtension.class)
 class SuspensionWorkerTest {
 

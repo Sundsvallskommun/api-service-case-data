@@ -37,7 +37,6 @@ class NoteEntityTest {
 			hasValidBeanToStringExcluding("errand")));
 	}
 
-
 	@Test
 	void builder() {
 		// Arrange

@@ -34,7 +34,6 @@ class StatusServiceTest {
 	@Mock
 	private ProcessService processServiceMock;
 
-
 	@Test
 	void replaceStatusesOnErrandTest() {
 

@@ -1,13 +1,13 @@
 {
-  "category": "SIGNATURE",
-  "extension": ".pdf",
-  "extraParameters": {
-    "property1": "value1",
-    "property2": "value2",
-    "property3": "value3"
-  },
-  "file": "dGVzdDA0",
-  "mimeType": "application/pdf",
-  "name": "myfile04.pdf",
-  "note": "This is a note for test04"
+	"note": "This is a note for test04",
+	"extension": ".pdf",
+	"file": "dGVzdDA0",
+	"name": "myfile04.pdf",
+	"extraParameters": {
+		"property2": "value2",
+		"property1": "value1",
+		"property3": "value3"
+	},
+	"mimeType": "application/pdf",
+	"category": "SIGNATURE"
 }

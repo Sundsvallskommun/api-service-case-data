@@ -1,5 +1,5 @@
 {
-  "title": "Not Found",
-  "status": 404,
-  "detail": "Attachment not found"
+	"detail": "Attachment not found",
+	"title": "Not Found",
+	"status": 404
 }

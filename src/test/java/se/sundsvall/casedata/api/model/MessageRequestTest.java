@@ -14,16 +14,17 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
+
 class MessageRequestTest {
-	
+
 	@Test
 	void testBean() {
-	    MatcherAssert.assertThat(MessageRequest.class, allOf(
-	            hasValidBeanConstructor(),
-	            hasValidGettersAndSetters(),
-	            hasValidBeanHashCode(),
-	            hasValidBeanEquals(),
-	            hasValidBeanToString()));
+		MatcherAssert.assertThat(MessageRequest.class, allOf(
+			hasValidBeanConstructor(),
+			hasValidGettersAndSetters(),
+			hasValidBeanHashCode(),
+			hasValidBeanEquals(),
+			hasValidBeanToString()));
 	}
 
 	@Test

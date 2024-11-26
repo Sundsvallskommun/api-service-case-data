@@ -1,10 +1,8 @@
 {
-	"category": "POLICE_REPORT",
-	"extraParameters": {
-		"property10": "value10"
-	},
+	"note": "This is a note for test10",
 	"file": "dGVzdDAz",
-	"mimeType": "application/pdf",
 	"name": "myfile10.pdf",
-	"note": "This is a note for test10"
+	"extraParameters": {"property10": "value10"},
+	"mimeType": "application/pdf",
+	"category": "POLICE_REPORT"
 }

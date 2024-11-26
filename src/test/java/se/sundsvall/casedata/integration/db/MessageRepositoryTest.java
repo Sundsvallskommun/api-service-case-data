@@ -21,14 +21,15 @@ import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
 
-
 /**
  * MessageAttachmentRepository tests.
  *
  * @see /src/test/resources/db/testdata-junit.sql for data setup.
  */
 @DataJpaTest
-@Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
+@Import(value = {
+	JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class
+})
 @Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")

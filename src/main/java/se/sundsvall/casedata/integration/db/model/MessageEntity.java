@@ -118,9 +118,9 @@ public class MessageEntity {
 	private List<MessageAttachmentEntity> attachments;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "message_id", referencedColumnName = "messageID",
+	@JoinColumn(name = "message_id",
+		referencedColumnName = "messageID",
 		foreignKey = @ForeignKey(name = "fk_message_header_message_id"))
 	private List<EmailHeaderEntity> headers;
-
 
 }

@@ -38,7 +38,6 @@ class StakeholderEntityTest {
 			hasValidBeanToStringExcluding("errand")));
 	}
 
-
 	@Test
 	void testBuilder() {
 		// Arrange
@@ -107,7 +106,6 @@ class StakeholderEntityTest {
 		assertThat(bean.getCreated()).isEqualTo(created);
 		assertThat(bean.getUpdated()).isEqualTo(updated);
 	}
-
 
 	@Test
 	void testNoDirtOnCreatedBean() {

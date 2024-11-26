@@ -35,10 +35,13 @@ import static se.sundsvall.casedata.integration.db.model.enums.NoteType.INTERNAL
 /**
  * ErrandRepository tests.
  *
- * @see <a href="/src/test/resources/db/testdata-junit.sql">/src/test/resources/db/testdata-junit.sql</a> for data setup.
+ * @see <a href="/src/test/resources/db/testdata-junit.sql">/src/test/resources/db/testdata-junit.sql</a> for data
+ *      setup.
  */
 @DataJpaTest
-@Import(value = { JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class })
+@Import(value = {
+	JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class
+})
 @Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")

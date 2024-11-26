@@ -17,7 +17,6 @@ import org.hibernate.annotations.TimeZoneStorageType;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

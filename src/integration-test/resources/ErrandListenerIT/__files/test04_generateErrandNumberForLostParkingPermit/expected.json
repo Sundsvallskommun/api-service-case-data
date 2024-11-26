@@ -1,329 +1,307 @@
 {
-  "id": 3,
-  "version": 2,
-  "municipalityId": "2281",
-  "namespace": "SBK_PARKINGPERMIT",
-  "created": "${json-unit.any-string}",
-  "updated": "${json-unit.any-string}",
-  "errandNumber": "PRH-2024-000001",
-  "externalCaseId": "9527464e-c5a0-4971-a253-8b94a79e74c9",
-  "caseType": "LOST_PARKING_PERMIT",
-  "channel": "EMAIL",
-  "priority": "HIGH",
-  "description": "Case description",
-  "caseTitleAddition": "Borttappat parkeringstillstånd",
-  "diaryNumber": "DIARY-123",
-  "phase": "Actualization",
-  "statuses": [
-	{
-	  "statusType": "Ärende inkommit",
-	  "description": "Ärende inkommit",
-	  "dateTime": "2023-01-24T10:04:04.326+01:00"
-	}
-  ],
-  "startDate": "2024-04-26",
-  "endDate": "2024-05-09",
-  "applicationReceived": "2000-09-23T11:04:04.317+02:00",
-  "processId": "49011dea-ee10-11ec-9505-0242c0a84503",
-  "stakeholders": [
-	{
-	  "id": 2,
-	  "version": 0,
-	  "municipalityId": "2281",
-	  "namespace": "SBK_PARKINGPERMIT",
-	  "created": "${json-unit.any-string}",
-	  "updated": "${json-unit.any-string}",
-	  "type": "PERSON",
-	  "firstName": "Kalle",
-	  "lastName": "Anka",
-	  "personId": "1262f329-e143-428d-9006-997459eb1552",
-	  "adAccount": "KalleAnka",
-	  "roles": [
-		"DELEGATE",
-		"LAND_RIGHT_OWNER"
-	  ],
-	  "addresses": [
+	"municipalityId": "2281",
+	"externalCaseId": "9527464e-c5a0-4971-a253-8b94a79e74c9",
+	"notes": [
 		{
-		  "addressCategory": "VISITING_ADDRESS",
-		  "street": "Gatan",
-		  "houseNumber": "1",
-		  "postalCode": "12345",
-		  "city": "Ankeborg",
-		  "country": "Sverige",
-		  "careOf": "Kalle Anka",
-		  "attention": "Kalle Anka",
-		  "propertyDesignation": "Ankeborg 1:1",
-		  "apartmentNumber": "1",
-		  "isZoningPlanArea": false,
-		  "invoiceMarking": "Kalle Anka",
-		  "location": {
-			"latitude": 0.8860957171081745,
-			"longitude": 0.4307180458357478
-		  }
-		}
-	  ],
-	  "contactInformation": [
-		{
-		  "contactType": "EMAIL",
-		  "value": "a.b@c.com"
+			"municipalityId": "2281",
+			"noteType": "PUBLIC",
+			"updatedBy": "sRXYGByNYE",
+			"createdBy": "UNKNOWN",
+			"created": "${json-unit.any-string}",
+			"namespace": "SBK_PARKINGPERMIT",
+			"extraParameters": {
+				"test4": "test4",
+				"test2": "test2",
+				"test3": "test3"
+			},
+			"id": 1,
+			"text": "Test text",
+			"title": "Test note",
+			"version": 0,
+			"updated": "${json-unit.any-string}"
 		},
 		{
-		  "contactType": "PHONE",
-		  "value": "1234567890"
+			"municipalityId": "2281",
+			"noteType": "PUBLIC",
+			"updatedBy": "wZLYbWWWfF",
+			"createdBy": "UNKNOWN",
+			"created": "${json-unit.any-string}",
+			"namespace": "SBK_PARKINGPERMIT",
+			"extraParameters": {
+				"test4": "test4",
+				"test2": "test2",
+				"test3": "test3"
+			},
+			"id": 2,
+			"text": "IHmVWzpAJl",
+			"title": "sRGrJyRKNn",
+			"version": 0,
+			"updated": "${json-unit.any-string}"
 		},
 		{
-		  "contactType": "CELLPHONE",
-		  "value": "0987654321"
+			"municipalityId": "2281",
+			"noteType": "PUBLIC",
+			"updatedBy": "oHfjmxxKyo",
+			"createdBy": "UNKNOWN",
+			"created": "${json-unit.any-string}",
+			"namespace": "SBK_PARKINGPERMIT",
+			"extraParameters": {
+				"test4": "test4",
+				"test2": "test2",
+				"test3": "test3"
+			},
+			"id": 3,
+			"text": "OSOCnSgryb",
+			"title": "EzhsmgQlrP",
+			"version": 0,
+			"updated": "${json-unit.any-string}"
 		}
-	  ],
-	  "extraParameters": {
-		"test2": "test2",
-		"test3": "test3",
-		"test1": "test1"
-	  }
-	},
-	{
-	  "id": 3,
-	  "version": 0,
-	  "municipalityId": "2281",
-	  "namespace": "SBK_PARKINGPERMIT",
-	  "created": "${json-unit.any-string}",
-	  "updated": "${json-unit.any-string}",
-	  "type": "ORGANIZATION",
-	  "organizationName": "Företaget",
-	  "organizationNumber": "699881-3960",
-	  "authorizedSignatory": "Kalle Anka",
-	  "adAccount": "Foretaget",
-	  "roles": [
-		"SELLER",
-		"LEASEHOLDER"
-	  ],
-	  "addresses": [
+	],
+	"errandNumber": "PRH-2024-000001",
+	"endDate": "2024-05-09",
+	"createdByClient": "UNKNOWN",
+	"channel": "EMAIL",
+	"description": "Case description",
+	"applicationReceived": "2000-09-23T11:04:04.317+02:00",
+	"extraParameters": [
 		{
-		  "addressCategory": "VISITING_ADDRESS",
-		  "street": "Gatan",
-		  "houseNumber": "2",
-		  "postalCode": "12345",
-		  "city": "Ankeborg",
-		  "country": "Sverige",
-		  "careOf": "Företaget",
-		  "attention": "Företaget",
-		  "propertyDesignation": "Ankeborg 2:2",
-		  "apartmentNumber": "2",
-		  "isZoningPlanArea": false,
-		  "invoiceMarking": "Företaget",
-		  "location": {
-			"latitude": 0.3246504912367001,
-			"longitude": 0.8625583560198528
-		  }
-		}
-	  ],
-	  "contactInformation": [
-		{
-		  "contactType": "EMAIL",
-		  "value": "b.c@d.se"
+			"values": ["test7"],
+			"key": "test7"
 		},
 		{
-		  "contactType": "PHONE",
-		  "value": "0987654321"
+			"values": ["test8"],
+			"key": "test8"
 		},
 		{
-		  "contactType": "CELLPHONE",
-		  "value": "1234567890"
+			"values": ["test9"],
+			"key": "test9"
 		}
-	  ],
-	  "extraParameters": {
-		"test4": "test4",
-		"test5": "test5",
-		"test6": "test6"
-	  }
-	}
-  ],
-  "facilities": [
-	{
-	  "id": 1,
-	  "version": 0,
-	  "municipalityId": "2281",
-	  "namespace": "SBK_PARKINGPERMIT",
-	  "created": "${json-unit.any-string}",
-	  "updated": "${json-unit.any-string}",
-	  "description": "Test facility",
-	  "address": {
-		"addressCategory": "VISITING_ADDRESS",
-		"propertyDesignation": "Test 84:652"
-	  },
-	  "facilityCollectionName": "Test facility collection",
-	  "mainFacility": true,
-	  "facilityType": "ONE_FAMILY_HOUSE",
-	  "extraParameters": {}
-	}
-  ],
-  "decisions": [
-	{
-	  "id": 1,
-	  "version": 0,
-	  "municipalityId": "2281",
-	  "namespace": "SBK_PARKINGPERMIT",
-	  "created": "${json-unit.any-string}",
-	  "updated": "${json-unit.any-string}",
-	  "decisionType": "FINAL",
-	  "decisionOutcome": "CANCELLATION",
-	  "description": "Cancellation description",
-	  "law": [
+	],
+	"stakeholders": [
 		{
-		  "heading": "Kapitel 1",
-		  "sfs": "2000:1",
-		  "chapter": "1",
-		  "article": "1"
+			"lastName": "Anka",
+			"municipalityId": "2281",
+			"addresses": [{
+				"country": "Sverige",
+				"city": "Ankeborg",
+				"postalCode": "12345",
+				"houseNumber": "1",
+				"isZoningPlanArea": false,
+				"addressCategory": "VISITING_ADDRESS",
+				"invoiceMarking": "Kalle Anka",
+				"careOf": "Kalle Anka",
+				"street": "Gatan",
+				"attention": "Kalle Anka",
+				"propertyDesignation": "Ankeborg 1:1",
+				"location": {
+					"latitude": 0.8860957171081745,
+					"longitude": 0.4307180458357478
+				},
+				"apartmentNumber": "1"
+			}],
+			"adAccount": "KalleAnka",
+			"created": "${json-unit.any-string}",
+			"roles": [
+				"DELEGATE",
+				"LAND_RIGHT_OWNER"
+			],
+			"extraParameters": {
+				"test2": "test2",
+				"test3": "test3",
+				"test1": "test1"
+			},
+			"type": "PERSON",
+			"version": 0,
+			"firstName": "Kalle",
+			"contactInformation": [
+				{
+					"contactType": "EMAIL",
+					"value": "a.b@c.com"
+				},
+				{
+					"contactType": "PHONE",
+					"value": "1234567890"
+				},
+				{
+					"contactType": "CELLPHONE",
+					"value": "0987654321"
+				}
+			],
+			"namespace": "SBK_PARKINGPERMIT",
+			"personId": "1262f329-e143-428d-9006-997459eb1552",
+			"id": 2,
+			"updated": "${json-unit.any-string}"
+		},
+		{
+			"municipalityId": "2281",
+			"addresses": [{
+				"country": "Sverige",
+				"city": "Ankeborg",
+				"postalCode": "12345",
+				"houseNumber": "2",
+				"isZoningPlanArea": false,
+				"addressCategory": "VISITING_ADDRESS",
+				"invoiceMarking": "Företaget",
+				"careOf": "Företaget",
+				"street": "Gatan",
+				"attention": "Företaget",
+				"propertyDesignation": "Ankeborg 2:2",
+				"location": {
+					"latitude": 0.3246504912367001,
+					"longitude": 0.8625583560198528
+				},
+				"apartmentNumber": "2"
+			}],
+			"organizationName": "Företaget",
+			"adAccount": "Foretaget",
+			"created": "${json-unit.any-string}",
+			"organizationNumber": "699881-3960",
+			"roles": [
+				"SELLER",
+				"LEASEHOLDER"
+			],
+			"extraParameters": {
+				"test4": "test4",
+				"test5": "test5",
+				"test6": "test6"
+			},
+			"type": "ORGANIZATION",
+			"version": 0,
+			"contactInformation": [
+				{
+					"contactType": "EMAIL",
+					"value": "b.c@d.se"
+				},
+				{
+					"contactType": "PHONE",
+					"value": "0987654321"
+				},
+				{
+					"contactType": "CELLPHONE",
+					"value": "1234567890"
+				}
+			],
+			"authorizedSignatory": "Kalle Anka",
+			"namespace": "SBK_PARKINGPERMIT",
+			"id": 3,
+			"updated": "${json-unit.any-string}"
 		}
-	  ],
-	  "decidedBy": {
-		"id": 1,
-		"version": 0,
+	],
+	"caseType": "LOST_PARKING_PERMIT",
+	"diaryNumber": "DIARY-123",
+	"processId": "49011dea-ee10-11ec-9505-0242c0a84503",
+	"caseTitleAddition": "Borttappat parkeringstillstånd",
+	"decisions": [{
 		"municipalityId": "2281",
-		"namespace": "SBK_PARKINGPERMIT",
+		"law": [{
+			"sfs": "2000:1",
+			"chapter": "1",
+			"heading": "Kapitel 1",
+			"article": "1"
+		}],
+		"attachments": [],
 		"created": "${json-unit.any-string}",
-		"updated": "${json-unit.any-string}",
-		"type": "PERSON",
-		"firstName": "Kalle",
-		"lastName": "Anka",
-		"personId": "4cf41b59-864c-4a47-a3b9-52940a93b498",
-		"adAccount": "KalleAnka",
-		"roles": [
-		  "OPERATOR"
-		],
-		"addresses": [
-		  {
-			"addressCategory": "VISITING_ADDRESS",
-			"street": "Gatan",
-			"houseNumber": "1",
-			"postalCode": "12345",
-			"city": "Ankeborg",
-			"country": "Sverige",
-			"careOf": "Kalle Anka",
-			"attention": "Kalle Anka",
-			"propertyDesignation": "Ankeborg 1:1",
-			"apartmentNumber": "1",
-			"isZoningPlanArea": false,
-			"invoiceMarking": "Kalle Anka",
-			"location": {
-			  "latitude": 0.887143922169642,
-			  "longitude": 0.16843215444431747
-			}
-		  }
-		],
-		"contactInformation": [
-		  {
-			"contactType": "EMAIL",
-			"value": "a.b@c.se"
-		  },
-		  {
-			"contactType": "PHONE",
-			"value": "1234567890"
-		  },
-		  {
-			"contactType": "CELLPHONE",
-			"value": "0987654321"
-		  }
-		],
+		"description": "Cancellation description",
 		"extraParameters": {
-		  "test2": "test2",
-		  "test3": "test3",
-		  "test1": "test1"
-		}
-	  },
-	  "decidedAt": "2002-12-14T10:04:04.33+01:00",
-	  "validFrom": "2012-08-17T11:04:04.33+02:00",
-	  "validTo": "2014-07-27T11:04:04.33+02:00",
-	  "attachments": [],
-	  "extraParameters": {
-		"test5": "test5",
-		"test6": "test6",
-		"test7": "test7"
-	  }
-	}
-  ],
-  "notes": [
-	{
-	  "id": 1,
-	  "version": 0,
-	  "municipalityId": "2281",
-	  "namespace": "SBK_PARKINGPERMIT",
-	  "created": "${json-unit.any-string}",
-	  "updated": "${json-unit.any-string}",
-	  "title": "Test note",
-	  "text": "Test text",
-	  "createdBy": "UNKNOWN",
-	  "updatedBy": "sRXYGByNYE",
-	  "noteType": "PUBLIC",
-	  "extraParameters": {
-		"test4": "test4",
-		"test2": "test2",
-		"test3": "test3"
-	  }
-	},
-	{
-	  "id": 2,
-	  "version": 0,
-	  "municipalityId": "2281",
-	  "namespace": "SBK_PARKINGPERMIT",
-	  "created": "${json-unit.any-string}",
-	  "updated": "${json-unit.any-string}",
-	  "title": "sRGrJyRKNn",
-	  "text": "IHmVWzpAJl",
-	  "createdBy": "UNKNOWN",
-	  "updatedBy": "wZLYbWWWfF",
-	  "noteType": "PUBLIC",
-	  "extraParameters": {
-		"test4": "test4",
-		"test2": "test2",
-		"test3": "test3"
-	  }
-	},
-	{
-	  "id": 3,
-	  "version": 0,
-	  "municipalityId": "2281",
-	  "namespace": "SBK_PARKINGPERMIT",
-	  "created": "${json-unit.any-string}",
-	  "updated": "${json-unit.any-string}",
-	  "title": "EzhsmgQlrP",
-	  "text": "OSOCnSgryb",
-	  "createdBy": "UNKNOWN",
-	  "updatedBy": "oHfjmxxKyo",
-	  "noteType": "PUBLIC",
-	  "extraParameters": {
-		"test4": "test4",
-		"test2": "test2",
-		"test3": "test3"
-	  }
-	}
-  ],
-  "suspension": {},
-  "relatesTo": [],
-  "labels": [],
-  "createdByClient": "UNKNOWN",
-  "updatedByClient": "UNKNOWN",
-  "createdBy": "UNKNOWN",
-  "updatedBy": "UNKNOWN",
-  "extraParameters": [
-	{
-	  "key": "test7",
-	  "values": [
-		"test7"
-	  ]
-	},
-	{
-	  "key": "test8",
-	  "values": [
-		"test8"
-	  ]
-	},
-	{
-	  "key": "test9",
-	  "values": [
-		"test9"
-	  ]
-	}
-  ]
+			"test5": "test5",
+			"test6": "test6",
+			"test7": "test7"
+		},
+		"decidedBy": {
+			"lastName": "Anka",
+			"municipalityId": "2281",
+			"addresses": [{
+				"country": "Sverige",
+				"city": "Ankeborg",
+				"postalCode": "12345",
+				"houseNumber": "1",
+				"isZoningPlanArea": false,
+				"addressCategory": "VISITING_ADDRESS",
+				"invoiceMarking": "Kalle Anka",
+				"careOf": "Kalle Anka",
+				"street": "Gatan",
+				"attention": "Kalle Anka",
+				"propertyDesignation": "Ankeborg 1:1",
+				"location": {
+					"latitude": 0.887143922169642,
+					"longitude": 0.16843215444431747
+				},
+				"apartmentNumber": "1"
+			}],
+			"adAccount": "KalleAnka",
+			"created": "${json-unit.any-string}",
+			"roles": ["OPERATOR"],
+			"extraParameters": {
+				"test2": "test2",
+				"test3": "test3",
+				"test1": "test1"
+			},
+			"type": "PERSON",
+			"version": 0,
+			"firstName": "Kalle",
+			"contactInformation": [
+				{
+					"contactType": "EMAIL",
+					"value": "a.b@c.se"
+				},
+				{
+					"contactType": "PHONE",
+					"value": "1234567890"
+				},
+				{
+					"contactType": "CELLPHONE",
+					"value": "0987654321"
+				}
+			],
+			"namespace": "SBK_PARKINGPERMIT",
+			"personId": "4cf41b59-864c-4a47-a3b9-52940a93b498",
+			"id": 1,
+			"updated": "${json-unit.any-string}"
+		},
+		"validFrom": "2012-08-17T11:04:04.33+02:00",
+		"version": 0,
+		"decidedAt": "2002-12-14T10:04:04.33+01:00",
+		"namespace": "SBK_PARKINGPERMIT",
+		"decisionType": "FINAL",
+		"decisionOutcome": "CANCELLATION",
+		"id": 1,
+		"updated": "${json-unit.any-string}",
+		"validTo": "2014-07-27T11:04:04.33+02:00"
+	}],
+	"id": 3,
+	"relatesTo": [],
+	"suspension": {},
+	"phase": "Actualization",
+	"updatedBy": "UNKNOWN",
+	"created": "${json-unit.any-string}",
+	"updatedByClient": "UNKNOWN",
+	"priority": "HIGH",
+	"version": 2,
+	"labels": [],
+	"createdBy": "UNKNOWN",
+	"namespace": "SBK_PARKINGPERMIT",
+	"statuses": [{
+		"dateTime": "2023-01-24T10:04:04.326+01:00",
+		"statusType": "Ärende inkommit",
+		"description": "Ärende inkommit"
+	}],
+	"facilities": [{
+		"municipalityId": "2281",
+		"address": {
+			"addressCategory": "VISITING_ADDRESS",
+			"propertyDesignation": "Test 84:652"
+		},
+		"facilityType": "ONE_FAMILY_HOUSE",
+		"created": "${json-unit.any-string}",
+		"mainFacility": true,
+		"namespace": "SBK_PARKINGPERMIT",
+		"description": "Test facility",
+		"extraParameters": {},
+		"id": 1,
+		"facilityCollectionName": "Test facility collection",
+		"version": 0,
+		"updated": "${json-unit.any-string}"
+	}],
+	"updated": "${json-unit.any-string}",
+	"startDate": "2024-04-26"
 }

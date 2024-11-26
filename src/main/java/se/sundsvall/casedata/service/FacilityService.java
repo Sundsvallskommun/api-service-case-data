@@ -33,7 +33,6 @@ public class FacilityService {
 
 	private final ProcessService processService;
 
-
 	public FacilityService(final ErrandRepository errandRepository, final FacilityRepository facilityRepository, final ProcessService processService) {
 		this.errandRepository = errandRepository;
 		this.facilityRepository = facilityRepository;
@@ -93,8 +92,7 @@ public class FacilityService {
 		oldErrand.getFacilities().addAll(dtos.stream()
 			.filter(dto -> facilitiesToChange.stream()
 				.map(FacilityEntity::getId).toList().contains(dto.getId()))
-			.map(dto -> PutMapper.putFacility(facilitiesToChange.stream().
-				filter(facility -> facility.getId().equals(dto.getId())).findFirst().orElse(null), dto)).toList());
+			.map(dto -> PutMapper.putFacility(facilitiesToChange.stream().filter(facility -> facility.getId().equals(dto.getId())).findFirst().orElse(null), dto)).toList());
 
 		oldErrand.getFacilities().addAll(newFacilities.stream().map(facility -> {
 			facility.setErrand(oldErrand);

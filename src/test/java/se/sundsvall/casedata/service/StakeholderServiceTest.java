@@ -111,8 +111,8 @@ class StakeholderServiceTest {
 	void findStakeholdersByRoleAndMunicipalityId() {
 		// Arrange
 		final var stakeholders = Stream.of(
-				createStakeholder(ORGANIZATION, List.of(DRIVER.name())),
-				createStakeholder(PERSON, List.of(DRIVER.name(), OPERATOR.name())))
+			createStakeholder(ORGANIZATION, List.of(DRIVER.name())),
+			createStakeholder(PERSON, List.of(DRIVER.name(), OPERATOR.name())))
 			.map(stakeholderDTO -> toStakeholderEntity(stakeholderDTO, MUNICIPALITY_ID, NAMESPACE))
 			.toList();
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);

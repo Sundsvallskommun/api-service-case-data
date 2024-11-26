@@ -39,7 +39,6 @@ class DecisionEntityTest {
 			hasValidBeanToStringExcluding("errand")));
 	}
 
-
 	@Test
 	void builder() {
 		// Arrange

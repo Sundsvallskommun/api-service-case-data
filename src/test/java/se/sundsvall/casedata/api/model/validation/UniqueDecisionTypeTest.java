@@ -36,8 +36,7 @@ class UniqueDecisionTypeTest {
 				.build(),
 			Decision.builder()
 				.withDecisionType(DecisionType.PROPOSED)
-				.build()
-		);
+				.build());
 		assertThat(validator.isValid(decisions, contextMock)).isTrue();
 	}
 
@@ -52,8 +51,7 @@ class UniqueDecisionTypeTest {
 				.build(),
 			Decision.builder()
 				.withDecisionType(DecisionType.FINAL)
-				.build()
-		);
+				.build());
 		assertThat(validator.isValid(decisions, contextMock)).isFalse();
 	}
 

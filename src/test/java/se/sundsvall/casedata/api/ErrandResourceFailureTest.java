@@ -63,7 +63,9 @@ class ErrandResourceFailureTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "", " ", "invalid" })
+	@ValueSource(strings = {
+		"", " ", "invalid"
+	})
 	void postErrandWithInvalidFacilityType(final String facilityType) {
 		// Arrange
 		final var body = createErrandEntity();
@@ -88,7 +90,9 @@ class ErrandResourceFailureTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "", " ", "invalid" })
+	@ValueSource(strings = {
+		"", " ", "invalid"
+	})
 	void postFacilityWithInvalidFacilityType(final String facilityType) {
 		// Arrange
 		final var errandId = 123L;
@@ -111,7 +115,9 @@ class ErrandResourceFailureTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "", " ", "invalid" })
+	@ValueSource(strings = {
+		"", " ", "invalid"
+	})
 	void putFacilityWithInvalidFacilityType(final String facilityType) {
 		// Arrange
 		final var errandId = 123L;
@@ -166,7 +172,5 @@ class ErrandResourceFailureTest {
 		assertThat(result.getViolations().getFirst().getField()).isEqualTo("decisions");
 		assertThat(result.getViolations().getFirst().getMessage()).isEqualTo("Errand can contain one decision of each DecisionType");
 	}
-	
-
 
 }

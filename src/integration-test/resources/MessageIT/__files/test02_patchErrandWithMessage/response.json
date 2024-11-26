@@ -1,70 +1,64 @@
 [
-  {
-	"attachments": [],
-	"direction": "INBOUND",
-	"email": "johndoe@email.com",
-	"emailHeaders": [],
-	"errandNumber": "ERRAND-NUMBER-1",
-	"externalCaseId": "321",
-	"familyId": "123",
-	"firstName": "john",
-	"lastName": "doe",
-	"message": "Message-POST",
-	"messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
-	"messageType": "EMAIL",
-	"mobileNumber": "0701234567",
-	"recipients": [
-	  "patch@sundsvall.se"
-	],
-	"sent": "2024-01-02T12:00:00.000000",
-	"subject": "Subject",
-	"userId": "userId",
-	"username": "kctest",
-	"viewed": false
-  },
-  {
-	"attachments": [],
-	"direction": "INBOUND",
-	"email": "johndoe@email.com",
-	"emailHeaders": [
-	  {
-		"header": "MESSAGE_ID",
-		"values": [
-		  "<test123@domain.com>"
-		]
-	  },
-	  {
-		"header": "IN_REPLY_TO",
-		"values": [
-		  "<123test@domain.com>"
-		]
-	  },
-	  {
-		"header": "REFERENCES",
-		"values": [
-		  "<123test@domain.com>",
-		  "<123@domain.com>",
-		  "<456@domain.com>"
-		]
-	  }
-	],
-	"errandNumber": "ERRAND-NUMBER-1",
-	"externalCaseId": "1234",
-	"familyId": "387",
-	"firstName": "john",
-	"lastName": "doe",
-	"message": "Message",
-	"messageId": "a8883fb9-60b4-4f38-9f48-642070ff49ee",
-	"messageType": "EMAIL",
-	"mobileNumber": "0701234567",
-	"recipients": [
-	  "johndoe@email.com",
-	  "someemail@sundsvall.se"
-	],
-	"sent": "2024-01-01T12:00:00.000000",
-	"subject": "Subject",
-	"userId": "userid",
-	"username": "kctest",
-	"viewed": true
-  }
+	{
+		"lastName": "doe",
+		"attachments": [],
+		"externalCaseId": "321",
+		"errandNumber": "ERRAND-NUMBER-1",
+		"mobileNumber": "0701234567",
+		"subject": "Subject",
+		"messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
+		"message": "Message-POST",
+		"sent": "2024-01-02T12:00:00.000000",
+		"userId": "userId",
+		"emailHeaders": [],
+		"familyId": "123",
+		"firstName": "john",
+		"messageType": "EMAIL",
+		"recipients": ["patch@sundsvall.se"],
+		"viewed": false,
+		"email": "johndoe@email.com",
+		"direction": "INBOUND",
+		"username": "kctest"
+	},
+	{
+		"lastName": "doe",
+		"attachments": [],
+		"externalCaseId": "1234",
+		"errandNumber": "ERRAND-NUMBER-1",
+		"mobileNumber": "0701234567",
+		"subject": "Subject",
+		"messageId": "a8883fb9-60b4-4f38-9f48-642070ff49ee",
+		"message": "Message",
+		"sent": "2024-01-01T12:00:00.000000",
+		"userId": "userid",
+		"emailHeaders": [
+			{
+				"values": ["<test123@domain.com>"],
+				"header": "MESSAGE_ID"
+			},
+			{
+				"values": ["<123test@domain.com>"],
+				"header": "IN_REPLY_TO"
+			},
+			{
+				"values": [
+					"<123test@domain.com>",
+					"<123@domain.com>",
+					"<456@domain.com>"
+				],
+				"header": "REFERENCES"
+			}
+		],
+		"familyId": "387",
+		"firstName": "john",
+		"messageType": "EMAIL",
+		"recipients": [
+			"johndoe@email.com",
+			"someemail@sundsvall.se"
+		],
+		"viewed": true,
+		"email": "johndoe@email.com",
+		"direction": "INBOUND",
+		"username": "kctest"
+	}
 ]

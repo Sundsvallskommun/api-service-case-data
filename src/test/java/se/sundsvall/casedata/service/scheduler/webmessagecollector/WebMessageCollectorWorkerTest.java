@@ -100,7 +100,9 @@ class WebMessageCollectorWorkerTest {
 		final var messageDTOs = createMessages();
 		final var message = createMessage();
 
-		final var bytes = new byte[] { 1, 23, 45 };
+		final var bytes = new byte[] {
+			1, 23, 45
+		};
 		final var blob = new SerialBlob(bytes);
 		final var attachmentData = MessageAttachmentDataEntity.builder().withFile(blob).build();
 

@@ -10,10 +10,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = UniqueDecisionTypeValidator.class)
-@Target({ ElementType.FIELD })
+@Target({
+	ElementType.FIELD
+})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueDecisionType {
 	String message() default "Errand can contain one decision of each DecisionType";
+
 	Class<?>[] groups() default {};
+
 	Class<? extends Payload>[] payload() default {};
 }

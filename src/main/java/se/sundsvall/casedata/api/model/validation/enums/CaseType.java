@@ -45,7 +45,7 @@ public enum CaseType {
 	MEX_ROAD_ASSOCIATION,
 	MEX_RETURNED_TO_CONTACT_SUNDSVALL,
 	MEX_SMALL_BOAT_HARBOR_DOCK_PORT,
-	//GENERAL
+	// GENERAL
 	APPEAL;
 
 	public static List<CaseType> getMexCaseTypes() {
@@ -79,8 +79,7 @@ public enum CaseType {
 			MEX_TREES_FORESTS,
 			MEX_ROAD_ASSOCIATION,
 			MEX_RETURNED_TO_CONTACT_SUNDSVALL,
-			MEX_SMALL_BOAT_HARBOR_DOCK_PORT
-		));
+			MEX_SMALL_BOAT_HARBOR_DOCK_PORT));
 	}
 
 	public static List<CaseType> getParkingPermitCaseTypes() {

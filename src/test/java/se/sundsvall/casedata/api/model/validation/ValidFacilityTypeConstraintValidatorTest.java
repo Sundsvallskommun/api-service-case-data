@@ -45,7 +45,9 @@ class ValidFacilityTypeConstraintValidatorTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(booleans = {true, false})
+	@ValueSource(booleans = {
+		true, false
+	})
 	void isValid_Nullable(final Boolean nullable) {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);

@@ -231,7 +231,9 @@ class MessageServiceTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(booleans = {true, false})
+	@ValueSource(booleans = {
+		true, false
+	})
 	void updateViewedStatusOnExistingMessage(final boolean viewed) {
 		// Arrange
 		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
