@@ -609,7 +609,8 @@ class ErrandIT extends AbstractAppTest {
 		final Errand inputPostErrand1 = createErrand();
 		postErrand(inputPostErrand1, municipalityId);
 
-		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst().orElseThrow();
+		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst()
+			.orElseThrow();
 
 		// Get only the first one with query params
 		final Page<Errand> resultList = webTestClient.get().uri(
@@ -650,7 +651,8 @@ class ErrandIT extends AbstractAppTest {
 		final Errand inputPostErrand1 = createErrand();
 		postErrand(inputPostErrand1, municipalityId);
 
-		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst().orElseThrow();
+		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst()
+			.orElseThrow();
 
 		// Get only the first one with query params
 		final Page<Errand> resultList = webTestClient.get().uri(
@@ -689,7 +691,8 @@ class ErrandIT extends AbstractAppTest {
 		final Errand inputPostErrand1 = createErrand();
 		postErrand(inputPostErrand1, municipalityId);
 
-		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst().orElseThrow();
+		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst()
+			.orElseThrow();
 
 		webTestClient.get().uri(
 			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())
@@ -715,7 +718,8 @@ class ErrandIT extends AbstractAppTest {
 		final Errand inputPostErrand1 = createErrand();
 		postErrand(inputPostErrand1, municipalityId);
 
-		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst().orElseThrow();
+		final Stakeholder person = inputPostErrand1.getStakeholders().stream().filter(stakeholder -> StakeholderType.PERSON.equals(stakeholder.getType())).findFirst()
+			.orElseThrow();
 		// Get only the first one with query params
 		final Page<Errand> resultList = webTestClient.get().uri(
 			uriBuilder -> UriComponentsBuilder.fromUri(uriBuilder.build())

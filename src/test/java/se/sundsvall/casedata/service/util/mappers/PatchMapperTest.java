@@ -26,11 +26,9 @@ import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacili
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNote;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import generated.se.sundsvall.employee.PortalPersonData;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
@@ -55,7 +53,7 @@ class PatchMapperTest {
 			assertThat(e.getStartDate()).isEqualTo(patch.getStartDate());
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
 			assertThat(e.getApplicationReceived()).isEqualTo(patch.getApplicationReceived());
-			assertThat(e.getExtraParameters()).hasSize(5).containsAll(patch.getExtraParameters().stream().map(parameter -> ErrandExtraParameterMapper.toErrandParameterEntity(parameter).withErrandEntity(errand)).toList());
+			assertThat(e.getExtraParameters()).hasSize(3).containsAll(patch.getExtraParameters().stream().map(parameter -> ErrandExtraParameterMapper.toErrandParameterEntity(parameter).withErrand(errand)).toList());
 			assertThat(e.getSuspendedFrom()).isEqualTo(patch.getSuspension().getSuspendedFrom());
 			assertThat(e.getSuspendedTo()).isEqualTo(patch.getSuspension().getSuspendedTo());
 			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(facilityDTO -> toFacilityEntity(facilityDTO, MUNICIPALITY_ID, NAMESPACE)).toList());
@@ -165,7 +163,7 @@ class PatchMapperTest {
 		final var patchedFacility = patchFacility(facility, patch);
 
 		assertThat(patchedFacility).isNotNull().hasNoNullFieldsOrPropertiesExcept("errand", "municipalityId", "namespace").satisfies(f -> {
-			assertThat(f.getAddressEntity()).isEqualTo(toAddressEntity(patch.getAddress()));
+			assertThat(f.getAddress()).isEqualTo(toAddressEntity(patch.getAddress()));
 			assertThat(f.getDescription()).isEqualTo(patch.getDescription());
 			assertThat(f.getFacilityCollectionName()).isEqualTo(patch.getFacilityCollectionName());
 			assertThat(f.getFacilityType()).isEqualTo(patch.getFacilityType());

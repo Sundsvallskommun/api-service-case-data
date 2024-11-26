@@ -60,7 +60,7 @@ class FacilityEntityTest {
 			.withDescription(description)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
-			.withAddressEntity(addressEntity)
+			.withAddress(addressEntity)
 			.withFacilityCollectionName(facilityCollectionName)
 			.withMainFacility(mainFacility)
 			.withFacilityType(facilityType)
@@ -76,7 +76,7 @@ class FacilityEntityTest {
 		assertThat(facilityEntity.getDescription()).isEqualTo(description);
 		assertThat(facilityEntity.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(facilityEntity.getNamespace()).isEqualTo(namespace);
-		assertThat(facilityEntity.getAddressEntity()).isEqualTo(addressEntity);
+		assertThat(facilityEntity.getAddress()).isEqualTo(addressEntity);
 		assertThat(facilityEntity.getFacilityCollectionName()).isEqualTo(facilityCollectionName);
 		assertThat(facilityEntity.isMainFacility()).isEqualTo(mainFacility);
 		assertThat(facilityEntity.getFacilityType()).isEqualTo(facilityType);

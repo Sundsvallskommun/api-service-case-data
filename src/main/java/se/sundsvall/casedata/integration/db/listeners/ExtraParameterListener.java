@@ -2,7 +2,7 @@ package se.sundsvall.casedata.integration.db.listeners;
 
 import org.springframework.stereotype.Component;
 
-import jakarta.persistence.PostPersist;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
@@ -16,14 +16,14 @@ public class ExtraParameterListener {
 		this.errandListener = errandListener;
 	}
 
-	@PostPersist
+	@PrePersist
 	private void postPersist(final ExtraParameterEntity extraParameterEntity) {
-		errandListener.updateErrandFields(extraParameterEntity.getErrandEntity());
+		errandListener.updateErrandFields(extraParameterEntity.getErrand());
 	}
 
 	@PreUpdate
 	@PreRemove
 	private void preUpdate(final ExtraParameterEntity extraParameterEntity) {
-		errandListener.updateErrandFields(extraParameterEntity.getErrandEntity());
+		errandListener.updateErrandFields(extraParameterEntity.getErrand());
 	}
 }

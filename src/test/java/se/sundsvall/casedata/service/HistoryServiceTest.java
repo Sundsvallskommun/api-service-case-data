@@ -15,7 +15,6 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
-
 import org.javers.common.string.PrettyValuePrinter;
 import org.javers.core.Changes;
 import org.javers.core.Javers;
@@ -29,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-
 import se.sundsvall.casedata.api.model.history.History;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.DecisionRepository;

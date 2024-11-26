@@ -22,7 +22,7 @@ class ExtraParameterEntityTest {
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
 			hasValidBeanEqualsExcluding(),
-			hasValidBeanToStringExcluding("errandEntity")));
+			hasValidBeanToStringExcluding("errand")));
 	}
 
 	@Test
