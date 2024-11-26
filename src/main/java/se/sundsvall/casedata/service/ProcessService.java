@@ -8,10 +8,8 @@ import static se.sundsvall.casedata.service.util.Constants.PARKING_PERMIT_CASE_T
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
-import se.sundsvall.casedata.integration.db.model.Errand;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
 
@@ -30,18 +28,18 @@ public class ProcessService {
 		this.landAndExploitationIntegration = landAndExploitationIntegration;
 	}
 
-	public StartProcessResponse startProcess(final Errand errand) {
+	public String startProcess(final ErrandEntity errand) {
 		if (PARKING_PERMIT_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType()))) {
-			return parkingPermitIntegration.startProcess(errand);
+			return parkingPermitIntegration.startProcess(errand).getProcessId();
 		}
 		if (MEX_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType()))) {
-			return landAndExploitationIntegration.startProcess(errand);
+			return landAndExploitationIntegration.startProcess(errand).getProcessId();
 		}
 		LOGGER.info("No camunda process found for caseType: {}", errand.getCaseType());
 		return null;
 	}
 
-	public void updateProcess(final Errand errand) {
+	public void updateProcess(final ErrandEntity errand) {
 		if (CAMUNDA_USER.equals(errand.getUpdatedByClient())) {
 			LOGGER.warn("Errand with id: {} was updated by camunda user, no need to update process", errand.getId());
 			return;
@@ -55,11 +53,11 @@ public class ProcessService {
 		}
 	}
 
-	private boolean isValidParkingPermitCase(final Errand errand) {
+	private boolean isValidParkingPermitCase(final ErrandEntity errand) {
 		return PARKING_PERMIT_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType())) && isNotEmpty(errand.getProcessId());
 	}
 
-	private boolean isValidMexCase(final Errand errand) {
+	private boolean isValidMexCase(final ErrandEntity errand) {
 		return MEX_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType())) && isNotEmpty(errand.getProcessId());
 	}
 

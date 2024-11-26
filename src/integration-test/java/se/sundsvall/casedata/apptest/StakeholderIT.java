@@ -9,6 +9,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
@@ -23,15 +24,19 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/StakeholderIT/", classes = Application.class)
 @Sql({
-	"/db/script/truncate.sql",
-	"/db/script/stakeholderIT-testdata.sql"
+	"/db/scripts/truncate.sql",
+	"/db/scripts/stakeholderIT-testdata.sql"
 })
 class StakeholderIT extends AbstractAppTest {
+
+	private static final Long ERRAND_ID = 1L;
+
+	private static final String PATH = "/{0}/{1}/errands/{2}/stakeholders";
 
 	@Test
 	void test01_getStakeholderById() {
 		setupCall()
-			.withServicePath(format("/{0}/stakeholders/{1}", MUNICIPALITY_ID, 1L))
+			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, 1L))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -41,7 +46,7 @@ class StakeholderIT extends AbstractAppTest {
 	@Test
 	void test02_getAllStakeholders() {
 		setupCall()
-			.withServicePath(format("/{0}/stakeholders", MUNICIPALITY_ID))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -52,7 +57,7 @@ class StakeholderIT extends AbstractAppTest {
 	void test03_getStakeholdersByRole() {
 		final var requestParam = "?stakeholderRole=APPLICANT";
 		setupCall()
-			.withServicePath(format("/{0}/stakeholders{1}", MUNICIPALITY_ID, requestParam))
+			.withServicePath(format(PATH + "{3}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, requestParam))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -62,7 +67,7 @@ class StakeholderIT extends AbstractAppTest {
 	@Test
 	void test04_patchStakeholder() {
 		setupCall()
-			.withServicePath(format("/{0}/stakeholders/{1}", MUNICIPALITY_ID, 1L))
+			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, 1L))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PATCH)
@@ -72,7 +77,7 @@ class StakeholderIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath(format("/{0}/stakeholders/{1}", MUNICIPALITY_ID, 1L))
+			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, 1L))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -82,7 +87,7 @@ class StakeholderIT extends AbstractAppTest {
 	@Test
 	void test05_putStakeholder() {
 		setupCall()
-			.withServicePath(format("/{0}/stakeholders/{1}", MUNICIPALITY_ID, 1L))
+			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, 1L))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PUT)
@@ -92,7 +97,7 @@ class StakeholderIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath(format("/{0}/stakeholders/{1}", MUNICIPALITY_ID, 1L))
+			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, 1L))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -102,7 +107,7 @@ class StakeholderIT extends AbstractAppTest {
 	@Test
 	void test06_putStakeholders() {
 		setupCall()
-			.withServicePath(format("/{0}/errands/{1}/stakeholders", MUNICIPALITY_ID, 1L))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, 1L))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withHttpMethod(PUT)
@@ -112,7 +117,7 @@ class StakeholderIT extends AbstractAppTest {
 			.sendRequest();
 
 		setupCall()
-			.withServicePath(format("/{0}/errands/{1}", MUNICIPALITY_ID, 1L))
+			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, 1L))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
@@ -120,4 +125,5 @@ class StakeholderIT extends AbstractAppTest {
 
 		verifyAllStubs();
 	}
+
 }

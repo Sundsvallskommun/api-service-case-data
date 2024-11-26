@@ -1,6 +1,14 @@
 package se.sundsvall.casedata.service;
 
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+
+import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,14 +23,7 @@ import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
 
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.TestUtil.createErrand;
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessServiceTest {
@@ -51,14 +52,18 @@ class ProcessServiceTest {
 	@ParameterizedTest
 	@MethodSource("parkingPermitTypesProvider")
 	void startProcess_whenParkingPermit(final String enumValue) {
-		final var errand = createErrand();
-		final var result = new StartProcessResponse();
+		// Arrange
+		final var errand = createErrandEntity();
+		final var processId = UUID.randomUUID().toString();
+		final var response = new StartProcessResponse().processId(processId);
 		errand.setCaseType(enumValue);
-		when(parkingPermitIntegration.startProcess(errand)).thenReturn(result);
+		when(parkingPermitIntegration.startProcess(errand)).thenReturn(response);
 
-		var result1 = processService.startProcess(errand);
+		// Act
+		var result = processService.startProcess(errand);
 
-		assertThat(result1).isEqualTo(result);
+		// Assert
+		assertThat(result).isEqualTo(processId);
 		verify(parkingPermitIntegration).startProcess(errand);
 		verifyNoMoreInteractions(parkingPermitIntegration);
 		verifyNoInteractions(landAndExploitationIntegration);
@@ -67,14 +72,18 @@ class ProcessServiceTest {
 	@ParameterizedTest
 	@MethodSource("mexTypesProvider")
 	void startProcess_whenMEX(final String enumValue) {
-		final var errand = createErrand();
-		final var result = new StartProcessResponse();
+		// Arrange
+		final var errand = createErrandEntity();
+		final var processId = UUID.randomUUID().toString();
+		final var response = new generated.se.sundsvall.mex.StartProcessResponse().processId(processId);
 		errand.setCaseType(enumValue);
-		when(landAndExploitationIntegration.startProcess(errand)).thenReturn(result);
+		when(landAndExploitationIntegration.startProcess(errand)).thenReturn(response);
 
-		var result1 = processService.startProcess(errand);
+		// Act
+		var result = processService.startProcess(errand);
 
-		assertThat(result1).isEqualTo(result);
+		// Assert
+		assertThat(result).isEqualTo(processId);
 		verify(landAndExploitationIntegration).startProcess(errand);
 		verifyNoMoreInteractions(landAndExploitationIntegration);
 		verifyNoInteractions(parkingPermitIntegration);
@@ -83,12 +92,14 @@ class ProcessServiceTest {
 	@ParameterizedTest
 	@MethodSource("parkingPermitTypesProvider")
 	void updateProcess_whenParkingPermit(final String enumValue) {
-		final var errand = createErrand();
+		// Arrange
+		final var errand = createErrandEntity();
 		errand.setCaseType(enumValue);
-		errand.setUpdatedByClient("Not camunda wso2 - Should update");
 
+		// Act
 		processService.updateProcess(errand);
 
+		// Assert
 		verify(parkingPermitIntegration).updateProcess(errand);
 		verifyNoMoreInteractions(parkingPermitIntegration);
 		verifyNoInteractions(landAndExploitationIntegration);
@@ -97,12 +108,14 @@ class ProcessServiceTest {
 	@ParameterizedTest
 	@MethodSource("mexTypesProvider")
 	void updateProcess_whenMEX(final String enumValue) {
-		final var errand = createErrand();
+		// Arrange
+		final var errand = createErrandEntity();
 		errand.setCaseType(enumValue);
-		errand.setUpdatedByClient("Not camunda wso2 - Should update");
 
+		// Act
 		processService.updateProcess(errand);
 
+		// Assert
 		verify(landAndExploitationIntegration).updateProcess(errand);
 		verifyNoMoreInteractions(landAndExploitationIntegration);
 		verifyNoInteractions(parkingPermitIntegration);
@@ -110,11 +123,14 @@ class ProcessServiceTest {
 
 	@Test
 	void updateProcess_CamundaUser() {
-		final var errand = createErrand();
+		// Arrange
+		final var errand = createErrandEntity();
 		errand.setUpdatedByClient("WSO2_Camunda");
 
+		// Act
 		processService.updateProcess(errand);
 
+		// Assert
 		verifyNoInteractions(parkingPermitIntegration, landAndExploitationIntegration);
 	}
 

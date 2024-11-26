@@ -12,9 +12,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.createAttachmentDTO;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachmentDto;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachmentEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,13 +30,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 
-import se.sundsvall.casedata.api.model.AttachmentDTO;
+import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
-import se.sundsvall.casedata.integration.db.model.Attachment;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 
 @ExtendWith(MockitoExtension.class)
 class AttachmentServiceTest {
+
+	@Mock
+	private ErrandRepository errandRepository;
 
 	@Mock
 	private AttachmentRepository attachmentRepository;
@@ -44,126 +49,149 @@ class AttachmentServiceTest {
 	private AttachmentService attachmentService;
 
 	@Captor
-	private ArgumentCaptor<Attachment> attachmentArgumentCaptor;
+	private ArgumentCaptor<AttachmentEntity> attachmentArgumentCaptor;
 
 	@Test
 	void testFindById() {
-		final var attachment = toAttachment(createAttachmentDTO(AttachmentCategory.SIGNATURE), MUNICIPALITY_ID);
-		when(attachmentRepository.findByIdAndMunicipalityId(anyLong(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(attachment));
+		// Arrange
+		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.SIGNATURE), MUNICIPALITY_ID, NAMESPACE);
+		when(attachmentRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(attachment));
+		when(errandRepository.existsByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
 
-		final var result = attachmentService.findByIdAndMunicipalityId(5L, MUNICIPALITY_ID);
-		assertThat(result).isEqualTo(toAttachmentDto(attachment));
+		// Act
+		final var result = attachmentService.findByIdAndMunicipalityIdAndNamespace(1L, 5L, MUNICIPALITY_ID, NAMESPACE);
 
-		verify(attachmentRepository).findByIdAndMunicipalityId(5L, MUNICIPALITY_ID);
+		// Assert
+		assertThat(result).isEqualTo(toAttachment(attachment));
+		verify(attachmentRepository).findByIdAndMunicipalityIdAndNamespace(5L, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 	@Test
 	void testFindByIdNotFound() {
-		when(attachmentRepository.findByIdAndMunicipalityId(anyLong(), eq(MUNICIPALITY_ID))).thenReturn(Optional.empty());
+		// Arrange
+		when(errandRepository.existsByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
+		when(attachmentRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> attachmentService.findByIdAndMunicipalityId(5L, MUNICIPALITY_ID))
+		// Act & Assert
+		assertThatThrownBy(() -> attachmentService.findByIdAndMunicipalityIdAndNamespace(1L, 5L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND);
-
-		verify(attachmentRepository).findByIdAndMunicipalityId(5L, MUNICIPALITY_ID);
+		verify(attachmentRepository).findByIdAndMunicipalityIdAndNamespace(5L, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 	@Test
 	void putAttachment() {
-		final Attachment attachment = toAttachment(createAttachmentDTO(AttachmentCategory.PASSPORT_PHOTO), MUNICIPALITY_ID);
-		final AttachmentDTO attachmentDTO = createAttachmentDTO(AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT);
+		// Arrange
+		final AttachmentEntity attachmentEntity = toAttachmentEntity(createAttachment(AttachmentCategory.PASSPORT_PHOTO), MUNICIPALITY_ID, NAMESPACE);
+		final Attachment attachment = createAttachment(AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT);
+		when(errandRepository.existsByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
+		when(attachmentRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(attachmentEntity));
 
-		when(attachmentRepository.findByIdAndMunicipalityId(anyLong(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(attachment));
+		// Act
+		attachmentService.replaceAttachment(1L, attachmentEntity.getId(), MUNICIPALITY_ID, NAMESPACE, attachment);
 
-		attachmentService.replaceAttachment(attachment.getId(), MUNICIPALITY_ID, attachmentDTO);
-
+		// Assert
 		verify(attachmentRepository).save(attachmentArgumentCaptor.capture());
-
 		assertThat(attachmentArgumentCaptor.getValue()).satisfies(entity -> {
-			assertThat(entity.getExtraParameters()).isEqualTo(attachmentDTO.getExtraParameters());
-			assertThat(entity.getCategory()).isEqualTo(attachmentDTO.getCategory());
-			assertThat(entity.getName()).isEqualTo(attachmentDTO.getName());
-			assertThat(entity.getNote()).isEqualTo(attachmentDTO.getNote());
-			assertThat(entity.getExtension()).isEqualTo(attachmentDTO.getExtension());
-			assertThat(entity.getMimeType()).isEqualTo(attachmentDTO.getMimeType());
-			assertThat(entity.getFile()).isEqualTo(attachmentDTO.getFile());
+			assertThat(entity.getExtraParameters()).isEqualTo(attachment.getExtraParameters());
+			assertThat(entity.getCategory()).isEqualTo(attachment.getCategory());
+			assertThat(entity.getName()).isEqualTo(attachment.getName());
+			assertThat(entity.getNote()).isEqualTo(attachment.getNote());
+			assertThat(entity.getExtension()).isEqualTo(attachment.getExtension());
+			assertThat(entity.getMimeType()).isEqualTo(attachment.getMimeType());
+			assertThat(entity.getFile()).isEqualTo(attachment.getFile());
 		});
 	}
 
 	@Test
 	void testPatch() {
-		final var dto = new AttachmentDTO();
-		final var entity = new Attachment();
-		when(attachmentRepository.findByIdAndMunicipalityId(1L, MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
+		// Arrange
+		final var dto = new Attachment();
+		final var entity = new AttachmentEntity();
+		when(errandRepository.existsByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
+		when(attachmentRepository.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
 
-		attachmentService.updateAttachment(1L, MUNICIPALITY_ID, dto);
+		// Act
+		attachmentService.updateAttachment(1L, 1L, MUNICIPALITY_ID, NAMESPACE, dto);
 
+		// Assert
 		verify(attachmentRepository).save(entity);
 		verifyNoMoreInteractions(attachmentRepository);
 	}
 
 	@Test
 	void testDelete() {
+		// Arrange
+		when(errandRepository.existsByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
+		when(attachmentRepository.existsByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
 
-		when(attachmentRepository.existsByIdAndMunicipalityId(any(Long.class), eq(MUNICIPALITY_ID))).thenReturn(true);
-		attachmentService.deleteAttachment(1L, MUNICIPALITY_ID);
+		// Act
+		attachmentService.deleteAttachment(1L, 1L, MUNICIPALITY_ID, NAMESPACE);
 
-		verify(attachmentRepository).existsByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
-		verify(attachmentRepository).deleteByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
+		// Assert
+		verify(attachmentRepository).existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentRepository).deleteByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(attachmentRepository);
 	}
 
 	@Test
 	void testDeleteNotFound() {
-		when(attachmentRepository.existsByIdAndMunicipalityId(any(Long.class), eq(MUNICIPALITY_ID))).thenReturn(false);
+		// Arrange
+		when(errandRepository.existsByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
+		when(attachmentRepository.existsByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(false);
 
-		attachmentService.deleteAttachment(1L, MUNICIPALITY_ID);
+		// Act
+		attachmentService.deleteAttachment(1L, 1L, MUNICIPALITY_ID, NAMESPACE);
 
-		verify(attachmentRepository).existsByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
-		verify(attachmentRepository, never()).deleteByIdAndMunicipalityId(1L, MUNICIPALITY_ID);
+		// Assert
+		verify(attachmentRepository).existsByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentRepository, never()).deleteByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(attachmentRepository);
 	}
 
 	@Test
 	void testFindByErrandNumberAndMunicipalityId() {
-
-		final var attachment = toAttachment(createAttachmentDTO(AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT), MUNICIPALITY_ID);
+		// Arrange
+		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.ARCHAEOLOGICAL_ASSESSMENT), MUNICIPALITY_ID, NAMESPACE);
 		attachment.setErrandNumber("someErrandNumber");
-		doReturn(List.of(attachment)).when(attachmentRepository).findAllByErrandNumberAndMunicipalityId(any(String.class), eq(MUNICIPALITY_ID));
+		doReturn(List.of(attachment)).when(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 
-		final var result = attachmentService.findByErrandNumberAndMunicipalityId("someErrandNumber", MUNICIPALITY_ID);
-		assertEquals(List.of(toAttachmentDto(attachment)), result);
+		// Act
+		final var result = attachmentService.findByErrandNumberAndMunicipalityIdAndNamespace("someErrandNumber", MUNICIPALITY_ID, NAMESPACE);
 
-		verify(attachmentRepository).findAllByErrandNumberAndMunicipalityId(any(String.class), eq(MUNICIPALITY_ID));
-
+		// Assert
+		assertEquals(List.of(toAttachment(attachment)), result);
+		verify(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 		verifyNoMoreInteractions(attachmentRepository);
 	}
 
 	@Test
 	void testFindByErrandNumberAndMunicipalityIdNothingFound() {
+		// Arrange
+		doReturn(List.of()).when(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 
-		doReturn(List.of()).when(attachmentRepository).findAllByErrandNumberAndMunicipalityId(any(String.class), eq(MUNICIPALITY_ID));
+		// Act
+		final var result = attachmentService.findByErrandNumberAndMunicipalityIdAndNamespace("someErrandNumber", MUNICIPALITY_ID, NAMESPACE);
 
-		final var result = attachmentService.findByErrandNumberAndMunicipalityId("someErrandNumber", MUNICIPALITY_ID);
+		// Assert
 		assertEquals(List.of(), result);
-
-		verify(attachmentRepository).findAllByErrandNumberAndMunicipalityId(any(String.class), eq(MUNICIPALITY_ID));
-
+		verify(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 		verifyNoMoreInteractions(attachmentRepository);
 	}
 
 	@Test
 	void testPost() {
-
-		final var attachment = toAttachment(createAttachmentDTO(AttachmentCategory.ANMALAN_ANDRING_AVLOPPSANLAGGNING), MUNICIPALITY_ID);
+		// Arrange
+		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.ANMALAN_ANDRING_AVLOPPSANLAGGNING), MUNICIPALITY_ID, NAMESPACE);
 		attachment.setErrandNumber("someErrandNumber");
-		doReturn(attachment).when(attachmentRepository).save(any(Attachment.class));
+		doReturn(attachment).when(attachmentRepository).save(any(AttachmentEntity.class));
 
-		final var result = attachmentService.createAttachment(createAttachmentDTO(AttachmentCategory.ADDRESS_SHEET), MUNICIPALITY_ID);
+		// Act
+		final var result = attachmentService.createAttachment(createAttachment(AttachmentCategory.ADDRESS_SHEET), MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
 		assertEquals(attachment, result);
-
-		verify(attachmentRepository).save(any(Attachment.class));
-
+		verify(attachmentRepository).save(any(AttachmentEntity.class));
 		verifyNoMoreInteractions(attachmentRepository);
 	}
 

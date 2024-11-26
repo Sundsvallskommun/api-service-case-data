@@ -3,6 +3,8 @@ package se.sundsvall.casedata.integration.db;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome.APPROVAL;
 import static se.sundsvall.casedata.integration.db.model.enums.DecisionType.RECOMMENDED;
 
@@ -45,10 +47,9 @@ class DecisionRepositoryTest {
 
 		// Arrange
 		final var id = 1L;
-		final var municipalityId = "2281";
 
 		// Act
-		final var result = decisionRepository.findByIdAndMunicipalityId(id, municipalityId).orElseThrow();
+		final var result = decisionRepository.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
 
 		// Assert
 		assertThat(result.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
@@ -62,12 +63,12 @@ class DecisionRepositoryTest {
 
 		// Arrange
 		final var id = 666L;
-		final var municipalityId = "2281";
 
 		// Act
-		final var result = decisionRepository.findByIdAndMunicipalityId(id, municipalityId);
+		final var result = decisionRepository.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
 	}
+
 }

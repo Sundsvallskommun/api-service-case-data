@@ -1,24 +1,28 @@
 package se.sundsvall.casedata.api.model.validation;
 
-import jakarta.validation.ConstraintValidatorContext;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
-
-import java.util.Arrays;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+
+import jakarta.validation.ConstraintValidatorContext;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+
+import se.sundsvall.casedata.api.model.validation.impl.ValidAppealStatusConstraintValidator;
+import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
+
 class ValidAppealStatusConstraintValidatorTest {
 
 	private ValidAppealStatusConstraintValidator validator;
+
 	private ConstraintValidatorContext contextMock;
 
 	@BeforeEach
@@ -29,7 +33,7 @@ class ValidAppealStatusConstraintValidatorTest {
 
 	@ParameterizedTest
 	@EnumSource(AppealStatus.class)
-	void isValid_withValidStatus (final AppealStatus status) {
+	void isValid_withValidStatus(final AppealStatus status) {
 		final var validStatus = status.toString();
 		assertThat(validator.isValid(validStatus, contextMock)).isTrue();
 	}
@@ -59,4 +63,5 @@ class ValidAppealStatusConstraintValidatorTest {
 		verify(contextMock).buildConstraintViolationWithTemplate("Appeal status cannot be null or empty. Valid values are: " + Arrays.toString(AppealStatus.values()));
 		verify(builderMock).addConstraintViolation();
 	}
+
 }

@@ -11,6 +11,8 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import se.sundsvall.casedata.api.model.validation.impl.ValidMapValueSizeValidator;
+
 class ValidMapValueSizeValidatorTest {
 
 	private ValidMapValueSizeValidator validator;
