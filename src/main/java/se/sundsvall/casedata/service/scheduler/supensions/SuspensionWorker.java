@@ -21,7 +21,6 @@ public class SuspensionWorker {
 
 	private static final String NOTIFICATION_TYPE = "UPDATE";
 
-
 	private final ErrandRepository errandRepository;
 
 	private final NotificationService notificationService;

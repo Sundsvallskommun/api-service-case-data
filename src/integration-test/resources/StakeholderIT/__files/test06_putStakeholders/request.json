@@ -1,30 +1,26 @@
 [
 	{
-		"id": 1,
-		"type": "PERSON",
 		"firstName": "John",
 		"lastName": "Doe",
-		"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
-		"adAccount": "AD-1",
-		"roles": [
-			"APPLICANT"
-		],
 		"addresses": [],
 		"contactInformation": [],
-		"extraParameters": {}
+		"adAccount": "AD-1",
+		"roles": ["APPLICANT"],
+		"extraParameters": {},
+		"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
+		"id": 1,
+		"type": "PERSON"
 	},
 	{
-		"id": 2,
-		"type": "PERSON",
 		"firstName": "Kalle",
 		"lastName": "Anka",
-		"personId": "d1af5f83-166a-468b-ab86-da8ca30ea97c",
-		"adAccount": "AD-2",
-		"roles": [
-			"APPLICANT"
-		],
 		"addresses": [],
 		"contactInformation": [],
-		"extraParameters": {}
+		"adAccount": "AD-2",
+		"roles": ["APPLICANT"],
+		"extraParameters": {},
+		"personId": "d1af5f83-166a-468b-ab86-da8ca30ea97c",
+		"id": 2,
+		"type": "PERSON"
 	}
 ]

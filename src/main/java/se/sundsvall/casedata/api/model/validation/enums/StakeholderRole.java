@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.api.model.validation.enums;
 
-
 public enum StakeholderRole {
 	// Kontrollansvarig
 	CONTROL_OFFICIAL,
@@ -47,7 +46,7 @@ public enum StakeholderRole {
 	CHAIRMAN,
 	// Tomträttshavare
 	LAND_RIGHT_OWNER,
-	//Ombud
+	// Ombud
 	DELEGATE,
 	// Nyttjanderättshavare
 	USUFRUCTUARY,

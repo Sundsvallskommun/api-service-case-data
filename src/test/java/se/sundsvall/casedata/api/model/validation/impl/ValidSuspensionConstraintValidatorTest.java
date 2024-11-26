@@ -41,8 +41,7 @@ class ValidSuspensionConstraintValidatorTest {
 			Arguments.of(
 				OffsetDateTime.of(2024, 1, 1, 12, 0, 0, 0, ZoneOffset.ofHours(1)),
 				null,
-				false)
-		);
+				false));
 	}
 
 	@ParameterizedTest
@@ -57,6 +56,5 @@ class ValidSuspensionConstraintValidatorTest {
 	void nullSuspension() {
 		assertThat(validator.isValid(null, constraintValidatorContextMock)).isTrue();
 	}
-
 
 }

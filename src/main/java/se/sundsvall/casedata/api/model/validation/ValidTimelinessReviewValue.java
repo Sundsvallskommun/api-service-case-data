@@ -15,7 +15,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import se.sundsvall.casedata.api.model.validation.impl.ValidTimelinessReviewValueConstraintValidator;
 
 @Documented
-@Target({FIELD, CONSTRUCTOR, PARAMETER})
+@Target({
+	FIELD, CONSTRUCTOR, PARAMETER
+})
 @Retention(RUNTIME)
 @Constraint(validatedBy = ValidTimelinessReviewValueConstraintValidator.class)
 public @interface ValidTimelinessReviewValue {

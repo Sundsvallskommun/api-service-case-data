@@ -15,7 +15,9 @@ import jakarta.validation.Payload;
 import se.sundsvall.casedata.api.model.validation.impl.ValidMessageTypeConstraintValidator;
 
 @Documented
-@Target({FIELD, CONSTRUCTOR, PARAMETER})
+@Target({
+	FIELD, CONSTRUCTOR, PARAMETER
+})
 @Retention(RUNTIME)
 @Constraint(validatedBy = ValidMessageTypeConstraintValidator.class)
 public @interface ValidMessageType {

@@ -1,13 +1,13 @@
 {
-  "category": "POLICE_REPORT",
-  "extension": ".pdf",
-  "extraParameters": {
-    "property1": "value1",
-    "property2": "value2",
-    "property3": "value3"
-  },
-  "file": "dGVzdDAz",
-  "mimeType": "application/pdf",
-  "name": "myfile03.pdf",
-  "note": "This is a note for test03"
+	"note": "This is a note for test03",
+	"extension": ".pdf",
+	"file": "dGVzdDAz",
+	"name": "myfile03.pdf",
+	"extraParameters": {
+		"property2": "value2",
+		"property1": "value1",
+		"property3": "value3"
+	},
+	"mimeType": "application/pdf",
+	"category": "POLICE_REPORT"
 }

@@ -22,7 +22,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static se.sundsvall.casedata.api.model.validation.enums.MessageType.EMAIL;
 import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
 
-@SpringBootTest(classes = { Application.class }, webEnvironment = MOCK)
+@SpringBootTest(classes = {
+	Application.class
+}, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class EmailReaderMapperTest {
 

@@ -34,9 +34,9 @@ public enum AttachmentCategory {
 	REQUEST_TO_BUY_SMALL_HOUSE_PLOT,
 	CONTRACT_DRAFT,
 
-	OEP_APPLICATION, //Ansökan
+	OEP_APPLICATION, // Ansökan
 	ROAD_ALLOWANCE_APPROVAL,// Godkännande för vägbidrag
-	MEX_PROTOCOL, //"Protokoll"
+	MEX_PROTOCOL, // "Protokoll"
 	PREVIOUS_AGREEMENT // Tidigare avtal
 
 }

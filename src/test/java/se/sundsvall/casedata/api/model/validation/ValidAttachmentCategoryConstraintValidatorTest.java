@@ -15,7 +15,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.impl.ValidAttachmentCategoryConstraintValidator;
 
-
 class ValidAttachmentCategoryConstraintValidatorTest {
 
 	private ValidAttachmentCategoryConstraintValidator validator;

@@ -25,7 +25,6 @@ class AddressEntityTest {
 			hasValidBeanToString()));
 	}
 
-
 	@Test
 	void builder() {
 		// Arrange
@@ -77,7 +76,6 @@ class AddressEntityTest {
 		assertThat(bean.getLocation()).isEqualTo(location);
 
 	}
-
 
 	@Test
 	void testNoDirtOnCreatedBean() {

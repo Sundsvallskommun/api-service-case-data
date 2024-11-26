@@ -20,7 +20,9 @@ import se.sundsvall.casedata.api.model.validation.impl.ValidStakeholderRoleConst
  * Not allowed to be null or empty.
  */
 @Documented
-@Target({FIELD, CONSTRUCTOR, PARAMETER})
+@Target({
+	FIELD, CONSTRUCTOR, PARAMETER
+})
 @Retention(RUNTIME)
 @Constraint(validatedBy = ValidStakeholderRoleConstraintValidator.class)
 public @interface ValidStakeholderRole {

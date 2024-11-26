@@ -47,7 +47,7 @@ class OptimisticLockingTest {
 		assertThatThrownBy(() -> stakeholderService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
 			.isInstanceOf(OptimisticLockingFailureException.class);
 
-		//5 invocations because @Retry.
+		// 5 invocations because @Retry.
 		verify(errandRepositoryMock, times(5)).save(any(ErrandEntity.class));
 	}
 
@@ -61,7 +61,7 @@ class OptimisticLockingTest {
 		assertThatThrownBy(() -> stakeholderService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
 			.isInstanceOf(RuntimeException.class);
 
-		//Only 1 invocation, not retrying because it's not an OptimisticLockingFailureException.
+		// Only 1 invocation, not retrying because it's not an OptimisticLockingFailureException.
 		verify(errandRepositoryMock).save(any(ErrandEntity.class));
 	}
 

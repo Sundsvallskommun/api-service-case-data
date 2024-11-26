@@ -173,7 +173,7 @@ public class StakeholderEntity {
 		return version == that.version && Objects.equals(id, that.id) && Objects.equals(errand, that.errand) && type == that.type && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(namespace, that.namespace) && Objects.equals(
 			firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(personId, that.personId) && Objects.equals(organizationName, that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber)
 			&& Objects.equals(authorizedSignatory, that.authorizedSignatory) && Objects.equals(adAccount, that.adAccount) && Objects.equals(roles, that.roles) && Objects.equals(addresses, that.addresses) && Objects.equals(contactInformation,
-			that.contactInformation) && Objects.equals(created, that.created) && Objects.equals(updated, that.updated) && Objects.equals(extraParameters, that.extraParameters);
+				that.contactInformation) && Objects.equals(created, that.created) && Objects.equals(updated, that.updated) && Objects.equals(extraParameters, that.extraParameters);
 	}
 
 	@Override

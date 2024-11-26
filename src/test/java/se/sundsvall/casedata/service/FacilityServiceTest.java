@@ -74,7 +74,7 @@ class FacilityServiceTest {
 			.withFacilityCollectionName("facilityCollectionName")
 			.withMainFacility(true)
 			.build();
-		
+
 		final var facilityEntity = toFacilityEntity(facility, MUNICIPALITY_ID, NAMESPACE);
 
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));

@@ -16,8 +16,7 @@ import java.util.Optional;
 
 public final class PutMapper {
 
-	private PutMapper() {
-	}
+	private PutMapper() {}
 
 	public static AttachmentEntity putAttachment(final AttachmentEntity oldAttachmentEntity, final Attachment attachment) {
 		Optional.ofNullable(attachment).ifPresent(newAttachment -> {

@@ -13,7 +13,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 @JaversSpringDataAuditable
 @CircuitBreaker(name = "stakeholderRepository")
 public interface StakeholderRepository extends JpaRepository<StakeholderEntity, Long>, JpaSpecificationExecutor<StakeholderEntity> {
-	
+
 	Optional<StakeholderEntity> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
 
 }

@@ -48,8 +48,9 @@ class MessageResourceFailureTest {
 		// Assert
 		verifyNoInteractions(messageServiceMock);
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
-		assertThat(response.getDetail()).isEqualTo("""
-			Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.MessageResource.patchErrandWithMessage(java.lang.String,java.lang.String,java.lang.Long,se.sundsvall.casedata.api.model.MessageRequest)""");
+		assertThat(response.getDetail()).isEqualTo(
+			"""
+				Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.MessageResource.patchErrandWithMessage(java.lang.String,java.lang.String,java.lang.Long,se.sundsvall.casedata.api.model.MessageRequest)""");
 	}
 
 }

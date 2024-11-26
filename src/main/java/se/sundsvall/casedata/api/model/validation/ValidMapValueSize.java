@@ -11,7 +11,9 @@ import jakarta.validation.Payload;
 import se.sundsvall.casedata.api.model.validation.impl.ValidMapValueSizeValidator;
 
 @Constraint(validatedBy = ValidMapValueSizeValidator.class)
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({
+	ElementType.FIELD, ElementType.METHOD
+})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidMapValueSize {
 

@@ -24,7 +24,6 @@ class ValidMapValueSizeValidatorTest {
 		validator = new ValidMapValueSizeValidator();
 		context = mock(ConstraintValidatorContext.class);
 
-
 		final var validMapValueSize = mock(ValidMapValueSize.class);
 		when(validMapValueSize.nullable()).thenReturn(true);
 		when(validMapValueSize.max()).thenReturn(10);

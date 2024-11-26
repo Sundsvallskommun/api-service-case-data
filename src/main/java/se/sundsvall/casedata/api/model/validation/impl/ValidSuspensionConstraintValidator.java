@@ -8,7 +8,6 @@ import jakarta.validation.ConstraintValidatorContext;
 import se.sundsvall.casedata.api.model.Suspension;
 import se.sundsvall.casedata.api.model.validation.ValidSuspension;
 
-
 public class ValidSuspensionConstraintValidator implements ConstraintValidator<ValidSuspension, Suspension> {
 
 	@Override
