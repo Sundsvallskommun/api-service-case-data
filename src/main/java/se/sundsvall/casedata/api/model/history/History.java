@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.api.model.history;
 
 import java.util.List;
-
 import lombok.Data;
 
 @Data

@@ -226,8 +226,7 @@ class ErrandServiceTest {
 			.toList();
 
 		returnErrands.forEach(
-			errandEntity -> errandEntity.setId(errandDTO.getId())
-		);
+			errandEntity -> errandEntity.setId(errandDTO.getId()));
 
 		when(errandRepositoryMock.findAll(ArgumentMatchers.<Specification<ErrandEntity>>any())).thenReturn(returnErrands);
 		when(errandRepositoryMock.findAllByIdInAndMunicipalityIdAndNamespace(anyList(), eq(MUNICIPALITY_ID), eq(NAMESPACE), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(returnErrands.getFirst())));

@@ -1,10 +1,9 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
-import org.springframework.stereotype.Component;
-
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
+import org.springframework.stereotype.Component;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 
 @Component
