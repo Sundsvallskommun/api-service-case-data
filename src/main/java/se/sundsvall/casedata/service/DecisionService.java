@@ -13,12 +13,10 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecision;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
-
-import io.github.resilience4j.retry.annotation.Retry;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchDecision;
@@ -90,7 +88,7 @@ public class DecisionService {
 		final var decisionList = errand.getDecisions();
 
 		final var entity = decisionList.stream()
-			.filter(decisionEntity -> decisionEntity.getId().equals(id))
+			.filter(decisionEntity -> id.equals(decisionEntity.getId()))
 			.findFirst()
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X, id, errandId)));
 

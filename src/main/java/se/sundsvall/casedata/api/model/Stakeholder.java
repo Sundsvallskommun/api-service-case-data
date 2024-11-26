@@ -5,6 +5,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,11 +23,6 @@ import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Data
 @ToString
 @EqualsAndHashCode
@@ -33,7 +32,7 @@ import java.util.Map;
 public class Stakeholder {
 
 	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "The unique identifier of the stakeholder", example = "1")
-	private long id;
+	private Long id;
 
 	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "The version of the stakeholder", example = "1")
 	private int version;
