@@ -65,5 +65,4 @@ public class ExtraParameterEntity {
 			", values=" + values +
 			'}';
 	}
-
 }
