@@ -19,8 +19,8 @@ import se.sundsvall.casedata.service.NotificationService;
 public class EmailReaderWorker {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EmailReaderWorker.class.getName());
-	private static final String DESCRIPTION = "Meddelande mottaget";
-	private static final String TYPE = "UPDATE";
+	private static final String NOTIFICATION_DESCRIPTION = "Meddelande mottaget";
+	private static final String NOTIFICATION_TYPE = "UPDATE";
 
 	private final MessageRepository messageRepository;
 
@@ -66,7 +66,7 @@ public class EmailReaderWorker {
 				.filter(errand -> !messageRepository.existsById(email.getId()))
 				.ifPresent(errand -> {
 					messageRepository.save(emailReaderMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace()).withErrandNumber(errandNumber));
-					notificationService.createNotification(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, TYPE, DESCRIPTION));
+					notificationService.createNotification(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
 					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email, errand.getMunicipalityId(), errand.getNamespace()).stream()
 						.map(attachment -> attachment.withErrandNumber(errandNumber).withMunicipalityId(emailReaderProperties.municipalityId()))
 						.toList());

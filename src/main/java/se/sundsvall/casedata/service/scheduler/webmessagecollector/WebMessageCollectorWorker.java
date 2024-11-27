@@ -22,8 +22,8 @@ import se.sundsvall.casedata.service.scheduler.MessageMapper;
 @Component
 public class WebMessageCollectorWorker {
 
-	private static final String DESCRIPTION = "Meddelande mottaget";
-	private static final String TYPE = "UPDATE";
+	private static final String NOTIFICATION_DESCRIPTION = "Meddelande mottaget";
+	private static final String NOTIFICATION_TYPE = "UPDATE";
 
 	private final MessageRepository messageRepository;
 
@@ -76,7 +76,7 @@ public class WebMessageCollectorWorker {
 			final var municipalityId = errand.getMunicipalityId();
 			final var namespace = errand.getNamespace();
 			final var entity = messageMapper.toMessageEntity(errandNumber, message, municipalityId, namespace);
-			notificationService.createNotification(municipalityId, namespace, toNotification(errand, TYPE, DESCRIPTION));
+			notificationService.createNotification(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
 			return messageRepository.saveAndFlush(entity);
 		});
 	}

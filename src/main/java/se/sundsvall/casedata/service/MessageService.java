@@ -25,8 +25,8 @@ import se.sundsvall.casedata.service.scheduler.MessageMapper;
 @Service
 public class MessageService {
 
-	private static final String TYPE = "UPDATE";
-	private static final String DESCRIPTION = "Meddelande mottaget";
+	private static final String NOTIFICATION_TYPE = "UPDATE";
+	private static final String NOTIFICATION_DESCRIPTION = "Meddelande mottaget";
 	private final MessageRepository messageRepository;
 
 	private final ErrandRepository errandRepository;
@@ -54,7 +54,7 @@ public class MessageService {
 		final var errand = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, format(ERRAND_WAS_NOT_FOUND.formatted(errandId))));
 		messageRepository.save(mapper.toMessageEntity(request, municipalityId, namespace));
-		notificationService.createNotification(municipalityId, namespace, toNotification(errand, TYPE, DESCRIPTION));
+		notificationService.createNotification(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
 	}
 
 	public void updateViewedStatus(final Long errandId, final String messageId, final String municipalityId, final String namespace, final boolean isViewed) {
