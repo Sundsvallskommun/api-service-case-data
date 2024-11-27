@@ -1,6 +1,13 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
+import static java.util.Collections.emptyMap;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
+
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -9,17 +16,14 @@ import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollectorClient;
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
+import se.sundsvall.casedata.service.NotificationService;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.emptyMap;
 
 @Component
 public class WebMessageCollectorWorker {
+
+	private static final String NOTIFICATION_DESCRIPTION = "Meddelande mottaget";
+	private static final String NOTIFICATION_TYPE = "UPDATE";
 
 	private final MessageRepository messageRepository;
 
@@ -35,9 +39,11 @@ public class WebMessageCollectorWorker {
 
 	private final WebMessageCollectorProperties webMessageCollectorProperties;
 
+	private final NotificationService notificationService;
+
 	public WebMessageCollectorWorker(final MessageRepository messageRepository, final WebMessageCollectorClient webMessageCollectorClient, final MessageAttachmentRepository messageAttachmentRepository, final ErrandRepository errandRepository,
 		final AttachmentRepository attachmentRepository, final MessageMapper messageMapper,
-		final WebMessageCollectorProperties webMessageCollectorProperties) {
+		final WebMessageCollectorProperties webMessageCollectorProperties, final NotificationService notificationService) {
 		this.messageRepository = messageRepository;
 		this.webMessageCollectorClient = webMessageCollectorClient;
 		this.messageAttachmentRepository = messageAttachmentRepository;
@@ -45,6 +51,7 @@ public class WebMessageCollectorWorker {
 		this.attachmentRepository = attachmentRepository;
 		this.messageMapper = messageMapper;
 		this.webMessageCollectorProperties = webMessageCollectorProperties;
+		this.notificationService = notificationService;
 	}
 
 	public void getAndProcessMessages() {
@@ -69,6 +76,7 @@ public class WebMessageCollectorWorker {
 			final var municipalityId = errand.getMunicipalityId();
 			final var namespace = errand.getNamespace();
 			final var entity = messageMapper.toMessageEntity(errandNumber, message, municipalityId, namespace);
+			notificationService.createNotification(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
 			return messageRepository.saveAndFlush(entity);
 		});
 	}

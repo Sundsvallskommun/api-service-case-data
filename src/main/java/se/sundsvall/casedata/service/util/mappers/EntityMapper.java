@@ -540,7 +540,7 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static NotificationEntity toNotificationEntity(Notification notification, String municipalityId, String namespace, ErrandEntity errand, PortalPersonData creator, PortalPersonData owner) {
+	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace, final ErrandEntity errand, final PortalPersonData creator, final PortalPersonData owner) {
 		return ofNullable(notification)
 			.map(obj -> NotificationEntity.builder()
 				.withAcknowledged(notification.isAcknowledged())
@@ -585,12 +585,29 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static String toOwnerId(ErrandEntity errandEntity) {
+	public static String toOwnerId(final ErrandEntity errandEntity) {
 		return ofNullable(errandEntity.getStakeholders()).orElse(emptyList()).stream()
 			.filter(stakeholder -> ofNullable(stakeholder.getRoles()).orElse(emptyList()).stream()
 				.anyMatch(ADMINISTRATOR.toString()::equalsIgnoreCase))
 			.findFirst()
 			.map(StakeholderEntity::getAdAccount)
 			.orElse(null);
+	}
+
+	public static Notification toNotification(final ErrandEntity errand, final String type, final String description) {
+
+		final var stakeholder = errand.getStakeholders().stream()
+			.filter(stakeholderEntity -> stakeholderEntity.getRoles().contains(ADMINISTRATOR.name()))
+			.findFirst()
+			.orElse(new StakeholderEntity());
+
+		return Notification.builder()
+			.withOwnerId(stakeholder.getAdAccount())
+			.withType(type)
+			.withDescription(description)
+			.withErrandId(errand.getId())
+			.withMunicipalityId(errand.getMunicipalityId())
+			.withNamespace(errand.getNamespace())
+			.build();
 	}
 }
