@@ -1,23 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import generated.se.sundsvall.employee.PortalPersonData;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.api.model.Errand;
-import se.sundsvall.casedata.api.model.Stakeholder;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
-import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-import se.sundsvall.casedata.integration.db.model.enums.ContactType;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
-import java.util.List;
-
 import static java.time.OffsetDateTime.now;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,6 +30,7 @@ import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
 import static se.sundsvall.casedata.TestUtil.createStatus;
 import static se.sundsvall.casedata.TestUtil.createStatusEntity;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddress;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
@@ -73,6 +56,23 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakehol
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatusEntity;
 
+import generated.se.sundsvall.employee.PortalPersonData;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.TestUtil;
+import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.Stakeholder;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
+import se.sundsvall.casedata.integration.db.model.enums.ContactType;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
 @ExtendWith(MockitoExtension.class)
 class EntityMapperTest {
 
@@ -94,7 +94,7 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void toErrandEntityWithNullValuesTest(){
+	void toErrandEntityWithNullValuesTest() {
 
 		// Arrange
 		final var errand = Errand.builder().build();
@@ -153,7 +153,7 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void toErrandWithNullValuesTest(){
+	void toErrandWithNullValuesTest() {
 
 		// Arrange
 		final var entity = ErrandEntity.builder().withId(1L).build();
@@ -323,7 +323,7 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void toStakeholderEntityWitNullValueTest(){
+	void toStakeholderEntityWitNullValueTest() {
 
 		// Arrange
 		final var stakeholder = Stakeholder.builder().build();
@@ -374,7 +374,7 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void toStakeholderWithNullValuesTest(){
+	void toStakeholderWithNullValuesTest() {
 
 		// Arrange
 		final var entity = StakeholderEntity.builder().withId(1L).build();
@@ -689,5 +689,61 @@ class EntityMapperTest {
 		final var ownerId = EntityMapper.toOwnerId(errandEntity);
 
 		assertThat(ownerId).isNull();
+	}
+
+	@Test
+	void toNotificationWithAdministratorStakeholder() {
+		// Arrange
+		final var adminStakeholder = StakeholderEntity.builder()
+			.withAdAccount("adminAdAccount")
+			.withRoles(List.of(ADMINISTRATOR.name())).build();
+
+		final var errandEntity = ErrandEntity.builder()
+			.withId(1L)
+			.withMunicipalityId("municipalityId")
+			.withNamespace("namespace")
+			.withStakeholders(List.of(adminStakeholder))
+			.build();
+
+		final var type = "type";
+		final var description = "description";
+
+		// Act
+		final var notification = toNotification(errandEntity, type, description);
+
+		// Assert
+		assertThat(notification).isNotNull();
+		assertThat(notification.getOwnerId()).isEqualTo("adminAdAccount");
+		assertThat(notification.getType()).isEqualTo(type);
+		assertThat(notification.getDescription()).isEqualTo(description);
+		assertThat(notification.getErrandId()).isEqualTo(1L);
+		assertThat(notification.getMunicipalityId()).isEqualTo("municipalityId");
+		assertThat(notification.getNamespace()).isEqualTo("namespace");
+	}
+
+	@Test
+	void toNotificationWithoutAdministratorStakeholder() {
+		// Arrange
+		final var errandEntity = ErrandEntity.builder()
+			.withId(1L)
+			.withMunicipalityId("municipalityId")
+			.withNamespace("namespace")
+			.withStakeholders(List.of())
+			.build();
+
+		final var type = "type";
+		final var description = "description";
+
+		// Act
+		final var notification = toNotification(errandEntity, type, description);
+
+		// Assert
+		assertThat(notification).isNotNull();
+		assertThat(notification.getOwnerId()).isNull();
+		assertThat(notification.getType()).isEqualTo(type);
+		assertThat(notification.getDescription()).isEqualTo(description);
+		assertThat(notification.getErrandId()).isEqualTo(1L);
+		assertThat(notification.getMunicipalityId()).isEqualTo("municipalityId");
+		assertThat(notification.getNamespace()).isEqualTo("namespace");
 	}
 }
