@@ -6,43 +6,55 @@
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/errand/{errandNumber}/attachments
+```
 
 #### Removed endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/attachments/errand/{errandNumber}
+```
 
 ### Appeals:
 
 #### Removed endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/appeals
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/appeals
 - [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
 - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
+```
 
 ### Notifications:
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/notifications
 - [POST] /{municipalityId}/{namespace}/errands/{errandId}/notifications
 - [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}
+```
 
 #### Removed endpoints:
 
+```
 - [POST] /{municipalityId}/{namespace}/notifications
 - [DELETE] /{municipalityId}/{namespace}/notifications/{notificationId}
 - [GET] /{municipalityId}/{namespace}/notifications/{notificationId}
+```
 
 ### Parking permit:
 
 #### Removed endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/parking-permits
+```
 
 ## API-Model updates
 
@@ -112,67 +124,82 @@
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/appeals
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/appeals
 - [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
 - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
+```
 
 #### Removed endpoints:
 
+```
 - [GET] /{municipalityId}/appeals/{appealId}
 - [PATCH] /{municipalityId}/appeals/{appealId}
 - [PUT] /{municipalityId}/appeals/{appealId}
+```
 
 ### Attachments:
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/attachments/errand/{errandNumber}
 - [POST] /{municipalityId}/{namespace}/errands/{errandId}/attachments
 - [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}
 - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}
+```
 
 #### Removed endpoints:
 
+```
 - [POST] /{municipalityId}/attachments
 - [GET] /{municipalityId}/attachments/errand/{errandNumber}
 - [DELETE] /{municipalityId}/attachments/{attachmentId}
 - [GET] /{municipalityId}/attachments/{attachmentId}
 - [PATCH] /{municipalityId}/attachments/{attachmentId}
 - [PUT] /{municipalityId}/attachments/{attachmentId}
+```
 
 ### Decisions:
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/decisions
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/decisions
 - [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}
 - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}
+```
 
 #### Removed endpoints:
 
+```
 - [GET] /{municipalityId}/decisions/{decisionId}
 - [PATCH] /{municipalityId}/decisions/{decisionId}
 - [PUT] /{municipalityId}/decisions/{decisionId}
+```
 
 ### Errands:
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/errands
 - [POST] /{municipalityId}/{namespace}/errands
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}
+```
 
 #### Removed endpoints:
 
+```
 - [GET] /{municipalityId}/errands
 - [POST] /{municipalityId}/errands
 - [GET] /{municipalityId}/errands/{errandId}
@@ -195,104 +222,130 @@
 - [DELETE] /{municipalityId}/errands/{errandId}/stakeholders/{stakeholderId}
 - [PATCH] /{municipalityId}/errands/{errandId}/statuses
 - [PUT] /{municipalityId}/errands/{errandId}/statuses
+```
 
 ### Facilities:
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/facilities
 - [POST] /{municipalityId}/{namespace}/errands/{errandId}/facilities
 - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/facilities
 - [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}
+```
 
 ### History:
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}/history
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}/history
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}/history
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/history
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}/history
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}/history
+```
 
 #### Removed endpoints:
 
+```
 - [GET] /{municipalityId}/attachments/{attachmentId}/history
 - [GET] /{municipalityId}/decisions/{decisionId}/history
 - [GET] /{municipalityId}/errands/{errandId}/history
 - [GET] /{municipalityId}/facilities/{facilityId}/history
 - [GET] /{municipalityId}/notes/{noteId}/history
 - [GET] /{municipalityId}/stakeholders/{stakeholderId}/history
+```
 
 ### MessageAttachments:
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/messageattachments/{attachmentId}/streamed
+```
 
 #### Removed endpoints:
 
+```
 - [GET] /{municipalityId}/messageattachments/{attachmentId}
 - [GET] /{municipalityId}/messageattachments/{attachmentId}/streamed
+```
 
 ### Messages:
 
 #### New endpoints:
 
+```
 - [POST] /{municipalityId}/{namespace}/errands/{errandId}/messages
 - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}/viewed/{isViewed}
 - [GET] /{municipalityId}/{namespace}/messages/{errandNumber}
+```
 
 #### Removed endpoints:
 
+```
 - [POST] /{municipalityId}/messages
 - [GET] /{municipalityId}/messages/{errandNumber}
 - [PUT] /{municipalityId}/messages/{messageId}/viewed/{isViewed}
+```
 
 ### Notes:
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/notes
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/notes
 - [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}
+```
 
 #### Removed endpoints:
 
+```
 - [GET] /{municipalityId}/notes/errand/{errandId}
 - [DELETE] /{municipalityId}/notes/{noteId}
 - [GET] /{municipalityId}/notes/{noteId}
 - [PATCH] /{municipalityId}/notes/{noteId}
+```
 
 ### Notifications:
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/notifications
 - [PATCH] /{municipalityId}/{namespace}/notifications
 - [POST] /{municipalityId}/{namespace}/notifications
 - [DELETE] /{municipalityId}/{namespace}/notifications/{notificationId}
 - [GET] /{municipalityId}/{namespace}/notifications/{notificationId}
+```
 
 ### Parking permit:
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/parking-permits
+```
 
 #### Removed endpoints:
 
+```
 - [GET] /{municipalityId}/parking-permits
+```
 
 ### Stakeholders:
 
 #### New endpoints:
 
+```
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/stakeholders
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/stakeholders
 - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/stakeholders
@@ -300,20 +353,25 @@
 - [GET] /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}
 - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}
+```
 
 #### Removed endpoints:
 
+```
 - [GET] /{municipalityId}/stakeholders
 - [GET] /{municipalityId}/stakeholders/{stakeholderId}
 - [PATCH] /{municipalityId}/stakeholders/{stakeholderId}
 - [PUT] /{municipalityId}/stakeholders/{stakeholderId}
+```
 
 ### Status:
 
 #### New endpoints:
 
+```
 - [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/statuses
 - [PUT] /{municipalityId}/{namespace}/errands/{errandId}/statuses
+```
 
 ## API-Model updates
 
