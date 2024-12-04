@@ -1,18 +1,5 @@
 package se.sundsvall.casedata.api;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.Attachment;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.service.AttachmentService;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -24,6 +11,18 @@ import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
 import static se.sundsvall.casedata.TestUtil.createAttachmentEntity;
+
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.Attachment;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.service.AttachmentService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -64,13 +63,13 @@ class AttachmentResourceTest {
 	@Test
 	void getAttachmentsByErrandNumber() {
 		// Arrange
-		final var errandNumber = "12345";
+		final var errandId = 12345L;
 		final var attachment = createAttachment(AttachmentCategory.OTHER_ATTACHMENT);
-		when(attachmentServiceMock.findByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(attachment));
+		when(attachmentServiceMock.findByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(attachment));
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/{namespace}/errand/{errandNumber}/attachments").build(MUNICIPALITY_ID, NAMESPACE, errandNumber))
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/{namespace}/errand/{errandId}/attachments").build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
@@ -80,7 +79,7 @@ class AttachmentResourceTest {
 
 		// Assert
 		assertThat(response).hasSize(1);
-		verify(attachmentServiceMock).findByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentServiceMock).findByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(attachmentServiceMock);
 	}
 

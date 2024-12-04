@@ -13,8 +13,16 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_REGEXP;
 import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_VALIDATION_MESSAGE;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,16 +36,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Pattern;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.service.AttachmentService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
@@ -71,15 +69,15 @@ class AttachmentResource {
 		return ok(attachmentService.findByIdAndMunicipalityIdAndNamespace(errandId, attachmentId, municipalityId, namespace));
 	}
 
-	@GetMapping(path = "/errand/{errandNumber}/attachments", produces = APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/errand/{errandId}/attachments", produces = APPLICATION_JSON_VALUE)
 	@Operation(description = "Get attachments by errand number.")
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<List<Attachment>> getAttachmentsByErrandNumber(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable("errandNumber") final String errandNumber) {
+		@PathVariable(name = "errandId") final Long errandId) {
 
-		return ok(attachmentService.findByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, municipalityId, namespace));
+		return ok(attachmentService.findByErrandIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace));
 	}
 
 	@PostMapping(path = "/errands/{errandId}/attachments", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)

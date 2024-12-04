@@ -12,7 +12,6 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -21,7 +20,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
@@ -52,29 +50,29 @@ class AttachmentRepositoryTest {
 	void findAllByErrandNumberAndMunicipalityId() {
 
 		// Arrange
-		final var errandNumber = "ERRAND-NUMBER-2";
+		final var errandId = 2L;
 
 		// Act
-		final var result = attachmentRepository.findAllByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE);
+		final var result = attachmentRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result)
 			.isNotNull()
-			.extracting(AttachmentEntity::getId, AttachmentEntity::getErrandNumber, AttachmentEntity::getCategory, AttachmentEntity::getExtension, AttachmentEntity::getName, AttachmentEntity::getNote)
+			.extracting(AttachmentEntity::getId, AttachmentEntity::getErrandId, AttachmentEntity::getCategory, AttachmentEntity::getExtension, AttachmentEntity::getName, AttachmentEntity::getNote)
 			.containsExactly(
-				tuple(2L, "ERRAND-NUMBER-2", "PASSPORT_PHOTO", ".pdf", "test2.pdf", "NOTE-2"),
-				tuple(3L, "ERRAND-NUMBER-2", "POLICE_REPORT", ".pdf", "test3.pdf", "NOTE-3"),
-				tuple(4L, "ERRAND-NUMBER-2", "ANSUPA", ".pdf", "test4.pdf", "NOTE-4"));
+				tuple(2L, 2L, "PASSPORT_PHOTO", ".pdf", "test2.pdf", "NOTE-2"),
+				tuple(3L, 2L, "POLICE_REPORT", ".pdf", "test3.pdf", "NOTE-3"),
+				tuple(4L, 2L, "ANSUPA", ".pdf", "test4.pdf", "NOTE-4"));
 	}
 
 	@Test
 	void findAllByErrandNumberAndMunicipalityIdNothingFound() {
 
 		// Arrange
-		final var errandNumber = "NON-EXISTING";
+		final var errandNumber = 666L; // NON-EXISTING
 
 		// Act
-		final var result = attachmentRepository.findAllByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE);
+		final var result = attachmentRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -91,7 +89,7 @@ class AttachmentRepositoryTest {
 
 		// Assert
 		assertThat(result.getCategory()).isEqualTo("MEDICAL_CONFIRMATION");
-		assertThat(result.getErrandNumber()).isEqualTo("ERRAND-NUMBER-1");
+		assertThat(result.getErrandId()).isEqualTo(1);
 		assertThat(result.getExtension()).isEqualTo(".pdf");
 		assertThat(result.getFile()).isEqualTo("FILE-1");
 		assertThat(result.getId()).isEqualTo(id);
@@ -140,7 +138,7 @@ class AttachmentRepositoryTest {
 		final var extension = ".pdf";
 		final var mimeType = "application/pdf";
 		final var file = "file";
-		final var errandNumber = "PRH-2022-000029";
+		final var errandId = 3L; // PRH-2022-000029;
 		final var municipalityId = "2281";
 		final var extraParameters = Map.of("key", "value");
 		final var entity = AttachmentEntity.builder()
@@ -150,7 +148,7 @@ class AttachmentRepositoryTest {
 			.withNote(note)
 			.withMunicipalityId(municipalityId)
 			.withExtension(extension)
-			.withErrandNumber(errandNumber)
+			.withErrandId(errandId)
 			.withMimeType(mimeType)
 			.withFile(file)
 			.withExtraParameters(extraParameters)
@@ -163,7 +161,7 @@ class AttachmentRepositoryTest {
 		assertThat(result).isNotNull();
 		assertThat(result.getCategory()).isEqualTo(category);
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
-		assertThat(result.getErrandNumber()).isEqualTo(errandNumber);
+		assertThat(result.getErrandId()).isEqualTo(errandId);
 		assertThat(result.getExtension()).isEqualTo(extension);
 		assertThat(result.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(result.getFile()).isEqualTo(file);
@@ -175,5 +173,4 @@ class AttachmentRepositoryTest {
 		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 		assertThat(result.getVersion()).isEqualTo(version);
 	}
-
 }

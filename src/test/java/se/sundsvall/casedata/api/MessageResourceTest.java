@@ -1,6 +1,8 @@
 package se.sundsvall.casedata.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -13,7 +15,6 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 import java.util.List;
 import java.util.Random;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
@@ -49,7 +49,7 @@ class MessageResourceTest {
 		when(messageServiceMock.getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/{namespace}/messages/{errandNumber}").build(MUNICIPALITY_ID, NAMESPACE, errandNumber))
 			.exchange()
 			.expectStatus().isOk()
@@ -103,4 +103,21 @@ class MessageResourceTest {
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 
+	@Test
+	void getMessageAttachmentStreamed() {
+		// Arrange
+		final var errandId = 123L;
+		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
+		final var attachmentId = RandomStringUtils.secure().nextAlphabetic(10);
+
+		// Act
+		webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{messageId}/attachments/{attachmentId}/streamed").build(MUNICIPALITY_ID, NAMESPACE, errandId, messageId, attachmentId))
+			.exchange()
+			.expectStatus().isOk();
+
+		// Assert
+		verify(messageServiceMock).getMessageAttachmentStreamed(eq(errandId), eq(attachmentId), eq(MUNICIPALITY_ID), eq(NAMESPACE), any());
+		verifyNoMoreInteractions(messageServiceMock);
+	}
 }

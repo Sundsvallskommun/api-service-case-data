@@ -6,6 +6,10 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.A
 import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
 import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -16,14 +20,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.Consumer;
-
 import org.apache.commons.lang3.RandomStringUtils;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.ContactInformation;
@@ -190,7 +187,7 @@ public final class TestUtil {
 			.withExtension(".pdf")
 			.withMimeType("application/pdf")
 			.withFile("dGVzdA==")
-			.withErrandNumber(RandomStringUtils.secure().next(10, true, true))
+			.withErrandId(new Random().nextLong(1, 100000))
 			.withExtraParameters(createExtraParameters())
 			.build();
 	}
@@ -595,7 +592,7 @@ public final class TestUtil {
 			.withNote("note")
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
-			.withErrandNumber("errandNumber")
+			.withErrandId(new Random().nextLong(1, 100000))
 			.withCategory(AttachmentCategory.POLICE_REPORT.name())
 			.build();
 	}

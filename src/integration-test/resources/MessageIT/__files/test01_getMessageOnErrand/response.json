@@ -1,14 +1,19 @@
 [{
 	"lastName": "doe",
-	"attachments": [],
 	"externalCaseId": "1234",
+	"attachments": [{
+		"name": "test_image.png",
+		"attachmentId": "05b29c30-4512-46c0-9d82-d0f11cb04bae",
+		"contentType": "image/png"
+	}],
 	"errandNumber": "ERRAND-NUMBER-1",
-	"mobileNumber": "0701234567",
 	"subject": "Subject",
+	"mobileNumber": "0701234567",
 	"messageId": "a8883fb9-60b4-4f38-9f48-642070ff49ee",
 	"message": "Message",
 	"sent": "2024-01-01T12:00:00.000000",
 	"userId": "userid",
+	"familyId": "387",
 	"emailHeaders": [
 		{
 			"values": ["<test123@domain.com>"],
@@ -27,7 +32,6 @@
 			"header": "REFERENCES"
 		}
 	],
-	"familyId": "387",
 	"firstName": "john",
 	"messageType": "EMAIL",
 	"recipients": [

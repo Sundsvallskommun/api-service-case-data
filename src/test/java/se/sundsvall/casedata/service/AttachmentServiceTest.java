@@ -151,38 +151,41 @@ class AttachmentServiceTest {
 	@Test
 	void testFindByErrandNumberAndMunicipalityId() {
 		// Arrange
+		final var errandId = 123L;
 		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.MEX_PROTOCOL), MUNICIPALITY_ID, NAMESPACE);
-		attachment.setErrandNumber("someErrandNumber");
-		doReturn(List.of(attachment)).when(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		attachment.setErrandId(errandId);
+		doReturn(List.of(attachment)).when(attachmentRepository).findAllByErrandIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 
 		// Act
-		final var result = attachmentService.findByErrandNumberAndMunicipalityIdAndNamespace("someErrandNumber", MUNICIPALITY_ID, NAMESPACE);
+		final var result = attachmentService.findByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertEquals(List.of(toAttachment(attachment)), result);
-		verify(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		verify(attachmentRepository).findAllByErrandIdAndMunicipalityIdAndNamespace(eq(errandId), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 		verifyNoMoreInteractions(attachmentRepository);
 	}
 
 	@Test
 	void testFindByErrandNumberAndMunicipalityIdNothingFound() {
 		// Arrange
-		doReturn(List.of()).when(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		final var errandId = 123L;
+		doReturn(List.of()).when(attachmentRepository).findAllByErrandIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 
 		// Act
-		final var result = attachmentService.findByErrandNumberAndMunicipalityIdAndNamespace("someErrandNumber", MUNICIPALITY_ID, NAMESPACE);
+		final var result = attachmentService.findByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertEquals(List.of(), result);
-		verify(attachmentRepository).findAllByErrandNumberAndMunicipalityIdAndNamespace(any(String.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		verify(attachmentRepository).findAllByErrandIdAndMunicipalityIdAndNamespace(eq(errandId), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 		verifyNoMoreInteractions(attachmentRepository);
 	}
 
 	@Test
 	void testPost() {
 		// Arrange
+		final var errandId = 123L;
 		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.POWER_OF_ATTORNEY), MUNICIPALITY_ID, NAMESPACE);
-		attachment.setErrandNumber("someErrandNumber");
+		attachment.setErrandId(errandId);
 		doReturn(attachment).when(attachmentRepository).save(any(AttachmentEntity.class));
 
 		// Act
@@ -193,5 +196,4 @@ class AttachmentServiceTest {
 		verify(attachmentRepository).save(any(AttachmentEntity.class));
 		verifyNoMoreInteractions(attachmentRepository);
 	}
-
 }

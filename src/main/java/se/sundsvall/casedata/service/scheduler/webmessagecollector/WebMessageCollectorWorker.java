@@ -1,6 +1,12 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
+import static java.util.Collections.emptyMap;
+
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -10,13 +16,6 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollectorClient;
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.emptyMap;
 
 @Component
 public class WebMessageCollectorWorker {
@@ -74,6 +73,11 @@ public class WebMessageCollectorWorker {
 	}
 
 	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId, final String errandNumber, final String municipalityId, final String namespace) {
+
+		// TODO: Replace errandNumber with errandId
+		final var optionalErrandEntity = errandRepository.findByErrandNumber(errandNumber);
+		final var errandId = optionalErrandEntity.isPresent() ? optionalErrandEntity.get().getId() : null;
+
 		final var attachmentId = attachment.getAttachmentId();
 		// Map the attachment
 		final var messageAttachment = messageMapper.toAttachmentEntity(attachment, messageId, municipalityId, namespace);
@@ -82,7 +86,7 @@ public class WebMessageCollectorWorker {
 		messageAttachment.setAttachmentData(messageMapper.toMessageAttachmentData(data));
 		// Save the attachment
 		messageAttachmentRepository.saveAndFlush(messageAttachment);
-		attachmentRepository.saveAndFlush(messageMapper.toAttachmentEntity(messageAttachment).withErrandNumber(errandNumber));
+		attachmentRepository.saveAndFlush(messageMapper.toAttachmentEntity(messageAttachment).withErrandId(errandId));
 	}
 
 	private Map<String, List<MessageDTO>> getMessages() {

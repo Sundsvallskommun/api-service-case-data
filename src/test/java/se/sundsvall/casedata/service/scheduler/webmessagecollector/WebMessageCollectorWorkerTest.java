@@ -1,6 +1,21 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
+
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.sql.rowset.serial.SerialBlob;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -20,22 +35,6 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollectorClient;
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
-
-import javax.sql.rowset.serial.SerialBlob;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
 
 @ExtendWith(MockitoExtension.class)
 class WebMessageCollectorWorkerTest {
@@ -97,8 +96,15 @@ class WebMessageCollectorWorkerTest {
 		final var instance = "instance";
 		final var externalCaseId = "someExternalCaseId";
 		final var errandNumber = "someErrandNumber";
+		final var errandId = 678L;
 		final var messageDTOs = createMessages();
 		final var message = createMessage();
+		final var errandEntity = ErrandEntity.builder()
+			.withId(errandId)
+			.withErrandNumber(errandNumber)
+			.withExternalCaseId(externalCaseId)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE).build();
 
 		final var bytes = new byte[] {
 			1, 23, 45
@@ -108,8 +114,8 @@ class WebMessageCollectorWorkerTest {
 
 		when(webMessageCollectorClientMock.getMessages(MUNICIPALITY_ID, familyId, instance)).thenReturn(messageDTOs);
 
-		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(
-			Optional.ofNullable(ErrandEntity.builder().withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).withMunicipalityId(MUNICIPALITY_ID).withNamespace(NAMESPACE).build()));
+		when(errandRepositoryMock.findByErrandNumber(errandNumber)).thenReturn(Optional.ofNullable(errandEntity));
+		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(errandEntity));
 		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(MUNICIPALITY_ID, Map.of(instance, List.of(familyId))));
 		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(message);
 		when(messageRepositoryMock.saveAndFlush(any(MessageEntity.class))).thenReturn(message);
@@ -142,7 +148,7 @@ class WebMessageCollectorWorkerTest {
 		});
 
 		verify(attachmentRepositoryMock).saveAndFlush(attachmentCaptor.capture());
-		assertThat(attachmentCaptor.getValue().getErrandNumber()).isEqualTo(errandNumber);
+		assertThat(attachmentCaptor.getValue().getErrandId()).isEqualTo(errandId);
 		assertThat(attachmentCaptor.getValue().getName()).isEqualTo("fileName");
 	}
 

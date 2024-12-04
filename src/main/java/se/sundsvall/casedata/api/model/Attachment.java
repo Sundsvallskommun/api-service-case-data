@@ -62,8 +62,8 @@ public class Attachment {
 	@Schema(description = "Base64 encoded file content", example = "dGVzdCBjb250ZW50")
 	private String file;
 
-	@Schema(description = "Errand number associated with the attachment", example = "ERR123456")
-	private String errandNumber;
+	@Schema(description = "Errand id associated with the attachment", example = "123456")
+	private Long errandId;
 
 	@Schema(description = "Additional parameters for the attachment", example = "{\"key1\": \"value1\", \"key2\": \"value2\"}")
 	@ValidMapValueSize(max = 8192)
