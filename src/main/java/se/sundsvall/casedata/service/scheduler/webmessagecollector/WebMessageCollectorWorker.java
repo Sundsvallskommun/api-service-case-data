@@ -4,6 +4,7 @@ import static java.util.Collections.emptyMap;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -55,8 +56,9 @@ public class WebMessageCollectorWorker {
 		this.notificationService = notificationService;
 	}
 
-	public void getAndProcessMessages() {
-
+	@Transactional
+	public Map<String, List<Integer>> getAndProcessMessages() {
+		final var processedMap = new HashMap<String, List<Integer>>();
 		getMessages().forEach((municipalityId, messages) -> {
 			final var handledIds = messages.stream()
 				.map(message -> {
@@ -67,12 +69,14 @@ public class WebMessageCollectorWorker {
 				})
 				.toList();
 
-			deleteMessages(municipalityId, handledIds);
+			// Put the processed messageIds in a map (grouped by municipalityId)
+			processedMap.put(municipalityId, handledIds);
 		});
+
+		return processedMap;
 	}
 
-	@Transactional
-	public Optional<MessageEntity> processMessage(final MessageDTO message) {
+	private Optional<MessageEntity> processMessage(final MessageDTO message) {
 		return errandRepository.findByExternalCaseId(message.getExternalCaseId()).map(errand -> {
 			final var errandNumber = errand.getErrandNumber();
 			final var municipalityId = errand.getMunicipalityId();
@@ -107,8 +111,7 @@ public class WebMessageCollectorWorker {
 					.toList()));
 	}
 
-	private void deleteMessages(final String municipalityId, final List<Integer> ids) {
-		webMessageCollectorClient.deleteMessages(municipalityId, ids);
+	public void deleteMessages(Map<String, List<Integer>> messageMap) {
+		messageMap.forEach(webMessageCollectorClient::deleteMessages);
 	}
-
 }

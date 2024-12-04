@@ -114,7 +114,9 @@ class WebMessageCollectorWorkerTest {
 			.withAdAccount("adminAdAccount")
 			.withRoles(List.of(ADMINISTRATOR.name())).build();
 
-		final var bytes = new byte[] { 1, 23, 45 };
+		final var bytes = new byte[] {
+			1, 23, 45
+		};
 		final var blob = new SerialBlob(bytes);
 		final var attachmentData = MessageAttachmentDataEntity.builder().withFile(blob).build();
 
@@ -146,7 +148,7 @@ class WebMessageCollectorWorkerTest {
 		});
 
 		verify(webMessageCollectorClientMock).getMessages(MUNICIPALITY_ID, familyId, instance);
-		verify(webMessageCollectorClientMock).deleteMessages(any(), any());
+		verify(webMessageCollectorClientMock, never()).deleteMessages(any(), any());
 		verify(messageRepositoryMock).saveAndFlush(messageCaptor.capture());
 		assertThat(messageCaptor.getValue()).satisfies(WebMessageCollectorWorkerTest::assertSavedMessageHasCorrectValues);
 
@@ -180,7 +182,7 @@ class WebMessageCollectorWorkerTest {
 
 		// Assert
 		verify(webMessageCollectorClientMock).getMessages(MUNICIPALITY_ID, familyId, instance);
-		verify(webMessageCollectorClientMock).deleteMessages(any(), any());
+		verify(webMessageCollectorClientMock, never()).deleteMessages(any(), any());
 		verify(messageRepositoryMock, never()).saveAndFlush(any());
 		verify(messageMapperMock, never()).toMessageEntity(any(), any(), any());
 	}
