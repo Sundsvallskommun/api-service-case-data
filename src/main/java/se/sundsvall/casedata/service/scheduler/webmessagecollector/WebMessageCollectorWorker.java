@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
@@ -70,7 +71,8 @@ public class WebMessageCollectorWorker {
 		});
 	}
 
-	private Optional<MessageEntity> processMessage(final MessageDTO message) {
+	@Transactional
+	public Optional<MessageEntity> processMessage(final MessageDTO message) {
 		return errandRepository.findByExternalCaseId(message.getExternalCaseId()).map(errand -> {
 			final var errandNumber = errand.getErrandNumber();
 			final var municipalityId = errand.getMunicipalityId();
