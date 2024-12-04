@@ -1,12 +1,11 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import se.sundsvall.dept44.requestid.RequestId;
 
 @Service
@@ -28,8 +27,12 @@ public class WebMessageCollectorScheduler {
 			RequestId.init();
 
 			LOG.info("Getting and processing messages");
-			webMessageCollectorWorker.getAndProcessMessages();
+			final var messageMap = webMessageCollectorWorker.getAndProcessMessages();
 			LOG.info("Finished getting and processing messages");
+
+			LOG.info("Deleting messages from WebMessageCollector");
+			webMessageCollectorWorker.deleteMessages(messageMap);
+			LOG.info("Finished deleting messages from WebMessageCollector");
 		} finally {
 			RequestId.reset();
 		}
