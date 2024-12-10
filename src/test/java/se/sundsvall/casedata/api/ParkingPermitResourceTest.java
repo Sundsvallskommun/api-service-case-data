@@ -14,7 +14,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -29,7 +29,7 @@ class ParkingPermitResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/parking-permits";
 
-	@MockBean
+	@MockitoBean
 	private ParkingPermitErrandService parkingPermitServiceMock;
 
 	@Autowired
