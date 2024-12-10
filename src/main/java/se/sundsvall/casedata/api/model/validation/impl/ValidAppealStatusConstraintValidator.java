@@ -2,11 +2,9 @@ package se.sundsvall.casedata.api.model.validation.impl;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
+import java.util.Arrays;
 import se.sundsvall.casedata.api.model.validation.ValidAppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
-
-import java.util.Arrays;
 
 public class ValidAppealStatusConstraintValidator implements ConstraintValidator<ValidAppealStatus, String> {
 

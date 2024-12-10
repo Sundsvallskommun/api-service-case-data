@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.service.util;
 
 import java.util.List;
-
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 public final class Constants {

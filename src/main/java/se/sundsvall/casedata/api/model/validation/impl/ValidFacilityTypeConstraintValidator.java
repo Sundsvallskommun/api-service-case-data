@@ -1,14 +1,11 @@
 package se.sundsvall.casedata.api.model.validation.impl;
 
-import java.util.Arrays;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
+import java.util.Arrays;
+import lombok.Setter;
 import se.sundsvall.casedata.api.model.validation.ValidFacilityType;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
-
-import lombok.Setter;
 
 @Setter
 public class ValidFacilityTypeConstraintValidator implements ConstraintValidator<ValidFacilityType, String> {

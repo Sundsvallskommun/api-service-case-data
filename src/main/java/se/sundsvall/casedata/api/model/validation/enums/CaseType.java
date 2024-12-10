@@ -1,10 +1,9 @@
 package se.sundsvall.casedata.api.model.validation.enums;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
 
 @Getter
 @Schema(example = "PARKING_PERMIT")

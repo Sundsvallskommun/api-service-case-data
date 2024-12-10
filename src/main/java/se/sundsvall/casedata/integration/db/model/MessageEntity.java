@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,12 +11,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
-import org.hibernate.Length;
-
-import se.sundsvall.casedata.integration.db.model.enums.Classification;
-import se.sundsvall.casedata.integration.db.model.enums.Direction;
-
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +21,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.With;
+import org.hibernate.Length;
+import se.sundsvall.casedata.integration.db.model.enums.Classification;
+import se.sundsvall.casedata.integration.db.model.enums.Direction;
 
 @Entity
 @Table(name = "message",
@@ -109,7 +105,8 @@ public class MessageEntity {
 	private List<MessageAttachmentEntity> attachments;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "message_id", referencedColumnName = "messageID",
+	@JoinColumn(name = "message_id",
+		referencedColumnName = "messageID",
 		foreignKey = @ForeignKey(name = "fk_message_header_message_id"))
 	private List<EmailHeaderEntity> headers;
 

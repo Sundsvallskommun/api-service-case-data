@@ -1,6 +1,14 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+
 import generated.se.sundsvall.employee.PortalPersonData;
+import java.util.ArrayList;
+import java.util.List;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.api.model.Note;
@@ -20,23 +28,13 @@ import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
-
 public final class PatchMapper {
 
 	private PatchMapper() {}
 
 	public static ErrandEntity patchErrand(final ErrandEntity errand, final PatchErrand patch) {
 
-		ofNullable(patch.getExtraParameters()).ifPresent(extraParameters ->
-		{
+		ofNullable(patch.getExtraParameters()).ifPresent(extraParameters -> {
 			ofNullable(errand.getExtraParameters()).ifPresentOrElse(List::clear, () -> errand.setExtraParameters(new ArrayList<>()));
 			errand.getExtraParameters().addAll(toErrandParameterEntityList(extraParameters, errand));
 		});

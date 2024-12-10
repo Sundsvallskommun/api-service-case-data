@@ -1,11 +1,6 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -25,22 +20,23 @@ import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.javers.core.metamodel.annotation.DiffIgnore;
-
-import se.sundsvall.casedata.integration.db.listeners.StakeholderListener;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.javers.core.metamodel.annotation.DiffIgnore;
+import se.sundsvall.casedata.integration.db.listeners.StakeholderListener;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 @Entity
 @Table(name = "stakeholder",
@@ -133,7 +129,6 @@ public class StakeholderEntity {
 	@DiffIgnore
 	private OffsetDateTime updated;
 
-
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "stakeholder_extra_parameters",
 		joinColumns = @JoinColumn(name = "stakeholder_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_stakeholder_extra_parameters_stakeholder_id")))
@@ -170,10 +165,15 @@ public class StakeholderEntity {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		final StakeholderEntity that = (StakeholderEntity) o;
-		return version == that.version && Objects.equals(id, that.id) && Objects.equals(errand, that.errand) && type == that.type && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(namespace, that.namespace) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(personId, that.personId) && Objects.equals(organizationName, that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber) && Objects.equals(authorizedSignatory, that.authorizedSignatory) && Objects.equals(adAccount, that.adAccount) && Objects.equals(roles, that.roles) && Objects.equals(addresses, that.addresses) && Objects.equals(contactInformation, that.contactInformation) && Objects.equals(created, that.created) && Objects.equals(updated, that.updated) && Objects.equals(extraParameters, that.extraParameters);
+		return version == that.version && Objects.equals(id, that.id) && Objects.equals(errand, that.errand) && type == that.type && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(namespace, that.namespace) && Objects.equals(
+			firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(personId, that.personId) && Objects.equals(organizationName, that.organizationName) && Objects.equals(organizationNumber, that.organizationNumber)
+			&& Objects.equals(authorizedSignatory, that.authorizedSignatory) && Objects.equals(adAccount, that.adAccount) && Objects.equals(roles, that.roles) && Objects.equals(addresses, that.addresses) && Objects.equals(contactInformation,
+				that.contactInformation) && Objects.equals(created, that.created) && Objects.equals(updated, that.updated) && Objects.equals(extraParameters, that.extraParameters);
 	}
 
 	@Override

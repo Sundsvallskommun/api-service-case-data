@@ -3,6 +3,9 @@ package se.sundsvall.casedata.api.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,10 +16,6 @@ import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 import se.sundsvall.casedata.api.model.validation.ValidFacilityType;
 import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
-
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 @ToString

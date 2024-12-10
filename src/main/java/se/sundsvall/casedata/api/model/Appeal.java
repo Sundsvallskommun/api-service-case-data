@@ -2,6 +2,7 @@ package se.sundsvall.casedata.api.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +13,6 @@ import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 import se.sundsvall.casedata.api.model.validation.ValidAppealStatus;
 import se.sundsvall.casedata.api.model.validation.ValidTimelinessReviewValue;
-
-import java.time.OffsetDateTime;
 
 @Data
 @ToString

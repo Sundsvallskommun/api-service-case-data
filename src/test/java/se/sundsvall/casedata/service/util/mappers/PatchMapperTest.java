@@ -1,13 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import generated.se.sundsvall.employee.PortalPersonData;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
@@ -33,6 +25,13 @@ import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchErrand
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacility;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNote;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
+
+import generated.se.sundsvall.employee.PortalPersonData;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 class PatchMapperTest {
 

@@ -1,7 +1,19 @@
 package se.sundsvall.casedata.service;
 
+import static java.text.MessageFormat.format;
+import static java.util.Objects.isNull;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.NotificationService.EventType.CREATE;
+import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_CREATED;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
+
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -14,19 +26,6 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
-
-import java.util.List;
-
-import static java.text.MessageFormat.format;
-import static java.util.Objects.isNull;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.NotificationService.EventType.CREATE;
-import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_CREATED;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 
 @Service
 public class ErrandService {

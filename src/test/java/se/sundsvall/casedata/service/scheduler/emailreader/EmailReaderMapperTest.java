@@ -1,7 +1,18 @@
 package se.sundsvall.casedata.service.scheduler.emailreader;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static se.sundsvall.casedata.api.model.validation.enums.MessageType.EMAIL;
+import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
+
 import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,19 +21,9 @@ import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.model.EmailHeaderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static se.sundsvall.casedata.api.model.validation.enums.MessageType.EMAIL;
-import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
-
-@SpringBootTest(classes = { Application.class }, webEnvironment = MOCK)
+@SpringBootTest(classes = {
+	Application.class
+}, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class EmailReaderMapperTest {
 

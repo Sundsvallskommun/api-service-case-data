@@ -7,11 +7,10 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacility;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
-
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.FacilityRepository;
@@ -19,8 +18,6 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PutMapper;
-
-import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 public class FacilityService {
@@ -32,7 +29,6 @@ public class FacilityService {
 	private final FacilityRepository facilityRepository;
 
 	private final ProcessService processService;
-
 
 	public FacilityService(final ErrandRepository errandRepository, final FacilityRepository facilityRepository, final ProcessService processService) {
 		this.errandRepository = errandRepository;
@@ -93,8 +89,7 @@ public class FacilityService {
 		oldErrand.getFacilities().addAll(dtos.stream()
 			.filter(dto -> facilitiesToChange.stream()
 				.map(FacilityEntity::getId).toList().contains(dto.getId()))
-			.map(dto -> PutMapper.putFacility(facilitiesToChange.stream().
-				filter(facility -> facility.getId().equals(dto.getId())).findFirst().orElse(null), dto)).toList());
+			.map(dto -> PutMapper.putFacility(facilitiesToChange.stream().filter(facility -> facility.getId().equals(dto.getId())).findFirst().orElse(null), dto)).toList());
 
 		oldErrand.getFacilities().addAll(newFacilities.stream().map(facility -> {
 			facility.setErrand(oldErrand);

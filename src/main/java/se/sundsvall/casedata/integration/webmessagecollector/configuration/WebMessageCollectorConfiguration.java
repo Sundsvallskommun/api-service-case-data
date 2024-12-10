@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.integration.webmessagecollector.configuration;
 
+import feign.codec.Decoder;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.FeignBuilderCustomizer;
@@ -9,8 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-
-import feign.codec.Decoder;
 import se.sundsvall.dept44.configuration.feign.FeignConfiguration;
 import se.sundsvall.dept44.configuration.feign.FeignMultiCustomizer;
 import se.sundsvall.dept44.configuration.feign.decoder.ProblemErrorDecoder;

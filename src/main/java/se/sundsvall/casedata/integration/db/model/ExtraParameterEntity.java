@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,8 +19,6 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import org.hibernate.annotations.UuidGenerator;
 import se.sundsvall.casedata.integration.db.listeners.ExtraParameterListener;
-
-import java.util.List;
 
 @Entity
 @Table(name = "errand_extra_parameters")
@@ -52,7 +51,6 @@ public class ExtraParameterEntity {
 			foreignKey = @ForeignKey(name = "fk_errand_extra_parameter_values_parameter_id")))
 	@Column(name = "value")
 	private List<String> values;
-
 
 	@Override
 	public String toString() {

@@ -13,14 +13,12 @@ import static se.sundsvall.casedata.TestUtil.createAppeal;
 import static se.sundsvall.casedata.TestUtil.createPatchAppeal;
 
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Appeal;
 import se.sundsvall.casedata.service.AppealService;
@@ -31,13 +29,11 @@ class AppealResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands";
 
-
 	@MockitoBean
 	private AppealService appealServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
-
 
 	@Test
 	void getErrandAppeals() {
@@ -130,7 +126,6 @@ class AppealResourceTest {
 		verify(appealServiceMock).updateAppeal(errandId, appealId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
-
 	@Test
 	void replaceAppealOnErrand() {
 		// Arrange
@@ -151,7 +146,6 @@ class AppealResourceTest {
 		// Assert
 		verify(appealServiceMock).replaceAppeal(errandId, appealId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
-
 
 	@Test
 	void deleteAppealOnErrand() {

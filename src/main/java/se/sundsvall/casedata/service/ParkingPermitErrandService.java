@@ -6,9 +6,7 @@ import static se.sundsvall.casedata.service.util.Constants.PERMIT_STATUS_EXTRA_P
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import se.sundsvall.casedata.api.model.Errand;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.api.model.GetParkingPermit;
@@ -56,8 +54,8 @@ public class ParkingPermitErrandService {
 	}
 
 	/**
-	 * @param personId of the applicant
-	 * @return all errands with stakeholder who has the role APPLICANT and matching personId
+	 * @param  personId of the applicant
+	 * @return          all errands with stakeholder who has the role APPLICANT and matching personId
 	 */
 	private List<ErrandEntity> findAllErrandsWithApplicant(final String personId, final String municipalityId, final String namespace) {
 		return errandRepository.findAllByMunicipalityIdAndNamespace(municipalityId, namespace).stream()

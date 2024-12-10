@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>se.sundsvall.dept44</groupId>
 		<artifactId>dept44-service-parent</artifactId>
-		<version>6.0.2</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<version>6.0.4</version>
+		<relativePath />
+		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-case-data</artifactId>
@@ -114,9 +113,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>
-								${project.basedir}/src/main/resources/contract/pw-land-and-exploitation.yml
-							</inputSpec>
+							<inputSpec>${project.basedir}/src/main/resources/contract/pw-land-and-exploitation.yml</inputSpec>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<output>${generated-sources-path}</output>
 							<generatorName>spring</generatorName>
@@ -142,9 +139,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>
-								${project.basedir}/src/main/resources/contract/api-parking-permit.yml
-							</inputSpec>
+							<inputSpec>${project.basedir}/src/main/resources/contract/api-parking-permit.yml</inputSpec>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<output>${generated-sources-path}</output>
 							<generatorName>spring</generatorName>
@@ -170,9 +165,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>
-								${project.basedir}/src/main/resources/contract/webmessagecollector.yml
-							</inputSpec>
+							<inputSpec>${project.basedir}/src/main/resources/contract/webmessagecollector.yml</inputSpec>
 							<output>${generated-sources-path}</output>
 							<generatorName>spring</generatorName>
 							<generateApis>false</generateApis>
@@ -182,8 +175,7 @@
 								<sourceFolder>${generated-sources-java-path}</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<apiPackage>generated</apiPackage>
-								<modelPackage>generated.se.sundsvall.webmessagecollector
-								</modelPackage>
+								<modelPackage>generated.se.sundsvall.webmessagecollector</modelPackage>
 								<openApiNullable>false</openApiNullable>
 								<generatePom>false</generatePom>
 								<useBeanValidation>true</useBeanValidation>
@@ -198,9 +190,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>
-								${project.basedir}/src/main/resources/contract/email-reader.yml
-							</inputSpec>
+							<inputSpec>${project.basedir}/src/main/resources/contract/email-reader.yml</inputSpec>
 							<output>${generated-sources-path}</output>
 							<generatorName>spring</generatorName>
 							<generateApis>false</generateApis>
@@ -225,9 +215,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>
-								${project.basedir}/src/main/resources/contract/employee.yml
-							</inputSpec>
+							<inputSpec>${project.basedir}/src/main/resources/contract/employee.yml</inputSpec>
 							<output>${generated-sources-path}</output>
 							<generatorName>spring</generatorName>
 							<generateApis>false</generateApis>
@@ -255,14 +243,13 @@
 				<executions>
 					<execution>
 						<id>add-generated-source</id>
-						<phase>initialize</phase>
 						<goals>
 							<goal>add-source</goal>
 						</goals>
+						<phase>initialize</phase>
 						<configuration>
 							<sources>
-								<source>${generated-sources-path}/${generated-sources-java-path}
-								</source>
+								<source>${generated-sources-path}/${generated-sources-java-path}</source>
 							</sources>
 						</configuration>
 					</execution>
