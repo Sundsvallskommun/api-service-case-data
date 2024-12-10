@@ -14,14 +14,12 @@ import static se.sundsvall.casedata.TestUtil.createStakeholder;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.test.context.ActiveProfiles;
-
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
@@ -47,7 +45,7 @@ class OptimisticLockingTest {
 		assertThatThrownBy(() -> stakeholderService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
 			.isInstanceOf(OptimisticLockingFailureException.class);
 
-		//5 invocations because @Retry.
+		// 5 invocations because @Retry.
 		verify(errandRepositoryMock, times(5)).save(any(ErrandEntity.class));
 	}
 
@@ -61,7 +59,7 @@ class OptimisticLockingTest {
 		assertThatThrownBy(() -> stakeholderService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
 			.isInstanceOf(RuntimeException.class);
 
-		//Only 1 invocation, not retrying because it's not an OptimisticLockingFailureException.
+		// Only 1 invocation, not retrying because it's not an OptimisticLockingFailureException.
 		verify(errandRepositoryMock).save(any(ErrandEntity.class));
 	}
 

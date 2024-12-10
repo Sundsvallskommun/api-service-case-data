@@ -1,10 +1,8 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,8 +37,10 @@ public class LawEntity {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof final LawEntity lawEntity)) return false;
+		if (this == o)
+			return true;
+		if (!(o instanceof final LawEntity lawEntity))
+			return false;
 		return Objects.equals(heading, lawEntity.heading) && Objects.equals(sfs, lawEntity.sfs) && Objects.equals(chapter, lawEntity.chapter) && Objects.equals(article, lawEntity.article);
 	}
 

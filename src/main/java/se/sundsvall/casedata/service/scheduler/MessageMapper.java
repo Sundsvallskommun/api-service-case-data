@@ -1,6 +1,13 @@
 package se.sundsvall.casedata.service.scheduler;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.EmailHeader;
@@ -15,14 +22,6 @@ import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.service.util.BlobBuilder;
-
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 
 @Component
 public class MessageMapper {

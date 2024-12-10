@@ -6,16 +6,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-
 import jakarta.validation.ConstraintValidatorContext;
-
+import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-
 import se.sundsvall.casedata.api.model.validation.impl.ValidAppealStatusConstraintValidator;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
 

@@ -1,14 +1,8 @@
 package se.sundsvall.casedata.api.model;
 
-import java.time.OffsetDateTime;
-
-import jakarta.validation.constraints.FutureOrPresent;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
-import se.sundsvall.casedata.api.model.validation.ValidSuspension;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.FutureOrPresent;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -16,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
+import se.sundsvall.casedata.api.model.validation.ValidSuspension;
 
 @Setter
 @Getter

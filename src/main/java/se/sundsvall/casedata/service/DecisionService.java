@@ -12,12 +12,10 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecision;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
-
-import io.github.resilience4j.retry.annotation.Retry;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchDecision;

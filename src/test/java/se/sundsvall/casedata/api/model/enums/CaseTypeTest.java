@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.api.model.enums;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ANDRING_AVLOPPSANLAGGNING;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ANDRING_AVLOPPSANORDNING;
@@ -36,6 +34,7 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.REGISTRERING_AV_LIVSMEDEL;
 
+import org.junit.jupiter.api.Test;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 
 class CaseTypeTest {
@@ -124,7 +123,6 @@ class CaseTypeTest {
 		assertThat(MEX_TERMINATION_OF_HUNTING_LEASE).hasToString("MEX_TERMINATION_OF_HUNTING_LEASE");
 		assertThat(MEX_FORWARDED_FROM_CONTACTSUNDSVALL).hasToString("MEX_FORWARDED_FROM_CONTACTSUNDSVALL");
 	}
-
 
 	@Test
 	void getValuesByAbbreviation() {

@@ -1,9 +1,23 @@
 package se.sundsvall.casedata;
 
+import static java.util.UUID.randomUUID;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.function.Consumer;
 import org.apache.commons.lang3.RandomStringUtils;
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Appeal;
@@ -53,21 +67,6 @@ import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.function.Consumer;
-
-import static java.util.UUID.randomUUID;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 public final class TestUtil {
 

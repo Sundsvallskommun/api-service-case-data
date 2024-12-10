@@ -2,16 +2,9 @@ package se.sundsvall.casedata.api.model;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
-import java.util.List;
-
-import jakarta.validation.constraints.NotBlank;
-
-import se.sundsvall.casedata.api.model.validation.ValidMessageType;
-import se.sundsvall.casedata.integration.db.model.enums.Classification;
-import se.sundsvall.casedata.integration.db.model.enums.Direction;
-import se.sundsvall.dept44.common.validators.annotation.ValidBase64;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +12,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import se.sundsvall.casedata.api.model.validation.ValidMessageType;
+import se.sundsvall.casedata.integration.db.model.enums.Classification;
+import se.sundsvall.casedata.integration.db.model.enums.Direction;
+import se.sundsvall.dept44.common.validators.annotation.ValidBase64;
 
 @Data
 @Builder(setterPrefix = "with")

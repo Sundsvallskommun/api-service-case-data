@@ -1,6 +1,29 @@
 package se.sundsvall.casedata.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
+import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.TestUtil.createNote;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ATTEFALL;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteEntity;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,30 +44,6 @@ import se.sundsvall.casedata.integration.db.NoteRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.OBJECT_MAPPER;
-import static se.sundsvall.casedata.TestUtil.createErrand;
-import static se.sundsvall.casedata.TestUtil.createErrandEntity;
-import static se.sundsvall.casedata.TestUtil.createNote;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.ANMALAN_ATTEFALL;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteEntity;
 
 @ExtendWith(MockitoExtension.class)
 class NoteServiceTest {

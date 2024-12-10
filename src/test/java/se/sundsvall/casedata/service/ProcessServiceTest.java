@@ -7,9 +7,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
+import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import java.util.UUID;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,12 +18,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
-
-import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessServiceTest {

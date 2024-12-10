@@ -1,10 +1,13 @@
 package se.sundsvall.casedata.api.model;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,10 +19,6 @@ import lombok.Setter;
 import lombok.ToString;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
-
-import java.util.List;
-
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Data
 @Builder(setterPrefix = "with")

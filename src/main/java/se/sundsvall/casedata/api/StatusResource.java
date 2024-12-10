@@ -7,11 +7,15 @@ import static org.springframework.http.ResponseEntity.noContent;
 import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_REGEXP;
 import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_VALIDATION_MESSAGE;
 
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-
+import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,34 +27,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-
 import se.sundsvall.casedata.api.model.Status;
 import se.sundsvall.casedata.service.StatusService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 
 @RestController
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/statuses")
 @Tag(name = "Status", description = "Errand Status operations")
-@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
+@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
+	Problem.class, ConstraintViolationProblem.class
+})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 class StatusResource {
 
 	private final StatusService statusService;
 
-	StatusResource(final StatusService statusService) {this.statusService = statusService;}
+	StatusResource(final StatusService statusService) {
+		this.statusService = statusService;
+	}
 
 	@Operation(description = "Add status to errand")
-	@PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
+	@PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {
+		APPLICATION_PROBLEM_JSON_VALUE
+	})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> updateErrandWithStatus(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -65,7 +66,9 @@ class StatusResource {
 	}
 
 	@Operation(description = "Add/replace status on errand")
-	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
+	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {
+		APPLICATION_PROBLEM_JSON_VALUE
+	})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> replaceStatusOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,

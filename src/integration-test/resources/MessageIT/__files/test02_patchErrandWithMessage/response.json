@@ -1,43 +1,43 @@
 [
-  {
-    "attachments": [],
-    "direction": "INBOUND",
-    "email": "johndoe@email.com",
-    "emailHeaders": [
-      {
-        "header": "MESSAGE_ID",
-        "values": [
-          "<test123@domain.com>"
-        ]
-      },
-      {
-        "header": "IN_REPLY_TO",
-        "values": [
-          "<123test@domain.com>"
-        ]
-      },
-      {
-        "header": "REFERENCES",
-        "values": [
-          "<123test@domain.com>",
-          "<123@domain.com>",
-          "<456@domain.com>"
-        ]
-      }
-    ],
-    "errandNumber": "ERRAND-NUMBER-1",
-    "externalCaseId": "1234",
-    "familyId": "387",
-    "firstName": "john",
-    "lastName": "doe",
-    "message": "Message",
-    "messageId": "a8883fb9-60b4-4f38-9f48-642070ff49ee",
-    "messageType": "EMAIL",
-    "mobileNumber": "0701234567",
-    "sent": "2024-01-01T12:00:00.000000",
-    "subject": "Subject",
-    "userId": "userid",
-    "username": "kctest",
-    "viewed": true
-  }
+	{
+		"attachments": [],
+		"direction": "INBOUND",
+		"email": "johndoe@email.com",
+		"emailHeaders": [
+			{
+				"header": "MESSAGE_ID",
+				"values": [
+					"<test123@domain.com>"
+				]
+			},
+			{
+				"header": "IN_REPLY_TO",
+				"values": [
+					"<123test@domain.com>"
+				]
+			},
+			{
+				"header": "REFERENCES",
+				"values": [
+					"<123test@domain.com>",
+					"<123@domain.com>",
+					"<456@domain.com>"
+				]
+			}
+		],
+		"errandNumber": "ERRAND-NUMBER-1",
+		"externalCaseId": "1234",
+		"familyId": "387",
+		"firstName": "john",
+		"lastName": "doe",
+		"message": "Message",
+		"messageId": "a8883fb9-60b4-4f38-9f48-642070ff49ee",
+		"messageType": "EMAIL",
+		"mobileNumber": "0701234567",
+		"sent": "2024-01-01T12:00:00.000000",
+		"subject": "Subject",
+		"userId": "userid",
+		"username": "kctest",
+		"viewed": true
+	}
 ]

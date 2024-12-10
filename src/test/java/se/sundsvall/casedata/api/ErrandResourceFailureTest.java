@@ -14,7 +14,6 @@ import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -24,7 +23,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
@@ -66,7 +64,9 @@ class ErrandResourceFailureTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"", " ", "invalid"})
+	@ValueSource(strings = {
+		"", " ", "invalid"
+	})
 	void postErrandWithInvalidFacilityType(final String facilityType) {
 		// Arrange
 		final var body = createErrandEntity();
@@ -91,7 +91,9 @@ class ErrandResourceFailureTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"", " ", "invalid"})
+	@ValueSource(strings = {
+		"", " ", "invalid"
+	})
 	void postFacilityWithInvalidFacilityType(final String facilityType) {
 		// Arrange
 		final var errandId = 123L;
@@ -114,7 +116,9 @@ class ErrandResourceFailureTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"", " ", "invalid"})
+	@ValueSource(strings = {
+		"", " ", "invalid"
+	})
 	void putFacilityWithInvalidFacilityType(final String facilityType) {
 		// Arrange
 		final var errandId = 123L;

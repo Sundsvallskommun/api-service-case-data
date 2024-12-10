@@ -2,7 +2,6 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import java.util.ArrayList;
 import java.util.Optional;
-
 import se.sundsvall.casedata.api.model.Appeal;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.Decision;
@@ -20,8 +19,7 @@ import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
 public final class PutMapper {
 
-	private PutMapper() {
-	}
+	private PutMapper() {}
 
 	public static AttachmentEntity putAttachment(final AttachmentEntity oldAttachmentEntity, final Attachment attachment) {
 		Optional.ofNullable(attachment).ifPresent(newAttachment -> {

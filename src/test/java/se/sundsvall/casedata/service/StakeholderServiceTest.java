@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -40,7 +39,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -106,8 +104,8 @@ class StakeholderServiceTest {
 	void findStakeholdersByRoleAndMunicipalityId() {
 		// Arrange
 		final var stakeholders = Stream.of(
-				createStakeholder(ORGANIZATION, List.of(DRIVER.name())),
-				createStakeholder(PERSON, List.of(DRIVER.name(), OPERATOR.name())))
+			createStakeholder(ORGANIZATION, List.of(DRIVER.name())),
+			createStakeholder(PERSON, List.of(DRIVER.name(), OPERATOR.name())))
 			.map(stakeholderDTO -> toStakeholderEntity(stakeholderDTO, MUNICIPALITY_ID, NAMESPACE))
 			.toList();
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);

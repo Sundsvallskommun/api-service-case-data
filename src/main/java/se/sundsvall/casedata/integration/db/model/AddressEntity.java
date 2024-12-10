@@ -1,20 +1,17 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-
-import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
 
 @Getter
 @Setter
@@ -66,10 +63,14 @@ public class AddressEntity {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		final AddressEntity that = (AddressEntity) o;
-		return addressCategory == that.addressCategory && Objects.equals(street, that.street) && Objects.equals(houseNumber, that.houseNumber) && Objects.equals(postalCode, that.postalCode) && Objects.equals(city, that.city) && Objects.equals(country, that.country) && Objects.equals(careOf, that.careOf) && Objects.equals(attention, that.attention) && Objects.equals(propertyDesignation, that.propertyDesignation) && Objects.equals(apartmentNumber, that.apartmentNumber) && Objects.equals(isZoningPlanArea, that.isZoningPlanArea) && Objects.equals(invoiceMarking, that.invoiceMarking) && Objects.equals(location, that.location);
+		return addressCategory == that.addressCategory && Objects.equals(street, that.street) && Objects.equals(houseNumber, that.houseNumber) && Objects.equals(postalCode, that.postalCode) && Objects.equals(city, that.city) && Objects.equals(country,
+			that.country) && Objects.equals(careOf, that.careOf) && Objects.equals(attention, that.attention) && Objects.equals(propertyDesignation, that.propertyDesignation) && Objects.equals(apartmentNumber, that.apartmentNumber) && Objects.equals(
+				isZoningPlanArea, that.isZoningPlanArea) && Objects.equals(invoiceMarking, that.invoiceMarking) && Objects.equals(location, that.location);
 	}
 
 	@Override

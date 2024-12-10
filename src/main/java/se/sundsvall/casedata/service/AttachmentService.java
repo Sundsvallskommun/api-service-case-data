@@ -8,20 +8,16 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachme
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchAttachment;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putAttachment;
 
-import java.util.List;
-
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
-
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
-
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 @Transactional

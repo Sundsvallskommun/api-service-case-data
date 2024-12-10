@@ -12,11 +12,16 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_REGEXP;
 import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_VALIDATION_MESSAGE;
 
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-
+import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,34 +36,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.service.FacilityService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/facilities")
 @Tag(name = "Facilities", description = "Errand facilities operations")
-@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {Problem.class, ConstraintViolationProblem.class})))
+@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
+	Problem.class, ConstraintViolationProblem.class
+})))
 @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 class FacilityResource {
 
 	private final FacilityService facilityService;
 
-	FacilityResource(final FacilityService facilityService) {this.facilityService = facilityService;}
+	FacilityResource(final FacilityService facilityService) {
+		this.facilityService = facilityService;
+	}
 
 	@Operation(description = "Create errand facility")
-	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = {ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = {
+		ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE
+	})
 	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
 	ResponseEntity<Void> postErrandFacility(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -76,7 +78,9 @@ class FacilityResource {
 	}
 
 	@Operation(description = "Get all facilities on errand")
-	@GetMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@GetMapping(produces = {
+		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
+	})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<List<Facility>> getFacilities(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -87,7 +91,9 @@ class FacilityResource {
 	}
 
 	@Operation(description = "Get a specific facility on errand")
-	@GetMapping(path = "/{facilityId}", produces = {APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE})
+	@GetMapping(path = "/{facilityId}", produces = {
+		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
+	})
 	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Facility> getFacility(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -99,7 +105,9 @@ class FacilityResource {
 	}
 
 	@Operation(description = "Update errand facility by facility id")
-	@PatchMapping(path = "/{facilityId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
+	@PatchMapping(path = "/{facilityId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {
+		APPLICATION_PROBLEM_JSON_VALUE
+	})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> patchErrandFacility(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -115,7 +123,9 @@ class FacilityResource {
 	}
 
 	@Operation(description = "Add/replace facility on errand")
-	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {APPLICATION_PROBLEM_JSON_VALUE})
+	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {
+		APPLICATION_PROBLEM_JSON_VALUE
+	})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putFacilitiesOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -130,7 +140,9 @@ class FacilityResource {
 	}
 
 	@Operation(description = "Delete facility on errand")
-	@DeleteMapping(path = "/{facilityId}", produces = {APPLICATION_PROBLEM_JSON_VALUE})
+	@DeleteMapping(path = "/{facilityId}", produces = {
+		APPLICATION_PROBLEM_JSON_VALUE
+	})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> deleteFacility(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,

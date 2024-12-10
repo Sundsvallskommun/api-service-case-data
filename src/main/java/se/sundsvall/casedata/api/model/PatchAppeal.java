@@ -1,17 +1,15 @@
 package se.sundsvall.casedata.api.model;
 
-import jakarta.validation.constraints.Size;
-
-import se.sundsvall.casedata.api.model.validation.ValidAppealStatus;
-import se.sundsvall.casedata.api.model.validation.ValidTimelinessReviewValue;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import se.sundsvall.casedata.api.model.validation.ValidAppealStatus;
+import se.sundsvall.casedata.api.model.validation.ValidTimelinessReviewValue;
 
 @Data
 @ToString

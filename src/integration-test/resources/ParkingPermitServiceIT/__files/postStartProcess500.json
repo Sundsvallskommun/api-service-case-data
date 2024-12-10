@@ -1,4 +1,4 @@
 {
-  "status": 500,
-  "detail": "Internal server error"
+	"status": 500,
+	"detail": "Internal server error"
 }

@@ -2,8 +2,7 @@ package se.sundsvall.casedata.integration.db.model;
 
 import static org.hibernate.Length.LONG;
 
-import java.time.OffsetDateTime;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -18,24 +17,21 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.javers.core.metamodel.annotation.DiffIgnore;
-
-import se.sundsvall.casedata.integration.db.listeners.AppealListener;
-import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
-import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
-
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.javers.core.metamodel.annotation.DiffIgnore;
+import se.sundsvall.casedata.integration.db.listeners.AppealListener;
+import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
+import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 
 @Entity
 @Table(name = "appeal",

@@ -1,22 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.AddressEntity;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -32,6 +15,22 @@ import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
+
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.FacilityRepository;
+import se.sundsvall.casedata.integration.db.model.AddressEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
 class FacilityServiceTest {

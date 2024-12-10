@@ -9,10 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.util.List;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
