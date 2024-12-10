@@ -13,13 +13,11 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNote;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putNote;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
-
-import io.github.resilience4j.retry.annotation.Retry;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.integration.db.ErrandRepository;

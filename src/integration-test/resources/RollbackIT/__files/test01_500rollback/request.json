@@ -51,15 +51,21 @@
 	"applicationReceived": "2000-09-23T11:04:04.317+02:00",
 	"extraParameters": [
 		{
-			"values": ["test7"],
+			"values": [
+				"test7"
+			],
 			"key": "test7"
 		},
 		{
-			"values": ["test8"],
+			"values": [
+				"test8"
+			],
 			"key": "test8"
 		},
 		{
-			"values": ["test9"],
+			"values": [
+				"test9"
+			],
 			"key": "test9"
 		}
 	],
@@ -67,24 +73,26 @@
 		{
 			"firstName": "Kalle",
 			"lastName": "Anka",
-			"addresses": [{
-				"country": "Sverige",
-				"city": "Ankeborg",
-				"postalCode": "12345",
-				"houseNumber": "1",
-				"isZoningPlanArea": false,
-				"addressCategory": "VISITING_ADDRESS",
-				"invoiceMarking": "Kalle Anka",
-				"careOf": "Kalle Anka",
-				"street": "Gatan",
-				"attention": "Kalle Anka",
-				"propertyDesignation": "Ankeborg 1:1",
-				"location": {
-					"latitude": 0.8860957171081745,
-					"longitude": 0.4307180458357478
-				},
-				"apartmentNumber": "1"
-			}],
+			"addresses": [
+				{
+					"country": "Sverige",
+					"city": "Ankeborg",
+					"postalCode": "12345",
+					"houseNumber": "1",
+					"isZoningPlanArea": false,
+					"addressCategory": "VISITING_ADDRESS",
+					"invoiceMarking": "Kalle Anka",
+					"careOf": "Kalle Anka",
+					"street": "Gatan",
+					"attention": "Kalle Anka",
+					"propertyDesignation": "Ankeborg 1:1",
+					"location": {
+						"latitude": 0.8860957171081745,
+						"longitude": 0.4307180458357478
+					},
+					"apartmentNumber": "1"
+				}
+			],
 			"contactInformation": [
 				{
 					"contactType": "EMAIL",
@@ -113,24 +121,26 @@
 			"type": "PERSON"
 		},
 		{
-			"addresses": [{
-				"country": "Sverige",
-				"city": "Ankeborg",
-				"postalCode": "12345",
-				"houseNumber": "2",
-				"isZoningPlanArea": false,
-				"addressCategory": "VISITING_ADDRESS",
-				"invoiceMarking": "Företaget",
-				"careOf": "Företaget",
-				"street": "Gatan",
-				"attention": "Företaget",
-				"propertyDesignation": "Ankeborg 2:2",
-				"location": {
-					"latitude": 0.3246504912367001,
-					"longitude": 0.8625583560198528
-				},
-				"apartmentNumber": "2"
-			}],
+			"addresses": [
+				{
+					"country": "Sverige",
+					"city": "Ankeborg",
+					"postalCode": "12345",
+					"houseNumber": "2",
+					"isZoningPlanArea": false,
+					"addressCategory": "VISITING_ADDRESS",
+					"invoiceMarking": "Företaget",
+					"careOf": "Företaget",
+					"street": "Gatan",
+					"attention": "Företaget",
+					"propertyDesignation": "Ankeborg 2:2",
+					"location": {
+						"latitude": 0.3246504912367001,
+						"longitude": 0.8625583560198528
+					},
+					"apartmentNumber": "2"
+				}
+			],
 			"contactInformation": [
 				{
 					"contactType": "EMAIL",
@@ -163,96 +173,110 @@
 	],
 	"priority": "HIGH",
 	"caseType": "PARKING_PERMIT",
-	"appeals": [{
-		"timelinessReview": "NOT_RELEVANT",
-		"registeredAt": "2010-01-15T10:04:04.337+01:00",
-		"description": "Appeal description",
-		"decisionId": 123,
-		"appealConcernCommunicatedAt": "2009-02-19T10:04:04.337+01:00",
-		"status": "COMPLETED"
-	}],
+	"appeals": [
+		{
+			"timelinessReview": "NOT_RELEVANT",
+			"registeredAt": "2010-01-15T10:04:04.337+01:00",
+			"description": "Appeal description",
+			"decisionId": 123,
+			"appealConcernCommunicatedAt": "2009-02-19T10:04:04.337+01:00",
+			"status": "COMPLETED"
+		}
+	],
 	"diaryNumber": "DIARY-123",
 	"caseTitleAddition": "Case title addition",
-	"statuses": [{
-		"dateTime": "2023-01-24T10:04:04.326+01:00",
-		"statusType": "Ärende inkommit",
-		"description": "Ärende inkommit"
-	}],
-	"decisions": [{
-		"law": [{
-			"sfs": "2000:1",
-			"chapter": "1",
-			"heading": "Kapitel 1",
-			"article": "1"
-		}],
-		"attachments": [],
-		"decidedAt": "2002-12-14T10:04:04.33+01:00",
-		"description": "Cancellation description",
-		"extraParameters": {
-			"test5": "test5",
-			"test6": "test6",
-			"test7": "test7"
-		},
-		"decisionType": "FINAL",
-		"decisionOutcome": "CANCELLATION",
-		"decidedBy": {
-			"firstName": "Kalle",
-			"lastName": "Anka",
-			"addresses": [{
-				"country": "Sverige",
-				"city": "Ankeborg",
-				"postalCode": "12345",
-				"houseNumber": "1",
-				"isZoningPlanArea": false,
-				"addressCategory": "VISITING_ADDRESS",
-				"invoiceMarking": "Kalle Anka",
-				"careOf": "Kalle Anka",
-				"street": "Gatan",
-				"attention": "Kalle Anka",
-				"propertyDesignation": "Ankeborg 1:1",
-				"location": {
-					"latitude": 0.887143922169642,
-					"longitude": 0.16843215444431747
-				},
-				"apartmentNumber": "1"
-			}],
-			"contactInformation": [
+	"statuses": [
+		{
+			"dateTime": "2023-01-24T10:04:04.326+01:00",
+			"statusType": "Ärende inkommit",
+			"description": "Ärende inkommit"
+		}
+	],
+	"decisions": [
+		{
+			"law": [
 				{
-					"contactType": "EMAIL",
-					"value": "a.b@c.se"
-				},
-				{
-					"contactType": "PHONE",
-					"value": "1234567890"
-				},
-				{
-					"contactType": "CELLPHONE",
-					"value": "0987654321"
+					"sfs": "2000:1",
+					"chapter": "1",
+					"heading": "Kapitel 1",
+					"article": "1"
 				}
 			],
-			"adAccount": "KalleAnka",
-			"roles": ["OPERATOR"],
+			"attachments": [],
+			"decidedAt": "2002-12-14T10:04:04.33+01:00",
+			"description": "Cancellation description",
 			"extraParameters": {
-				"test2": "test2",
-				"test3": "test3",
-				"test1": "test1"
+				"test5": "test5",
+				"test6": "test6",
+				"test7": "test7"
 			},
-			"personId": "4cf41b59-864c-4a47-a3b9-52940a93b498",
-			"type": "PERSON"
-		},
-		"validFrom": "2012-08-17T11:04:04.33+02:00",
-		"validTo": "2014-07-27T11:04:04.33+02:00"
-	}],
-	"facilities": [{
-		"address": {
-			"addressCategory": "VISITING_ADDRESS",
-			"propertyDesignation": "Test 84:652"
-		},
-		"facilityType": "ONE_FAMILY_HOUSE",
-		"mainFacility": true,
-		"description": "Test facility",
-		"extraParameters": {},
-		"facilityCollectionName": "Test facility collection"
-	}],
+			"decisionType": "FINAL",
+			"decisionOutcome": "CANCELLATION",
+			"decidedBy": {
+				"firstName": "Kalle",
+				"lastName": "Anka",
+				"addresses": [
+					{
+						"country": "Sverige",
+						"city": "Ankeborg",
+						"postalCode": "12345",
+						"houseNumber": "1",
+						"isZoningPlanArea": false,
+						"addressCategory": "VISITING_ADDRESS",
+						"invoiceMarking": "Kalle Anka",
+						"careOf": "Kalle Anka",
+						"street": "Gatan",
+						"attention": "Kalle Anka",
+						"propertyDesignation": "Ankeborg 1:1",
+						"location": {
+							"latitude": 0.887143922169642,
+							"longitude": 0.16843215444431747
+						},
+						"apartmentNumber": "1"
+					}
+				],
+				"contactInformation": [
+					{
+						"contactType": "EMAIL",
+						"value": "a.b@c.se"
+					},
+					{
+						"contactType": "PHONE",
+						"value": "1234567890"
+					},
+					{
+						"contactType": "CELLPHONE",
+						"value": "0987654321"
+					}
+				],
+				"adAccount": "KalleAnka",
+				"roles": [
+					"OPERATOR"
+				],
+				"extraParameters": {
+					"test2": "test2",
+					"test3": "test3",
+					"test1": "test1"
+				},
+				"personId": "4cf41b59-864c-4a47-a3b9-52940a93b498",
+				"type": "PERSON"
+			},
+			"validFrom": "2012-08-17T11:04:04.33+02:00",
+			"validTo": "2014-07-27T11:04:04.33+02:00"
+		}
+	],
+	"facilities": [
+		{
+			"address": {
+				"addressCategory": "VISITING_ADDRESS",
+				"propertyDesignation": "Test 84:652"
+			},
+			"facilityType": "ONE_FAMILY_HOUSE",
+			"mainFacility": true,
+			"description": "Test facility",
+			"extraParameters": {},
+			"facilityCollectionName": "Test facility collection"
+		}
+	],
 	"startDate": "2024-04-26"
 }

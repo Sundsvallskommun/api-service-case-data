@@ -12,14 +12,12 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createPatchDecision;
 
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.model.Decision;
@@ -31,7 +29,7 @@ class DecisionResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands";
 
-	@MockBean
+	@MockitoBean
 	private DecisionService decisionServiceMock;
 
 	@Autowired
@@ -46,7 +44,7 @@ class DecisionResourceTest {
 		when(decisionServiceMock.findDecisionOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(decisionDTO);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/decisions/{decisionId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, decisionId))
 			.exchange()
 			.expectStatus().isOk()
@@ -69,7 +67,7 @@ class DecisionResourceTest {
 		when(decisionServiceMock.findDecisionsOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(decisionDto));
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/decisions").build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.exchange()
 			.expectStatus().isOk()

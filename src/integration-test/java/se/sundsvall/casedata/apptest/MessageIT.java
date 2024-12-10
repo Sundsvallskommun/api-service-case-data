@@ -2,9 +2,11 @@ package se.sundsvall.casedata.apptest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
@@ -34,37 +36,36 @@ class MessageIT extends AbstractAppTest {
 
 	private static final String MESSAGE_ID = "a8883fb9-60b4-4f38-9f48-642070ff49ee";
 	private static final String MESSAGE_ATTACHMENT_ID = "05b29c30-4512-46c0-9d82-d0f11cb04bae";
-	private static final String ERRAND_NUMBER = "ERRAND-NUMBER-1";
 	private static final Long ERRAND_ID = 1L;
-	private static final String ERRAND_NUMBER_PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/messages/" + ERRAND_NUMBER;
 	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + ERRAND_ID + "/messages";
 
 	@Autowired
 	private MessageRepository messageRepository;
 
 	@Test
-	void test01_getMessageOnErrand() {
+	void test01_getMessage() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(ERRAND_NUMBER_PATH)
+			.withServicePath(PATH)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test02_patchErrandWithMessage() {
-		setupCall()
+	void test02_postMessage() {
+		final var location = setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
-			.withExpectedResponseStatus(NO_CONTENT)
+			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseBodyIsNull()
-			.sendRequestAndVerifyResponse();
+			.sendRequest()
+			.getResponseHeaders().get(LOCATION).getFirst();
 
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(ERRAND_NUMBER_PATH)
+			.withServicePath(location)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();

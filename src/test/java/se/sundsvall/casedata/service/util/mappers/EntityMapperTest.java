@@ -440,13 +440,15 @@ class EntityMapperTest {
 	@Test
 	void toAttachmentEntityTest() {
 		// Arrange
+		final var errandId = 123L;
 		final var attachmentDto = createAttachment(AttachmentCategory.POLICE_REPORT);
 
 		// Act
-		final var attachment = toAttachmentEntity(attachmentDto, MUNICIPALITY_ID, NAMESPACE);
+		final var attachment = toAttachmentEntity(errandId, attachmentDto, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(attachment).hasNoNullFieldsOrPropertiesExcept("id", "created", "updated").satisfies(a -> {
+			assertThat(a.getErrandId()).isEqualTo(errandId);
 			assertThat(a.getCategory()).isEqualTo(attachmentDto.getCategory());
 			assertThat(a.getVersion()).isEqualTo(attachmentDto.getVersion());
 		});

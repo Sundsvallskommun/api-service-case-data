@@ -5,7 +5,9 @@
 		"addresses": [],
 		"adAccount": "AD-1",
 		"created": "${json-unit.any-string}",
-		"roles": ["APPLICANT"],
+		"roles": [
+			"APPLICANT"
+		],
 		"extraParameters": {},
 		"type": "PERSON",
 		"version": 1,
@@ -22,7 +24,9 @@
 		"addresses": [],
 		"adAccount": "AD-2",
 		"created": "${json-unit.any-string}",
-		"roles": ["APPLICANT"],
+		"roles": [
+			"APPLICANT"
+		],
 		"extraParameters": {},
 		"type": "PERSON",
 		"version": 1,

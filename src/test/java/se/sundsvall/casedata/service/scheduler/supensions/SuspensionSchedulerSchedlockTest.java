@@ -12,10 +12,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +69,7 @@ class SuspensionSchedulerSchedlockTest {
 
 	private LocalDateTime mapTimestamp(final ResultSet rs) throws SQLException {
 		if (rs.next()) {
-			return LocalDateTime.parse(rs.getString("locked_at"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+			return rs.getTimestamp("locked_at").toLocalDateTime();
 		}
 		return null;
 	}

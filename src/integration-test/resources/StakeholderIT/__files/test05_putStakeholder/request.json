@@ -7,7 +7,9 @@
 	"adAccount": "Put-Organization-AD",
 	"organizationNumber": "112233-4455",
 	"authorizedSignatory": "John Doe",
-	"roles": ["PROPERTY_OWNER"],
+	"roles": [
+		"PROPERTY_OWNER"
+	],
 	"extraParameters": {},
 	"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
 	"type": "ORGANIZATION"

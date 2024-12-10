@@ -46,8 +46,8 @@ public class AttachmentService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public AttachmentEntity createAttachment(final Attachment attachment, final String municipalityId, final String namespace) {
-		final var attachmentEntity = toAttachmentEntity(attachment, municipalityId, namespace);
+	public AttachmentEntity createAttachment(final Long errandId, final Attachment attachment, final String municipalityId, final String namespace) {
+		final var attachmentEntity = toAttachmentEntity(errandId, attachment, municipalityId, namespace);
 		return attachmentRepository.save(attachmentEntity);
 	}
 

@@ -1,8 +1,7 @@
 package se.sundsvall.casedata.service;
 
-import org.springframework.stereotype.Service;
-
 import generated.se.sundsvall.employee.PortalPersonData;
+import org.springframework.stereotype.Service;
 import se.sundsvall.casedata.integration.employee.EmployeeClient;
 
 @Service

@@ -1,6 +1,13 @@
 package se.sundsvall.casedata.service.scheduler;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.UUID.randomUUID;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.EmailHeader;
@@ -16,14 +23,6 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.service.util.BlobBuilder;
 
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-
 @Component
 public class MessageMapper {
 
@@ -33,10 +32,10 @@ public class MessageMapper {
 		this.blobBuilder = blobBuilder;
 	}
 
-	public MessageEntity toMessageEntity(final String errandNumber, final MessageDTO dto, final String municipalityId, final String namespace) {
+	public MessageEntity toMessageEntity(final Long errandId, final MessageDTO dto, final String municipalityId, final String namespace) {
 		return MessageEntity.builder()
-			.withMessageId(UUID.randomUUID().toString())
-			.withErrandNumber(errandNumber)
+			.withMessageId(randomUUID().toString())
+			.withErrandId(errandId)
 			.withExternalCaseId(dto.getExternalCaseId())
 			.withFamilyId(dto.getFamilyId())
 			.withTextmessage(dto.getMessage())
@@ -53,10 +52,10 @@ public class MessageMapper {
 			.build();
 	}
 
-	public MessageEntity toMessageEntity(final MessageRequest request, final String municipalityId, final String namespace) {
+	public MessageEntity toMessageEntity(final MessageRequest request, final Long errandId, final String municipalityId, final String namespace) {
 		final var entity = MessageEntity.builder()
 			.withMessageId(request.getMessageId())
-			.withErrandNumber(request.getErrandNumber())
+			.withErrandId(errandId)
 			.withExternalCaseId(request.getExternalCaseId())
 			.withFamilyId(request.getFamilyId())
 			.withTextmessage(request.getMessage())
@@ -76,10 +75,11 @@ public class MessageMapper {
 			.withUsername(request.getUsername());
 
 		Optional.ofNullable(request.getEmailHeaders()).ifPresent(headers -> entity.withHeaders(toEmailHeadersEntities(headers)));
-		if (request.getAttachmentRequests() != null) {
-			entity.withAttachments(toAttachmentEntities(request.getAttachmentRequests(),
+		if (request.getAttachments() != null) {
+			entity.withAttachments(toAttachmentEntities(request.getAttachments(),
 				request.getMessageId(), municipalityId, namespace));
 		}
+		System.out.println(entity.build());
 		return entity.build();
 	}
 
@@ -95,7 +95,7 @@ public class MessageMapper {
 		}
 
 		final var response = MessageResponse.builder()
-			.withErrandNumber(entity.getErrandNumber())
+			.withErrandId(entity.getErrandId())
 			.withExternalCaseId(entity.getExternalCaseId())
 			.withFamilyId(entity.getFamilyId())
 			.withMessage(entity.getTextmessage())
@@ -181,7 +181,7 @@ public class MessageMapper {
 		return MessageAttachmentEntity.builder()
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
-			.withAttachmentId(UUID.randomUUID().toString())
+			.withAttachmentId(randomUUID().toString())
 			.withMessageID(messageID)
 			.withName(attachmentRequest.getName())
 			.withContentType(attachmentRequest.getContentType())

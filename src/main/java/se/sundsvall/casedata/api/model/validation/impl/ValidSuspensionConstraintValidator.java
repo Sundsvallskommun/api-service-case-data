@@ -4,7 +4,6 @@ import static org.apache.commons.lang3.ObjectUtils.anyNull;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
 import se.sundsvall.casedata.api.model.Suspension;
 import se.sundsvall.casedata.api.model.validation.ValidSuspension;
 

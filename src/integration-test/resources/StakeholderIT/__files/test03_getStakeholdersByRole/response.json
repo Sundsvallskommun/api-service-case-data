@@ -5,7 +5,9 @@
 		"addresses": [],
 		"adAccount": "AD-1",
 		"created": "2022-12-02T15:13:45.363+01:00",
-		"roles": ["APPLICANT"],
+		"roles": [
+			"APPLICANT"
+		],
 		"extraParameters": {},
 		"type": "PERSON",
 		"version": 0,
@@ -22,7 +24,9 @@
 		"addresses": [],
 		"adAccount": "AD-2",
 		"created": "2022-12-02T15:13:45.363+01:00",
-		"roles": ["APPLICANT"],
+		"roles": [
+			"APPLICANT"
+		],
 		"extraParameters": {},
 		"type": "PERSON",
 		"version": 0,

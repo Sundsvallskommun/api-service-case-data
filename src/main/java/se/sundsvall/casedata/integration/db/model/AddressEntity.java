@@ -1,20 +1,17 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-
-import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
 
 @Getter
 @Setter

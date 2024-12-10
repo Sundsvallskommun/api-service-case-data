@@ -133,11 +133,13 @@
 		},
 		"property": "roles",
 		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-		"elementChanges": [{
-			"elementChangeType": "ValueAdded",
-			"index": 0,
-			"value": "APPLICANT"
-		}]
+		"elementChanges": [
+			{
+				"elementChangeType": "ValueAdded",
+				"index": 0,
+				"value": "APPLICANT"
+			}
+		]
 	},
 	{
 		"changeType": "ListChange",
@@ -154,18 +156,20 @@
 		},
 		"property": "addresses",
 		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-		"elementChanges": [{
-			"elementChangeType": "ValueAdded",
-			"index": 0,
-			"value": {
-				"valueObject": "se.sundsvall.casedata.integration.db.model.AddressEntity",
-				"fragment": "addresses/0",
-				"ownerId": {
-					"cdoId": 246,
-					"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		"elementChanges": [
+			{
+				"elementChangeType": "ValueAdded",
+				"index": 0,
+				"value": {
+					"valueObject": "se.sundsvall.casedata.integration.db.model.AddressEntity",
+					"fragment": "addresses/0",
+					"ownerId": {
+						"cdoId": 246,
+						"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+					}
 				}
 			}
-		}]
+		]
 	},
 	{
 		"changeType": "ListChange",

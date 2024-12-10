@@ -1,10 +1,13 @@
 package se.sundsvall.casedata.api.model;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,10 +20,6 @@ import lombok.ToString;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 
-import java.util.List;
-
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
-
 @Data
 @Builder(setterPrefix = "with")
 @NoArgsConstructor
@@ -32,8 +31,8 @@ public class MessageResponse {
 	@Schema(description = "The message ID", example = "12")
 	private String messageId;
 
-	@Schema(description = "The errand number", example = "PRH-2022-000001")
-	private String errandNumber;
+	@Schema(description = "The errand ID", example = "123")
+	private Long errandId;
 
 	@Schema(description = "The municipality ID", example = "2281")
 	@Size(max = 255)

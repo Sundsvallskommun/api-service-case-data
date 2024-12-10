@@ -9,10 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.util.List;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
@@ -37,6 +35,7 @@ class MessageEntityTest {
 		final var direction = Direction.OUTBOUND;
 		final var email = "email";
 		final var errandNumber = "errandNumber";
+		final var errandId = 123L;
 		final var externalCaseId = "externalCaseID";
 		final var familyId = "familyID";
 		final var firstName = "firstName";
@@ -65,6 +64,7 @@ class MessageEntityTest {
 			.withDirection(direction)
 			.withEmail(email)
 			.withErrandNumber(errandNumber)
+			.withErrandId(errandId)
 			.withExternalCaseId(externalCaseId)
 			.withFamilyId(familyId)
 			.withMunicipalityId(municipalityId)
@@ -93,6 +93,7 @@ class MessageEntityTest {
 		assertThat(bean.getDirection()).isEqualTo(direction);
 		assertThat(bean.getEmail()).isEqualTo(email);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
+		assertThat(bean.getErrandId()).isEqualTo(errandId);
 		assertThat(bean.getExternalCaseId()).isEqualTo(externalCaseId);
 		assertThat(bean.getFamilyId()).isEqualTo(familyId);
 		assertThat(bean.getFirstName()).isEqualTo(firstName);

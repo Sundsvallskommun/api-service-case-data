@@ -12,14 +12,12 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
 
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
@@ -31,7 +29,7 @@ class StakeholderResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands/{errandId}/stakeholders";
 
-	@MockBean
+	@MockitoBean
 	private StakeholderService stakeholderServiceMock;
 
 	@Autowired
@@ -47,7 +45,7 @@ class StakeholderResourceTest {
 		when(stakeholderServiceMock.findStakeholderOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(stakeholder);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{stakeholderId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, stakeholderId))
 			.exchange()
 			.expectStatus().isOk()
@@ -71,7 +69,7 @@ class StakeholderResourceTest {
 		when(stakeholderServiceMock.findAllStakeholdersOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(stakeholder));
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.exchange()
 			.expectStatus().isOk()

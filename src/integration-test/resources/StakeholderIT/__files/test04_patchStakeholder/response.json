@@ -6,7 +6,9 @@
 	"adAccount": "Patch-Organization-AD",
 	"created": "2022-12-02T15:13:45.363+01:00",
 	"organizationNumber": "112233-4455",
-	"roles": ["PROPERTY_OWNER"],
+	"roles": [
+		"PROPERTY_OWNER"
+	],
 	"extraParameters": {},
 	"type": "ORGANIZATION",
 	"version": 1,

@@ -4,9 +4,7 @@ import static java.time.OffsetDateTime.now;
 import static java.util.Collections.emptyList;
 
 import java.util.Optional;
-
 import org.springframework.stereotype.Component;
-
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.ErrandRepository;

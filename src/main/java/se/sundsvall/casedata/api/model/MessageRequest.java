@@ -2,16 +2,9 @@ package se.sundsvall.casedata.api.model;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
-import java.util.List;
-
-import jakarta.validation.constraints.NotBlank;
-
-import se.sundsvall.casedata.api.model.validation.ValidMessageType;
-import se.sundsvall.casedata.integration.db.model.enums.Classification;
-import se.sundsvall.casedata.integration.db.model.enums.Direction;
-import se.sundsvall.dept44.common.validators.annotation.ValidBase64;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +12,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import se.sundsvall.casedata.api.model.validation.ValidMessageType;
+import se.sundsvall.casedata.integration.db.model.enums.Classification;
+import se.sundsvall.casedata.integration.db.model.enums.Direction;
+import se.sundsvall.dept44.common.validators.annotation.ValidBase64;
 
 @Data
 @NoArgsConstructor
@@ -28,9 +25,6 @@ public class MessageRequest {
 
 	@Schema(description = "The message ID", example = "12")
 	private String messageId;
-
-	@Schema(description = "The errand number", example = "PRH-2022-000001")
-	private String errandNumber;
 
 	@Schema(description = "If the message is inbound or outbound from the perspective of case-data/e-service.", example = "INBOUND")
 	private Direction direction;
@@ -78,8 +72,8 @@ public class MessageRequest {
 	@Schema(description = "The classification of the message")
 	private Classification classification;
 
-	@Schema(description = "List of attachmentRequests on the message")
-	private List<AttachmentRequest> attachmentRequests;
+	@Schema(description = "List of attachments on the message")
+	private List<AttachmentRequest> attachments;
 
 	@Schema(description = "List of email headers on the message")
 	private List<EmailHeader> emailHeaders;

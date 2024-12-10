@@ -4,7 +4,9 @@
 		"urlPath": "/employee/portalpersondata/personal/someUser123"
 	},
 	"response": {
-		"headers": {"Content-Type": "application/json"},
+		"headers": {
+			"Content-Type": "application/json"
+		},
 		"jsonBody": {
 			"address": "",
 			"city": "",

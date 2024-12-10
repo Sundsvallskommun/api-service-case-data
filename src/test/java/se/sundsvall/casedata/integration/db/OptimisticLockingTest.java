@@ -14,14 +14,12 @@ import static se.sundsvall.casedata.TestUtil.createStakeholder;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.test.context.ActiveProfiles;
-
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
@@ -31,7 +29,7 @@ import se.sundsvall.casedata.service.StakeholderService;
 @ActiveProfiles("junit")
 class OptimisticLockingTest {
 
-	@MockBean
+	@MockitoBean
 	private ErrandRepository errandRepositoryMock;
 
 	@Autowired

@@ -12,9 +12,9 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createNotificationEntity;
 import static se.sundsvall.casedata.TestUtil.createPatchNotification;
 
+import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -23,8 +23,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Problem;
-
-import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.ErrandRepository;

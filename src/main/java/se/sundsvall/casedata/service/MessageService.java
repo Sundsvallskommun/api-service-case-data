@@ -6,17 +6,14 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
-
 import se.sundsvall.casedata.api.model.MessageAttachment;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
@@ -29,11 +26,8 @@ import se.sundsvall.casedata.service.scheduler.MessageMapper;
 public class MessageService {
 
 	private final MessageRepository messageRepository;
-
 	private final ErrandRepository errandRepository;
-
 	private final MessageAttachmentRepository messageAttachmentRepository;
-
 	private final MessageMapper mapper;
 
 	public MessageService(final MessageRepository messageRepository, final ErrandRepository errandRepository,
@@ -44,19 +38,26 @@ public class MessageService {
 		this.mapper = mapper;
 	}
 
-	public List<MessageResponse> getMessagesByErrandNumber(final String errandNumber, final String municipalityId, final String namespace) {
-		return mapper.toMessageResponses(messageRepository.findAllByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, municipalityId, namespace));
+	public List<MessageResponse> getMessagesByErrandId(final Long errandId, final String municipalityId, final String namespace) {
+		return mapper.toMessageResponses(messageRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace));
 	}
 
-	public void saveMessageOnErrand(final Long errandId, final MessageRequest request, final String municipalityId, final String namespace) {
+	public MessageResponse getMessageById(final Long errandId, final String municipalityId, final String namespace, String messageId) {
+		final var messageEntity = messageRepository.findByMunicipalityIdAndNamespaceAndErrandIdAndMessageId(municipalityId, namespace, errandId, messageId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Message with id %s not found".formatted(messageId)));
+
+		return mapper.toMessageResponse(messageEntity);
+	}
+
+	public MessageResponse createMessage(final Long errandId, final MessageRequest request, final String municipalityId, final String namespace) {
 		verifyErrandExists(errandId, municipalityId, namespace);
-		messageRepository.save(mapper.toMessageEntity(request, municipalityId, namespace));
+		return mapper.toMessageResponse(messageRepository.save(mapper.toMessageEntity(request, errandId, municipalityId, namespace)));
 	}
 
 	public void updateViewedStatus(final Long errandId, final String messageId, final String municipalityId, final String namespace, final boolean isViewed) {
 		verifyErrandExists(errandId, municipalityId, namespace);
 		final var message = messageRepository
-			.findByMessageIdAndMunicipalityIdAndNamespace(messageId, municipalityId, namespace)
+			.findByMunicipalityIdAndNamespaceAndErrandIdAndMessageId(municipalityId, namespace, errandId, messageId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Message with id %s not found".formatted(messageId)));
 
 		message.setViewed(isViewed);
@@ -92,5 +93,4 @@ public class MessageService {
 			throw Problem.valueOf(NOT_FOUND, format(ERRAND_WAS_NOT_FOUND, errandId));
 		}
 	}
-
 }

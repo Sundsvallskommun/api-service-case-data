@@ -5,16 +5,13 @@ import static org.javers.repository.jql.QueryBuilder.byInstance;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
 
+import com.google.gson.reflect.TypeToken;
 import java.util.List;
-
 import org.javers.core.Changes;
 import org.javers.core.Javers;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
-
-import com.google.gson.reflect.TypeToken;
-
 import se.sundsvall.casedata.api.model.history.History;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.DecisionRepository;

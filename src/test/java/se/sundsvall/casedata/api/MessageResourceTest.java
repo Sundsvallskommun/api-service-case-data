@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.api;
 
+import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -19,8 +20,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.MessageRequest;
@@ -33,24 +34,24 @@ class MessageResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands/{errandId}/messages";
 
-	@MockBean
+	@MockitoBean
 	private MessageService messageServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
 
 	@Test
-	void getMessagesOnErrand() {
+	void getMessages() {
 
 		// Arrange
-		final var errandNumber = RandomStringUtils.secure().nextAlphabetic(10);
+		final var errandId = new Random().nextLong(1, 100000);
 		final var messages = List.of(MessageResponse.builder().build());
 
-		when(messageServiceMock.getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
+		when(messageServiceMock.getMessagesByErrandId(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/{namespace}/messages/{errandNumber}").build(MUNICIPALITY_ID, NAMESPACE, errandNumber))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON_VALUE)
@@ -60,12 +61,38 @@ class MessageResourceTest {
 
 		// Assert
 		assertThat(response).isEqualTo(messages);
-		verify(messageServiceMock).getMessagesByErrandNumber(errandNumber, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageServiceMock).getMessagesByErrandId(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 
 	@Test
-	void patchErrandWithMessage() {
+	void getMessageById() {
+
+		// Arrange
+		final var errandId = new Random().nextLong(1, 100000);
+		final var messageId = randomUUID().toString();
+		final var message = MessageResponse.builder().build();
+
+		when(messageServiceMock.getMessageById(errandId, MUNICIPALITY_ID, NAMESPACE, messageId)).thenReturn(message);
+
+		// Act
+		final var response = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{messageId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, messageId))
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON_VALUE)
+			.expectBody(MessageResponse.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		assertThat(response).isEqualTo(message);
+		verify(messageServiceMock).getMessageById(errandId, MUNICIPALITY_ID, NAMESPACE, messageId);
+		verifyNoMoreInteractions(messageServiceMock);
+	}
+
+	@Test
+	void postMessage() {
 		// Arrange
 		final var errandId = 123L;
 		final var request = MessageRequest.builder().build();
@@ -80,7 +107,7 @@ class MessageResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(messageServiceMock).saveMessageOnErrand(errandId, request, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageServiceMock).createMessage(errandId, request, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 

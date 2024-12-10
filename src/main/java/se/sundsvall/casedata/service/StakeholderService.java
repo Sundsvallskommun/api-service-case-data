@@ -9,22 +9,18 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakehol
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putStakeholder;
 
+import io.github.resilience4j.retry.annotation.Retry;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
-
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.StakeholderRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 @Transactional

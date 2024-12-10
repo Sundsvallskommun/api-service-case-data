@@ -4,7 +4,9 @@
 		"urlPattern": "/employee/portalpersondata/personal/.*"
 	},
 	"response": {
-		"headers": {"Content-Type": "application/json"},
+		"headers": {
+			"Content-Type": "application/json"
+		},
 		"bodyFileName": "getEmployeePersonalData200.json",
 		"status": 200
 	},

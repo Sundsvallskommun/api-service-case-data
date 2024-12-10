@@ -31,7 +31,8 @@ import se.sundsvall.casedata.integration.db.model.enums.Direction;
 @Table(name = "message",
 	indexes = {
 		@Index(name = "idx_message_municipality_id", columnList = "municipality_id"),
-		@Index(name = "idx_message_namespace", columnList = "namespace")
+		@Index(name = "idx_message_namespace", columnList = "namespace"),
+		@Index(name = "idx_messsage_errand_id", columnList = "errand_id")
 	})
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

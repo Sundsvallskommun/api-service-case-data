@@ -1,5 +1,7 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import java.util.ArrayList;
+import java.util.Optional;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Facility;
@@ -10,9 +12,6 @@ import se.sundsvall.casedata.integration.db.model.DecisionEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
-
-import java.util.ArrayList;
-import java.util.Optional;
 
 public final class PutMapper {
 
@@ -61,7 +60,7 @@ public final class PutMapper {
 			oldDecision.setDecidedBy(EntityMapper.toStakeholderEntity(newDecision.getDecidedBy(), oldDecision.getMunicipalityId(), oldDecision.getNamespace()));
 			oldDecision.setLaw(new ArrayList<>(newDecision.getLaw().stream().map(EntityMapper::toLawEntity).toList()));
 			oldDecision.getAttachments().clear();
-			newDecision.getAttachments().forEach(attachment -> oldDecision.getAttachments().add(EntityMapper.toAttachmentEntity(attachment, oldDecision.getMunicipalityId(), oldDecision.getNamespace())));
+			newDecision.getAttachments().forEach(attachment -> oldDecision.getAttachments().add(EntityMapper.toAttachmentEntity(oldDecision.getErrand().getId(), attachment, oldDecision.getMunicipalityId(), oldDecision.getNamespace())));
 		});
 		return oldDecision;
 	}

@@ -78,10 +78,10 @@ INSERT INTO message_attachment (message_attachment_data_id, attachmentid, conten
 VALUES (1, '05b29c30-4512-46c0-9d82-d0f11cb04bae', 'image/png',
         '02485d15-fa8b-488a-a907-fa4de5d6e5c9', 'test_image.png', '2281', 'my.namespace');
 
-INSERT INTO message (viewed, email, errand_number, external_caseid, familyid, first_name, last_name,
+INSERT INTO message (viewed, email, errand_id, external_caseid, familyid, first_name, last_name,
                      message, messageId, sent, subject, userid, username, direction, message_type,
                      municipality_id, namespace)
-VALUES (1, 'test.testorsson@noreply.com', 'PRE-1970-000123', '123456', '123', 'Test', 'Testorsson',
+VALUES (1, 'test.testorsson@noreply.com', 456, '123456', '123', 'Test', 'Testorsson',
         'Some message', '02485d15-fa8b-488a-a907-fa4de5d6e5c9', '2023-10-02 15:13:45.363',
         'Some subject', 'aba01cal', 'Abacus Calculator', 'INBOUND', 'EMAIL', '2281',
         'my.namespace');

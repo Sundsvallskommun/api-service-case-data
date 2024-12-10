@@ -2,6 +2,12 @@ package se.sundsvall.casedata.service.scheduler.emailreader;
 
 import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Component;
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
@@ -12,13 +18,6 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.casedata.service.util.BlobBuilder;
-
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 @Component
 public class EmailReaderMapper {

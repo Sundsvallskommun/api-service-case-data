@@ -52,7 +52,8 @@ class AttachmentServiceTest {
 	@Test
 	void testFindById() {
 		// Arrange
-		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.SIGNATURE), MUNICIPALITY_ID, NAMESPACE);
+		final var errandId = 123L;
+		final var attachment = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.SIGNATURE), MUNICIPALITY_ID, NAMESPACE);
 		when(attachmentRepository.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(attachment));
 		when(errandRepository.existsByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
 
@@ -80,7 +81,8 @@ class AttachmentServiceTest {
 	@Test
 	void putAttachment() {
 		// Arrange
-		final var attachmentEntity = toAttachmentEntity(createAttachment(AttachmentCategory.PASSPORT_PHOTO), MUNICIPALITY_ID, NAMESPACE);
+		final var errandId = 123L;
+		final var attachmentEntity = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.PASSPORT_PHOTO), MUNICIPALITY_ID, NAMESPACE);
 		attachmentEntity.setId(2L);
 		final var attachment = createAttachment(AttachmentCategory.LEASE_REQUEST);
 		when(errandRepository.existsByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
@@ -152,7 +154,7 @@ class AttachmentServiceTest {
 	void testFindByErrandNumberAndMunicipalityId() {
 		// Arrange
 		final var errandId = 123L;
-		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.MEX_PROTOCOL), MUNICIPALITY_ID, NAMESPACE);
+		final var attachment = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.MEX_PROTOCOL), MUNICIPALITY_ID, NAMESPACE);
 		attachment.setErrandId(errandId);
 		doReturn(List.of(attachment)).when(attachmentRepository).findAllByErrandIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 
@@ -184,12 +186,12 @@ class AttachmentServiceTest {
 	void testPost() {
 		// Arrange
 		final var errandId = 123L;
-		final var attachment = toAttachmentEntity(createAttachment(AttachmentCategory.POWER_OF_ATTORNEY), MUNICIPALITY_ID, NAMESPACE);
+		final var attachment = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.POWER_OF_ATTORNEY), MUNICIPALITY_ID, NAMESPACE);
 		attachment.setErrandId(errandId);
 		doReturn(attachment).when(attachmentRepository).save(any(AttachmentEntity.class));
 
 		// Act
-		final var result = attachmentService.createAttachment(createAttachment(AttachmentCategory.ROAD_ALLOWANCE_APPROVAL), MUNICIPALITY_ID, NAMESPACE);
+		final var result = attachmentService.createAttachment(errandId, createAttachment(AttachmentCategory.ROAD_ALLOWANCE_APPROVAL), MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertEquals(attachment, result);

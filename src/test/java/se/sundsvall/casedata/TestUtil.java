@@ -553,6 +553,7 @@ public final class TestUtil {
 			.withDecisionType(DecisionType.PROPOSED)
 			.withDescription("description")
 			.withDecidedBy(createStakeholderEntity())
+			.withErrand(ErrandEntity.builder().withId(123L).build())
 			.withValidFrom(getRandomOffsetDateTime())
 			.withValidTo(getRandomOffsetDateTime())
 			.withExtraParameters(createExtraParameters())

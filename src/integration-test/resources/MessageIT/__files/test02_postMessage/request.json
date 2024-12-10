@@ -1,13 +1,14 @@
 {
 	"lastName": "doe",
 	"externalCaseId": "321",
-	"attachments": [{
-		"content_type": "application/pdf",
-		"message_attachment_data_id": 1,
-		"name": "this-is-an-attachment",
-		"messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
-		"attachmentId": "c1883fb9-60b4-4f38-9f48-642070ff49ee"
-	}],
+	"attachments": [
+		{
+			"content": "content",
+			"contentType": "text/plain",
+			"name": "this-is-an-attachment",
+			"messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee"
+		}
+	],
 	"errandNumber": "ERRAND-NUMBER-1",
 	"subject": "Subject",
 	"mobileNumber": "0701234567",
@@ -18,7 +19,9 @@
 	"familyId": "123",
 	"firstName": "john",
 	"messageType": "EMAIL",
-	"recipients": ["patch@sundsvall.se"],
+	"recipients": [
+		"patch@sundsvall.se"
+	],
 	"viewed": false,
 	"email": "johndoe@email.com",
 	"direction": "INBOUND",

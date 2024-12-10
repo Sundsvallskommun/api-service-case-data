@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -18,14 +17,13 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletResponse;
-
+import java.util.Random;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
@@ -37,7 +35,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
@@ -52,7 +49,7 @@ import se.sundsvall.casedata.service.util.BlobBuilder;
 class MessageServiceTest {
 
 	@Mock
-	ErrandRepository errandRepositoryMock;
+	private ErrandRepository errandRepositoryMock;
 
 	@Mock
 	private MessageMapper messageMapperMock;
@@ -88,19 +85,20 @@ class MessageServiceTest {
 	private MessageService messageService;
 
 	@Test
-	void getMessagesByErrandNumber() {
+	void getMessagesByErrandId() {
+
 		// Arrange
+		final var errandId = new Random().nextLong(1, 100000);
 		final var messages = List.of(MessageEntity.builder()
 			.withAttachments(List.of(MessageAttachmentEntity.builder().build()))
 			.build());
-		when(messageRepositoryMock.findAllByErrandNumberAndMunicipalityIdAndNamespace(anyString(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(messages);
-		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
+		when(messageRepositoryMock.findAllByErrandIdAndMunicipalityIdAndNamespace(eq(errandId), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(messages);
 
 		// Act
-		messageService.getMessagesByErrandNumber(messageId, MUNICIPALITY_ID, NAMESPACE);
+		messageService.getMessagesByErrandId(errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		verify(messageRepositoryMock).findAllByErrandNumberAndMunicipalityIdAndNamespace(messageId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageRepositoryMock).findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageMapperMock).toMessageResponses(any());
 		verifyNoMoreInteractions(messageMapperMock);
 		verifyNoMoreInteractions(messageRepositoryMock);
@@ -108,6 +106,7 @@ class MessageServiceTest {
 
 	@Test
 	void getMessageAttachment() {
+
 		// Arrange
 		final var attachmentId = "attachmentId";
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
@@ -123,6 +122,7 @@ class MessageServiceTest {
 
 	@Test
 	void getNonExistingMessageAttachment() {
+
 		// Arrange
 		final var attachmentId = "attachmentId";
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
@@ -139,6 +139,7 @@ class MessageServiceTest {
 
 	@Test
 	void getMessageAttachmentStreamed() throws Exception {
+
 		// Arrange
 		final var attachmentId = "attachmentId";
 		final var content = "content";
@@ -172,6 +173,7 @@ class MessageServiceTest {
 
 	@Test
 	void getMessageAttachmentStreamedThrowsException() throws Exception {
+
 		// Arrange
 		final var attachmentId = "attachmentId";
 		final var contentType = "contentType";
@@ -201,6 +203,7 @@ class MessageServiceTest {
 
 	@Test
 	void getNonExistingMessageAttachmentStreamed() {
+
 		// Arrange
 		final var attachmentId = "attachmentId";
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
@@ -217,15 +220,17 @@ class MessageServiceTest {
 
 	@Test
 	void saveMessageOnErrand() {
+
 		// Arrange
+		final var errandId = 1L;
 		final var request = MessageRequest.builder().build();
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
 
 		// Act
-		messageService.saveMessageOnErrand(1L, request, MUNICIPALITY_ID, NAMESPACE);
+		messageService.saveMessageOnErrand(errandId, request, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		verify(messageMapperMock).toMessageEntity(request, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageMapperMock).toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageRepositoryMock).save(any());
 		verifyNoMoreInteractions(messageRepositoryMock, messageMapperMock);
 	}
@@ -235,6 +240,7 @@ class MessageServiceTest {
 		true, false
 	})
 	void updateViewedStatusOnExistingMessage(final boolean viewed) {
+
 		// Arrange
 		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
@@ -251,6 +257,7 @@ class MessageServiceTest {
 
 	@Test
 	void updateViewedStatusOnNonExistingMessage() {
+
 		// Arrange
 		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
@@ -265,5 +272,4 @@ class MessageServiceTest {
 		verify(messageRepositoryMock, never()).save(any());
 		verifyNoInteractions(messageMock);
 	}
-
 }

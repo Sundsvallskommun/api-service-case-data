@@ -64,10 +64,10 @@ public class WebMessageCollectorWorker {
 
 	private Optional<MessageEntity> processMessage(final MessageDTO message) {
 		return errandRepository.findByExternalCaseId(message.getExternalCaseId()).map(errand -> {
-			final var errandNumber = errand.getErrandNumber();
+			final var errandId = errand.getId();
 			final var municipalityId = errand.getMunicipalityId();
 			final var namespace = errand.getNamespace();
-			final var entity = messageMapper.toMessageEntity(errandNumber, message, municipalityId, namespace);
+			final var entity = messageMapper.toMessageEntity(errandId, message, municipalityId, namespace);
 			return messageRepository.saveAndFlush(entity);
 		});
 	}

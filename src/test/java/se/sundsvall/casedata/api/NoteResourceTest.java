@@ -13,14 +13,12 @@ import static se.sundsvall.casedata.TestUtil.createNote;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.service.NoteService;
@@ -31,7 +29,7 @@ class NoteResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands/{errandId}/notes";
 
-	@MockBean
+	@MockitoBean
 	private NoteService noteServiceMock;
 
 	@Autowired
@@ -47,7 +45,7 @@ class NoteResourceTest {
 		when(noteServiceMock.getNoteOnErrand(errandId, noteId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(note);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{noteId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, noteId))
 			.exchange()
 			.expectStatus().isOk()
@@ -71,7 +69,7 @@ class NoteResourceTest {
 		when(noteServiceMock.getAllNotesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, Optional.empty())).thenReturn(List.of(note));
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.exchange()
 			.expectStatus().isOk()

@@ -16,8 +16,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -28,16 +28,16 @@ import se.sundsvall.casedata.service.AttachmentService;
 @ActiveProfiles("junit")
 class AttachmentResourceTest {
 
-	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands";
+	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands/{errandId}/attachments";
 
-	@MockBean
+	@MockitoBean
 	private AttachmentService attachmentServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
 
 	@Test
-	void getAttachments() {
+	void getAttachmentByAttachmentId() {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
@@ -46,7 +46,7 @@ class AttachmentResourceTest {
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/attachments/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
@@ -61,7 +61,7 @@ class AttachmentResourceTest {
 	}
 
 	@Test
-	void getAttachmentsByErrandNumber() {
+	void getAttachmentsByErrandId() {
 		// Arrange
 		final var errandId = 12345L;
 		final var attachment = createAttachment(AttachmentCategory.OTHER_ATTACHMENT);
@@ -69,7 +69,7 @@ class AttachmentResourceTest {
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/{namespace}/errand/{errandId}/attachments").build(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectHeader().contentType(APPLICATION_JSON)
@@ -93,11 +93,11 @@ class AttachmentResourceTest {
 		attachment.setId(attachmentId);
 		body.setId(attachmentId);
 
-		when(attachmentServiceMock.createAttachment(body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachment);
+		when(attachmentServiceMock.createAttachment(errandId, body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachment);
 
 		// Act
 		webTestClient.post()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/attachments").build(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -106,7 +106,7 @@ class AttachmentResourceTest {
 			.expectHeader().location("/2281/my.namespace/errands/" + errandId + "/attachments/" + attachmentId);
 
 		// Assert
-		verify(attachmentServiceMock).createAttachment(body, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentServiceMock).createAttachment(errandId, body, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 	@Test
@@ -119,7 +119,7 @@ class AttachmentResourceTest {
 
 		// Act
 		webTestClient.put()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/attachments/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -140,7 +140,7 @@ class AttachmentResourceTest {
 
 		// Act
 		webTestClient.patch()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/attachments/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -161,7 +161,7 @@ class AttachmentResourceTest {
 
 		// Act
 		webTestClient.delete()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/attachments/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectHeader().contentType(ALL_VALUE);
@@ -169,5 +169,4 @@ class AttachmentResourceTest {
 		// Assert
 		verify(attachmentServiceMock).deleteAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
 	}
-
 }

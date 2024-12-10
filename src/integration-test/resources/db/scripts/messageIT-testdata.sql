@@ -14,11 +14,11 @@ VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'my.namespace');
 
 
-INSERT INTO message(messageid, errand_number, direction, familyid, external_caseid, subject,
+INSERT INTO message(messageid, errand_id, direction, familyid, external_caseid, subject,
                     message,
                     username, first_name, last_name, email, userid, sent, message_type,
                     mobile_number, viewed, municipality_id, namespace)
-VALUES ('a8883fb9-60b4-4f38-9f48-642070ff49ee', 'ERRAND-NUMBER-1', 'INBOUND', 387, 1234, 'Subject',
+VALUES ('a8883fb9-60b4-4f38-9f48-642070ff49ee', 1, 'INBOUND', 387, 1234, 'Subject',
         'Message', 'kctest', 'john', 'doe', 'johndoe@email.com', 'userid',
         '2024-01-01T12:00:00.000000', 'EMAIL', '0701234567', 1, '2281', 'my.namespace');
 

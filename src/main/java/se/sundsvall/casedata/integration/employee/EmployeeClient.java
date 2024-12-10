@@ -4,13 +4,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static se.sundsvall.casedata.integration.employee.configuration.EmployeeConfiguration.CLIENT_ID;
 
+import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.Optional;
-
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.casedata.integration.employee.configuration.EmployeeConfiguration;
 
 @FeignClient(
