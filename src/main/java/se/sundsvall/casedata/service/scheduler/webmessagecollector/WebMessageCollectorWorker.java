@@ -53,7 +53,7 @@ public class WebMessageCollectorWorker {
 				.map(message -> {
 					processMessage(message)
 						.ifPresent(processedMessage -> message.getAttachments()
-							.forEach(messageAttachment -> processAttachment(messageAttachment, processedMessage.getMessageId(), processedMessage.getErrandNumber(), processedMessage.getMunicipalityId(), processedMessage.getNamespace())));
+							.forEach(messageAttachment -> processAttachment(messageAttachment, processedMessage.getMessageId(), processedMessage.getErrandId(), processedMessage.getMunicipalityId(), processedMessage.getNamespace())));
 					return message.getId();
 				})
 				.toList();
@@ -63,20 +63,17 @@ public class WebMessageCollectorWorker {
 	}
 
 	private Optional<MessageEntity> processMessage(final MessageDTO message) {
-		return errandRepository.findByExternalCaseId(message.getExternalCaseId()).map(errand -> {
-			final var errandId = errand.getId();
-			final var municipalityId = errand.getMunicipalityId();
-			final var namespace = errand.getNamespace();
-			final var entity = messageMapper.toMessageEntity(errandId, message, municipalityId, namespace);
-			return messageRepository.saveAndFlush(entity);
-		});
+		return errandRepository.findByExternalCaseId(message.getExternalCaseId())
+			.map(errand -> {
+				final var errandId = errand.getId();
+				final var municipalityId = errand.getMunicipalityId();
+				final var namespace = errand.getNamespace();
+				final var entity = messageMapper.toMessageEntity(errandId, message, municipalityId, namespace);
+				return messageRepository.saveAndFlush(entity);
+			});
 	}
 
-	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId, final String errandNumber, final String municipalityId, final String namespace) {
-
-		// TODO: Replace errandNumber with errandId
-		final var optionalErrandEntity = errandRepository.findByErrandNumber(errandNumber);
-		final var errandId = optionalErrandEntity.isPresent() ? optionalErrandEntity.get().getId() : null;
+	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId, final Long errandId, final String municipalityId, final String namespace) {
 
 		final var attachmentId = attachment.getAttachmentId();
 		// Map the attachment
@@ -104,5 +101,4 @@ public class WebMessageCollectorWorker {
 	private void deleteMessages(final String municipalityId, final List<Integer> ids) {
 		webMessageCollectorClient.deleteMessages(municipalityId, ids);
 	}
-
 }

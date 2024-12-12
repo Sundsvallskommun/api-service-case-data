@@ -47,7 +47,7 @@ class AttachmentRepositoryTest {
 	private AttachmentRepository attachmentRepository;
 
 	@Test
-	void findAllByErrandNumberAndMunicipalityId() {
+	void findAllByErrandIdAndMunicipalityIdAndNamespace() {
 
 		// Arrange
 		final var errandId = 2L;
@@ -66,30 +66,31 @@ class AttachmentRepositoryTest {
 	}
 
 	@Test
-	void findAllByErrandNumberAndMunicipalityIdNothingFound() {
+	void findAllByErrandIdAndMunicipalityIdAndNamespaceNothingFound() {
 
 		// Arrange
-		final var errandNumber = 666L; // NON-EXISTING
+		final var errandId = 666L; // NON-EXISTING
 
 		// Act
-		final var result = attachmentRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE);
+		final var result = attachmentRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
 	}
 
 	@Test
-	void findById() {
+	void findByIdAndErrandIdAndMunicipalityIdAndNamespace() {
 
 		// Arrange
 		final var id = 1L;
+		final var errandId = 1L;
 
 		// Act
-		final var result = attachmentRepository.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
+		final var result = attachmentRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
 
 		// Assert
 		assertThat(result.getCategory()).isEqualTo("MEDICAL_CONFIRMATION");
-		assertThat(result.getErrandId()).isEqualTo(1);
+		assertThat(result.getErrandId()).isEqualTo(errandId);
 		assertThat(result.getExtension()).isEqualTo(".pdf");
 		assertThat(result.getFile()).isEqualTo("FILE-1");
 		assertThat(result.getId()).isEqualTo(id);
@@ -101,30 +102,17 @@ class AttachmentRepositoryTest {
 	}
 
 	@Test
-	void findByIdNothingFound() {
+	void findByIdAndErrandIdAndMunicipalityIdAndNamespaceNothingFound() {
 
 		// Arrange
 		final var id = 666L;
+		final var errandId = 999L;
 
 		// Act
-		final var result = attachmentRepository.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
+		final var result = attachmentRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
-	}
-
-	@Test
-	void deleteById() {
-
-		// Arrange
-		final var id = 1L;
-		assertThat(attachmentRepository.existsByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).isTrue();
-
-		// Act
-		attachmentRepository.deleteByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
-
-		// Assert
-		assertThat(attachmentRepository.existsByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).isFalse();
 	}
 
 	@Test
@@ -138,7 +126,7 @@ class AttachmentRepositoryTest {
 		final var extension = ".pdf";
 		final var mimeType = "application/pdf";
 		final var file = "file";
-		final var errandId = 3L; // PRH-2022-000029;
+		final var errandId = 3L;
 		final var municipalityId = "2281";
 		final var extraParameters = Map.of("key", "value");
 		final var entity = AttachmentEntity.builder()

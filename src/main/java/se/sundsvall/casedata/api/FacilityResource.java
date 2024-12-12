@@ -57,15 +57,16 @@ class FacilityResource {
 	}
 
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
-	@Operation(description = "Create errand facility")
-	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
+	@Operation(description = "Create errand facility", responses = {
+		@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
+	})
 	ResponseEntity<Void> postErrandFacility(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final Facility facility) {
 
-		final Facility result = facilityService.createFacilityOnErrand(errandId, municipalityId, namespace, facility);
+		final Facility result = facilityService.create(errandId, municipalityId, namespace, facility);
 		return created(
 			fromPath("/{municipalityId}/{namespace}/errands/{id}/facilities/{facilityId}")
 				.buildAndExpand(municipalityId, namespace, errandId, result.getId())
@@ -75,31 +76,34 @@ class FacilityResource {
 	}
 
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get all facilities on errand")
-	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	@Operation(description = "Get all facilities on errand", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<List<Facility>> getFacilities(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId) {
 
-		return ok(facilityService.findFacilitiesOnErrand(errandId, municipalityId, namespace));
+		return ok(facilityService.findFacilities(errandId, municipalityId, namespace));
 	}
 
 	@GetMapping(path = "/{facilityId}", produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get a specific facility on errand")
-	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	@Operation(description = "Get a specific facility on errand", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<Facility> getFacility(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "facilityId") final Long facilityId) {
 
-		return ok(facilityService.findFacilityOnErrand(errandId, facilityId, municipalityId, namespace));
+		return ok(facilityService.findFacility(errandId, facilityId, municipalityId, namespace));
 	}
 
 	@PatchMapping(path = "/{facilityId}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
-	@Operation(description = "Update errand facility by facility id")
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	@Operation(description = "Update errand facility by facility id", responses = {
+		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<Void> patchErrandFacility(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -107,14 +111,16 @@ class FacilityResource {
 		@PathVariable(name = "facilityId") final Long facilityId,
 		@RequestBody @Valid final Facility facility) {
 
-		facilityService.updateFacilityOnErrand(errandId, municipalityId, namespace, facilityId, facility);
+		facilityService.update(errandId, municipalityId, namespace, facilityId, facility);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
 
 	@PutMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
-	@Operation(description = "Add/replace facility on errand")
+	@Operation(description = "Add/replace facility on errand", responses = {
+		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	})
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	ResponseEntity<Void> putFacilitiesOnErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
@@ -122,22 +128,23 @@ class FacilityResource {
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final List<Facility> facilities) {
 
-		facilityService.replaceFacilitiesOnErrand(errandId, municipalityId, namespace, facilities);
+		facilityService.replaceFacilities(errandId, municipalityId, namespace, facilities);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
 
 	@DeleteMapping(path = "/{facilityId}", produces = ALL_VALUE)
-	@Operation(description = "Delete facility on errand")
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	@Operation(description = "Delete facility on errand", responses = {
+		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<Void> deleteFacility(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "facilityId") final Long facilityId) {
 
-		facilityService.deleteFacilityOnErrand(errandId, municipalityId, namespace, facilityId);
+		facilityService.delete(errandId, municipalityId, namespace, facilityId);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

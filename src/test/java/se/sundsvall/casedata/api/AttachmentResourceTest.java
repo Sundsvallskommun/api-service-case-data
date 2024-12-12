@@ -42,7 +42,7 @@ class AttachmentResourceTest {
 		final var errandId = 123L;
 		final var attachmentId = 456L;
 		final var attachment = createAttachment(AttachmentCategory.SIGNATURE);
-		when(attachmentServiceMock.findByIdAndMunicipalityIdAndNamespace(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachment);
+		when(attachmentServiceMock.findAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachment);
 
 		// Act
 		final var response = webTestClient.get()
@@ -56,7 +56,7 @@ class AttachmentResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(attachmentServiceMock).findByIdAndMunicipalityIdAndNamespace(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentServiceMock).findAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(attachmentServiceMock);
 	}
 
@@ -65,7 +65,7 @@ class AttachmentResourceTest {
 		// Arrange
 		final var errandId = 12345L;
 		final var attachment = createAttachment(AttachmentCategory.OTHER_ATTACHMENT);
-		when(attachmentServiceMock.findByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(attachment));
+		when(attachmentServiceMock.findAttachments(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(attachment));
 
 		// Act
 		final var response = webTestClient.get()
@@ -79,7 +79,7 @@ class AttachmentResourceTest {
 
 		// Assert
 		assertThat(response).hasSize(1);
-		verify(attachmentServiceMock).findByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentServiceMock).findAttachments(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(attachmentServiceMock);
 	}
 
@@ -93,7 +93,7 @@ class AttachmentResourceTest {
 		attachment.setId(attachmentId);
 		body.setId(attachmentId);
 
-		when(attachmentServiceMock.createAttachment(errandId, body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachment);
+		when(attachmentServiceMock.create(errandId, body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachment);
 
 		// Act
 		webTestClient.post()
@@ -106,7 +106,7 @@ class AttachmentResourceTest {
 			.expectHeader().location("/2281/my.namespace/errands/" + errandId + "/attachments/" + attachmentId);
 
 		// Assert
-		verify(attachmentServiceMock).createAttachment(errandId, body, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentServiceMock).create(errandId, body, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 	@Test
@@ -127,7 +127,7 @@ class AttachmentResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(attachmentServiceMock).replaceAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(attachmentServiceMock).replace(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 	@Test
@@ -148,16 +148,17 @@ class AttachmentResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(attachmentServiceMock).updateAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(attachmentServiceMock).update(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 	@Test
 	void deleteAttachment() {
 		// Arrange
+		final var attachmentEntity = createAttachment(AttachmentCategory.CORPORATE_TAX_CARD);
 		final var errandId = 123L;
 		final var attachmentId = 456L;
 
-		when(attachmentServiceMock.deleteAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(attachmentServiceMock.findAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachmentEntity);
 
 		// Act
 		webTestClient.delete()
@@ -167,6 +168,6 @@ class AttachmentResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(attachmentServiceMock).deleteAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentServiceMock).delete(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
 	}
 }

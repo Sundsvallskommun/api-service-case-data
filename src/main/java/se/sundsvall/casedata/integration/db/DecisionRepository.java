@@ -11,6 +11,5 @@ import se.sundsvall.casedata.integration.db.model.DecisionEntity;
 @CircuitBreaker(name = "decisionRepository")
 public interface DecisionRepository extends JpaRepository<DecisionEntity, Long>, JpaSpecificationExecutor<DecisionEntity> {
 
-	Optional<DecisionEntity> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
-
+	Optional<DecisionEntity> findByIdAndErrandIdAndMunicipalityIdAndNamespace(final Long id, final Long errandId, final String municipalityId, final String namespace);
 }

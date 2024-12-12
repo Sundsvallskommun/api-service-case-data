@@ -42,7 +42,7 @@ class StakeholderResourceTest {
 		final var stakeholderId = 456L;
 		final var stakeholder = createStakeholder(StakeholderType.ORGANIZATION, List.of("SomeRole"));
 
-		when(stakeholderServiceMock.findStakeholderOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(stakeholder);
+		when(stakeholderServiceMock.findStakeholder(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(stakeholder);
 
 		// Act
 		final var response = webTestClient.get()
@@ -56,7 +56,7 @@ class StakeholderResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(stakeholderServiceMock).findStakeholderOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE);
+		verify(stakeholderServiceMock).findStakeholder(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}
 
@@ -66,7 +66,7 @@ class StakeholderResourceTest {
 		final var errandId = 123L;
 		final var stakeholder = createStakeholder(StakeholderType.ORGANIZATION, List.of("SomeRole"));
 
-		when(stakeholderServiceMock.findAllStakeholdersOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(stakeholder));
+		when(stakeholderServiceMock.findStakeholders(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(stakeholder));
 
 		// Act
 		final var response = webTestClient.get()
@@ -80,7 +80,7 @@ class StakeholderResourceTest {
 
 		// Assert
 		assertThat(response).hasSize(1);
-		verify(stakeholderServiceMock).findAllStakeholdersOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(stakeholderServiceMock).findStakeholders(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}
 
@@ -101,7 +101,7 @@ class StakeholderResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(stakeholderServiceMock).updateStakeholderOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
+		verify(stakeholderServiceMock).update(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}
 
@@ -122,7 +122,7 @@ class StakeholderResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(stakeholderServiceMock).replaceStakeholderOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
+		verify(stakeholderServiceMock).replaceOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}
 
@@ -134,7 +134,7 @@ class StakeholderResourceTest {
 		final var stakeholder = createStakeholder(StakeholderType.PERSON, List.of("OPERATOR"));
 		stakeholder.setId(stakeholderId);
 
-		when(stakeholderServiceMock.addStakeholderToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholder)).thenReturn(stakeholder);
+		when(stakeholderServiceMock.addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholder)).thenReturn(stakeholder);
 
 		// Act
 		webTestClient.patch()
@@ -147,7 +147,7 @@ class StakeholderResourceTest {
 			.expectHeader().location("/2281/my.namespace/stakeholders/" + stakeholderId);
 
 		// Assert
-		verify(stakeholderServiceMock).addStakeholderToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
+		verify(stakeholderServiceMock).addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
 	}
 
 	@Test
@@ -166,7 +166,7 @@ class StakeholderResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(stakeholderServiceMock).replaceStakeholdersOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholderList);
+		verify(stakeholderServiceMock).replaceOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholderList);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}
 
@@ -184,7 +184,7 @@ class StakeholderResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(stakeholderServiceMock).deleteStakeholderOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholderId);
+		verify(stakeholderServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholderId);
 		verifyNoMoreInteractions(stakeholderServiceMock);
 	}
 

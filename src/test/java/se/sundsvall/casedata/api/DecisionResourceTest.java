@@ -41,7 +41,7 @@ class DecisionResourceTest {
 		final var errandId = 123L;
 		final var decisionId = 456L;
 		final var decisionDTO = TestUtil.createDecision();
-		when(decisionServiceMock.findDecisionOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(decisionDTO);
+		when(decisionServiceMock.findDecision(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(decisionDTO);
 
 		// Act
 		final var response = webTestClient.get()
@@ -55,7 +55,7 @@ class DecisionResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(decisionServiceMock).findDecisionOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE);
+		verify(decisionServiceMock).findDecision(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(decisionServiceMock);
 	}
 
@@ -64,7 +64,7 @@ class DecisionResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var decisionDto = TestUtil.createDecision();
-		when(decisionServiceMock.findDecisionsOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(decisionDto));
+		when(decisionServiceMock.findDecisions(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(decisionDto));
 
 		// Act
 		final var response = webTestClient.get()
@@ -78,7 +78,7 @@ class DecisionResourceTest {
 
 		// Assert
 		assertThat(response).hasSize(1);
-		verify(decisionServiceMock).findDecisionsOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(decisionServiceMock).findDecisions(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(decisionServiceMock);
 	}
 
@@ -89,7 +89,7 @@ class DecisionResourceTest {
 		final var decisionId = 456L;
 		final var body = TestUtil.createDecision();
 		body.setId(decisionId);
-		when(decisionServiceMock.addDecisionToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, body)).thenReturn(body);
+		when(decisionServiceMock.addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, body)).thenReturn(body);
 
 		// Act
 		webTestClient.patch()
@@ -102,7 +102,7 @@ class DecisionResourceTest {
 			.expectHeader().location("/2281/my.namespace/decisions/" + decisionId);
 
 		// Assert
-		verify(decisionServiceMock).addDecisionToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(decisionServiceMock).addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 	@Test
@@ -122,7 +122,7 @@ class DecisionResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(decisionServiceMock).updateDecisionOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(decisionServiceMock).update(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 	@Test
@@ -143,7 +143,7 @@ class DecisionResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(decisionServiceMock).replaceDecisionOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(decisionServiceMock).replaceOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 	@Test
@@ -160,7 +160,7 @@ class DecisionResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(decisionServiceMock).deleteDecisionOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, decisionId);
+		verify(decisionServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE, decisionId);
 		verifyNoMoreInteractions(decisionServiceMock);
 	}
 

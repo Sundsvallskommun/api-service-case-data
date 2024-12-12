@@ -13,6 +13,6 @@ public class EmailHeader {
 	@Schema(description = "An email header", example = "MESSAGE_ID")
 	private Header header;
 
-	@Schema(description = "The value of the email header", example = "[<this-is-a-test@domain.com>]")
+	@Schema(description = "The value of the email header", example = "[\"<this-is-a-test@domain.com>\"]")
 	private List<String> values;
 }

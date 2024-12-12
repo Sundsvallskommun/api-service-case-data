@@ -2,6 +2,8 @@ package se.sundsvall.casedata.service;
 
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotificationEntity;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNotification;
@@ -21,9 +23,6 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @Service
 public class NotificationService {
-
-	private static final String NOTIFICATION_ENTITY_NOT_FOUND = "Notification with id:'%s' not found in namespace:'%s' for municipality with id:'%s' and errand with id:'%s'";
-	private static final String ERRAND_ENTITY_NOT_FOUND = "Errand with id:'%s' not found in namespace:'%s' for municipality with id:'%s'";
 
 	private final IncomingRequestFilter incomingRequestFilter;
 	private final NotificationRepository notificationRepository;
@@ -53,27 +52,27 @@ public class NotificationService {
 		this.employeeService = employeeService;
 	}
 
-	public List<Notification> getNotificationsByOwnerId(final String municipalityId, final String namespace, final String ownerId) {
+	public List<Notification> findNotificationsByOwnerId(final String municipalityId, final String namespace, final String ownerId) {
 		return notificationRepository.findAllByNamespaceAndMunicipalityIdAndOwnerId(namespace, municipalityId, ownerId)
 			.stream()
 			.map(EntityMapper::toNotification)
 			.toList();
 	}
 
-	public List<Notification> getNotificationsByErrandId(final String municipalityId, final String namespace, final Long errandId, final Sort sort) {
+	public List<Notification> findNotifications(final String municipalityId, final String namespace, final Long errandId, final Sort sort) {
 		return notificationRepository.findAllByNamespaceAndMunicipalityIdAndErrandId(namespace, municipalityId, errandId, sort)
 			.stream()
 			.map(EntityMapper::toNotification)
 			.toList();
 	}
 
-	public Notification getNotification(final String municipalityId, final String namespace, final Long errandId, final String notificationId) {
+	public Notification findNotification(final String municipalityId, final String namespace, final Long errandId, final String notificationId) {
 		return notificationRepository.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId)
 			.map(EntityMapper::toNotification)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTIFICATION_ENTITY_NOT_FOUND.formatted(notificationId, namespace, municipalityId, errandId)));
 	}
 
-	public Notification createNotification(final String municipalityId, final String namespace, final Notification notification) {
+	public Notification create(final String municipalityId, final String namespace, final Notification notification) {
 		if ((notification.getOwnerId() == null) || isExecutingUserTheOwner(notification.getOwnerId()) || notificationExists(municipalityId, namespace, notification)) {
 			return null;
 		}
@@ -88,21 +87,20 @@ public class NotificationService {
 
 	}
 
-	public void updateNotifications(final String municipalityId, final String namespace, final List<PatchNotification> notifications) {
+	public void update(final String municipalityId, final String namespace, final List<PatchNotification> notifications) {
 		notifications.forEach(notification -> updateNotification(municipalityId, namespace, notification.getId(), notification));
 	}
 
-	public void deleteNotification(final String municipalityId, final String namespace, final Long errandId, final String notificationId) {
+	public void delete(final String municipalityId, final String namespace, final Long errandId, final String notificationId) {
+		final var entity = notificationRepository.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTIFICATION_ENTITY_NOT_FOUND.formatted(notificationId, namespace, municipalityId, errandId)));
 
-		if (!notificationRepository.existsByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId)) {
-			throw Problem.valueOf(NOT_FOUND, String.format(NOTIFICATION_ENTITY_NOT_FOUND, notificationId, namespace, municipalityId, errandId));
-		}
-		notificationRepository.deleteById(notificationId);
+		notificationRepository.delete(entity);
 	}
 
 	private void updateNotification(final String municipalityId, final String namespace, final String notificationId, final PatchNotification notification) {
 		final var entity = notificationRepository.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, notification.getErrandId())
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, String.format(NOTIFICATION_ENTITY_NOT_FOUND, notificationId, namespace, municipalityId, notification.getErrandId())));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTIFICATION_ENTITY_NOT_FOUND.formatted(notificationId, namespace, municipalityId, notification.getErrandId())));
 
 		final var owner = getPortalPersonData(notification.getOwnerId());
 

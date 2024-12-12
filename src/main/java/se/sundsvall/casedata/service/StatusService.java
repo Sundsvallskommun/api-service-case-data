@@ -1,8 +1,7 @@
 package se.sundsvall.casedata.service;
 
-import static java.text.MessageFormat.format;
 import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.ERRAND_WAS_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatusEntity;
 
 import io.github.resilience4j.retry.annotation.Retry;
@@ -19,7 +18,6 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 public class StatusService {
 
 	private final ErrandRepository errandRepository;
-
 	private final ProcessService processService;
 
 	public StatusService(final ErrandRepository errandRepository, final ProcessService processService) {
@@ -28,8 +26,8 @@ public class StatusService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void addStatusToErrand(final Long errandId, final String municipalityId, final String namespace, final Status status) {
-		final var oldErrand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
+	public void addToErrand(final Long errandId, final String municipalityId, final String namespace, final Status status) {
+		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace);
 		final var statusEntity = toStatusEntity(status);
 		oldErrand.getStatuses().add(statusEntity);
 		final var updatedErrand = errandRepository.save(oldErrand);
@@ -37,17 +35,15 @@ public class StatusService {
 	}
 
 	@Retry(name = "OptimisticLocking")
-	public void replaceStatusesOnErrand(final Long errandId, final String municipalityId, final String namespace, final List<Status> statuses) {
-		final var oldErrand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
+	public void replaceOnErrand(final Long errandId, final String municipalityId, final String namespace, final List<Status> statuses) {
+		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace);
 		oldErrand.setStatuses(new ArrayList<>(statuses.stream().map(EntityMapper::toStatusEntity).toList()));
 		final var updatedErrand = errandRepository.save(oldErrand);
 		processService.updateProcess(updatedErrand);
 	}
 
-	private ErrandEntity getErrandByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
+	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace) {
 		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
-				format(ERRAND_WAS_NOT_FOUND, errandId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 	}
-
 }

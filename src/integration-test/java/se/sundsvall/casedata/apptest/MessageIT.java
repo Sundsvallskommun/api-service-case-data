@@ -88,7 +88,7 @@ class MessageIT extends AbstractAppTest {
 	void test04_getMessageAttachmentStreamed() throws Exception {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(PATH + "/" + MESSAGE_ID + "/attachments/" + MESSAGE_ATTACHMENT_ID + "/streamed")
+			.withServicePath(PATH + "/" + MESSAGE_ID + "/attachments/" + MESSAGE_ATTACHMENT_ID)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(IMAGE_PNG_VALUE))
 			.withExpectedBinaryResponse("test_image.png")
@@ -99,7 +99,7 @@ class MessageIT extends AbstractAppTest {
 	void test05_getMessageAttachmentStreamedNotFound() {
 		setupCall()
 			.withHttpMethod(GET)
-			.withServicePath(PATH + "/" + MESSAGE_ID + "/attachments/nonexistingid/streamed")
+			.withServicePath(PATH + "/" + MESSAGE_ID + "/attachments/nonexistingid")
 			.withExpectedResponseStatus(NOT_FOUND)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();

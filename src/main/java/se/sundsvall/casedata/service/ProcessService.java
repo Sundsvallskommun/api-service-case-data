@@ -17,7 +17,6 @@ public class ProcessService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessService.class);
 
 	private final ParkingPermitIntegration parkingPermitIntegration;
-
 	private final LandAndExploitationIntegration landAndExploitationIntegration;
 
 	public ProcessService(final ParkingPermitIntegration parkingPermitIntegration,

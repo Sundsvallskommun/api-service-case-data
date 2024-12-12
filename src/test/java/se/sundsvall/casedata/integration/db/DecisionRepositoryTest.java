@@ -43,13 +43,14 @@ class DecisionRepositoryTest {
 	private DecisionRepository decisionRepository;
 
 	@Test
-	void findById() {
+	void findByIdAndErrandIdAndMunicipalityIdAndNamespace() {
 
 		// Arrange
-		final var id = 1L;
+		final var id = 2L;
+		final var errandId = 1L;
 
 		// Act
-		final var result = decisionRepository.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
+		final var result = decisionRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
 
 		// Assert
 		assertThat(result.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
@@ -59,16 +60,16 @@ class DecisionRepositoryTest {
 	}
 
 	@Test
-	void findByIdNothingFound() {
+	void findByIdAndErrandIdAndMunicipalityIdAndNamespaceNothingFound() {
 
 		// Arrange
 		final var id = 666L;
+		final var errandId = 1L;
 
 		// Act
-		final var result = decisionRepository.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
+		final var result = decisionRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
 	}
-
 }

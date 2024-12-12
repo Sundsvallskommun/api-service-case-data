@@ -41,7 +41,7 @@ class FacilityRepositoryTest {
 	private FacilityRepository facilityRepository;
 
 	@Test
-	void findByIdAndErrandIdAndMunicipalityId() {
+	void findByIdAndErrandIdAndMunicipalityIdAndNamespace() {
 
 		// Arrange
 		final var id = 1L;
@@ -57,7 +57,7 @@ class FacilityRepositoryTest {
 	}
 
 	@Test
-	void findByIdAndErrandIdAndMunicipalityIdNothingFound() {
+	void findByIdAndErrandIdAndMunicipalityIdAndNamespaceNothingFound() {
 
 		// Arrange
 		final var id = 666L;

@@ -119,5 +119,4 @@ class NoteRepositoryTest {
 		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 		assertThat(result.getVersion()).isEqualTo(version);
 	}
-
 }

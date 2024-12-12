@@ -53,13 +53,14 @@ class StakeholderRepositoryTest {
 	private StakeholderRepository stakeholderRepository;
 
 	@Test
-	void findById() {
+	void findByIdAndErrandIdAndMunicipalityIdAndNamespace() {
 
 		// Arrange
-		final var id = 1L;
+		final var id = 2L;
+		final var errandId = 1L;
 
 		// Act
-		final var result = stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
+		final var result = stakeholderRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
 
 		// Assert
 		assertThat(result.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
@@ -144,5 +145,4 @@ class StakeholderRepositoryTest {
 		assertThat(result.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(result.getNamespace()).isEqualTo(NAMESPACE);
 	}
-
 }

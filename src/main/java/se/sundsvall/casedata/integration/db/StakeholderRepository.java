@@ -11,6 +11,5 @@ import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 @CircuitBreaker(name = "stakeholderRepository")
 public interface StakeholderRepository extends JpaRepository<StakeholderEntity, Long>, JpaSpecificationExecutor<StakeholderEntity> {
 
-	Optional<StakeholderEntity> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
-
+	Optional<StakeholderEntity> findByIdAndErrandIdAndMunicipalityIdAndNamespace(final Long id, final Long errandId, final String municipalityId, final String namespace);
 }

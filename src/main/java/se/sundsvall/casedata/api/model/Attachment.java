@@ -34,6 +34,9 @@ public class Attachment {
 	@Schema(description = "The municipality ID", example = "2281", accessMode = READ_ONLY)
 	private String municipalityId;
 
+	@Schema(description = "Errand id associated with the attachment", accessMode = READ_ONLY, example = "123456")
+	private Long errandId;
+
 	@Schema(description = "Namespace", example = "my.namespace", accessMode = READ_ONLY)
 	private String namespace;
 
@@ -63,9 +66,6 @@ public class Attachment {
 
 	@Schema(description = "Base64 encoded file content", example = "dGVzdCBjb250ZW50")
 	private String file;
-
-	@Schema(description = "Errand id associated with the attachment", example = "123456")
-	private Long errandId;
 
 	@Schema(description = "Additional parameters for the attachment", example = "{\"key1\": \"value1\", \"key2\": \"value2\"}")
 	@ValidMapValueSize(max = 8192)

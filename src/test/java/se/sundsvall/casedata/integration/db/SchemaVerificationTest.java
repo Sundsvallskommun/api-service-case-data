@@ -1,9 +1,13 @@
 package se.sundsvall.casedata.integration.db;
 
+import static java.nio.file.Files.readString;
+import static java.nio.file.Paths.get;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
-import java.util.Objects;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,20 +23,17 @@ class SchemaVerificationTest {
 	private String generatedSchemaFile;
 
 	@Test
-	void verifySchemaUpdates() {
-		final var storedSchema = getResourceFile();
-		final var generatedSchema = getFile(generatedSchemaFile);
+	void verifySchemaUpdates() throws IOException, URISyntaxException {
 
-		assertThat(storedSchema).as(String.format("Please reflect modifications to entities in file: %s", STORED_SCHEMA_FILE))
-			.hasSameTextualContentAs(generatedSchema);
+		final var storedSchema = getResourceString(STORED_SCHEMA_FILE);
+		final var generatedSchema = Files.readString(Path.of(generatedSchemaFile));
+
+		assertThat(storedSchema)
+			.as("Please reflect modifications to entities in file: %s".formatted(STORED_SCHEMA_FILE))
+			.isEqualToNormalizingWhitespace(generatedSchema);
 	}
 
-	private File getResourceFile() {
-		return new File(Objects.requireNonNull(getClass().getClassLoader().getResource(STORED_SCHEMA_FILE)).getFile());
+	private String getResourceString(final String fileName) throws IOException, URISyntaxException {
+		return readString(get(getClass().getClassLoader().getResource(fileName).toURI()));
 	}
-
-	private File getFile(final String fileName) {
-		return new File(fileName);
-	}
-
 }

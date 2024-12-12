@@ -79,7 +79,7 @@ public class MessageMapper {
 			entity.withAttachments(toAttachmentEntities(request.getAttachments(),
 				request.getMessageId(), municipalityId, namespace));
 		}
-		System.out.println(entity.build());
+
 		return entity.build();
 	}
 

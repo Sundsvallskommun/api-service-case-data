@@ -12,7 +12,4 @@ import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 public interface FacilityRepository extends JpaRepository<FacilityEntity, Long>, JpaSpecificationExecutor<FacilityEntity> {
 
 	Optional<FacilityEntity> findByIdAndErrandIdAndMunicipalityIdAndNamespace(final Long id, final Long errandId, final String municipalityId, final String namespace);
-
-	Optional<FacilityEntity> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
-
 }

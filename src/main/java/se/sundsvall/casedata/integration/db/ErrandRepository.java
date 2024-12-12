@@ -17,8 +17,6 @@ public interface ErrandRepository extends JpaRepository<ErrandEntity, Long>, Jpa
 
 	Page<ErrandEntity> findAllByIdInAndMunicipalityIdAndNamespace(final List<Long> id, final String municipalityId, final String namespace, final Pageable pageable);
 
-	List<ErrandEntity> findAllByErrandNumberStartingWith(final String caseTypeAbbreviation);
-
 	List<ErrandEntity> findAllByMunicipalityIdAndNamespace(final String municipalityId, final String namespace);
 
 	Optional<ErrandEntity> findByExternalCaseId(final String externalCaseId);
@@ -29,8 +27,5 @@ public interface ErrandRepository extends JpaRepository<ErrandEntity, Long>, Jpa
 
 	boolean existsByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
 
-	void deleteByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
-
 	List<ErrandEntity> findAllBySuspendedToBefore(OffsetDateTime now);
-
 }

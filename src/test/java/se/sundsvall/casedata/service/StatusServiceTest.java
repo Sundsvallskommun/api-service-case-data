@@ -33,7 +33,7 @@ class StatusServiceTest {
 	private ProcessService processServiceMock;
 
 	@Test
-	void replaceStatusesOnErrandTest() {
+	void replaceOnErrand() {
 
 		// Arrange
 		final var errand = createErrandEntity();
@@ -42,7 +42,7 @@ class StatusServiceTest {
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
-		statusService.replaceStatusesOnErrand(123L, MUNICIPALITY_ID, NAMESPACE, statuses);
+		statusService.replaceOnErrand(123L, MUNICIPALITY_ID, NAMESPACE, statuses);
 
 		// Assert
 		assertThat(errand.getStatuses()).isNotEmpty().hasSize(3).allSatisfy(status -> {
@@ -57,7 +57,7 @@ class StatusServiceTest {
 	}
 
 	@Test
-	void addStatusToErrandTest() {
+	void addToErrand() {
 
 		// Arrange
 		final var errand = createErrandEntity();
@@ -66,7 +66,7 @@ class StatusServiceTest {
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
-		statusService.addStatusToErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, newStatus);
+		statusService.addToErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, newStatus);
 
 		// Assert
 		assertThat(errand.getStatuses()).isNotEmpty().hasSize(2);
@@ -75,5 +75,4 @@ class StatusServiceTest {
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
 	}
-
 }

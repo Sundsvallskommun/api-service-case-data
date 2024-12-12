@@ -11,17 +11,6 @@ import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 @CircuitBreaker(name = "notificationRepository")
 public interface NotificationRepository extends JpaRepository<NotificationEntity, String> {
 
-	boolean existsByIdAndNamespaceAndMunicipalityIdAndErrandId(
-		final String id,
-		final String namespace,
-		final String municipalityId,
-		final Long errandId);
-
-	Optional<NotificationEntity> findByIdAndNamespaceAndMunicipalityId(
-		String id,
-		String namespace,
-		String municipalityId);
-
 	List<NotificationEntity> findAllByNamespaceAndMunicipalityIdAndOwnerId(
 		String namespace,
 		String municipalityId,

@@ -66,7 +66,7 @@ class SuspensionWorkerTest {
 
 		// Assert
 		verify(errandsRepositoryMock).findAllBySuspendedToBefore(any(OffsetDateTime.class));
-		verify(notificationServiceMock).createNotification(any(), any(), notificationCaptor.capture());
+		verify(notificationServiceMock).create(any(), any(), notificationCaptor.capture());
 
 		final var notification = notificationCaptor.getValue();
 		assertThat(notification).isNotNull();

@@ -30,7 +30,6 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}")
 @Tag(name = "History", description = "History operations")
-@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 	Problem.class, ConstraintViolationProblem.class
 })))
@@ -45,7 +44,9 @@ class HistoryResource {
 	}
 
 	@GetMapping(path = "/attachments/{attachmentId}/history", produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get attachment history for an errand")
+	@Operation(description = "Get attachment history for an errand", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<List<History>> getAttachmentHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -56,7 +57,9 @@ class HistoryResource {
 	}
 
 	@GetMapping(path = "/decisions/{decisionId}/history", produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get decision history for an errand")
+	@Operation(description = "Get decision history for an errand", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<List<History>> getDecisionHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -67,7 +70,9 @@ class HistoryResource {
 	}
 
 	@GetMapping(path = "/history", produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get errand history for an errand")
+	@Operation(description = "Get errand history for an errand", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<List<History>> getErrandHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -77,7 +82,9 @@ class HistoryResource {
 	}
 
 	@GetMapping(path = "/facilities/{facilityId}/history", produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get facility history for an errand")
+	@Operation(description = "Get facility history for an errand", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<List<History>> getFacilityHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -88,7 +95,9 @@ class HistoryResource {
 	}
 
 	@GetMapping(path = "/notes/{noteId}/history", produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get note history for an errand")
+	@Operation(description = "Get note history for an errand", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<List<History>> getNoteHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -99,7 +108,9 @@ class HistoryResource {
 	}
 
 	@GetMapping(path = "stakeholders/{stakeholderId}/history", produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get stakeholder history for an errand")
+	@Operation(description = "Get stakeholder history for an errand", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<List<History>> getStakeholderHistory(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,

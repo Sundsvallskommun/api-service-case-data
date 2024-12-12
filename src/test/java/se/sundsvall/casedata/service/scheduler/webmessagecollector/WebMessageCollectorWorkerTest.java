@@ -113,12 +113,10 @@ class WebMessageCollectorWorkerTest {
 		final var attachmentData = MessageAttachmentDataEntity.builder().withFile(blob).build();
 
 		when(webMessageCollectorClientMock.getMessages(MUNICIPALITY_ID, familyId, instance)).thenReturn(messageDTOs);
-
-		when(errandRepositoryMock.findByErrandNumber(errandNumber)).thenReturn(Optional.ofNullable(errandEntity));
 		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(errandEntity));
 		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(MUNICIPALITY_ID, Map.of(instance, List.of(familyId))));
 		when(messageMapperMock.toMessageEntity(errandId, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(message);
-		when(messageRepositoryMock.saveAndFlush(any(MessageEntity.class))).thenReturn(message);
+		when(messageRepositoryMock.saveAndFlush(any(MessageEntity.class))).thenReturn(message.withErrandId(errandId));
 		when(messageMapperMock.toAttachmentEntity(any(generated.se.sundsvall.webmessagecollector.MessageAttachment.class), any(String.class), any(String.class), any(String.class))).thenReturn(createAttachment());
 		when(webMessageCollectorClientMock.getAttachment(any(String.class), anyInt())).thenReturn(bytes);
 		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(attachmentData);
@@ -145,6 +143,7 @@ class WebMessageCollectorWorkerTest {
 		});
 
 		verify(attachmentRepositoryMock).saveAndFlush(attachmentCaptor.capture());
+		assertThat(attachmentCaptor.getValue()).isNotNull();
 		assertThat(attachmentCaptor.getValue().getErrandId()).isEqualTo(errandId);
 		assertThat(attachmentCaptor.getValue().getName()).isEqualTo("fileName");
 	}

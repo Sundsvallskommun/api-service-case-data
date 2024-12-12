@@ -63,14 +63,15 @@ class ErrandResource {
 	}
 
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
-	@Operation(description = "Create errand (without attachments). Add attachments to errand with PATCH /errands/{id}/attachments afterwards.")
-	@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
+	@Operation(description = "Create errand (without attachments). Add attachments to errand with PATCH /errands/{id}/attachments afterwards.", responses = {
+		@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
+	})
 	ResponseEntity<Void> postErrands(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@RequestBody @Valid final Errand errand) {
 
-		final Errand result = errandService.createErrand(errand, municipalityId, namespace);
+		final Errand result = errandService.create(errand, municipalityId, namespace);
 		return created(
 			fromPath("/{municipalityId}/{namespace}/errands/{id}")
 				.buildAndExpand(municipalityId, namespace, result.getId())
@@ -80,8 +81,9 @@ class ErrandResource {
 	}
 
 	@GetMapping(path = "/{errandId}", produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get errand by ID.")
-	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	@Operation(description = "Get errand by ID.", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<Errand> getErrandById(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -91,15 +93,16 @@ class ErrandResource {
 	}
 
 	@PatchMapping(path = "/{errandId}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
-	@Operation(description = "Update errand.")
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	@Operation(description = "Update errand.", responses = {
+		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<Void> patchErrand(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final PatchErrand patchErrand) {
 
-		errandService.updateErrand(errandId, municipalityId, namespace, patchErrand);
+		errandService.update(errandId, municipalityId, namespace, patchErrand);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -107,22 +110,24 @@ class ErrandResource {
 
 	@Hidden // Should be a hidden operation in the API.
 	@DeleteMapping(path = "/{errandId}", produces = ALL_VALUE)
-	@Operation(description = "Delete errand by ID.")
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	@Operation(description = "Delete errand by ID.", hidden = true, responses = {
+		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<Void> deleteErrandById(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId) {
 
-		errandService.deleteByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
+		errandService.delete(errandId, municipalityId, namespace);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
 
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get errands with or without query. The query is very flexible and allows you as a client to control a lot yourself.")
-	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	@Operation(description = "Get errands with or without query. The query is very flexible and allows you as a client to control a lot yourself.", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<Page<Errand>> getErrands(
 		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -132,10 +137,6 @@ class ErrandResource {
 			schema = @Schema(implementation = String.class)) @Filter final Specification<ErrandEntity> filter,
 		@ParameterObject final Pageable pageable) {
 
-		return ok(errandService.findAll(
-			filter,
-			municipalityId,
-			namespace,
-			pageable));
+		return ok(errandService.findAll(filter, municipalityId, namespace, pageable));
 	}
 }

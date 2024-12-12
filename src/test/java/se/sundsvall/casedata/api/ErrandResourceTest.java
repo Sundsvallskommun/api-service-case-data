@@ -50,7 +50,7 @@ class ErrandResourceTest {
 			.expectStatus().isNoContent();
 
 		// Assert
-		verify(errandServiceMock).deleteByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandServiceMock);
 	}
 
@@ -65,7 +65,7 @@ class ErrandResourceTest {
 		final var facilities = List.of(facility);
 		body.setFacilities(facilities);
 
-		when(errandServiceMock.createErrand(body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(body);
+		when(errandServiceMock.create(body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(body);
 
 		// Act
 		webTestClient.post()
@@ -78,7 +78,7 @@ class ErrandResourceTest {
 			.expectHeader().location("/2281/my.namespace/errands/" + body.getId());
 
 		// Assert
-		verify(errandServiceMock).createErrand(body, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandServiceMock);
 	}
 

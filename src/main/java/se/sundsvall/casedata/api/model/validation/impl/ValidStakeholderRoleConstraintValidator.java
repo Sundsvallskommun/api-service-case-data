@@ -31,5 +31,4 @@ public class ValidStakeholderRoleConstraintValidator implements ConstraintValida
 		}
 		return isValid;
 	}
-
 }

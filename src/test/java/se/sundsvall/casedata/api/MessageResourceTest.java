@@ -47,7 +47,7 @@ class MessageResourceTest {
 		final var errandId = new Random().nextLong(1, 100000);
 		final var messages = List.of(MessageResponse.builder().build());
 
-		when(messageServiceMock.getMessagesByErrandId(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
+		when(messageServiceMock.findMessages(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
 
 		// Act
 		final var response = webTestClient.get()
@@ -61,7 +61,7 @@ class MessageResourceTest {
 
 		// Assert
 		assertThat(response).isEqualTo(messages);
-		verify(messageServiceMock).getMessagesByErrandId(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageServiceMock).findMessages(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 
@@ -73,7 +73,7 @@ class MessageResourceTest {
 		final var messageId = randomUUID().toString();
 		final var message = MessageResponse.builder().build();
 
-		when(messageServiceMock.getMessageById(errandId, MUNICIPALITY_ID, NAMESPACE, messageId)).thenReturn(message);
+		when(messageServiceMock.findMessage(errandId, MUNICIPALITY_ID, NAMESPACE, messageId)).thenReturn(message);
 
 		// Act
 		final var response = webTestClient.get()
@@ -87,7 +87,7 @@ class MessageResourceTest {
 
 		// Assert
 		assertThat(response).isEqualTo(message);
-		verify(messageServiceMock).getMessageById(errandId, MUNICIPALITY_ID, NAMESPACE, messageId);
+		verify(messageServiceMock).findMessage(errandId, MUNICIPALITY_ID, NAMESPACE, messageId);
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 
@@ -95,7 +95,11 @@ class MessageResourceTest {
 	void postMessage() {
 		// Arrange
 		final var errandId = 123L;
-		final var request = MessageRequest.builder().build();
+		final var messageId = "the-message-id";
+		final var request = MessageRequest.builder().withMessageId(messageId).build();
+
+		when(messageServiceMock.create(errandId, request, MUNICIPALITY_ID, NAMESPACE))
+			.thenReturn(MessageResponse.builder().withMessageId(messageId).build());
 
 		// Act
 		webTestClient.post()
@@ -103,11 +107,12 @@ class MessageResourceTest {
 			.contentType(APPLICATION_JSON)
 			.bodyValue(request)
 			.exchange()
-			.expectStatus().isNoContent()
+			.expectStatus().isCreated()
+			.expectHeader().location("/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + errandId + "/messages/" + messageId)
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(messageServiceMock).createMessage(errandId, request, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageServiceMock).create(errandId, request, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 
@@ -139,12 +144,12 @@ class MessageResourceTest {
 
 		// Act
 		webTestClient.get()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{messageId}/attachments/{attachmentId}/streamed").build(MUNICIPALITY_ID, NAMESPACE, errandId, messageId, attachmentId))
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{messageId}/attachments/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, messageId, attachmentId))
 			.exchange()
 			.expectStatus().isOk();
 
 		// Assert
-		verify(messageServiceMock).getMessageAttachmentStreamed(eq(errandId), eq(attachmentId), eq(MUNICIPALITY_ID), eq(NAMESPACE), any());
+		verify(messageServiceMock).findMessageAttachmentAsStreamedResponse(eq(errandId), eq(attachmentId), eq(MUNICIPALITY_ID), eq(NAMESPACE), any());
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 }

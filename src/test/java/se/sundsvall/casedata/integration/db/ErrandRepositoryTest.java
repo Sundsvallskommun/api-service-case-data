@@ -54,7 +54,7 @@ class ErrandRepositoryTest {
 	private ErrandRepository errandRepository;
 
 	@Test
-	void findAllByIdIn() {
+	void findAllByIdInAndMunicipalityIdAndNamespace() {
 
 		// Arrange
 		final var idList = List.of(2L, 3L);
@@ -73,7 +73,7 @@ class ErrandRepositoryTest {
 	}
 
 	@Test
-	void findAllByIdInNothingFound() {
+	void findAllByIdInAndMunicipalityIdAndNamespaceNothingFound() {
 
 		// Arrange
 		final var idList = List.of(666L, 777L);
@@ -81,35 +81,6 @@ class ErrandRepositoryTest {
 
 		// Act
 		final var result = errandRepository.findAllByIdInAndMunicipalityIdAndNamespace(idList, MUNICIPALITY_ID, NAMESPACE, pageRequest);
-
-		// Assert
-		assertThat(result).isNotNull().isEmpty();
-	}
-
-	@Test
-	void findAllByErrandNumberStartingWith() {
-
-		// Arrange
-		final var caseTypeAbbreviation = "PRH";
-
-		// Act
-		final var result = errandRepository.findAllByErrandNumberStartingWith(caseTypeAbbreviation);
-
-		// Assert
-		assertThat(result)
-			.isNotNull()
-			.extracting(ErrandEntity::getId, ErrandEntity::getErrandNumber, ErrandEntity::getCaseTitleAddition, ErrandEntity::getCaseType)
-			.containsExactly(tuple(3L, "PRH-2022-000029", "Nytt parkeringstillstånd", "PARKING_PERMIT"));
-	}
-
-	@Test
-	void findAllByErrandNumberStartingWithNothingFound() {
-
-		// Arrange
-		final var caseTypeAbbreviation = "NON-EXISTING";
-
-		// Act
-		final var result = errandRepository.findAllByErrandNumberStartingWith(caseTypeAbbreviation);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -165,7 +136,7 @@ class ErrandRepositoryTest {
 		final var errandNumber = "NON-EXISTING";
 
 		// Act
-		final var result = errandRepository.findByExternalCaseId(errandNumber);
+		final var result = errandRepository.findByErrandNumber(errandNumber);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();

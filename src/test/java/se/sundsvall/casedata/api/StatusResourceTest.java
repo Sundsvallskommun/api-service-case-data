@@ -47,7 +47,7 @@ class StatusResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(statusServiceMock).addStatusToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, status);
+		verify(statusServiceMock).addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, status);
 		verifyNoMoreInteractions(statusServiceMock);
 	}
 
@@ -67,7 +67,7 @@ class StatusResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(statusServiceMock).replaceStatusesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, statusList);
+		verify(statusServiceMock).replaceOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, statusList);
 		verifyNoMoreInteractions(statusServiceMock);
 	}
 

@@ -43,6 +43,7 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 	Problem.class, ConstraintViolationProblem.class
 })))
+@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 class MessageResource {
 
@@ -53,38 +54,41 @@ class MessageResource {
 	}
 
 	@GetMapping(path = "/errands/{errandId}/messages", produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get all messages for an errand")
-	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<List<MessageResponse>> getMessages(
+	@Operation(description = "Get all messages for an errand", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
+	ResponseEntity<List<MessageResponse>> getMessagesByErrand(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId) {
 
-		return ok(service.getMessagesByErrandId(errandId, municipalityId, namespace));
+		return ok(service.findMessages(errandId, municipalityId, namespace));
 	}
 
 	@GetMapping(path = "/errands/{errandId}/messages/{messageId}", produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get all messages for an errand")
-	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<MessageResponse> getMessageById(
+	@Operation(description = "Get all messages for an errand", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
+	ResponseEntity<MessageResponse> getMessageByMesssageId(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "messageId") final String messageId) {
 
-		return ok(service.getMessageById(errandId, municipalityId, namespace, messageId));
+		return ok(service.findMessage(errandId, municipalityId, namespace, messageId));
 	}
 
 	@PostMapping(path = "/errands/{errandId}/messages", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
-	@Operation(description = "Save a message on an errand")
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	ResponseEntity<Void> patchErrandWithMessage(
+	@Operation(description = "Save a message on an errand", responses = {
+		@ApiResponse(responseCode = "201", description = "No content - Successful operation", useReturnTypeSchema = true)
+	})
+	ResponseEntity<Void> createMessage(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody final MessageRequest request) {
 
-		final var result = service.createMessage(errandId, request, municipalityId, namespace);
+		final var result = service.create(errandId, request, municipalityId, namespace);
 		return created(
 			fromPath("/{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}")
 				.buildAndExpand(municipalityId, namespace, errandId, result.getMessageId())
@@ -94,8 +98,9 @@ class MessageResource {
 	}
 
 	@PutMapping(path = "/errands/{errandId}/messages/{messageId}/viewed/{isViewed}", produces = ALL_VALUE)
-	@Operation(description = "Set viewed status for message")
-	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	@Operation(description = "Set viewed status for message", responses = {
+		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	})
 	ResponseEntity<Void> updateViewedStatus(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
@@ -109,15 +114,11 @@ class MessageResource {
 			.build();
 	}
 
-	@GetMapping(path = "/errands/{errandId}/messages/{messageId}/attachments/{attachmentId}/streamed", produces = ALL_VALUE)
-	@Operation(summary = "Get a streamed messageAttachment.", description = "Fetches the message attachment that matches the provided id in a streamed manner")
-	@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
-	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
-		Problem.class, ConstraintViolationProblem.class
-	})))
-	@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
-	@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
-	void getMessageAttachmentStreamed(
+	@GetMapping(path = "/errands/{errandId}/messages/{messageId}/attachments/{attachmentId}", produces = ALL_VALUE)
+	@Operation(summary = "Get a streamed messageAttachment.", description = "Fetches the message attachment that matches the provided id in a streamed manner", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
+	void getMessageAttachment(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@PathVariable(name = "errandId") final Long errandId,
@@ -125,6 +126,6 @@ class MessageResource {
 		@PathVariable(name = "attachmentId") final String attachmentId,
 		final HttpServletResponse response) {
 
-		service.getMessageAttachmentStreamed(errandId, attachmentId, municipalityId, namespace, response);
+		service.findMessageAttachmentAsStreamedResponse(errandId, attachmentId, municipalityId, namespace, response);
 	}
 }

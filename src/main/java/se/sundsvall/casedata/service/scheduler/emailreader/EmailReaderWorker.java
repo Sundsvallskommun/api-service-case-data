@@ -58,7 +58,7 @@ public class EmailReaderWorker {
 			errandRepository.findByErrandNumber(errandNumber)
 				.filter(errand -> !messageRepository.existsById(email.getId()))
 				.ifPresent(errand -> {
-					messageRepository.save(emailReaderMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace()).withErrandNumber(errandNumber));
+					messageRepository.save(emailReaderMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace()).withErrandId(errand.getId()));
 					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email, errand.getMunicipalityId(), errand.getNamespace()).stream()
 						.map(attachment -> attachment.withErrandId(errand.getId()).withMunicipalityId(emailReaderProperties.municipalityId()))
 						.toList());
@@ -69,5 +69,4 @@ public class EmailReaderWorker {
 			LOG.error("Error when processing email with subject: {}", email.getSubject(), e);
 		}
 	}
-
 }

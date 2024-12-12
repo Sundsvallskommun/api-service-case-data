@@ -11,6 +11,5 @@ import se.sundsvall.casedata.integration.db.model.NoteEntity;
 @CircuitBreaker(name = "noteRepository")
 public interface NoteRepository extends JpaRepository<NoteEntity, Long>, JpaSpecificationExecutor<NoteEntity> {
 
-	Optional<NoteEntity> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
-
+	Optional<NoteEntity> findByIdAndErrandIdAndMunicipalityIdAndNamespace(final Long id, Long errandId, final String municipalityId, final String namespace);
 }

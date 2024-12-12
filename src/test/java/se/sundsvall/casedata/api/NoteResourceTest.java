@@ -42,7 +42,7 @@ class NoteResourceTest {
 		final var noteId = 456L;
 		final var note = createNote();
 
-		when(noteServiceMock.getNoteOnErrand(errandId, noteId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(note);
+		when(noteServiceMock.findNote(errandId, noteId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(note);
 
 		// Act
 		final var response = webTestClient.get()
@@ -56,7 +56,7 @@ class NoteResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(noteServiceMock).getNoteOnErrand(errandId, noteId, MUNICIPALITY_ID, NAMESPACE);
+		verify(noteServiceMock).findNote(errandId, noteId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(noteServiceMock);
 	}
 
@@ -66,7 +66,7 @@ class NoteResourceTest {
 		final var errandId = 123L;
 		final var note = createNote();
 
-		when(noteServiceMock.getAllNotesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, Optional.empty())).thenReturn(List.of(note));
+		when(noteServiceMock.findNotes(errandId, MUNICIPALITY_ID, NAMESPACE, Optional.empty())).thenReturn(List.of(note));
 
 		// Act
 		final var response = webTestClient.get()
@@ -80,7 +80,7 @@ class NoteResourceTest {
 
 		// Assert
 		assertThat(response).hasSize(1);
-		verify(noteServiceMock).getAllNotesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, Optional.empty());
+		verify(noteServiceMock).findNotes(errandId, MUNICIPALITY_ID, NAMESPACE, Optional.empty());
 		verifyNoMoreInteractions(noteServiceMock);
 	}
 
@@ -101,7 +101,7 @@ class NoteResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(noteServiceMock).updateNoteOnErrand(errandId, noteId, MUNICIPALITY_ID, NAMESPACE, note);
+		verify(noteServiceMock).update(errandId, noteId, MUNICIPALITY_ID, NAMESPACE, note);
 		verifyNoMoreInteractions(noteServiceMock);
 	}
 
@@ -119,7 +119,7 @@ class NoteResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(noteServiceMock).deleteNoteOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, noteId);
+		verify(noteServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE, noteId);
 		verifyNoMoreInteractions(noteServiceMock);
 	}
 
@@ -131,7 +131,7 @@ class NoteResourceTest {
 		final var note = createNote();
 		note.setId(noteId);
 
-		when(noteServiceMock.addNoteToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, note)).thenReturn(note);
+		when(noteServiceMock.addNote(errandId, MUNICIPALITY_ID, NAMESPACE, note)).thenReturn(note);
 
 		// Act
 		webTestClient.patch()
@@ -144,7 +144,7 @@ class NoteResourceTest {
 			.expectHeader().location("/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/notes/" + noteId);
 
 		// Assert
-		verify(noteServiceMock).addNoteToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, note);
+		verify(noteServiceMock).addNote(errandId, MUNICIPALITY_ID, NAMESPACE, note);
 	}
 
 }

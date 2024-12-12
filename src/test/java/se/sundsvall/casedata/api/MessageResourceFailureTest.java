@@ -49,7 +49,7 @@ class MessageResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
 		assertThat(response.getDetail()).isEqualTo(
 			"""
-				Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.MessageResource.patchErrandWithMessage(java.lang.String,java.lang.String,java.lang.Long,se.sundsvall.casedata.api.model.MessageRequest)""");
+				Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.MessageResource.createMessage(java.lang.String,java.lang.String,java.lang.Long,se.sundsvall.casedata.api.model.MessageRequest)""");
 	}
 
 }

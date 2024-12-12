@@ -110,7 +110,7 @@ class MessageRepositoryTest {
 	void findAllByErrandIdAndMunicipalityIdAndNamespaceNothingFound() {
 
 		// Arrange
-		final var errandId = 999L; // NON-EXISTING;
+		final var errandId = 999L;
 
 		// Act
 		final var result = messageRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
