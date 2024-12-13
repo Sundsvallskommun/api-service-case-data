@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import se.sundsvall.casedata.integration.db.model.enums.ContactType;
 
@@ -13,7 +12,6 @@ import se.sundsvall.casedata.integration.db.model.enums.ContactType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(setterPrefix = "with")
-@EqualsAndHashCode
 public class ContactInformation {
 
 	@Schema(description = "The type of contact information", example = "EMAIL")

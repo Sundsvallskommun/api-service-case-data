@@ -5,7 +5,6 @@ import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
@@ -13,7 +12,6 @@ import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Builder(setterPrefix = "with")
 public class PatchNotification {
 

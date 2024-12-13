@@ -5,13 +5,11 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Builder(setterPrefix = "with")
 public class Law {
 
@@ -30,5 +28,4 @@ public class Law {
 	@Schema(description = "Article of the law", example = "1")
 	@Size(max = 255)
 	private String article;
-
 }

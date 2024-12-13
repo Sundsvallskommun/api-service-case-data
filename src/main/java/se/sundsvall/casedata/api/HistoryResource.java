@@ -48,9 +48,9 @@ class HistoryResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<List<History>> getAttachmentHistory(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "attachmentId") final Long attachmentId) {
 
 		return ok(historyService.findAttachmentHistoryOnErrand(errandId, attachmentId, municipalityId, namespace));
@@ -61,9 +61,9 @@ class HistoryResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<List<History>> getDecisionHistory(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "decisionId") final Long decisionId) {
 
 		return ok(historyService.findDecisionHistoryOnErrand(errandId, decisionId, municipalityId, namespace));
@@ -74,9 +74,9 @@ class HistoryResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<List<History>> getErrandHistory(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId) {
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId) {
 
 		return ok(historyService.findErrandHistory(errandId, municipalityId, namespace));
 	}
@@ -86,9 +86,9 @@ class HistoryResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<List<History>> getFacilityHistory(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "facilityId") final Long facilityId) {
 
 		return ok(historyService.findFacilityHistoryOnErrand(errandId, facilityId, municipalityId, namespace));
@@ -99,9 +99,9 @@ class HistoryResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<List<History>> getNoteHistory(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "noteId") final Long noteId) {
 
 		return ok(historyService.findNoteHistoryOnErrand(errandId, noteId, municipalityId, namespace));
@@ -112,9 +112,9 @@ class HistoryResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<List<History>> getStakeholderHistory(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId) {
 
 		return ok(historyService.findStakeholderHistoryOnErrand(errandId, stakeholderId, municipalityId, namespace));

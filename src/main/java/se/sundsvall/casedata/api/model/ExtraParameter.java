@@ -9,9 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(setterPrefix = "with")
 public class ExtraParameter {
 
 	@Schema(description = "Parameter key")

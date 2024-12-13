@@ -8,9 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(setterPrefix = "with")
 @Schema(description = "Related errand for errand")
 public class RelatedErrand {
 
@@ -23,5 +23,4 @@ public class RelatedErrand {
 
 	@Schema(description = "Relation reason", example = "Related because of appealed decision on errand")
 	private String relationReason;
-
 }

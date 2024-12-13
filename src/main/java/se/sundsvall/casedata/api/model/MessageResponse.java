@@ -21,11 +21,9 @@ import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 
 @Data
-@Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@EqualsAndHashCode
+@Builder(setterPrefix = "with")
 public class MessageResponse {
 
 	@Schema(description = "The message ID", example = "12")

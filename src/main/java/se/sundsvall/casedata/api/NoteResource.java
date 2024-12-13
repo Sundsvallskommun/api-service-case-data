@@ -62,9 +62,9 @@ class NoteResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Note> getNoteById(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "noteId") final Long noteId) {
 
 		return ok(noteService.findNote(errandId, noteId, municipalityId, namespace));
@@ -75,9 +75,9 @@ class NoteResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<List<Note>> getNotesByErrandId(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@RequestParam final Optional<NoteType> noteType) {
 
 		return ok(noteService.findNotes(errandId, municipalityId, namespace, noteType));
@@ -88,9 +88,9 @@ class NoteResource {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> updateNoteOnErrand(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "noteId") final Long noteId,
 		@RequestBody @Valid final Note note) {
 
@@ -105,9 +105,9 @@ class NoteResource {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> deleteNoteOnErrand(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "noteId") final Long noteId) {
 
 		noteService.delete(errandId, municipalityId, namespace, noteId);
@@ -121,9 +121,9 @@ class NoteResource {
 		@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource", schema = @Schema(type = "string")), useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> updateErrandWithNote(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final Note note) {
 
 		final var result = noteService.addNote(errandId, municipalityId, namespace, note);

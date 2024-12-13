@@ -62,9 +62,9 @@ class StakeholderResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Stakeholder> getStakeholderOnErrand(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId) {
 
 		return ok(stakeholderService.findStakeholder(errandId, stakeholderId, municipalityId, namespace));
@@ -75,9 +75,9 @@ class StakeholderResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<List<Stakeholder>> getAllStakeholdersOnErrand(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@RequestParam(required = false) final Optional<String> stakeholderRole) {
 
 		return stakeholderRole.map(role -> ok(stakeholderService.findStakeholdersByRole(errandId, role, municipalityId, namespace)))
@@ -89,9 +89,9 @@ class StakeholderResource {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> updateStakeholderOnErrand(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId,
 		@RequestBody @Valid final Stakeholder stakeholder) {
 
@@ -106,10 +106,10 @@ class StakeholderResource {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> replaceStakeholderOnErrand(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId,
-		@PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final Stakeholder stakeholder) {
 
 		stakeholderService.replaceOnErrand(errandId, stakeholderId, municipalityId, namespace, stakeholder);
@@ -123,9 +123,9 @@ class StakeholderResource {
 		@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource.", schema = @Schema(type = "string")), useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> updateErrandWithStakeholder(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final Stakeholder stakeholder) {
 
 		final var result = stakeholderService.addToErrand(errandId, municipalityId, namespace, stakeholder);
@@ -139,9 +139,9 @@ class StakeholderResource {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> replaceStakeholdersOnErrand(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final List<Stakeholder> stakeholderList) {
 
 		stakeholderService.replaceOnErrand(errandId, municipalityId, namespace, stakeholderList);
@@ -155,9 +155,9 @@ class StakeholderResource {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> deleteStakeholder(
-		@PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@PathVariable(name = "stakeholderId") final Long stakeholderId) {
 
 		stakeholderService.delete(errandId, municipalityId, namespace, stakeholderId);

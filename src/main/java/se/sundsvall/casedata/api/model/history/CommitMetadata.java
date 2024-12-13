@@ -7,13 +7,8 @@ import lombok.Data;
 public class CommitMetadata {
 
 	private String author;
-
 	private String commitDateInstant;
-
 	private double id;
-
 	private List<Object> properties;
-
 	private String commitDate;
-
 }

@@ -9,9 +9,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import se.sundsvall.casedata.api.model.validation.ValidMessageType;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
@@ -78,8 +76,7 @@ public class MessageRequest {
 	@Schema(description = "List of email headers on the message")
 	private List<EmailHeader> emailHeaders;
 
-	@Getter
-	@Setter
+	@Data
 	@NoArgsConstructor
 	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	@Builder(setterPrefix = "with")
@@ -97,7 +94,5 @@ public class MessageRequest {
 
 		@Schema(description = "The attachment content type", example = "text/plain")
 		private String contentType;
-
 	}
-
 }

@@ -7,17 +7,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import se.sundsvall.dept44.common.validators.annotation.ValidBase64;
 
 @Data
-@Builder(setterPrefix = "with")
-@EqualsAndHashCode
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(setterPrefix = "with")
 public class MessageAttachment {
 
 	@NotBlank
