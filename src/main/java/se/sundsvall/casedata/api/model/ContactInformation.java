@@ -18,7 +18,7 @@ public class ContactInformation {
 	private ContactType contactType;
 
 	@Size(max = 255)
-	@Schema(description = "The value of the contact information", example = "someEmail@sundsvall.se@")
+	@Schema(description = "The value of the contact information", example = "someEmail@sundsvall.se@", maxLength = 255)
 	private String value;
 
 }

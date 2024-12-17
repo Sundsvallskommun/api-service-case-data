@@ -17,50 +17,49 @@ public class Address {
 	@Schema(description = "Category of the address", example = "RESIDENTIAL")
 	private AddressCategory addressCategory;
 
-	@Schema(description = "Street name", example = "Testvägen")
+	@Schema(description = "Street name", example = "Testvägen", maxLength = 255)
 	@Size(max = 255)
 	private String street;
 
-	@Schema(description = "House number", example = "18")
+	@Schema(description = "House number", example = "18", maxLength = 255)
 	@Size(max = 255)
 	private String houseNumber;
 
-	@Schema(description = "Postal code", example = "123 45")
+	@Schema(description = "Postal code", example = "123 45", maxLength = 255)
 	@Size(max = 255)
 	private String postalCode;
 
-	@Schema(description = "City name", example = "Sundsvall")
+	@Schema(description = "City name", example = "Sundsvall", maxLength = 255)
 	@Size(max = 255)
 	private String city;
 
-	@Schema(description = "Country name", example = "Sverige")
+	@Schema(description = "Country name", example = "Sverige", maxLength = 255)
 	@Size(max = 255)
 	private String country;
 
-	@Schema(description = "Care of (c/o)", example = "Test Testorsson")
+	@Schema(description = "Care of (c/o)", example = "Test Testorsson", maxLength = 255)
 	@Size(max = 255)
 	private String careOf;
 
-	@Schema(description = "Attention to", example = "Test Testorsson")
+	@Schema(description = "Attention to", example = "Test Testorsson", maxLength = 255)
 	@Size(max = 255)
 	private String attention;
 
-	@Schema(description = "Property designation", example = "SUNDSVALL LJUSTA 7:2")
+	@Schema(description = "Property designation", example = "SUNDSVALL LJUSTA 7:2", maxLength = 255)
 	@Size(max = 255)
 	private String propertyDesignation;
 
-	@Schema(description = "Apartment number", example = "LGH 1001")
+	@Schema(description = "Apartment number", example = "LGH 1001", maxLength = 255)
 	@Size(max = 255)
 	private String apartmentNumber;
 
 	@Schema(description = "Indicates if the address is within a zoning plan area", example = "true")
 	private Boolean isZoningPlanArea;
 
-	@Schema(description = "Invoice marking, only in combination with addressCategory: INVOICE_ADDRESS", example = "1234567890")
+	@Schema(description = "Invoice marking, only in combination with addressCategory: INVOICE_ADDRESS", example = "1234567890", maxLength = 255)
 	@Size(max = 255)
 	private String invoiceMarking;
 
 	@Schema(description = "The location of the address", example = "{\"latitude\": 62.3908, \"longitude\": 17.3069}")
 	private Coordinates location;
-
 }

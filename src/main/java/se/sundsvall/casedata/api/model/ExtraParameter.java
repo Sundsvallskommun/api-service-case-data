@@ -23,5 +23,4 @@ public class ExtraParameter {
 
 	@Schema(description = "Parameter values")
 	private List<String> values;
-
 }

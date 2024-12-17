@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.api.model;
 
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,10 +21,10 @@ public class MessageAttachment {
 	@Schema(description = "The attachment ID", example = "12345678-1234-1234-1234-123456789012", requiredMode = REQUIRED)
 	private String attachmentId;
 
-	@Schema(description = "The municipality ID", example = "2281", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "The municipality ID", example = "2281", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Namespace", example = "my.namespace", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "Namespace", example = "my.namespace", accessMode = READ_ONLY)
 	private String namespace;
 
 	@NotBlank
@@ -36,5 +37,4 @@ public class MessageAttachment {
 	@ValidBase64
 	@Schema(description = "The attachment (file) content as a BASE64-encoded string", example = "aGVsbG8gd29ybGQK", requiredMode = REQUIRED)
 	private String content;
-
 }

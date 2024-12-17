@@ -1,12 +1,10 @@
 package se.sundsvall.casedata.api.model;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static jakarta.persistence.EnumType.STRING;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -33,14 +31,12 @@ public class MessageResponse {
 	private Long errandId;
 
 	@Schema(description = "The municipality ID", example = "2281")
-	@Size(max = 255)
 	private String municipalityId;
 
 	@Schema(description = "Namespace", example = "my.namespace")
-	@Size(max = 255)
 	private String namespace;
 
-	@Enumerated(EnumType.STRING)
+	@Enumerated(STRING)
 	@Schema(description = "If the message is inbound or outbound from the perspective of case-data/e-service.", example = "INBOUND")
 	private Direction direction;
 
@@ -104,17 +100,13 @@ public class MessageResponse {
 	@EqualsAndHashCode
 	public static class AttachmentResponse {
 
-		@NotBlank
 		@Schema(description = "The attachment ID", example = "aGVsbG8gd29ybGQK", requiredMode = REQUIRED)
 		private String attachmentId;
 
-		@NotBlank
 		@Schema(description = "The attachment filename", example = "test.txt", requiredMode = REQUIRED)
 		private String name;
 
 		@Schema(description = "The attachment content type", example = "text/plain")
 		private String contentType;
-
 	}
-
 }
