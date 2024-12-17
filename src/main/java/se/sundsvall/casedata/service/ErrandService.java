@@ -1,11 +1,11 @@
 package se.sundsvall.casedata.service;
 
-import static java.text.MessageFormat.format;
 import static java.util.Objects.isNull;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.NotificationService.EventType.CREATE;
 import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_CREATED;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
@@ -34,10 +34,7 @@ import se.sundsvall.casedata.service.util.mappers.PatchMapper;
 @Service
 public class ErrandService {
 
-	private static final String ERRAND_WAS_NOT_FOUND = "Errand with id: {0} was not found";
-
 	private final ErrandRepository errandRepository;
-
 	private final ProcessService processService;
 	private final NotificationService notificationService;
 
@@ -48,15 +45,7 @@ public class ErrandService {
 	}
 
 	public Errand findByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
-		return toErrand(errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
-				format(ERRAND_WAS_NOT_FOUND, errandId))));
-	}
-
-	public ErrandEntity getErrandByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
-		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
-				format(ERRAND_WAS_NOT_FOUND, errandId)));
+		return toErrand(findErrandEntity(errandId, municipalityId, namespace));
 	}
 
 	/**
@@ -80,7 +69,7 @@ public class ErrandService {
 	/**
 	 * Saves errand and update the process in ParkingPermit if it's a parking permit errand
 	 */
-	public Errand createErrand(final Errand errand, final String municipalityId, final String namespace) {
+	public Errand create(final Errand errand, final String municipalityId, final String namespace) {
 		final var errandEntity = toErrandEntity(errand, municipalityId, namespace);
 		final var resultErrand = errandRepository.save(errandEntity);
 
@@ -88,7 +77,7 @@ public class ErrandService {
 		startProcess(resultErrand);
 
 		// Create notification
-		notificationService.createNotification(municipalityId, namespace, Notification.builder()
+		notificationService.create(municipalityId, namespace, Notification.builder()
 			.withCreatedBy(errand.getCreatedBy())
 			.withDescription(NOTIFICATION_ERRAND_CREATED)
 			.withErrandId(resultErrand.getId())
@@ -99,14 +88,14 @@ public class ErrandService {
 		return toErrand(resultErrand);
 	}
 
-	public void updateErrand(final Long errandId, final String municipalityId, final String namespace, final PatchErrand patchErrand) {
-		final var oldErrand = getErrandByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
+	public void update(final Long errandId, final String municipalityId, final String namespace, final PatchErrand patchErrand) {
+		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace);
 		final var updatedErrand = PatchMapper.patchErrand(oldErrand, patchErrand);
 
 		processService.updateProcess(errandRepository.save(updatedErrand));
 
 		// Create notification
-		notificationService.createNotification(municipalityId, namespace, Notification.builder()
+		notificationService.create(municipalityId, namespace, Notification.builder()
 			.withCreatedBy(updatedErrand.getCreatedBy())
 			.withDescription(NOTIFICATION_ERRAND_UPDATED)
 			.withErrandId(updatedErrand.getId())
@@ -116,12 +105,16 @@ public class ErrandService {
 	}
 
 	@Transactional
-	public void deleteByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
-		if (!errandRepository.existsByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)) {
-			throw Problem.valueOf(NOT_FOUND, format(ERRAND_WAS_NOT_FOUND, errandId));
-		}
+	public void delete(final Long errandId, final String municipalityId, final String namespace) {
+		final var entity = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 
-		errandRepository.deleteByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
+		errandRepository.delete(entity);
+	}
+
+	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace) {
+		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 	}
 
 	@Retry(name = "OptimisticLocking")

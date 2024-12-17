@@ -4,9 +4,7 @@ import static java.time.OffsetDateTime.now;
 import static java.util.Collections.emptyList;
 
 import java.util.Optional;
-
 import org.springframework.stereotype.Component;
-
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -34,7 +32,7 @@ public class SuspensionWorker {
 		errandRepository
 			.findAllBySuspendedToBefore(now())
 			.forEach(entity -> notificationService
-				.createNotification(entity.getMunicipalityId(), entity.getNamespace(), createNotification(entity)));
+				.create(entity.getMunicipalityId(), entity.getNamespace(), createNotification(entity)));
 	}
 
 	private Notification createNotification(ErrandEntity errand) {

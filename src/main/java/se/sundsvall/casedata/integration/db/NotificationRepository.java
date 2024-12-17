@@ -1,28 +1,15 @@
 package se.sundsvall.casedata.integration.db;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 
 @CircuitBreaker(name = "notificationRepository")
 public interface NotificationRepository extends JpaRepository<NotificationEntity, String> {
-
-	boolean existsByIdAndNamespaceAndMunicipalityIdAndErrandId(
-		final String id,
-		final String namespace,
-		final String municipalityId,
-		final Long errandId);
-
-	Optional<NotificationEntity> findByIdAndNamespaceAndMunicipalityId(
-		String id,
-		String namespace,
-		String municipalityId);
 
 	List<NotificationEntity> findAllByNamespaceAndMunicipalityIdAndOwnerId(
 		String namespace,

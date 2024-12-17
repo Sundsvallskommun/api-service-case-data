@@ -1,10 +1,12 @@
-[{
-	"errandId": 1,
-	"expires": "2062-10-31T01:30:00+02:00",
-	"acknowledged": true,
-	"description": "Updated description",
-	"id": "25d818b7-763e-4b77-9fce-1c7dfc42deb2",
-	"ownerId": "someUser123",
-	"type": "UPDATE",
-	"content": "Updated content"
-}]
+[
+	{
+		"errandId": 1,
+		"expires": "2062-10-31T01:30:00+02:00",
+		"acknowledged": true,
+		"description": "Updated description",
+		"id": "25d818b7-763e-4b77-9fce-1c7dfc42deb2",
+		"ownerId": "someUser123",
+		"type": "UPDATE",
+		"content": "Updated content"
+	}
+]

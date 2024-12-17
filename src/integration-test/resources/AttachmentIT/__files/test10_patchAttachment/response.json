@@ -2,9 +2,11 @@
 	"note": "This is a note for test10",
 	"municipalityId": "2281",
 	"extension": ".pdf",
-	"errandNumber": "ERRAND-NUMBER-1",
+	"errandId": 1,
 	"created": "2022-12-02T15:13:45.363+01:00",
-	"extraParameters": {"property10": "value10"},
+	"extraParameters": {
+		"property10": "value10"
+	},
 	"mimeType": "application/pdf",
 	"version": 2,
 	"file": "dGVzdDAz",

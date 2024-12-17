@@ -72,12 +72,12 @@ public final class EntityMapper {
 				.withMunicipalityId(errandEntity.getMunicipalityId())
 				.withNamespace(errandEntity.getNamespace())
 				.withSuspension(Suspension.builder().withSuspendedFrom(errandEntity.getSuspendedFrom()).withSuspendedTo(errandEntity.getSuspendedTo()).build())
-				.withNotes(new ArrayList<>(Optional.ofNullable(errandEntity.getNotes()).orElse(emptyList()).stream().map(EntityMapper::toNote).toList()))
-				.withStatuses(new ArrayList<>(Optional.ofNullable(errandEntity.getStatuses()).orElse(emptyList()).stream().map(EntityMapper::toStatus).toList()))
-				.withStakeholders(new ArrayList<>(Optional.ofNullable(errandEntity.getStakeholders()).orElse(emptyList()).stream().map(EntityMapper::toStakeholder).toList()))
-				.withFacilities(new ArrayList<>(Optional.ofNullable(errandEntity.getFacilities()).orElse(emptyList()).stream().map(EntityMapper::toFacility).toList()))
-				.withDecisions(new ArrayList<>(Optional.ofNullable(errandEntity.getDecisions()).orElse(emptyList()).stream().map(EntityMapper::toDecision).toList()))
-				.withRelatesTo(new ArrayList<>(Optional.ofNullable(errandEntity.getRelatesTo()).orElse(emptyList()).stream().map(EntityMapper::toRelatedErrand).toList()))
+				.withNotes(new ArrayList<>(ofNullable(errandEntity.getNotes()).orElse(emptyList()).stream().map(EntityMapper::toNote).toList()))
+				.withStatuses(new ArrayList<>(ofNullable(errandEntity.getStatuses()).orElse(emptyList()).stream().map(EntityMapper::toStatus).toList()))
+				.withStakeholders(new ArrayList<>(ofNullable(errandEntity.getStakeholders()).orElse(emptyList()).stream().map(EntityMapper::toStakeholder).toList()))
+				.withFacilities(new ArrayList<>(ofNullable(errandEntity.getFacilities()).orElse(emptyList()).stream().map(EntityMapper::toFacility).toList()))
+				.withDecisions(new ArrayList<>(ofNullable(errandEntity.getDecisions()).orElse(emptyList()).stream().map(EntityMapper::toDecision).toList()))
+				.withRelatesTo(new ArrayList<>(ofNullable(errandEntity.getRelatesTo()).orElse(emptyList()).stream().map(EntityMapper::toRelatedErrand).toList()))
 				.withExtraParameters(toParameterList(errandEntity.getExtraParameters()))
 				.withLabels(errandEntity.getLabels())
 				.build())
@@ -125,7 +125,7 @@ public final class EntityMapper {
 					.orElse(emptyList())
 					.stream().map(notesDTO -> toNoteEntity(notesDTO, municipalityId, namespace))
 					.toList()))
-				.withRelatesTo(new ArrayList<>(Optional.ofNullable(errand.getRelatesTo())
+				.withRelatesTo(new ArrayList<>(ofNullable(errand.getRelatesTo())
 					.orElse(emptyList())
 					.stream().map(EntityMapper::toRelatedErrandEntity)
 					.toList()))
@@ -193,14 +193,14 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static AttachmentEntity toAttachmentEntity(final Attachment attachment, final String municipalityId, final String namespace) {
+	public static AttachmentEntity toAttachmentEntity(final Long errandId, final Attachment attachment, final String municipalityId, final String namespace) {
 		return ofNullable(attachment)
 			.map(obj -> AttachmentEntity.builder()
 				.withCategory(attachment.getCategory())
 				.withName(attachment.getName())
 				.withNote(attachment.getNote())
 				.withExtension(attachment.getExtension())
-				.withErrandNumber(attachment.getErrandNumber())
+				.withErrandId(errandId)
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
 				.withMimeType(attachment.getMimeType())
@@ -224,7 +224,7 @@ public final class EntityMapper {
 				.withNote(attachmentEntity.getNote())
 				.withExtension(attachmentEntity.getExtension())
 				.withMimeType(attachmentEntity.getMimeType())
-				.withErrandNumber(attachmentEntity.getErrandNumber())
+				.withErrandId(attachmentEntity.getErrandId())
 				.withFile(attachmentEntity.getFile())
 				.withExtraParameters(ofNullable(attachmentEntity.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
@@ -244,8 +244,8 @@ public final class EntityMapper {
 				.withValidTo(decision.getValidTo())
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
-				.withLaw(new ArrayList<>(Optional.ofNullable(decision.getLaw()).orElse(emptyList()).stream().map(EntityMapper::toLawEntity).toList()))
-				.withAttachments(new ArrayList<>(Optional.ofNullable(decision.getAttachments()).orElse(emptyList()).stream().map(e -> toAttachmentEntity(e, municipalityId, namespace)).toList()))
+				.withLaw(new ArrayList<>(ofNullable(decision.getLaw()).orElse(emptyList()).stream().map(EntityMapper::toLawEntity).toList()))
+				.withAttachments(new ArrayList<>(ofNullable(decision.getAttachments()).orElse(emptyList()).stream().map(e -> toAttachmentEntity(errand.getId(), e, municipalityId, namespace)).toList()))
 				.withExtraParameters(ofNullable(decision.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -462,7 +462,7 @@ public final class EntityMapper {
 	}
 
 	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace, final ErrandEntity errand, final PortalPersonData creator, final PortalPersonData owner) {
-		return Optional.ofNullable(notification)
+		return ofNullable(notification)
 			.map(obj -> NotificationEntity.builder()
 				.withAcknowledged(notification.isAcknowledged())
 				.withContent(notification.getContent())
@@ -504,8 +504,8 @@ public final class EntityMapper {
 	}
 
 	public static String toOwnerId(final ErrandEntity errandEntity) {
-		return Optional.ofNullable(errandEntity.getStakeholders()).orElse(emptyList()).stream()
-			.filter(stakeholder -> Optional.ofNullable(stakeholder.getRoles()).orElse(emptyList()).stream()
+		return ofNullable(errandEntity.getStakeholders()).orElse(emptyList()).stream()
+			.filter(stakeholder -> ofNullable(stakeholder.getRoles()).orElse(emptyList()).stream()
 				.anyMatch(ADMINISTRATOR.toString()::equalsIgnoreCase))
 			.findFirst()
 			.map(StakeholderEntity::getAdAccount)
@@ -513,7 +513,7 @@ public final class EntityMapper {
 	}
 
 	public static RelatedErrand toRelatedErrand(final RelatedErrandEntity relatedErrandEntity) {
-		return Optional.ofNullable(relatedErrandEntity)
+		return ofNullable(relatedErrandEntity)
 			.map(obj -> RelatedErrand.builder()
 				.withErrandNumber(relatedErrandEntity.getRelatedErrandNumber())
 				.withErrandId(relatedErrandEntity.getRelatedErrandId())
@@ -523,7 +523,7 @@ public final class EntityMapper {
 	}
 
 	public static RelatedErrandEntity toRelatedErrandEntity(final RelatedErrand relatedErrand) {
-		return Optional.ofNullable(relatedErrand)
+		return ofNullable(relatedErrand)
 			.map(obj -> RelatedErrandEntity.builder()
 				.withRelatedErrandNumber(relatedErrand.getErrandNumber())
 				.withRelatedErrandId(relatedErrand.getErrandId())
@@ -531,5 +531,4 @@ public final class EntityMapper {
 				.build())
 			.orElse(null);
 	}
-
 }

@@ -1,12 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.integration.db.model.enums.Classification;
-import se.sundsvall.casedata.integration.db.model.enums.Direction;
-
-import java.util.List;
-
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -14,6 +7,12 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
+
+import java.util.List;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.integration.db.model.enums.Classification;
+import se.sundsvall.casedata.integration.db.model.enums.Direction;
 
 class MessageRequestTest {
 
@@ -31,7 +30,6 @@ class MessageRequestTest {
 	void builder() {
 		// Arrange
 		final var messageId = "12";
-		final var errandNumber = "PRH-2022-000001";
 		final var direction = Direction.INBOUND;
 		final var familyId = "12";
 		final var externalCaseId = "12";
@@ -47,12 +45,11 @@ class MessageRequestTest {
 		final var recipients = List.of("email@sundsvall.se");
 		final var userId = "12";
 		final var classification = Classification.INFORMATION;
-		final var attachmentRequests = List.of(MessageRequest.AttachmentRequest.builder().build());
+		final var attachments = List.of(MessageRequest.AttachmentRequest.builder().build());
 		final var emailHeaders = List.of(EmailHeader.builder().build());
 		// Act
 		final var result = MessageRequest.builder()
 			.withMessageId(messageId)
-			.withErrandNumber(errandNumber)
 			.withDirection(direction)
 			.withFamilyId(familyId)
 			.withExternalCaseId(externalCaseId)
@@ -68,13 +65,12 @@ class MessageRequestTest {
 			.withRecipients(recipients)
 			.withUserId(userId)
 			.withClassification(classification)
-			.withAttachmentRequests(attachmentRequests)
+			.withAttachments(attachments)
 			.withEmailHeaders(emailHeaders)
 			.build();
 		// Assert
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(result.getMessageId()).isEqualTo(messageId);
-		assertThat(result.getErrandNumber()).isEqualTo(errandNumber);
 		assertThat(result.getDirection()).isEqualTo(direction);
 		assertThat(result.getFamilyId()).isEqualTo(familyId);
 		assertThat(result.getExternalCaseId()).isEqualTo(externalCaseId);
@@ -90,7 +86,7 @@ class MessageRequestTest {
 		assertThat(result.getRecipients()).isEqualTo(recipients);
 		assertThat(result.getUserId()).isEqualTo(userId);
 		assertThat(result.getClassification()).isEqualTo(classification);
-		assertThat(result.getAttachmentRequests()).isEqualTo(attachmentRequests);
+		assertThat(result.getAttachments()).isEqualTo(attachments);
 		assertThat(result.getEmailHeaders()).isEqualTo(emailHeaders);
 
 	}
@@ -100,5 +96,4 @@ class MessageRequestTest {
 		assertThat(MessageRequest.builder().build()).hasAllNullFieldsOrProperties();
 		assertThat(new MessageRequest()).hasAllNullFieldsOrProperties();
 	}
-
 }

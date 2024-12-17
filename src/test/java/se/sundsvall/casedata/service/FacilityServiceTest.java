@@ -59,7 +59,7 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void createFacilityOnErrandTest() {
+	void create() {
 
 		// Arrange
 		final var errand = createErrandEntity();
@@ -81,7 +81,7 @@ class FacilityServiceTest {
 		when(facilityRepositoryMock.save(any())).thenReturn(facilityEntity);
 
 		// Act
-		final var result = facilityService.createFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facility);
+		final var result = facilityService.create(errandId, MUNICIPALITY_ID, NAMESPACE, facility);
 
 		// Assert
 		assertThat(result).isEqualTo(facility);
@@ -92,7 +92,7 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void findFacilityOnErrand() {
+	void findFacility() {
 
 		// Arrange
 		final var errandId = 123L;
@@ -101,7 +101,7 @@ class FacilityServiceTest {
 		when(facilityRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(facility));
 
 		// Act
-		final var result = facilityService.findFacilityOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE);
+		final var result = facilityService.findFacility(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isEqualTo(toFacility(facility));
@@ -110,13 +110,13 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void findFacilitiesOnErrand() {
+	void findFacilities() {
 
 		// Arrange
 		final var errand = mockErrandFindByIdAndMunicipalityIdAndNamespace();
 
 		// Act
-		final var result = facilityService.findFacilitiesOnErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		final var result = facilityService.findFacilities(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(errand.getFacilities().stream().map(EntityMapper::toFacility).toList()).isEqualTo(result);
@@ -125,7 +125,7 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void replaceFacilitiesOnErrandTest() {
+	void replaceFacilities() {
 
 		// Arrange
 		final var errandId = 123L;
@@ -147,7 +147,7 @@ class FacilityServiceTest {
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
-		facilityService.replaceFacilitiesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilities);
+		facilityService.replaceFacilities(errandId, MUNICIPALITY_ID, NAMESPACE, facilities);
 
 		// Assert
 		assertThat(errand.getFacilities()).isNotEmpty().hasSize(3).allSatisfy(facility -> {
@@ -166,7 +166,7 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void deleteFacilityOnErrand() {
+	void delete() {
 
 		// Arrange
 		final var errand = createErrandEntity();
@@ -177,7 +177,7 @@ class FacilityServiceTest {
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act
-		facilityService.deleteFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId);
+		facilityService.delete(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId);
 
 		// Assert
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
@@ -186,7 +186,7 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void updateFacilityOnErrand() {
+	void update() {
 
 		// Arrange
 		final var errand = createErrandEntity();
@@ -200,7 +200,7 @@ class FacilityServiceTest {
 		when(facilityRepositoryMock.save(facility)).thenReturn(facility);
 
 		// Act
-		final var result = facilityService.updateFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, patch);
+		final var result = facilityService.update(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, patch);
 
 		// Assert
 		assertThat(result).isNotNull().satisfies(f -> {
@@ -217,5 +217,4 @@ class FacilityServiceTest {
 		verify(facilityRepositoryMock).save(facility);
 		verify(processServiceMock).updateProcess(errand);
 	}
-
 }

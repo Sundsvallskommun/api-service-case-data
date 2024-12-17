@@ -1,23 +1,5 @@
 package se.sundsvall.casedata.api;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.zalando.problem.violations.ConstraintViolationProblem;
-import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.Decision;
-import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
-import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
-import se.sundsvall.casedata.service.ErrandService;
-
-import java.util.Collections;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -28,13 +10,30 @@ import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.zalando.problem.violations.ConstraintViolationProblem;
+import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.Decision;
+import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
+import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
+import se.sundsvall.casedata.service.ErrandService;
+
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ErrandResourceFailureTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands";
 
-	@MockBean
+	@MockitoBean
 	private ErrandService errandServiceMock;
 
 	@Autowired

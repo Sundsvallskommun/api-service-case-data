@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
@@ -54,7 +53,7 @@ class MessageRepositoryTest {
 		// Assert
 		assertThat(result.getDirection()).isEqualTo(INBOUND);
 		assertThat(result.getEmail()).isEqualTo("test.testorsson@noreply.com");
-		assertThat(result.getErrandNumber()).isEqualTo("PRE-1970-000123");
+		assertThat(result.getErrandId()).isEqualTo(456L);
 		assertThat(result.getExternalCaseId()).isEqualTo("123456");
 		assertThat(result.getFamilyId()).isEqualTo("123");
 		assertThat(result.getFirstName()).isEqualTo("Test");
@@ -80,13 +79,13 @@ class MessageRepositoryTest {
 	}
 
 	@Test
-	void findAllByErrandNumber() {
+	void findAllByErrandIdAndMunicipalityIdAndNamespace() {
 
 		// Arrange
-		final var errandNumber = "PRE-1970-000123";
+		final var errandId = 456L;
 
 		// Act
-		final var result = messageRepository.findAllByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE);
+		final var result = messageRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result)
@@ -94,7 +93,7 @@ class MessageRepositoryTest {
 			.allSatisfy(obj -> {
 				assertThat(obj.getDirection()).isEqualTo(INBOUND);
 				assertThat(obj.getEmail()).isEqualTo("test.testorsson@noreply.com");
-				assertThat(obj.getErrandNumber()).isEqualTo("PRE-1970-000123");
+				assertThat(obj.getErrandId()).isEqualTo(456L);
 				assertThat(obj.getExternalCaseId()).isEqualTo("123456");
 				assertThat(obj.getFamilyId()).isEqualTo("123");
 				assertThat(obj.getFirstName()).isEqualTo("Test");
@@ -108,13 +107,13 @@ class MessageRepositoryTest {
 	}
 
 	@Test
-	void findAllByErrandNumberNothingFound() {
+	void findAllByErrandIdAndMunicipalityIdAndNamespaceNothingFound() {
 
 		// Arrange
-		final var errandNumber = "NON-EXISTING";
+		final var errandId = 999L;
 
 		// Act
-		final var result = messageRepository.findAllByErrandNumberAndMunicipalityIdAndNamespace(errandNumber, MUNICIPALITY_ID, NAMESPACE);
+		final var result = messageRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -181,5 +180,4 @@ class MessageRepositoryTest {
 		assertThat(result.getUsername()).isEqualTo(username);
 		assertThat(result.isViewed()).isTrue();
 	}
-
 }

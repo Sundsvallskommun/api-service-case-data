@@ -1,5 +1,19 @@
 package se.sundsvall.casedata.integration.db;
 
+import static java.time.OffsetDateTime.now;
+import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.within;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.integration.db.model.enums.NoteType.INTERNAL;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -16,21 +30,6 @@ import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import static java.time.OffsetDateTime.now;
-import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
-import static java.time.temporal.ChronoUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-import static org.assertj.core.api.Assertions.within;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
-import static org.springframework.data.domain.Sort.Direction.ASC;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.integration.db.model.enums.NoteType.INTERNAL;
 
 /**
  * ErrandRepository tests.
@@ -55,7 +54,7 @@ class ErrandRepositoryTest {
 	private ErrandRepository errandRepository;
 
 	@Test
-	void findAllByIdIn() {
+	void findAllByIdInAndMunicipalityIdAndNamespace() {
 
 		// Arrange
 		final var idList = List.of(2L, 3L);
@@ -74,7 +73,7 @@ class ErrandRepositoryTest {
 	}
 
 	@Test
-	void findAllByIdInNothingFound() {
+	void findAllByIdInAndMunicipalityIdAndNamespaceNothingFound() {
 
 		// Arrange
 		final var idList = List.of(666L, 777L);
@@ -82,35 +81,6 @@ class ErrandRepositoryTest {
 
 		// Act
 		final var result = errandRepository.findAllByIdInAndMunicipalityIdAndNamespace(idList, MUNICIPALITY_ID, NAMESPACE, pageRequest);
-
-		// Assert
-		assertThat(result).isNotNull().isEmpty();
-	}
-
-	@Test
-	void findAllByErrandNumberStartingWith() {
-
-		// Arrange
-		final var caseTypeAbbreviation = "PRH";
-
-		// Act
-		final var result = errandRepository.findAllByErrandNumberStartingWith(caseTypeAbbreviation);
-
-		// Assert
-		assertThat(result)
-			.isNotNull()
-			.extracting(ErrandEntity::getId, ErrandEntity::getErrandNumber, ErrandEntity::getCaseTitleAddition, ErrandEntity::getCaseType)
-			.containsExactly(tuple(3L, "PRH-2022-000029", "Nytt parkeringstillstånd", "PARKING_PERMIT"));
-	}
-
-	@Test
-	void findAllByErrandNumberStartingWithNothingFound() {
-
-		// Arrange
-		final var caseTypeAbbreviation = "NON-EXISTING";
-
-		// Act
-		final var result = errandRepository.findAllByErrandNumberStartingWith(caseTypeAbbreviation);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -166,7 +136,7 @@ class ErrandRepositoryTest {
 		final var errandNumber = "NON-EXISTING";
 
 		// Act
-		final var result = errandRepository.findByExternalCaseId(errandNumber);
+		final var result = errandRepository.findByErrandNumber(errandNumber);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();

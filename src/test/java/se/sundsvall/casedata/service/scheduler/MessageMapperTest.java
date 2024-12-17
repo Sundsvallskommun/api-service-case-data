@@ -1,6 +1,18 @@
 package se.sundsvall.casedata.service.scheduler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.groups.Tuple.tuple;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mariadb.jdbc.MariaDbBlob;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +32,6 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.dept44.common.validators.annotation.impl.ValidUuidConstraintValidator;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.groups.Tuple.tuple;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 @SpringBootTest(classes = {
 	Application.class
@@ -77,7 +76,7 @@ class MessageMapperTest {
 			.extracting(
 				MessageResponse::getDirection,
 				MessageResponse::getEmail,
-				MessageResponse::getErrandNumber,
+				MessageResponse::getErrandId,
 				MessageResponse::getExternalCaseId,
 				MessageResponse::getFamilyId,
 				MessageResponse::getFirstName,
@@ -94,7 +93,7 @@ class MessageMapperTest {
 			.containsExactly(tuple(
 				bean.getDirection(),
 				bean.getEmail(),
-				bean.getErrandNumber(),
+				bean.getErrandId(),
 				bean.getExternalCaseId(),
 				bean.getFamilyId(),
 				bean.getFirstName(),
@@ -127,7 +126,7 @@ class MessageMapperTest {
 			.extracting(
 				MessageResponse::getDirection,
 				MessageResponse::getEmail,
-				MessageResponse::getErrandNumber,
+				MessageResponse::getErrandId,
 				MessageResponse::getExternalCaseId,
 				MessageResponse::getFamilyId,
 				MessageResponse::getFirstName,
@@ -144,7 +143,7 @@ class MessageMapperTest {
 			.containsExactly(
 				bean.getDirection(),
 				bean.getEmail(),
-				bean.getErrandNumber(),
+				bean.getErrandId(),
 				bean.getExternalCaseId(),
 				bean.getFamilyId(),
 				bean.getFirstName(),
@@ -271,7 +270,7 @@ class MessageMapperTest {
 	@Test
 	void testToMessageEntity() {
 		// Arrange
-		final var errandNumber = "errandNumber";
+		final var errandId = 123L;
 		final var direction = MessageDTO.DirectionEnum.OUTBOUND;
 		final var email = "email";
 		final var externalCaseId = "externalCaseId";
@@ -284,7 +283,6 @@ class MessageMapperTest {
 		final var sent = "sent";
 		final var userId = "userId";
 		final var username = "username";
-
 		final var attachmentId = 12;
 		final var name = "name";
 		final var extension = "extension";
@@ -310,12 +308,12 @@ class MessageMapperTest {
 			.attachments(attachments);
 
 		// Act
-		final var bean = messageMapper.toMessageEntity(errandNumber, dto, MUNICIPALITY_ID, NAMESPACE);
+		final var bean = messageMapper.toMessageEntity(errandId, dto, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(bean.getDirection()).isEqualTo(Direction.OUTBOUND);
 		assertThat(bean.getEmail()).isEqualTo(email);
-		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
+		assertThat(bean.getErrandId()).isEqualTo(errandId);
 		assertThat(bean.getFamilyId()).isEqualTo(familyId);
 		assertThat(bean.getFirstName()).isEqualTo(firstName);
 		assertThat(bean.getLastName()).isEqualTo(lastName);
@@ -350,7 +348,6 @@ class MessageMapperTest {
 		assertThat(result.getFile()).isEqualTo(Base64.getEncoder().encodeToString("content".getBytes()));
 		assertThat(result.getName()).isEqualTo("name");
 		assertThat(result.getMimeType()).isEqualTo("contentType");
-
 	}
 
 	@Test
@@ -398,7 +395,7 @@ class MessageMapperTest {
 				.build());
 		final var direction = Direction.INBOUND;
 		final var email = "email";
-		final var errandNumber = "errandNumber";
+		final var errandId = 123L;
 		final var externalCaseId = "externalCaseID";
 		final var familyId = "familyID";
 		final var firstName = "firstName";
@@ -416,7 +413,7 @@ class MessageMapperTest {
 			.withAttachments(attachments)
 			.withDirection(direction)
 			.withEmail(email)
-			.withErrandNumber(errandNumber)
+			.withErrandId(errandId)
 			.withExternalCaseId(externalCaseId)
 			.withFamilyId(familyId)
 			.withFirstName(firstName)
@@ -433,5 +430,4 @@ class MessageMapperTest {
 			.withHeaders(headers)
 			.build();
 	}
-
 }

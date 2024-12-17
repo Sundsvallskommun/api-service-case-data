@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -72,7 +71,7 @@ class DecisionServiceTest {
 	private ArgumentCaptor<Notification> notificationCaptor;
 
 	@Test
-	void patchDecisionOnErrand() throws JsonProcessingException {
+	void update() throws JsonProcessingException {
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		final var decision = errand.getDecisions().getFirst();
@@ -89,7 +88,7 @@ class DecisionServiceTest {
 		patch.setExtraParameters(createExtraParameters());
 
 		// Act
-		decisionService.updateDecisionOnErrand(errand.getId(), 123L, MUNICIPALITY_ID, NAMESPACE, patch);
+		decisionService.update(errand.getId(), 123L, MUNICIPALITY_ID, NAMESPACE, patch);
 
 		// Assert
 		verify(decisionRepository).save(decisionCaptor.capture());
@@ -101,7 +100,7 @@ class DecisionServiceTest {
 		extraParams.putAll(decision.getExtraParameters());
 		assertEquals(extraParams, persistedDecision.getExtraParameters());
 
-		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Beslut uppdaterat");
 		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
 		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
@@ -109,30 +108,7 @@ class DecisionServiceTest {
 	}
 
 	@Test
-	void testPatch() {
-		// Arrange
-		final var dto = new PatchDecision();
-		final var errand = createErrandEntity();
-		final var entity = errand.getDecisions().getFirst();
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-
-		// Act
-		decisionService.updateDecisionOnErrand(1L, 1L, MUNICIPALITY_ID, NAMESPACE, dto);
-
-		// Assert
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
-		verify(decisionRepository, times(1)).save(entity);
-		verifyNoMoreInteractions(errandRepositoryMock, decisionRepository);
-
-		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
-		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Beslut uppdaterat");
-		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
-		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
-		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
-	}
-
-	@Test
-	void testPatchDuplicateDecisionType() {
+	void updateDuplicateDecisionType() {
 		// Arrange
 		final var patchDecision = PatchDecision.builder().withDecisionType(DecisionType.FINAL).build();
 		final var decision = DecisionEntity.builder().withId(1L).withDecisionType(DecisionType.FINAL).build();
@@ -141,11 +117,11 @@ class DecisionServiceTest {
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act/Assert
-		assertThrows(ThrowableProblem.class, () -> decisionService.updateDecisionOnErrand(1L, 2L, MUNICIPALITY_ID, NAMESPACE, patchDecision));
+		assertThrows(ThrowableProblem.class, () -> decisionService.update(1L, 2L, MUNICIPALITY_ID, NAMESPACE, patchDecision));
 	}
 
 	@Test
-	void deleteDecisionOnErrand() {
+	void delete() {
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		errand.setCaseType(PARKING_PERMIT_RENEWAL.name());
@@ -155,7 +131,7 @@ class DecisionServiceTest {
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act
-		decisionService.deleteDecisionOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, decision.getId());
+		decisionService.delete(errandId, MUNICIPALITY_ID, NAMESPACE, decision.getId());
 
 		// Assert
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
@@ -165,21 +141,21 @@ class DecisionServiceTest {
 	}
 
 	@Test
-	void getDecisionsOnErrand() {
+	void findDecisions() {
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		errand.setId(new Random().nextLong(1, 1000));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
 		// Act
-		final var result = decisionService.findDecisionsOnErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		final var result = decisionService.findDecisions(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isEqualTo(errand.getDecisions().stream().map(EntityMapper::toDecision).toList());
 	}
 
 	@Test
-	void getDecisionsOnErrandNotFound() {
+	void findDecisionsNotFound() {
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		errand.setId(new Random().nextLong(1, 1000));
@@ -188,11 +164,11 @@ class DecisionServiceTest {
 		final var id = errand.getId();
 
 		// Act/Assert
-		assertThrows(ThrowableProblem.class, () -> decisionService.findDecisionsOnErrand(id, MUNICIPALITY_ID, NAMESPACE));
+		assertThrows(ThrowableProblem.class, () -> decisionService.findDecisions(id, MUNICIPALITY_ID, NAMESPACE));
 	}
 
 	@Test
-	void addDecisionToErrandTest() {
+	void addToErrand() {
 		// Arrange
 		final var errand = createErrandEntity();
 		final var newDecision = Decision.builder()
@@ -213,7 +189,7 @@ class DecisionServiceTest {
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
-		final var decisionDTO = decisionService.addDecisionToErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, newDecision);
+		final var decisionDTO = decisionService.addToErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, newDecision);
 
 		// Assert
 		assertThat(decisionDTO).isEqualTo(newDecision);
@@ -222,11 +198,10 @@ class DecisionServiceTest {
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
 
-		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Beslut skapat");
 		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
 		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
 		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 	}
-
 }

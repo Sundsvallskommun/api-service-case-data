@@ -15,7 +15,6 @@ import static se.sundsvall.casedata.integration.db.model.enums.StakeholderType.P
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -24,7 +23,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
@@ -55,13 +53,14 @@ class StakeholderRepositoryTest {
 	private StakeholderRepository stakeholderRepository;
 
 	@Test
-	void findById() {
+	void findByIdAndErrandIdAndMunicipalityIdAndNamespace() {
 
 		// Arrange
-		final var id = 1L;
+		final var id = 2L;
+		final var errandId = 1L;
 
 		// Act
-		final var result = stakeholderRepository.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
+		final var result = stakeholderRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
 
 		// Assert
 		assertThat(result.getCreated()).isEqualTo(OffsetDateTime.parse("2022-12-02T15:13:45.363+01:00", ISO_DATE_TIME));
@@ -146,5 +145,4 @@ class StakeholderRepositoryTest {
 		assertThat(result.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(result.getNamespace()).isEqualTo(NAMESPACE);
 	}
-
 }

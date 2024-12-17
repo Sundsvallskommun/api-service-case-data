@@ -11,15 +11,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchNotification;
@@ -33,7 +31,7 @@ class NotificationsResourceTest {
 	private static final String NAMESPACE = "namespace";
 	private static final String MUNICIPALITY_ID = "2281";
 
-	@MockBean
+	@MockitoBean
 	private NotificationService notificationServiceMock;
 
 	@Autowired
@@ -46,7 +44,7 @@ class NotificationsResourceTest {
 		final var notificationId = randomUUID().toString();
 		final var errandId = 12345L;
 
-		when(notificationServiceMock.getNotification(MUNICIPALITY_ID, NAMESPACE, errandId, notificationId)).thenReturn(Notification.builder().build());
+		when(notificationServiceMock.findNotification(MUNICIPALITY_ID, NAMESPACE, errandId, notificationId)).thenReturn(Notification.builder().build());
 
 		// Act
 		final var response = webTestClient.get()
@@ -61,7 +59,7 @@ class NotificationsResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(notificationServiceMock).getNotification(MUNICIPALITY_ID, NAMESPACE, errandId, notificationId);
+		verify(notificationServiceMock).findNotification(MUNICIPALITY_ID, NAMESPACE, errandId, notificationId);
 	}
 
 	@Test
@@ -69,7 +67,7 @@ class NotificationsResourceTest {
 
 		// Arrange
 		final var ownerId = "owner";
-		when(notificationServiceMock.getNotificationsByOwnerId(MUNICIPALITY_ID, NAMESPACE, ownerId)).thenReturn(List.of(Notification.builder().build()));
+		when(notificationServiceMock.findNotificationsByOwnerId(MUNICIPALITY_ID, NAMESPACE, ownerId)).thenReturn(List.of(Notification.builder().build()));
 
 		// Act
 		final var response = webTestClient.get()
@@ -85,7 +83,7 @@ class NotificationsResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(notificationServiceMock).getNotificationsByOwnerId(MUNICIPALITY_ID, NAMESPACE, ownerId);
+		verify(notificationServiceMock).findNotificationsByOwnerId(MUNICIPALITY_ID, NAMESPACE, ownerId);
 	}
 
 	@Test
@@ -93,7 +91,7 @@ class NotificationsResourceTest {
 
 		// Arrange
 		final var errandId = 12345L;
-		when(notificationServiceMock.getNotificationsByErrandId(MUNICIPALITY_ID, NAMESPACE, errandId, null)).thenReturn(List.of(Notification.builder().build()));
+		when(notificationServiceMock.findNotifications(MUNICIPALITY_ID, NAMESPACE, errandId, null)).thenReturn(List.of(Notification.builder().build()));
 
 		// Act
 		final var response = webTestClient.get()
@@ -108,7 +106,7 @@ class NotificationsResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(notificationServiceMock).getNotificationsByErrandId(MUNICIPALITY_ID, NAMESPACE, errandId, Sort.unsorted());
+		verify(notificationServiceMock).findNotifications(MUNICIPALITY_ID, NAMESPACE, errandId, Sort.unsorted());
 	}
 
 	@Test
@@ -127,7 +125,7 @@ class NotificationsResourceTest {
 			.build();
 
 		final var notificationId = UUID.randomUUID().toString();
-		when(notificationServiceMock.createNotification(MUNICIPALITY_ID, NAMESPACE, requestBody)).thenReturn(Notification.builder().withErrandId(errandId).withId(notificationId).build());
+		when(notificationServiceMock.create(MUNICIPALITY_ID, NAMESPACE, requestBody)).thenReturn(Notification.builder().withErrandId(errandId).withId(notificationId).build());
 
 		// Act
 		final var response = webTestClient.post()
@@ -144,7 +142,7 @@ class NotificationsResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(notificationServiceMock).createNotification(MUNICIPALITY_ID, NAMESPACE, requestBody);
+		verify(notificationServiceMock).create(MUNICIPALITY_ID, NAMESPACE, requestBody);
 	}
 
 	@Test
@@ -170,7 +168,7 @@ class NotificationsResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(notificationServiceMock).updateNotifications(MUNICIPALITY_ID, NAMESPACE, requestBody);
+		verify(notificationServiceMock).update(MUNICIPALITY_ID, NAMESPACE, requestBody);
 	}
 
 	@Test
@@ -190,6 +188,6 @@ class NotificationsResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(notificationServiceMock).deleteNotification(MUNICIPALITY_ID, NAMESPACE, errandId, notificationId);
+		verify(notificationServiceMock).delete(MUNICIPALITY_ID, NAMESPACE, errandId, notificationId);
 	}
 }

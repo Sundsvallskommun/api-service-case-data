@@ -6,7 +6,5 @@ import lombok.Data;
 public class OwnerId {
 
 	private int cdoId;
-
 	private String entity;
-
 }

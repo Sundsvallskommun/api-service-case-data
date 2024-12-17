@@ -4,13 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-
 import jakarta.validation.ConstraintValidatorContext;
-
+import java.util.HashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.casedata.api.model.validation.impl.ValidMapValueSizeValidator;
 
 class ValidMapValueSizeValidatorTest {

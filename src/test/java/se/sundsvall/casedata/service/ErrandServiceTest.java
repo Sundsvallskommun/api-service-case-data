@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.service;
 
+import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -83,7 +84,7 @@ class ErrandServiceTest {
 	}
 
 	@Test
-	void postWhenParkingPermit() {
+	void createWhenParkingPermit() {
 		// Arrange
 		final var inputErrandDTO = createErrand();
 		inputErrandDTO.setCaseType(PARKING_PERMIT.name());
@@ -95,11 +96,11 @@ class ErrandServiceTest {
 		when(processServiceMock.startProcess(inputErrand)).thenReturn(processId);
 
 		// Act
-		errandService.createErrand(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
+		errandService.create(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		verify(processServiceMock).startProcess(inputErrand);
-		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 		verify(errandRepositoryMock, times(2)).save(any());
 		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
 
@@ -142,40 +143,41 @@ class ErrandServiceTest {
 	}
 
 	@Test
-	void deleteByIdAndMunicipalityIdAndNamespace() {
+	void delete() {
 
 		// Arrange
 		final var id = 1L;
-		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		final var entity = createErrandEntity();
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
 
 		// Act
-		errandService.deleteByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
+		errandService.delete(id, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		verify(errandRepositoryMock).existsByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
-		verify(errandRepositoryMock).deleteByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).delete(entity);
 	}
 
 	@Test
-	void deleteByIdAndMunicipalityIdAndNamespaceNotFound() {
+	void deleteWhenNotFound() {
 
 		// Arrange
 		final var id = 1L;
-		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(false);
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(empty());
 
 		// Act
-		final var exception = assertThrows(ThrowableProblem.class, () -> errandService.deleteByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE));
+		final var exception = assertThrows(ThrowableProblem.class, () -> errandService.delete(id, MUNICIPALITY_ID, NAMESPACE));
 
 		// Assert
-		assertThat(exception.getMessage()).isEqualTo("Not Found: Errand with id: 1 was not found");
+		assertThat(exception.getMessage()).isEqualTo("Not Found: Errand with id:'1' not found in namespace:'my.namespace' for municipality with id:'2281'");
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 
-		verify(errandRepositoryMock).existsByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
-		verify(errandRepositoryMock, never()).deleteById(id);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock, never()).delete(any(ErrandEntity.class));
 	}
 
 	@Test
-	void updateErrandTest() {
+	void update() {
 
 		// Arrange
 		final var errand = createErrandEntity();
@@ -185,7 +187,7 @@ class ErrandServiceTest {
 		when(errandRepositoryMock.save(errand)).thenReturn(updatedErrand);
 
 		// Act
-		errandService.updateErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
+		errandService.update(errand.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
 
 		// Assert
 		assertThat(errand).satisfies(e -> {
@@ -208,7 +210,7 @@ class ErrandServiceTest {
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(updatedErrand);
-		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
 		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
@@ -245,7 +247,7 @@ class ErrandServiceTest {
 	}
 
 	@Test
-	void testPatch() {
+	void updateWhenParkingPermit() {
 
 		// Arrange
 		final var dto = new PatchErrand();
@@ -255,7 +257,7 @@ class ErrandServiceTest {
 		when(errandRepositoryMock.save(entity)).thenReturn(entity);
 
 		// Act
-		errandService.updateErrand(1L, MUNICIPALITY_ID, NAMESPACE, dto);
+		errandService.update(1L, MUNICIPALITY_ID, NAMESPACE, dto);
 
 		// Assert
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);

@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -18,14 +17,13 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletResponse;
-
+import java.util.Random;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
@@ -37,7 +35,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
@@ -52,7 +49,7 @@ import se.sundsvall.casedata.service.util.BlobBuilder;
 class MessageServiceTest {
 
 	@Mock
-	ErrandRepository errandRepositoryMock;
+	private ErrandRepository errandRepositoryMock;
 
 	@Mock
 	private MessageMapper messageMapperMock;
@@ -88,57 +85,28 @@ class MessageServiceTest {
 	private MessageService messageService;
 
 	@Test
-	void getMessagesByErrandNumber() {
+	void findMessages() {
+
 		// Arrange
+		final var errandId = new Random().nextLong(1, 100000);
 		final var messages = List.of(MessageEntity.builder()
 			.withAttachments(List.of(MessageAttachmentEntity.builder().build()))
 			.build());
-		when(messageRepositoryMock.findAllByErrandNumberAndMunicipalityIdAndNamespace(anyString(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(messages);
-		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
+		when(messageRepositoryMock.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
 
 		// Act
-		messageService.getMessagesByErrandNumber(messageId, MUNICIPALITY_ID, NAMESPACE);
+		messageService.findMessages(errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		verify(messageRepositoryMock).findAllByErrandNumberAndMunicipalityIdAndNamespace(messageId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageRepositoryMock).findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageMapperMock).toMessageResponses(any());
 		verifyNoMoreInteractions(messageMapperMock);
 		verifyNoMoreInteractions(messageRepositoryMock);
 	}
 
 	@Test
-	void getMessageAttachment() {
-		// Arrange
-		final var attachmentId = "attachmentId";
-		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
-		when(messageAttachmentRepositoryMock.findByAttachmentIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(messageAttachmentEntityMock));
+	void findMessageAttachmentAsStreamedResponse() throws Exception {
 
-		// Act
-		messageService.getMessageAttachment(1L, attachmentId, MUNICIPALITY_ID, NAMESPACE);
-
-		// Assert
-		verify(messageAttachmentRepositoryMock).findByAttachmentIdAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
-		verify(messageMapperMock).toMessageAttachment(messageAttachmentEntityMock);
-	}
-
-	@Test
-	void getNonExistingMessageAttachment() {
-		// Arrange
-		final var attachmentId = "attachmentId";
-		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
-
-		// Act
-		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.getMessageAttachment(1L, attachmentId, MUNICIPALITY_ID, NAMESPACE));
-
-		// Assert
-		assertThat(exception.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(exception.getMessage()).isEqualTo("Not Found: MessageAttachment not found");
-		verify(messageAttachmentRepositoryMock).findByAttachmentIdAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
-		verify(messageMapperMock, never()).toMessageAttachment(any());
-	}
-
-	@Test
-	void getMessageAttachmentStreamed() throws Exception {
 		// Arrange
 		final var attachmentId = "attachmentId";
 		final var content = "content";
@@ -156,7 +124,7 @@ class MessageServiceTest {
 		when(servletResponseMock.getOutputStream()).thenReturn(servletOutputStreamMock);
 
 		// Act
-		messageService.getMessageAttachmentStreamed(1L, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock);
+		messageService.findMessageAttachmentAsStreamedResponse(1L, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock);
 
 		// Assert
 		verify(messageAttachmentRepositoryMock).findByAttachmentIdAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
@@ -171,7 +139,8 @@ class MessageServiceTest {
 	}
 
 	@Test
-	void getMessageAttachmentStreamedThrowsException() throws Exception {
+	void findMessageAttachmentAsStreamedResponseThrowsException() throws Exception {
+
 		// Arrange
 		final var attachmentId = "attachmentId";
 		final var contentType = "contentType";
@@ -185,7 +154,7 @@ class MessageServiceTest {
 		when(blobMock.length()).thenThrow(new SQLException("testException"));
 
 		// Act
-		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.getMessageAttachmentStreamed(1L, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock));
+		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.findMessageAttachmentAsStreamedResponse(1L, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock));
 
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(Status.INTERNAL_SERVER_ERROR);
@@ -200,32 +169,39 @@ class MessageServiceTest {
 	}
 
 	@Test
-	void getNonExistingMessageAttachmentStreamed() {
+	void findMessageAttachmentAsStreamedResponseNotFound() {
+
 		// Arrange
 		final var attachmentId = "attachmentId";
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
 
 		// Act
-		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.getMessageAttachmentStreamed(1L, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock));
+		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.findMessageAttachmentAsStreamedResponse(1L, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock));
 
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(exception.getMessage()).isEqualTo("Not Found: MessageAttachment not found");
+		assertThat(exception.getMessage()).isEqualTo("Not Found: MessageAttachment with id:'%s' not found in namespace:'%s' for municipality with id:'%s'".formatted(attachmentId, NAMESPACE, MUNICIPALITY_ID));
 		verify(messageAttachmentRepositoryMock).findByAttachmentIdAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(messageAttachmentEntityMock, servletResponseMock);
 	}
 
 	@Test
-	void saveMessageOnErrand() {
+	void create() {
+
 		// Arrange
+		final var errandId = 1L;
 		final var request = MessageRequest.builder().build();
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
+		when(messageRepositoryMock.save(any(MessageEntity.class))).thenReturn(MessageEntity.builder().build());
+		when(messageMapperMock.toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(MessageEntity.builder().build());
 
 		// Act
-		messageService.saveMessageOnErrand(1L, request, MUNICIPALITY_ID, NAMESPACE);
+		messageService.create(errandId, request, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		verify(messageMapperMock).toMessageEntity(request, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageMapperMock).toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageMapperMock).toMessageResponse(any(MessageEntity.class));
+		verify(errandRepositoryMock).existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageRepositoryMock).save(any());
 		verifyNoMoreInteractions(messageRepositoryMock, messageMapperMock);
 	}
@@ -235,23 +211,27 @@ class MessageServiceTest {
 		true, false
 	})
 	void updateViewedStatusOnExistingMessage(final boolean viewed) {
+
 		// Arrange
+		final var errandId = 1L;
 		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
-		when(messageRepositoryMock.findByMessageIdAndMunicipalityIdAndNamespace(messageId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(messageMock));
+		when(messageRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndMessageId(MUNICIPALITY_ID, NAMESPACE, errandId, messageId)).thenReturn(Optional.of(messageMock));
 
 		// Act
 		messageService.updateViewedStatus(1L, messageId, MUNICIPALITY_ID, NAMESPACE, viewed);
 
 		// Assert
-		verify(messageRepositoryMock).findByMessageIdAndMunicipalityIdAndNamespace(messageId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndMessageId(MUNICIPALITY_ID, NAMESPACE, errandId, messageId);
 		verify(messageMock).setViewed(viewed);
 		verify(messageRepositoryMock).save(messageMock);
 	}
 
 	@Test
 	void updateViewedStatusOnNonExistingMessage() {
+
 		// Arrange
+		final var errandId = 1L;
 		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
 
@@ -259,11 +239,10 @@ class MessageServiceTest {
 		assertThatThrownBy(() -> messageService.updateViewedStatus(1L, messageId, MUNICIPALITY_ID, NAMESPACE, true))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
-			.hasFieldOrPropertyWithValue("message", "Not Found: Message with id %s not found".formatted(messageId));
+			.hasFieldOrPropertyWithValue("message", "Not Found: Message with id:'%s' not found in namespace:'%s' for municipality with id:'%s'".formatted(messageId, NAMESPACE, MUNICIPALITY_ID));
 
-		verify(messageRepositoryMock).findByMessageIdAndMunicipalityIdAndNamespace(messageId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndMessageId(MUNICIPALITY_ID, NAMESPACE, errandId, messageId);
 		verify(messageRepositoryMock, never()).save(any());
 		verifyNoInteractions(messageMock);
 	}
-
 }

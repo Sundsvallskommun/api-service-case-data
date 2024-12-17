@@ -2,7 +2,9 @@
 	"note": "This is a note for test10",
 	"file": "dGVzdDAz",
 	"name": "myfile10.pdf",
-	"extraParameters": {"property10": "value10"},
+	"extraParameters": {
+		"property10": "value10"
+	},
 	"mimeType": "application/pdf",
 	"category": "POLICE_REPORT"
 }

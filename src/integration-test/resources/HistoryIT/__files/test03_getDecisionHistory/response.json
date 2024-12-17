@@ -99,18 +99,20 @@
 		},
 		"property": "law",
 		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-		"elementChanges": [{
-			"elementChangeType": "ValueAdded",
-			"index": 0,
-			"value": {
-				"valueObject": "se.sundsvall.casedata.integration.db.model.LawEntity",
-				"fragment": "law/0",
-				"ownerId": {
-					"cdoId": 2,
-					"entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
+		"elementChanges": [
+			{
+				"elementChangeType": "ValueAdded",
+				"index": 0,
+				"value": {
+					"valueObject": "se.sundsvall.casedata.integration.db.model.LawEntity",
+					"fragment": "law/0",
+					"ownerId": {
+						"cdoId": 2,
+						"entity": "se.sundsvall.casedata.integration.db.model.DecisionEntity"
+					}
 				}
 			}
-		}]
+		]
 	},
 	{
 		"changeType": "InitialValueChange",
@@ -178,13 +180,15 @@
 		},
 		"property": "attachments",
 		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-		"elementChanges": [{
-			"elementChangeType": "ValueAdded",
-			"index": 0,
-			"value": {
-				"cdoId": 1,
-				"entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
+		"elementChanges": [
+			{
+				"elementChangeType": "ValueAdded",
+				"index": 0,
+				"value": {
+					"cdoId": 1,
+					"entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
+				}
 			}
-		}]
+		]
 	}
 ]

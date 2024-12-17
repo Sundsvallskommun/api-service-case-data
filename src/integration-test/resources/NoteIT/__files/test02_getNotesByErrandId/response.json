@@ -1,13 +1,15 @@
-[{
-	"municipalityId": "2281",
-	"updatedBy": "testUser",
-	"createdBy": "UNKNOWN",
-	"created": "2023-10-02T15:13:45.363+02:00",
-	"namespace": "my.namespace",
-	"extraParameters": {},
-	"id": 1,
-	"text": "TEXT",
-	"title": "TITLE-1",
-	"version": 1,
-	"updated": "2023-10-02T15:13:45.363+02:00"
-}]
+[
+	{
+		"municipalityId": "2281",
+		"updatedBy": "testUser",
+		"createdBy": "UNKNOWN",
+		"created": "2023-10-02T15:13:45.363+02:00",
+		"namespace": "my.namespace",
+		"extraParameters": {},
+		"id": 1,
+		"text": "TEXT",
+		"title": "TITLE-1",
+		"version": 1,
+		"updated": "2023-10-02T15:13:45.363+02:00"
+	}
+]

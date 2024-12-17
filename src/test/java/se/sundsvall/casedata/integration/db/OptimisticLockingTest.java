@@ -14,14 +14,12 @@ import static se.sundsvall.casedata.TestUtil.createStakeholder;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.test.context.ActiveProfiles;
-
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
@@ -31,7 +29,7 @@ import se.sundsvall.casedata.service.StakeholderService;
 @ActiveProfiles("junit")
 class OptimisticLockingTest {
 
-	@MockBean
+	@MockitoBean
 	private ErrandRepository errandRepositoryMock;
 
 	@Autowired
@@ -44,7 +42,7 @@ class OptimisticLockingTest {
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		doThrow(OptimisticLockingFailureException.class).when(errandRepositoryMock).save(any());
 
-		assertThatThrownBy(() -> stakeholderService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
+		assertThatThrownBy(() -> stakeholderService.addToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
 			.isInstanceOf(OptimisticLockingFailureException.class);
 
 		// 5 invocations because @Retry.
@@ -58,7 +56,7 @@ class OptimisticLockingTest {
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		doThrow(RuntimeException.class).when(errandRepositoryMock).save(any());
 
-		assertThatThrownBy(() -> stakeholderService.addStakeholderToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
+		assertThatThrownBy(() -> stakeholderService.addToErrand(123L, MUNICIPALITY_ID, NAMESPACE, stakeholderDto))
 			.isInstanceOf(RuntimeException.class);
 
 		// Only 1 invocation, not retrying because it's not an OptimisticLockingFailureException.

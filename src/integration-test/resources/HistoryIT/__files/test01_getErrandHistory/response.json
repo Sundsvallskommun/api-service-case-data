@@ -164,18 +164,20 @@
 		},
 		"property": "statuses",
 		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-		"elementChanges": [{
-			"elementChangeType": "ValueAdded",
-			"index": 0,
-			"value": {
-				"valueObject": "se.sundsvall.casedata.integration.db.model.StatusEntity",
-				"fragment": "statuses/0",
-				"ownerId": {
-					"cdoId": 1,
-					"entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
+		"elementChanges": [
+			{
+				"elementChangeType": "ValueAdded",
+				"index": 0,
+				"value": {
+					"valueObject": "se.sundsvall.casedata.integration.db.model.StatusEntity",
+					"fragment": "statuses/0",
+					"ownerId": {
+						"cdoId": 1,
+						"entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
+					}
 				}
 			}
-		}]
+		]
 	},
 	{
 		"changeType": "ListChange",
@@ -192,13 +194,15 @@
 		},
 		"property": "stakeholders",
 		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-		"elementChanges": [{
-			"elementChangeType": "ValueAdded",
-			"index": 0,
-			"value": {
-				"cdoId": 1,
-				"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		"elementChanges": [
+			{
+				"elementChangeType": "ValueAdded",
+				"index": 0,
+				"value": {
+					"cdoId": 1,
+					"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+				}
 			}
-		}]
+		]
 	}
 ]

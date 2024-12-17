@@ -1,5 +1,8 @@
 package se.sundsvall.casedata.api.model;
 
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -7,40 +10,38 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
 import se.sundsvall.casedata.api.model.validation.ValidAttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 
 @Data
-@ToString
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(setterPrefix = "with")
 public class Attachment {
 
-	@Schema(description = "The id of the attachment", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
+	@Schema(description = "The id of the attachment", accessMode = READ_ONLY, example = "1")
 	private Long id;
 
-	@Schema(description = "The version of the attachment", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
+	@Schema(description = "The version of the attachment", accessMode = READ_ONLY, example = "1")
 	private int version;
 
-	@Schema(description = "The municipality ID", example = "2281", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "The municipality ID", example = "2281", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Namespace", example = "my.namespace", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "Errand id associated with the attachment", accessMode = READ_ONLY, example = "123456")
+	private Long errandId;
+
+	@Schema(description = "Namespace", example = "my.namespace", accessMode = READ_ONLY)
 	private String namespace;
 
-	@Schema(description = "The date when this attachment was created", accessMode = Schema.AccessMode.READ_ONLY, example = "2023-10-01T12:00:00Z")
-	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)
+	@Schema(description = "The date when this attachment was created", accessMode = READ_ONLY, example = "2023-10-01T12:00:00Z")
+	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime created;
 
-	@Schema(description = "The date when this attachment was last updated", accessMode = Schema.AccessMode.READ_ONLY, example = "2023-10-02T12:00:00Z")
-	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)
+	@Schema(description = "The date when this attachment was last updated", accessMode = READ_ONLY, example = "2023-10-02T12:00:00Z")
+	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime updated;
 
 	@Schema(description = "Category of the attachment", example = "DOCUMENT")
@@ -61,9 +62,6 @@ public class Attachment {
 
 	@Schema(description = "Base64 encoded file content", example = "dGVzdCBjb250ZW50")
 	private String file;
-
-	@Schema(description = "Errand number associated with the attachment", example = "ERR123456")
-	private String errandNumber;
 
 	@Schema(description = "Additional parameters for the attachment", example = "{\"key1\": \"value1\", \"key2\": \"value2\"}")
 	@ValidMapValueSize(max = 8192)

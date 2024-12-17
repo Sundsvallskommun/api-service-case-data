@@ -3,11 +3,11 @@
         version integer,
         created datetime(6),
         decision_id bigint,
+        errand_id bigint,
         id bigint not null auto_increment,
         updated datetime(6),
         note varchar(1000),
         category varchar(255),
-        errand_number varchar(255),
         extension varchar(255),
         mime_type varchar(255),
         municipality_id varchar(255),
@@ -169,6 +169,7 @@
 
     create table message (
         viewed bit not null,
+        errand_id bigint,
         email varchar(255),
         errand_number varchar(255),
         external_caseid varchar(255),
@@ -327,6 +328,9 @@
     create index attachment_errand_number_idx 
        on attachment (errand_number);
 
+    create index idx_attachment_errand_id 
+       on attachment (errand_id);
+
     create index idx_attachment_municipality_id 
        on attachment (municipality_id);
 
@@ -362,6 +366,9 @@
 
     create index idx_message_namespace 
        on message (namespace);
+
+    create index idx_messsage_errand_id 
+       on message (errand_id);
 
     create index idx_message_attachment_municipality_id 
        on message_attachment (municipality_id);

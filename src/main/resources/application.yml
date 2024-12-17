@@ -3,7 +3,7 @@
 #========================================
 spring:
   application:
-    name: ms-case-data
+    name: api-service-case-data
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     password: ${config.datasource.password}
