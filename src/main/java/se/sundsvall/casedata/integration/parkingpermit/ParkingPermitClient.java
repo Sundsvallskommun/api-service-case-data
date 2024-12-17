@@ -4,6 +4,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static se.sundsvall.casedata.integration.parkingpermit.configuration.ParkingPermitConfiguration.CLIENT_ID;
 
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import se.sundsvall.casedata.integration.parkingpermit.configuration.ParkingPerm
 	name = CLIENT_ID,
 	url = "${integration.parkingpermit.base-url}",
 	configuration = ParkingPermitConfiguration.class)
+@CircuitBreaker(name = CLIENT_ID)
 public interface ParkingPermitClient {
 
 	@Retry(name = CLIENT_ID)
