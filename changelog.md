@@ -1,6 +1,6 @@
 # API-Changelog: version 10.0
 
-### New Endpoints:
+#### New Endpoints:
 
 
 ```
@@ -14,7 +14,7 @@ DELETE /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificat
 GET /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}
 ```
 
-### Deleted Endpoints:
+#### Removed Endpoints:
 
 
 ```
@@ -34,7 +34,7 @@ GET /{municipalityId}/{namespace}/notifications/{notificationId}\
 GET /{municipalityId}/{namespace}/parking-permits
 ```
 
-### Modified Endpoints:
+#### Modified Endpoints:
 
 
 ```
