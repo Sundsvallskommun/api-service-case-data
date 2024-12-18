@@ -2,7 +2,6 @@
 
 #### New Endpoints:
 
-
 ```
 GET /{municipalityId}/{namespace}/errands/{errandId}/attachments\
 GET /{municipalityId}/{namespace}/errands/{errandId}/messages\
@@ -15,7 +14,6 @@ GET /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notification
 ```
 
 #### Removed Endpoints:
-
 
 ```
 
@@ -35,7 +33,6 @@ GET /{municipalityId}/{namespace}/parking-permits
 ```
 
 #### Modified Endpoints:
-
 
 ```
 GET /{municipalityId}/{namespace}/errands
@@ -698,9 +695,8 @@ PATCH /{municipalityId}/{namespace}/notifications
                     -   Properties changed
                         -   New property: errandId
 ```
-                       
----
 
+---
 
 # API-Changelog:  version 9.0
 
