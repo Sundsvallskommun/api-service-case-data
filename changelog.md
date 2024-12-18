@@ -1,120 +1,706 @@
 # API-Changelog: version 10.0
 
-## API-endpoints
+### New Endpoints:
 
-### Attachments:
-
-#### New endpoints:
 
 ```
-- [GET] /{municipalityId}/{namespace}/errand/{errandNumber}/attachments
+GET /{municipalityId}/{namespace}/errands/{errandId}/attachments\
+GET /{municipalityId}/{namespace}/errands/{errandId}/messages\
+GET /{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}\
+GET /{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}/attachments/{attachmentId}\
+GET /{municipalityId}/{namespace}/errands/{errandId}/notifications\
+POST /{municipalityId}/{namespace}/errands/{errandId}/notifications\
+DELETE /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}\
+GET /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}
 ```
 
-#### Removed endpoints:
+### Deleted Endpoints:
+
 
 ```
-- [GET] /{municipalityId}/{namespace}/attachments/errand/{errandNumber}
+
+GET /{municipalityId}/{namespace}/attachments/errand/{errandNumber}\
+GET /{municipalityId}/{namespace}/errands/{errandId}/appeals\
+PATCH /{municipalityId}/{namespace}/errands/{errandId}/appeals\
+DELETE /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}\
+GET /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}\
+PATCH /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}\
+PUT /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}\
+GET /{municipalityId}/{namespace}/errands/{errandId}/messageattachments/{attachmentId}/streamed\
+GET /{municipalityId}/{namespace}/messages/{errandNumber}\
+POST /{municipalityId}/{namespace}/notifications\
+DELETE /{municipalityId}/{namespace}/notifications/{notificationId}\
+GET /{municipalityId}/{namespace}/notifications/{notificationId}\
+GET /{municipalityId}/{namespace}/parking-permits
 ```
 
-### Appeals:
+### Modified Endpoints:
 
-#### Removed endpoints:
-
-```
-- [GET] /{municipalityId}/{namespace}/errands/{errandId}/appeals
-- [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/appeals
-- [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
-- [GET] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
-- [PATCH] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
-- [PUT] /{municipalityId}/{namespace}/errands/{errandId}/appeals/{appealId}
-```
-
-### Notifications:
-
-#### New endpoints:
 
 ```
-- [GET] /{municipalityId}/{namespace}/errands/{errandId}/notifications
-- [POST] /{municipalityId}/{namespace}/errands/{errandId}/notifications
-- [DELETE] /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}
-- [GET] /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}
+GET /{municipalityId}/{namespace}/errands
+
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+            -   Modified media type: application/json
+                -   Schema changed
+                    -   Properties changed
+                        -   Modified property: content
+                            -   Items changed
+                                -   Properties changed
+                                    -   New property: labels
+                                    -   New property: relatesTo
+                                    -   Deleted property: appeals
+                                    -   Modified property: decisions
+                                        -   Items changed
+                                            -   Properties changed
+                                                -   Modified property: attachments
+                                                    -   Items changed
+                                                        -   Properties changed
+                                                            -   New property: errandId
+                                                            -   Deleted property: errandNumber
+                        -   Modified property: pageable
+                            -   Properties changed
+                                -   Modified property: sort
+                                    -   Type changed from 'array' to 'object'
+                                    -   Items changed
+                                        -   Schema deleted
+                                    -   Properties changed
+                                        -   New property: empty
+                                        -   New property: sorted
+                                        -   New property: unsorted
+                        -   Modified property: sort
+                            -   Type changed from 'array' to 'object'
+                            -   Items changed
+                                -   Schema deleted
+                            -   Properties changed
+                                -   New property: empty
+                                -   New property: sorted
+                                -   New property: unsorted
+
+POST /{municipalityId}/{namespace}/errands
+
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Request body changed
+    -   Content changed
+        -   Modified media type: application/json
+            -   Schema changed
+                -   Properties changed
+                    -   New property: labels
+                    -   New property: relatesTo
+                    -   Deleted property: appeals
+                    -   Modified property: decisions
+                        -   Items changed
+                            -   Properties changed
+                                -   Modified property: attachments
+                                    -   Items changed
+                                        -   Properties changed
+                                            -   New property: errandId
+                                            -   Deleted property: errandNumber
+
+GET /{municipalityId}/{namespace}/errands/{errandId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+            -   Modified media type: application/json
+                -   Schema changed
+                    -   Properties changed
+                        -   New property: labels
+                        -   New property: relatesTo
+                        -   Deleted property: appeals
+                        -   Modified property: decisions
+                            -   Items changed
+                                -   Properties changed
+                                    -   Modified property: attachments
+                                        -   Items changed
+                                            -   Properties changed
+                                                -   New property: errandId
+                                                -   Deleted property: errandNumber
+
+PATCH /{municipalityId}/{namespace}/errands/{errandId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Request body changed
+    -   Content changed
+        -   Modified media type: application/json
+            -   Schema changed
+                -   Properties changed
+                    -   New property: labels
+                    -   New property: relatesTo
+                    -   Modified property: caseType
+                        -   New enum values: [MEX_SQUARE_PLACE MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOGUE_PLANNING_NOTICE MEX_HUNTING_LEASE MEX_BUILDING_PERMIT MEX_STORMWATER MEX_INVASIVE_SPECIES MEX_LAND_USE_AGREEMENT_VALUATION_PROTOCOL MEX_LITTERING MEX_REFERRAL_CONSULTATION MEX_PUBLIC_SPACE_LEASE MEX_EASEMENT MEX_TREES_FORESTS MEX_ROAD_ASSOCIATION MEX_RETURNED_TO_CONTACT_SUNDSVALL MEX_SMALL_BOAT_HARBOR_DOCK_PORT APPEAL]
+                        -   Deleted enum values: [NYBYGGNAD_ANSOKAN_OM_BYGGLOV ANMALAN_ATTEFALL REGISTRERING_AV_LIVSMEDEL ANMALAN_INSTALLATION_VARMEPUMP ANSOKAN_TILLSTAND_VARMEPUMP ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC ANMALAN_ANDRING_AVLOPPSANLAGGNING ANMALAN_ANDRING_AVLOPPSANORDNING ANMALAN_HALSOSKYDDSVERKSAMHET MEX_APPLICATION_SQUARE_PLACE MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOUGE_PLANNING_NOTICE MEX_TERMINATION_OF_HUNTING_LEASE]
+
+POST /{municipalityId}/{namespace}/errands/{errandId}/attachments
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Request body changed
+    -   Content changed
+        -   Modified media type: application/json
+            -   Schema changed
+                -   Properties changed
+                    -   New property: errandId
+                    -   Deleted property: errandNumber
+-   Responses changed
+    -   Modified response: 201
+        -   Headers changed
+            -   Modified header: Location
+                -   Schema changed
+                    -   Schema added
+
+DELETE /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+            -   Modified media type: application/json
+                -   Schema changed
+                    -   Properties changed
+                        -   New property: errandId
+                        -   Deleted property: errandNumber
+
+PATCH /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Request body changed
+    -   Content changed
+        -   Modified media type: application/json
+            -   Schema changed
+                -   Properties changed
+                    -   New property: errandId
+                    -   Deleted property: errandNumber
+
+PUT /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Request body changed
+    -   Content changed
+        -   Modified media type: application/json
+            -   Schema changed
+                -   Properties changed
+                    -   New property: errandId
+                    -   Deleted property: errandNumber
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}/history
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/decisions
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+            -   Modified media type: application/json
+                -   Schema changed
+                    -   Items changed
+                        -   Properties changed
+                            -   Modified property: attachments
+                                -   Items changed
+                                    -   Properties changed
+                                        -   New property: errandId
+                                        -   Deleted property: errandNumber
+
+PATCH /{municipalityId}/{namespace}/errands/{errandId}/decisions
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Request body changed
+    -   Content changed
+        -   Modified media type: application/json
+            -   Schema changed
+                -   Properties changed
+                    -   Modified property: attachments
+                        -   Items changed
+                            -   Properties changed
+                                -   New property: errandId
+                                -   Deleted property: errandNumber
+-   Responses changed
+    -   Modified response: 201
+        -   Headers changed
+            -   Modified header: Location
+                -   Schema changed
+                    -   Schema added
+
+DELETE /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+            -   Modified media type: application/json
+                -   Schema changed
+                    -   Properties changed
+                        -   Modified property: attachments
+                            -   Items changed
+                                -   Properties changed
+                                    -   New property: errandId
+                                    -   Deleted property: errandNumber
+
+PATCH /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+PUT /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Request body changed
+    -   Content changed
+        -   Modified media type: application/json
+            -   Schema changed
+                -   Properties changed
+                    -   Modified property: attachments
+                        -   Items changed
+                            -   Properties changed
+                                -   New property: errandId
+                                -   Deleted property: errandNumber
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}/history
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/facilities
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+POST /{municipalityId}/{namespace}/errands/{errandId}/facilities
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+PUT /{municipalityId}/{namespace}/errands/{errandId}/facilities
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+DELETE /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+PATCH /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}/history
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/history
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+POST /{municipalityId}/{namespace}/errands/{errandId}/messages
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Request body changed
+    -   Content changed
+        -   Modified media type: application/json
+            -   Schema changed
+                -   Properties changed
+                    -   New property: attachments
+                    -   New property: recipients
+                    -   Deleted property: attachmentRequests
+                    -   Deleted property: errandNumber
+                    -   Modified property: emailHeaders
+                        -   Items changed
+                            -   Properties changed
+                                -   Modified property: values
+                                    -   Example changed from '[<this-is-a-test@domain.com>]' to [<this-is-a-test@domain.com>]
+                                    -   Items changed
+                                        -   Example changed from '[<this-is-a-test@domain.com>]' to '["<this-is-a-test@domain.com>"]'
+-   Responses changed
+    -   New response: 201
+    -   New response: 404
+    -   Deleted response: 204
+
+PUT /{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}/viewed/{isViewed}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   New response: 404
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/notes
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+PATCH /{municipalityId}/{namespace}/errands/{errandId}/notes
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 201
+        -   Headers changed
+            -   Modified header: Location
+                -   Schema changed
+                    -   Schema added
+
+DELETE /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+PATCH /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}/history
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/stakeholders
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+PATCH /{municipalityId}/{namespace}/errands/{errandId}/stakeholders
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 201
+        -   Headers changed
+            -   Modified header: Location
+                -   Schema changed
+                    -   Schema added
+
+PUT /{municipalityId}/{namespace}/errands/{errandId}/stakeholders
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+DELETE /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+PATCH /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+PUT /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+GET /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}/history
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+
+PATCH /{municipalityId}/{namespace}/errands/{errandId}/statuses
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+PUT /{municipalityId}/{namespace}/errands/{errandId}/statuses
+
+-   Modified path param: errandId
+    -   Description changed from '' to 'Errand ID'
+    -   Example changed from null to 123
+-   Modified path param: municipalityId
+    -   Description changed from '' to 'Municipality ID'
+    -   Example changed from null to 2281
+
+GET /{municipalityId}/{namespace}/notifications
+
+-   Modified path param: municipalityId
+    -   Description changed from 'Municipality id' to 'Municipality ID'
+-   Responses changed
+    -   Modified response: 200
+        -   Content changed
+            -   Deleted media type: application/problem+json
+            -   Modified media type: application/json
+                -   Schema changed
+                    -   Items changed
+                        -   Properties changed
+                            -   Modified property: errandId
+                                -   ReadOnly changed from false to true
+
+PATCH /{municipalityId}/{namespace}/notifications
+
+-   Modified path param: municipalityId
+    -   Description changed from 'Municipality id' to 'Municipality ID'
+-   Request body changed
+    -   Content changed
+        -   Modified media type: application/json
+            -   Schema changed
+                -   Items changed
+                    -   Properties changed
+                        -   New property: errandId
 ```
-
-#### Removed endpoints:
-
-```
-- [POST] /{municipalityId}/{namespace}/notifications
-- [DELETE] /{municipalityId}/{namespace}/notifications/{notificationId}
-- [GET] /{municipalityId}/{namespace}/notifications/{notificationId}
-```
-
-### Parking permit:
-
-#### Removed endpoints:
-
-```
-- [GET] /{municipalityId}/{namespace}/parking-permits
-```
-
-## API-Model updates
-
-- **AttachmentCategory**
-  - **Removed Values:**
-    - Removed 231 unused values. See API documentation for full list.
-- **CaseType**
-  - **Removed Values:**
-    - `NYBYGGNAD_ANSOKAN_OM_BYGGLOV`
-    - `ANMALAN_ATTEFALL`
-    - `REGISTRERING_AV_LIVSMEDEL`
-    - `ANMALAN_INSTALLATION_VARMEPUMP`
-    - `ANSOKAN_TILLSTAND_VARMEPUMP`
-    - `ANSOKAN_OM_TILLSTAND_ENSKILT_AVLOPP`
-    - `ANMALAN_INSTALLATION_ENSKILT_AVLOPP_UTAN_WC`
-    - `ANMALAN_ANDRING_AVLOPPSANLAGGNING`
-    - `ANMALAN_ANDRING_AVLOPPSANORDNING`
-    - `ANMALAN_HALSOSKYDDSVERKSAMHET`
-- **Errand**
-  - **Added Fields:**
-    - relatesTo: `List<RelatedErrand>`
-    - labels: `List<String>`
-  - **Removed Fields:**
-    - appeals: `List<Appeal>`
-- **GetParkingPermit** *(Removed)*
-  - **Fields:**
-    - artefactPermitNumber: `String`
-    - artefactPermitStatus: `String`
-    - errandDecision: `Decision`
-    - errandId: `Long`
-- **PatchNotification**
-  - **Added Fields:**
-    - errandId: `Long`
-- **RelatedErrand** *(Added)*
-  - **Fields:**
-    - errandId: `Long`
-    - errandNumber: `String`
-    - relationReason: `String`
-- **Appeal** *(Removed)*
-  - **Fields:**
-    - appealConcernCommunicatedAt: `OffsetDateTime`
-    - created: `OffsetDateTime`
-    - decisionId: `Long`
-    - description: `String`
-    - id: `Long`
-    - municipalityId: `String`
-    - namespace: `String`
-    - registeredAt: `OffsetDateTime`
-    - status: `String`
-    - timelinessReview: `String`
-    - updated: `OffsetDateTime`
-    - version: `int`
-- **PatchAppeal** *(Removed)*
-  - **Fields:**
-    - description: `String`
-    - status: `String`
-    - timelinessReview: `String`
-- **ValidAppealStatusConstraintValidator** *(Removed)*
-
+                       
 ---
+
 
 # API-Changelog:  version 9.0
 
