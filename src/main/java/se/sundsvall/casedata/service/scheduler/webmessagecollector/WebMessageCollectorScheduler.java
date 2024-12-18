@@ -27,8 +27,12 @@ public class WebMessageCollectorScheduler {
 			RequestId.init();
 
 			LOG.info("Getting and processing messages");
-			webMessageCollectorWorker.getAndProcessMessages();
+			final var messageMap = webMessageCollectorWorker.getAndProcessMessages();
 			LOG.info("Finished getting and processing messages");
+
+			LOG.info("Deleting messages from WebMessageCollector");
+			webMessageCollectorWorker.deleteMessages(messageMap);
+			LOG.info("Finished deleting messages from WebMessageCollector");
 		} finally {
 			RequestId.reset();
 		}

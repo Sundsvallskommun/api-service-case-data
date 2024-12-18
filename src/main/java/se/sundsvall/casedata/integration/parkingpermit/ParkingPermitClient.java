@@ -30,5 +30,4 @@ public interface ParkingPermitClient {
 	ResponseEntity<Void> updateProcess(
 		@PathVariable(name = "municipalityId") final String municipalityId,
 		@PathVariable(name = "processInstanceId") final String processInstanceId);
-
 }

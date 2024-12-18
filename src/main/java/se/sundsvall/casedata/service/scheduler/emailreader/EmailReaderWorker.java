@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.scheduler.emailreader;
 
 import static se.sundsvall.casedata.service.scheduler.emailreader.ErrandNumberParser.parseSubject;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 import generated.se.sundsvall.emailreader.Email;
 import org.slf4j.Logger;
@@ -12,11 +13,14 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
+import se.sundsvall.casedata.service.NotificationService;
 
 @Component
 public class EmailReaderWorker {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EmailReaderWorker.class.getName());
+	private static final String NOTIFICATION_DESCRIPTION = "Meddelande mottaget";
+	private static final String NOTIFICATION_TYPE = "UPDATE";
 
 	private final MessageRepository messageRepository;
 
@@ -30,14 +34,17 @@ public class EmailReaderWorker {
 
 	private final EmailReaderMapper emailReaderMapper;
 
+	private final NotificationService notificationService;
+
 	public EmailReaderWorker(final MessageRepository repository, final ErrandRepository errandRepository, final AttachmentRepository attachmentRepository, final EmailReaderClient client, final EmailReaderProperties emailReaderProperties,
-		final EmailReaderMapper emailReaderMapper) {
+		final EmailReaderMapper emailReaderMapper, final NotificationService notificationService) {
 		this.messageRepository = repository;
 		this.errandRepository = errandRepository;
 		this.attachmentRepository = attachmentRepository;
 		this.emailReaderClient = client;
 		this.emailReaderProperties = emailReaderProperties;
 		this.emailReaderMapper = emailReaderMapper;
+		this.notificationService = notificationService;
 	}
 
 	void getAndProcessEmails() {
@@ -58,7 +65,10 @@ public class EmailReaderWorker {
 			errandRepository.findByErrandNumber(errandNumber)
 				.filter(errand -> !messageRepository.existsById(email.getId()))
 				.ifPresent(errand -> {
+
 					messageRepository.save(emailReaderMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace()).withErrandId(errand.getId()));
+					notificationService.create(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
+
 					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email, errand.getMunicipalityId(), errand.getNamespace()).stream()
 						.map(attachment -> attachment.withErrandId(errand.getId()).withMunicipalityId(emailReaderProperties.municipalityId()))
 						.toList());

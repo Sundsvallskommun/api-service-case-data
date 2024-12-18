@@ -5,6 +5,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.Optional;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -28,6 +29,7 @@ public class SuspensionWorker {
 		this.notificationService = notificationService;
 	}
 
+	@Transactional
 	public void processExpiredSuspensions() {
 		errandRepository
 			.findAllBySuspendedToBefore(now())
@@ -36,7 +38,7 @@ public class SuspensionWorker {
 	}
 
 	private Notification createNotification(ErrandEntity errand) {
-		var stakeholder = findAdministrator(errand);
+		final var stakeholder = findAdministrator(errand);
 
 		return Notification.builder()
 			.withOwnerFullName("%s %s".formatted(stakeholder.getFirstName(), stakeholder.getLastName()))
@@ -57,5 +59,4 @@ public class SuspensionWorker {
 			.findFirst()
 			.orElseThrow(() -> new IllegalStateException("No administrator found for errand with id: %s".formatted(errand.getId())));
 	}
-
 }

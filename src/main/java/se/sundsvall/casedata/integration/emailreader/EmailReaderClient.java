@@ -23,5 +23,4 @@ public interface EmailReaderClient {
 
 	@DeleteMapping("/{municipalityId}/email/{id}")
 	void deleteEmail(@PathVariable("municipalityId") final String municipalityId, @PathVariable("id") final String id);
-
 }

@@ -16,6 +16,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,18 +31,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.MessageRequest;
+import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.casedata.service.util.BlobBuilder;
 
@@ -50,6 +56,9 @@ class MessageServiceTest {
 
 	@Mock
 	private ErrandRepository errandRepositoryMock;
+
+	@Mock
+	private NotificationService notificationServiceMock;
 
 	@Mock
 	private MessageMapper messageMapperMock;
@@ -83,6 +92,9 @@ class MessageServiceTest {
 
 	@InjectMocks
 	private MessageService messageService;
+
+	@Captor
+	private ArgumentCaptor<Notification> notificationCaptor;
 
 	@Test
 	void findMessages() {
@@ -191,9 +203,19 @@ class MessageServiceTest {
 		// Arrange
 		final var errandId = 1L;
 		final var request = MessageRequest.builder().build();
-		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(true);
+		final var stakeholder = StakeholderEntity.builder()
+			.withAdAccount("adminAdAccount")
+			.withRoles(List.of(ADMINISTRATOR.name())).build();
+		final var errand = ErrandEntity.builder()
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withId(errandId)
+			.withStakeholders(List.of(stakeholder))
+			.build();
+
 		when(messageRepositoryMock.save(any(MessageEntity.class))).thenReturn(MessageEntity.builder().build());
 		when(messageMapperMock.toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(MessageEntity.builder().build());
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
 		// Act
 		messageService.create(errandId, request, MUNICIPALITY_ID, NAMESPACE);
@@ -201,7 +223,15 @@ class MessageServiceTest {
 		// Assert
 		verify(messageMapperMock).toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageMapperMock).toMessageResponse(any(MessageEntity.class));
-		verify(errandRepositoryMock).existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		assertThat(notificationCaptor.getValue()).satisfies(notification -> {
+			assertThat(notification.getErrandId()).isEqualTo(errandId);
+			assertThat(notification.getType()).isEqualTo("UPDATE");
+			assertThat(notification.getDescription()).isEqualTo("Meddelande mottaget");
+			assertThat(notification.getOwnerId()).isEqualTo("adminAdAccount");
+		});
+		verify(messageMapperMock).toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageRepositoryMock).save(any());
 		verifyNoMoreInteractions(messageRepositoryMock, messageMapperMock);
 	}
