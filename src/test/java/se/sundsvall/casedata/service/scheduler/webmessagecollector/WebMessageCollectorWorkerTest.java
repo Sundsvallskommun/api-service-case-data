@@ -3,11 +3,13 @@ package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
 
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
@@ -23,6 +25,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
@@ -32,8 +35,10 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollectorClient;
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
+import se.sundsvall.casedata.service.NotificationService;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,6 +49,9 @@ class WebMessageCollectorWorkerTest {
 
 	@Mock
 	private WebMessageCollectorProperties webMessageCollectorProperties;
+
+	@Mock
+	private NotificationService notificationServiceMock;
 
 	@Mock
 	private MessageAttachmentRepository messageAttachmentRepositoryMock;
@@ -71,6 +79,9 @@ class WebMessageCollectorWorkerTest {
 
 	@Captor
 	private ArgumentCaptor<AttachmentEntity> attachmentCaptor;
+
+	@Captor
+	private ArgumentCaptor<Notification> notificationCaptor;
 
 	private static void assertSavedMessageHasCorrectValues(final MessageEntity message) {
 		assertThat(message.getDirection()).isEqualTo(INBOUND);
@@ -104,7 +115,11 @@ class WebMessageCollectorWorkerTest {
 			.withErrandNumber(errandNumber)
 			.withExternalCaseId(externalCaseId)
 			.withMunicipalityId(MUNICIPALITY_ID)
-			.withNamespace(NAMESPACE).build();
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(StakeholderEntity.builder()
+				.withAdAccount("adminAdAccount")
+				.withRoles(List.of(ADMINISTRATOR.name())).build()))
+			.build();
 
 		final var bytes = new byte[] {
 			1, 23, 45
@@ -126,8 +141,16 @@ class WebMessageCollectorWorkerTest {
 		webMessageCollectorWorker.getAndProcessMessages();
 
 		// Assert
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		assertThat(notificationCaptor.getValue()).satisfies(notification -> {
+			assertThat(notification.getErrandId()).isEqualTo(errandId);
+			assertThat(notification.getType()).isEqualTo("UPDATE");
+			assertThat(notification.getDescription()).isEqualTo("Meddelande mottaget");
+			assertThat(notification.getOwnerId()).isEqualTo("adminAdAccount");
+		});
+
 		verify(webMessageCollectorClientMock).getMessages(MUNICIPALITY_ID, familyId, instance);
-		verify(webMessageCollectorClientMock).deleteMessages(any(), any());
+		verify(webMessageCollectorClientMock, never()).deleteMessages(any(), any());
 		verify(messageRepositoryMock).saveAndFlush(messageCaptor.capture());
 		assertThat(messageCaptor.getValue()).satisfies(WebMessageCollectorWorkerTest::assertSavedMessageHasCorrectValues);
 
@@ -161,7 +184,7 @@ class WebMessageCollectorWorkerTest {
 
 		// Assert
 		verify(webMessageCollectorClientMock).getMessages(MUNICIPALITY_ID, familyId, instance);
-		verify(webMessageCollectorClientMock).deleteMessages(any(), any());
+		verify(webMessageCollectorClientMock, never()).deleteMessages(any(), any());
 		verify(messageRepositoryMock, never()).saveAndFlush(any());
 		verify(messageMapperMock, never()).toMessageEntity(any(Long.class), any(), any(), any());
 	}

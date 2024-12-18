@@ -30,6 +30,7 @@ import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
 import static se.sundsvall.casedata.TestUtil.createStatus;
 import static se.sundsvall.casedata.TestUtil.createStatusEntity;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddress;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
@@ -790,5 +791,61 @@ class EntityMapperTest {
 
 		// Assert
 		assertThat(ownerId).isNull();
+	}
+
+	@Test
+	void toNotificationWithAdministratorStakeholder() {
+		// Arrange
+		final var adminStakeholder = StakeholderEntity.builder()
+			.withAdAccount("adminAdAccount")
+			.withRoles(List.of(ADMINISTRATOR.name())).build();
+
+		final var errandEntity = ErrandEntity.builder()
+			.withId(1L)
+			.withMunicipalityId("municipalityId")
+			.withNamespace("namespace")
+			.withStakeholders(List.of(adminStakeholder))
+			.build();
+
+		final var type = "type";
+		final var description = "description";
+
+		// Act
+		final var notification = toNotification(errandEntity, type, description);
+
+		// Assert
+		assertThat(notification).isNotNull();
+		assertThat(notification.getOwnerId()).isEqualTo("adminAdAccount");
+		assertThat(notification.getType()).isEqualTo(type);
+		assertThat(notification.getDescription()).isEqualTo(description);
+		assertThat(notification.getErrandId()).isEqualTo(1L);
+		assertThat(notification.getMunicipalityId()).isEqualTo("municipalityId");
+		assertThat(notification.getNamespace()).isEqualTo("namespace");
+	}
+
+	@Test
+	void toNotificationWithoutAdministratorStakeholder() {
+		// Arrange
+		final var errandEntity = ErrandEntity.builder()
+			.withId(1L)
+			.withMunicipalityId("municipalityId")
+			.withNamespace("namespace")
+			.withStakeholders(List.of())
+			.build();
+
+		final var type = "type";
+		final var description = "description";
+
+		// Act
+		final var notification = toNotification(errandEntity, type, description);
+
+		// Assert
+		assertThat(notification).isNotNull();
+		assertThat(notification.getOwnerId()).isNull();
+		assertThat(notification.getType()).isEqualTo(type);
+		assertThat(notification.getDescription()).isEqualTo(description);
+		assertThat(notification.getErrandId()).isEqualTo(1L);
+		assertThat(notification.getMunicipalityId()).isEqualTo("municipalityId");
+		assertThat(notification.getNamespace()).isEqualTo("namespace");
 	}
 }

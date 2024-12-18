@@ -7,6 +7,7 @@ import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -25,16 +26,22 @@ import se.sundsvall.casedata.service.scheduler.MessageMapper;
 @Service
 public class MessageService {
 
+	private static final String NOTIFICATION_TYPE = "UPDATE";
+	private static final String NOTIFICATION_DESCRIPTION = "Meddelande mottaget";
 	private final MessageRepository messageRepository;
 	private final ErrandRepository errandRepository;
 	private final MessageAttachmentRepository messageAttachmentRepository;
+
+	private final NotificationService notificationService;
+
 	private final MessageMapper mapper;
 
 	public MessageService(final MessageRepository messageRepository, final ErrandRepository errandRepository,
-		final MessageAttachmentRepository messageAttachmentRepository, final MessageMapper mapper) {
+		final MessageAttachmentRepository messageAttachmentRepository, final NotificationService notificationService, final MessageMapper mapper) {
 		this.messageRepository = messageRepository;
 		this.errandRepository = errandRepository;
 		this.messageAttachmentRepository = messageAttachmentRepository;
+		this.notificationService = notificationService;
 		this.mapper = mapper;
 	}
 
@@ -50,8 +57,13 @@ public class MessageService {
 	}
 
 	public MessageResponse create(final Long errandId, final MessageRequest request, final String municipalityId, final String namespace) {
-		verifyErrandExists(errandId, municipalityId, namespace);
-		return mapper.toMessageResponse(messageRepository.save(mapper.toMessageEntity(request, errandId, municipalityId, namespace)));
+		final var errand = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+
+		final var messageEntity = messageRepository.save(mapper.toMessageEntity(request, errandId, municipalityId, namespace));
+		notificationService.create(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
+
+		return mapper.toMessageResponse(messageEntity);
 	}
 
 	public void updateViewedStatus(final Long errandId, final String messageId, final String municipalityId, final String namespace, final boolean isViewed) {

@@ -531,4 +531,21 @@ public final class EntityMapper {
 				.build())
 			.orElse(null);
 	}
+
+	public static Notification toNotification(final ErrandEntity errand, final String type, final String description) {
+
+		final var stakeholder = errand.getStakeholders().stream()
+			.filter(stakeholderEntity -> stakeholderEntity.getRoles().contains(ADMINISTRATOR.name()))
+			.findFirst()
+			.orElse(new StakeholderEntity());
+
+		return Notification.builder()
+			.withOwnerId(stakeholder.getAdAccount())
+			.withType(type)
+			.withDescription(description)
+			.withErrandId(errand.getId())
+			.withMunicipalityId(errand.getMunicipalityId())
+			.withNamespace(errand.getNamespace())
+			.build();
+	}
 }

@@ -1,11 +1,13 @@
 package se.sundsvall.casedata.service.scheduler.emailreader;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 
 import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
@@ -15,22 +17,30 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
+import se.sundsvall.casedata.service.NotificationService;
 
 @ExtendWith(MockitoExtension.class)
 class EmailReaderWorkerTest {
 
 	@Mock
 	private EmailReaderProperties emailReaderPropertiesMock;
+
+	@Mock
+	private NotificationService notificationServiceMock;
 
 	@Mock
 	private MessageRepository messageRepositoryMock;
@@ -53,6 +63,9 @@ class EmailReaderWorkerTest {
 	@InjectMocks
 	private EmailReaderWorker emailReaderWorker;
 
+	@Captor
+	private ArgumentCaptor<Notification> notificationCaptor;
+
 	@BeforeEach
 	void setUp() {
 		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
@@ -63,9 +76,9 @@ class EmailReaderWorkerTest {
 	void getAndProcessEmails() {
 
 		// Arrange
-		var municipalityId = "someMunicipalityId";
-		var namespace = "someNamespace";
-
+		final var municipalityId = "someMunicipalityId";
+		final var namespace = "someNamespace";
+		final var errandId = 123L;
 		final var email = new Email()
 			.id("someId")
 			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
@@ -78,10 +91,14 @@ class EmailReaderWorkerTest {
 				.content("someContent")
 				.contentType("someContentType")));
 
+		final var stakeholder = StakeholderEntity.builder()
+			.withAdAccount("adminAdAccount")
+			.withRoles(List.of(ADMINISTRATOR.name())).build();
+
 		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
 			.thenReturn(List.of(email));
 
-		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(ErrandEntity.builder().withNamespace(namespace).withMunicipalityId(municipalityId).build()));
+		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(ErrandEntity.builder().withId(errandId).withStakeholders(List.of(stakeholder)).withNamespace(namespace).withMunicipalityId(municipalityId).build()));
 
 		when(emailReaderMapperMock.toMessage(email, municipalityId, namespace)).thenReturn(messageMock);
 		when(messageRepositoryMock.existsById("someId")).thenReturn(false);
@@ -90,6 +107,15 @@ class EmailReaderWorkerTest {
 		emailReaderWorker.getAndProcessEmails();
 
 		// Assert
+
+		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), notificationCaptor.capture());
+		assertThat(notificationCaptor.getValue()).satisfies(notification -> {
+			assertThat(notification.getErrandId()).isEqualTo(errandId);
+			assertThat(notification.getType()).isEqualTo("UPDATE");
+			assertThat(notification.getDescription()).isEqualTo("Meddelande mottaget");
+			assertThat(notification.getOwnerId()).isEqualTo("adminAdAccount");
+		});
+
 		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
 		verify(errandRepositoryMock).findByErrandNumber("PRH-2022-01");
 		verify(messageRepositoryMock).existsById("someId");
