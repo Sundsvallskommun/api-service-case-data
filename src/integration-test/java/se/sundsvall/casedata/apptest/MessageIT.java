@@ -53,7 +53,7 @@ class MessageIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test02_postMessage() {
+	void test02_createMessage() {
 		final var location = setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(POST)
