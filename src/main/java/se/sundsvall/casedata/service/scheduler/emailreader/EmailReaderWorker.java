@@ -48,7 +48,7 @@ public class EmailReaderWorker {
 	}
 
 	@Transactional
-	void getAndProcessEmails() {
+	public void getAndProcessEmails() {
 
 		try {
 			emailReaderClient.getEmail(emailReaderProperties.municipalityId(), emailReaderProperties.namespace())
@@ -58,8 +58,7 @@ public class EmailReaderWorker {
 		}
 	}
 
-	@Transactional
-	public void saveAndRemoteDelete(final Email email) {
+	private void saveAndRemoteDelete(final Email email) {
 		try {
 			final var errandNumber = parseSubject(email.getSubject());
 
