@@ -4,6 +4,7 @@ import static se.sundsvall.casedata.service.scheduler.emailreader.ErrandNumberPa
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 import generated.se.sundsvall.emailreader.Email;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -47,35 +48,46 @@ public class EmailReaderWorker {
 		this.notificationService = notificationService;
 	}
 
-	void getAndProcessEmails() {
+	@Transactional
+	public void getAndProcessEmails() {
 
 		try {
 			emailReaderClient.getEmail(emailReaderProperties.municipalityId(), emailReaderProperties.namespace())
-				.forEach(this::saveAndRemoteDelete);
+				.forEach(email ->
+
+				{
+					if (saveAndRemoteDelete(email)) {
+						deleteMail(email);
+					}
+				});
 		} catch (final Exception e) {
 			LOG.error("Error when fetching emails from EmailReader", e);
 		}
 	}
 
-	@Transactional
-	public void saveAndRemoteDelete(final Email email) {
+	private boolean saveAndRemoteDelete(final Email email) {
 		try {
 			final var errandNumber = parseSubject(email.getSubject());
 
 			errandRepository.findByErrandNumber(errandNumber)
 				.filter(errand -> !messageRepository.existsById(email.getId()))
 				.ifPresent(errand -> {
+					Hibernate.initialize(errand.getStakeholders());
 					messageRepository.save(emailReaderMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace()).withErrandNumber(errandNumber));
 					notificationService.createNotification(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
 					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email, errand.getMunicipalityId(), errand.getNamespace()).stream()
 						.map(attachment -> attachment.withErrandNumber(errandNumber).withMunicipalityId(emailReaderProperties.municipalityId()))
 						.toList());
 				});
-
-			emailReaderClient.deleteEmail(emailReaderProperties.municipalityId(), email.getId());
+			return true;
 		} catch (final Exception e) {
 			LOG.error("Error when processing email with subject: {}", email.getSubject(), e);
+			return false;
 		}
+	}
+
+	private void deleteMail(final Email email) {
+		emailReaderClient.deleteEmail(emailReaderProperties.municipalityId(), email.getId());
 	}
 
 }
