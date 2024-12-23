@@ -47,7 +47,7 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
 @Validated
-@RequestMapping("/{municipalityId}/{namespace}/errands")
+@RequestMapping("/{municipalityId}")
 @Tag(name = "Errands", description = "Errand operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 	Problem.class, ConstraintViolationProblem.class
@@ -62,7 +62,7 @@ class ErrandResource {
 		this.errandService = errandService;
 	}
 
-	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@PostMapping(path = "/{namespace}/errands", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	@Operation(description = "Create errand (without attachments). Add attachments to errand with PATCH /errands/{id}/attachments afterwards.", responses = {
 		@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true)
 	})
@@ -80,7 +80,7 @@ class ErrandResource {
 			.build();
 	}
 
-	@GetMapping(path = "/{errandId}", produces = APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/{namespace}/errands/{errandId}", produces = APPLICATION_JSON_VALUE)
 	@Operation(description = "Get errand by ID.", responses = {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
@@ -92,7 +92,7 @@ class ErrandResource {
 		return ok(errandService.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace));
 	}
 
-	@PatchMapping(path = "/{errandId}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@PatchMapping(path = "/{namespace}/errands/{errandId}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	@Operation(description = "Update errand.", responses = {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
@@ -109,7 +109,7 @@ class ErrandResource {
 	}
 
 	@Hidden // Should be a hidden operation in the API.
-	@DeleteMapping(path = "/{errandId}", produces = ALL_VALUE)
+	@DeleteMapping(path = "/{namespace}/errands/{errandId}", produces = ALL_VALUE)
 	@Operation(description = "Delete errand by ID.", hidden = true, responses = {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
@@ -124,7 +124,7 @@ class ErrandResource {
 			.build();
 	}
 
-	@GetMapping(produces = APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/{namespace}/errands", produces = APPLICATION_JSON_VALUE)
 	@Operation(description = "Get errands with or without query. The query is very flexible and allows you as a client to control a lot yourself.", responses = {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
@@ -138,5 +138,20 @@ class ErrandResource {
 		@ParameterObject final Pageable pageable) {
 
 		return ok(errandService.findAll(filter, municipalityId, namespace, pageable));
+	}
+
+	@GetMapping(path = "/errands", produces = APPLICATION_JSON_VALUE)
+	@Operation(description = "Get errands with or without query. The query is very flexible and allows you as a client to control a lot yourself.", hidden = true, responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
+	ResponseEntity<Page<Errand>> getErrandsWithoutNamespace(
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(
+			description = "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)",
+			example = "caseType:'PARKING_PERMIT' and stakeholders.firstName~'*mar*' and applicationReceived>'2022-09-08T12:18:03.747+02:00'",
+			schema = @Schema(implementation = String.class)) @Filter final Specification<ErrandEntity> filter,
+		@ParameterObject final Pageable pageable) {
+
+		return ok(errandService.findAllWithoutNamespace(filter, municipalityId, pageable));
 	}
 }

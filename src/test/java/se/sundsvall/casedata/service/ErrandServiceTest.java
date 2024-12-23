@@ -247,6 +247,34 @@ class ErrandServiceTest {
 	}
 
 	@Test
+	void findAllWithoutNamespaceAndDuplicates() {
+
+		// Arrange
+		final var errandDTO = createErrand();
+		final var returnErrands = Stream.of(errandDTO, errandDTO, errandDTO, errandDTO, errandDTO)
+			.map(dto -> EntityMapper.toErrandEntity(dto, MUNICIPALITY_ID, NAMESPACE))
+			.toList();
+
+		returnErrands.forEach(
+			errandEntity -> errandEntity.setId(errandDTO.getId()));
+
+		when(errandRepositoryMock.findAll(ArgumentMatchers.<Specification<ErrandEntity>>any())).thenReturn(returnErrands);
+		when(errandRepositoryMock.findAllByIdInAndMunicipalityId(anyList(), eq(MUNICIPALITY_ID), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(returnErrands.getFirst())));
+
+		final Specification<ErrandEntity> filterSpecification = filterSpecificationConverterSpy.convert("stakeholders.firstName '*kim*' or stakeholders.lastName ~ '*kim*' or stakeholders.contactInformation.value ~ '*kim*'");
+		final Pageable pageable = PageRequest.of(0, 20);
+
+		// Act
+		errandService.findAllWithoutNamespace(filterSpecification, MUNICIPALITY_ID, pageable);
+
+		// Assert
+		verify(errandRepositoryMock).findAllByIdInAndMunicipalityId(idListCapture.capture(), eq(MUNICIPALITY_ID), any(Pageable.class));
+
+		assertThat(idListCapture.getValue()).hasSize(1);
+		assertThat(idListCapture.getValue().getFirst()).isEqualTo(errandDTO.getId());
+	}
+
+	@Test
 	void updateWhenParkingPermit() {
 
 		// Arrange
