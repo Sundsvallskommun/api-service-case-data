@@ -7,7 +7,7 @@ public enum AttachmentCategory {
 
 	///////////////////////////////////
 	// PARKING PERMIT
-	///////////////////////////////////
+	/// ////////////////////////////////
 	MEDICAL_CONFIRMATION,
 	POLICE_REPORT,
 	PASSPORT_PHOTO,
@@ -15,14 +15,14 @@ public enum AttachmentCategory {
 	POWER_OF_ATTORNEY,
 	OTHER,
 
-	///////////////////////////////////
+	/// ////////////////////////////////
 	ERRAND_SCANNED_APPLICATION,
 	SERVICE_RECEIPT,
 	OTHER_ATTACHMENT,
 
 	///////////////////////////////////
 	// MEX
-	///////////////////////////////////
+	/// ////////////////////////////////
 	LEASE_REQUEST,
 	RECEIVED_MAP,
 	RECEIVED_CONTRACT,
@@ -37,6 +37,10 @@ public enum AttachmentCategory {
 	OEP_APPLICATION, // Ansökan
 	ROAD_ALLOWANCE_APPROVAL,// Godkännande för vägbidrag
 	MEX_PROTOCOL, // "Protokoll"
-	PREVIOUS_AGREEMENT // Tidigare avtal
+	PREVIOUS_AGREEMENT, // Tidigare avtal
+
+	SITUATION_PLAN, // Situationsplan
+	EMAIL, // E-post
+	LETTER, // Brev
 
 }
