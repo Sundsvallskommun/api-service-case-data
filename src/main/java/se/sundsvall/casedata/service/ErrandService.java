@@ -56,6 +56,7 @@ public class ErrandService {
 		try {
 			final List<Long> allIds = errandRepository.findAll(specification).stream()
 				.filter(errand -> municipalityId.equals(errand.getMunicipalityId()))
+				.filter(errand -> namespace.equals(errand.getNamespace()))
 				.map(ErrandEntity::getId)
 				.distinct()
 				.toList();
@@ -131,4 +132,20 @@ public class ErrandService {
 			throw e;
 		}
 	}
+
+	public Page<Errand> findAllWithoutNamespace(final Specification<ErrandEntity> specification, final String municipalityId, final Pageable pageable) {
+		// Extract all ID's and remove duplicates
+		try {
+			final List<Long> allIds = errandRepository.findAll(specification).stream()
+				.filter(errand -> municipalityId.equals(errand.getMunicipalityId()))
+				.map(ErrandEntity::getId)
+				.distinct()
+				.toList();
+
+			return errandRepository.findAllByIdInAndMunicipalityId(allIds, municipalityId, pageable).map(EntityMapper::toErrand);
+		} catch (final PropertyReferenceException | PathElementException | InvalidDataAccessApiUsageException e) {
+			throw Problem.valueOf(BAD_REQUEST, "Invalid filter parameter: " + e.getMessage());
+		}
+	}
+
 }
