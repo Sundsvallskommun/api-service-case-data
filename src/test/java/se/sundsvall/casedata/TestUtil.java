@@ -1,59 +1,15 @@
 package se.sundsvall.casedata;
 
+import static java.util.UUID.randomUUID;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
+import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.commons.lang3.RandomStringUtils;
-import se.sundsvall.casedata.api.model.Address;
-import se.sundsvall.casedata.api.model.Appeal;
-import se.sundsvall.casedata.api.model.Attachment;
-import se.sundsvall.casedata.api.model.ContactInformation;
-import se.sundsvall.casedata.api.model.Coordinates;
-import se.sundsvall.casedata.api.model.Decision;
-import se.sundsvall.casedata.api.model.Errand;
-import se.sundsvall.casedata.api.model.ExtraParameter;
-import se.sundsvall.casedata.api.model.Facility;
-import se.sundsvall.casedata.api.model.GetParkingPermit;
-import se.sundsvall.casedata.api.model.Law;
-import se.sundsvall.casedata.api.model.Note;
-import se.sundsvall.casedata.api.model.Notification;
-import se.sundsvall.casedata.api.model.PatchAppeal;
-import se.sundsvall.casedata.api.model.PatchDecision;
-import se.sundsvall.casedata.api.model.PatchErrand;
-import se.sundsvall.casedata.api.model.PatchNotification;
-import se.sundsvall.casedata.api.model.Stakeholder;
-import se.sundsvall.casedata.api.model.Status;
-import se.sundsvall.casedata.api.model.Suspension;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
-import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.AddressEntity;
-import se.sundsvall.casedata.integration.db.model.AppealEntity;
-import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
-import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
-import se.sundsvall.casedata.integration.db.model.CoordinatesEntity;
-import se.sundsvall.casedata.integration.db.model.DecisionEntity;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
-import se.sundsvall.casedata.integration.db.model.FacilityEntity;
-import se.sundsvall.casedata.integration.db.model.LawEntity;
-import se.sundsvall.casedata.integration.db.model.NoteEntity;
-import se.sundsvall.casedata.integration.db.model.NotificationEntity;
-import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
-import se.sundsvall.casedata.integration.db.model.StatusEntity;
-import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
-import se.sundsvall.casedata.integration.db.model.enums.Channel;
-import se.sundsvall.casedata.integration.db.model.enums.ContactType;
-import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
-import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
-import se.sundsvall.casedata.integration.db.model.enums.NoteType;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
-
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -64,10 +20,50 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.Consumer;
-
-import static java.util.UUID.randomUUID;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
+import org.apache.commons.lang3.RandomStringUtils;
+import se.sundsvall.casedata.api.model.Address;
+import se.sundsvall.casedata.api.model.Attachment;
+import se.sundsvall.casedata.api.model.ContactInformation;
+import se.sundsvall.casedata.api.model.Coordinates;
+import se.sundsvall.casedata.api.model.Decision;
+import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.ExtraParameter;
+import se.sundsvall.casedata.api.model.Facility;
+import se.sundsvall.casedata.api.model.Law;
+import se.sundsvall.casedata.api.model.Note;
+import se.sundsvall.casedata.api.model.Notification;
+import se.sundsvall.casedata.api.model.PatchDecision;
+import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.api.model.PatchNotification;
+import se.sundsvall.casedata.api.model.RelatedErrand;
+import se.sundsvall.casedata.api.model.Stakeholder;
+import se.sundsvall.casedata.api.model.Status;
+import se.sundsvall.casedata.api.model.Suspension;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.AddressEntity;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
+import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
+import se.sundsvall.casedata.integration.db.model.CoordinatesEntity;
+import se.sundsvall.casedata.integration.db.model.DecisionEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
+import se.sundsvall.casedata.integration.db.model.FacilityEntity;
+import se.sundsvall.casedata.integration.db.model.LawEntity;
+import se.sundsvall.casedata.integration.db.model.NoteEntity;
+import se.sundsvall.casedata.integration.db.model.NotificationEntity;
+import se.sundsvall.casedata.integration.db.model.RelatedErrandEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+import se.sundsvall.casedata.integration.db.model.StatusEntity;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
+import se.sundsvall.casedata.integration.db.model.enums.ContactType;
+import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
+import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
+import se.sundsvall.casedata.integration.db.model.enums.NoteType;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 public final class TestUtil {
 
@@ -83,10 +79,10 @@ public final class TestUtil {
 	public static Errand createErrand() {
 		return Errand.builder()
 			.withId(new Random().nextLong(1, 100000))
-			.withExternalCaseId(UUID.randomUUID().toString())
+			.withExternalCaseId(randomUUID().toString())
 			.withCaseType(CaseType.PARKING_PERMIT.name())
 			.withChannel(Channel.EMAIL)
-			.withPriority(Priority.HIGH)
+			.withPriority(HIGH)
 			.withErrandNumber(RandomStringUtils.secure().next(10, true, true))
 			.withDescription(RandomStringUtils.secure().next(20, true, false))
 			.withCaseTitleAddition(RandomStringUtils.secure().next(10, true, false))
@@ -98,7 +94,6 @@ public final class TestUtil {
 			.withFacilities(createFacilities(true, new ArrayList<>(List.of(FacilityType.GARAGE))))
 			.withStatuses(new ArrayList<>(List.of(createStatus())))
 			.withDecisions(new ArrayList<>(List.of(createDecision())))
-			.withAppeals(new ArrayList<>(List.of(createAppeal())))
 			.withUpdatedBy(RandomStringUtils.secure().next(10, true, false))
 			.withCreatedBy(RandomStringUtils.secure().next(10, true, false))
 			.withUpdatedByClient(RandomStringUtils.secure().next(10, true, false))
@@ -106,6 +101,7 @@ public final class TestUtil {
 			.withProcessId(RandomStringUtils.secure().next(10, true, true))
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
+			.withRelatesTo(new ArrayList<>(List.of(RelatedErrand.builder().withErrandId(new Random().nextLong()).withErrandNumber("ErrandNumber").withRelationReason("Relation reason").build())))
 			.withNotes(new ArrayList<>(List.of(createNote(), createNote(), createNote())))
 			.withStakeholders(new ArrayList<>(List.of(
 				createStakeholder(StakeholderType.PERSON, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole(), ADMINISTRATOR.toString()))),
@@ -116,6 +112,7 @@ public final class TestUtil {
 				RandomStringUtils.secure().next(10, true, true))))
 			.withSuspension(Suspension.builder().withSuspendedFrom(OffsetDateTime.now()).withSuspendedTo(OffsetDateTime.now().plusDays(5)).build())
 			.withExtraParameters(createExtraParametersList())
+			.withLabels(new ArrayList<>(List.of("label1", "label2")))
 			.build();
 	}
 
@@ -125,10 +122,6 @@ public final class TestUtil {
 
 	public static StakeholderType getRandomStakeholderType() {
 		return StakeholderType.values()[new Random().nextInt(StakeholderType.values().length)];
-	}
-
-	public static DecisionType getRandomDecisionType() {
-		return DecisionType.values()[new Random().nextInt(DecisionType.values().length)];
 	}
 
 	public static OffsetDateTime getRandomOffsetDateTime() {
@@ -164,26 +157,6 @@ public final class TestUtil {
 			.build();
 	}
 
-	public static Appeal createAppeal() {
-		return Appeal.builder()
-			.withMunicipalityId(MUNICIPALITY_ID)
-			.withNamespace(NAMESPACE)
-			.withDescription("Appeal description")
-			.withRegisteredAt(getRandomOffsetDateTime())
-			.withAppealConcernCommunicatedAt(getRandomOffsetDateTime())
-			.withStatus(AppealStatus.COMPLETED.toString())
-			.withTimelinessReview(TimelinessReview.NOT_RELEVANT.toString())
-			.withDecisionId(123L).build();
-	}
-
-	public static PatchAppeal createPatchAppeal() {
-		return PatchAppeal.builder()
-			.withDescription("Appeal Patch description")
-			.withStatus(AppealStatus.COMPLETED.toString())
-			.withTimelinessReview(TimelinessReview.NOT_RELEVANT.toString())
-			.build();
-	}
-
 	public static Facility createFacility() {
 		return Facility.builder()
 			.withMunicipalityId(MUNICIPALITY_ID)
@@ -214,7 +187,7 @@ public final class TestUtil {
 			.withExtension(".pdf")
 			.withMimeType("application/pdf")
 			.withFile("dGVzdA==")
-			.withErrandNumber(RandomStringUtils.secure().next(10, true, true))
+			.withErrandId(new Random().nextLong(1, 100000))
 			.withExtraParameters(createExtraParameters())
 			.build();
 	}
@@ -346,8 +319,8 @@ public final class TestUtil {
 	public static PatchErrand createPatchErrand() {
 		return PatchErrand.builder()
 			.withExternalCaseId("externalCaseId")
-			.withCaseType(CaseType.ANMALAN_ATTEFALL)
-			.withPriority(Priority.HIGH)
+			.withCaseType(MEX_BUY_LAND_FROM_THE_MUNICIPALITY)
+			.withPriority(HIGH)
 			.withDescription("description")
 			.withCaseTitleAddition("caseTitleAddition")
 			.withDiaryNumber("diaryNumber")
@@ -358,6 +331,8 @@ public final class TestUtil {
 			.withExtraParameters(createExtraParametersList())
 			.withFacilities(new ArrayList<>(List.of(createFacility())))
 			.withSuspension(Suspension.builder().withSuspendedFrom(OffsetDateTime.now()).withSuspendedTo(OffsetDateTime.now().plusDays(5)).build())
+			.withRelatesTo(new ArrayList<>(List.of(new RelatedErrand())))
+			.withLabels(new ArrayList<>(List.of("label-xxx", "label-yyy")))
 			.build();
 	}
 
@@ -458,6 +433,7 @@ public final class TestUtil {
 			.withId(randomUUID().toString())
 			.withOwnerId(RandomStringUtils.secure().next(10, true, false))
 			.withType(RandomStringUtils.secure().next(10, true, false))
+			.withErrandId(1L)
 			.build();
 
 		if (modifier != null) {
@@ -577,6 +553,7 @@ public final class TestUtil {
 			.withDecisionType(DecisionType.PROPOSED)
 			.withDescription("description")
 			.withDecidedBy(createStakeholderEntity())
+			.withErrand(ErrandEntity.builder().withId(123L).build())
 			.withValidFrom(getRandomOffsetDateTime())
 			.withValidTo(getRandomOffsetDateTime())
 			.withExtraParameters(createExtraParameters())
@@ -590,22 +567,6 @@ public final class TestUtil {
 			.withNamespace(NAMESPACE)
 			.withLaw(new ArrayList<>(List.of(createLawEntity())))
 			.withAttachments(new ArrayList<>(List.of(createAttachmentEntity())))
-			.build();
-	}
-
-	public static AppealEntity createAppealEntity() {
-		return AppealEntity.builder()
-			.withId(new Random().nextLong(1, 1000))
-			.withCreated(getRandomOffsetDateTime())
-			.withUpdated(getRandomOffsetDateTime())
-			.withId(1L)
-			.withVersion(1)
-			.withRegisteredAt(getRandomOffsetDateTime())
-			.withAppealConcernCommunicatedAt(getRandomOffsetDateTime())
-			.withStatus(AppealStatus.NEW)
-			.withDescription("description")
-			.withTimelinessReview(TimelinessReview.NOT_RELEVANT)
-			.withDecision(createDecisionEntity())
 			.build();
 	}
 
@@ -632,7 +593,7 @@ public final class TestUtil {
 			.withNote("note")
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
-			.withErrandNumber("errandNumber")
+			.withErrandId(new Random().nextLong(1, 100000))
 			.withCategory(AttachmentCategory.POLICE_REPORT.name())
 			.build();
 	}
@@ -645,7 +606,6 @@ public final class TestUtil {
 			.withFacilities(new ArrayList<>(List.of(createFacilityEntity())))
 			.withStakeholders(new ArrayList<>(List.of(createStakeholderEntity())))
 			.withDecisions(new ArrayList<>(List.of(createDecisionEntity())))
-			.withAppeals(new ArrayList<>(List.of(createAppealEntity())))
 			.withExtraParameters(createExtraParameterEntityList())
 			.withErrandNumber("errandNumber")
 			.withExternalCaseId("externalCaseId")
@@ -667,32 +627,25 @@ public final class TestUtil {
 			.withStartDate(LocalDate.now())
 			.withId(1L)
 			.withVersion(1)
-			.withPriority(Priority.HIGH)
+			.withPriority(HIGH)
 			.withChannel(Channel.EMAIL)
 			.withCaseType(CaseType.PARKING_PERMIT.name())
+			.withRelatesTo(new ArrayList<>(List.of(RelatedErrandEntity.builder().build())))
+			.withLabels(new ArrayList<>(List.of("label1", "label2")))
 			.build();
 	}
 
 	private static List<ExtraParameterEntity> createExtraParameterEntityList() {
-		var listy = new ArrayList<ExtraParameterEntity>();
-		listy.add(
+		final var list = new ArrayList<ExtraParameterEntity>();
+		list.add(
 			ExtraParameterEntity.builder()
 				.withKey("key1")
 				.withValues(List.of("value1"))
 				.build());
-		listy.add(
+		list.add(
 			ExtraParameterEntity.builder()
 				.withKey("key2")
 				.build());
-		return listy;
-	}
-
-	public static GetParkingPermit createGetParkingPermitDTO() {
-		return GetParkingPermit.builder()
-			.withArtefactPermitNumber("123")
-			.withArtefactPermitStatus("status")
-			.withErrandId(1L)
-			.withErrandDecision(createDecision())
-			.build();
+		return list;
 	}
 }

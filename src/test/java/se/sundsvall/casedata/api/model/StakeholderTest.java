@@ -1,15 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -19,6 +9,15 @@ import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
+
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 class StakeholderTest {
 
@@ -92,15 +91,13 @@ class StakeholderTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(Stakeholder.builder().build()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version")
+		assertThat(Stakeholder.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
 			.satisfies(bean -> {
-				assertThat(bean.getId()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getVersion()).isZero();
 			});
-		assertThat(new Stakeholder()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version")
+		assertThat(new Stakeholder()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version")
 			.satisfies(bean -> {
-				assertThat(bean.getId()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.getVersion()).isZero();
 			});

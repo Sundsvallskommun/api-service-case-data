@@ -14,11 +14,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 class StakeholderEntityTest {
@@ -37,7 +35,6 @@ class StakeholderEntityTest {
 			hasValidBeanEqualsExcluding("errand"),
 			hasValidBeanToStringExcluding("errand")));
 	}
-
 
 	@Test
 	void testBuilder() {
@@ -107,7 +104,6 @@ class StakeholderEntityTest {
 		assertThat(bean.getCreated()).isEqualTo(created);
 		assertThat(bean.getUpdated()).isEqualTo(updated);
 	}
-
 
 	@Test
 	void testNoDirtOnCreatedBean() {

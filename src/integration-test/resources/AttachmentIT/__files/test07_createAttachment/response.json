@@ -1,20 +1,20 @@
 {
-  "id": 5,
-  "version": 1,
-  "municipalityId": "2281",
-  "namespace": "my.namespace",
-  "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-  "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-  "category": "SIGNATURE",
-  "name": "myfile07.pdf",
-  "note": "This is a note for test07",
-  "extension": ".pdf",
-  "mimeType": "application/pdf",
-  "file": "dGVzdDA3",
-  "errandNumber": "1234567890",
-  "extraParameters": {
-    "property2": "value2",
-    "property1": "value1",
-    "property3": "value3"
-  }
+	"note": "This is a note for test07",
+	"municipalityId": "2281",
+	"extension": ".pdf",
+	"errandId": 1,
+	"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+	"extraParameters": {
+		"property2": "value2",
+		"property1": "value1",
+		"property3": "value3"
+	},
+	"mimeType": "application/pdf",
+	"version": 0,
+	"file": "dGVzdDA3",
+	"namespace": "my.namespace",
+	"name": "myfile07.pdf",
+	"id": 5,
+	"category": "SIGNATURE",
+	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
 }

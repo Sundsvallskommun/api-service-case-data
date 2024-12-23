@@ -11,14 +11,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchNotification;
@@ -28,11 +27,11 @@ import se.sundsvall.casedata.service.NotificationService;
 @ActiveProfiles("junit")
 class NotificationsResourceTest {
 
-	private static final String PATH = "/{municipalityId}/{namespace}/notifications";
+	private static final String PATH = "/{municipalityId}/{namespace}";
 	private static final String NAMESPACE = "namespace";
 	private static final String MUNICIPALITY_ID = "2281";
 
-	@MockBean
+	@MockitoBean
 	private NotificationService notificationServiceMock;
 
 	@Autowired
@@ -43,12 +42,14 @@ class NotificationsResourceTest {
 
 		// Arrange
 		final var notificationId = randomUUID().toString();
-		when(notificationServiceMock.getNotification(MUNICIPALITY_ID, NAMESPACE, notificationId)).thenReturn(Notification.builder().build());
+		final var errandId = 12345L;
+
+		when(notificationServiceMock.findNotification(MUNICIPALITY_ID, NAMESPACE, errandId, notificationId)).thenReturn(Notification.builder().build());
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH + "/{notificationId}")
-				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "notificationId", notificationId)))
+			.uri(builder -> builder.path(PATH + "/errands/{errandId}/notifications/{notificationId}")
+				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "errandId", errandId, "notificationId", notificationId)))
 			.accept(APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isOk()
@@ -58,19 +59,20 @@ class NotificationsResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(notificationServiceMock).getNotification(MUNICIPALITY_ID, NAMESPACE, notificationId);
+		verify(notificationServiceMock).findNotification(MUNICIPALITY_ID, NAMESPACE, errandId, notificationId);
 	}
 
 	@Test
-	void getNotifications() {
+	void getNotificationsForOwner() {
 
 		// Arrange
 		final var ownerId = "owner";
-		when(notificationServiceMock.getNotifications(MUNICIPALITY_ID, NAMESPACE, ownerId)).thenReturn(List.of(Notification.builder().build()));
+		when(notificationServiceMock.findNotificationsByOwnerId(MUNICIPALITY_ID, NAMESPACE, ownerId)).thenReturn(List.of(Notification.builder().build()));
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH).queryParam("ownerId", ownerId)
+			.uri(builder -> builder.path(PATH + "/notifications")
+				.queryParam("ownerId", ownerId)
 				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID)))
 			.accept(APPLICATION_JSON)
 			.exchange()
@@ -81,46 +83,70 @@ class NotificationsResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(notificationServiceMock).getNotifications(MUNICIPALITY_ID, NAMESPACE, ownerId);
+		verify(notificationServiceMock).findNotificationsByOwnerId(MUNICIPALITY_ID, NAMESPACE, ownerId);
+	}
+
+	@Test
+	void getNotificationsForErrand() {
+
+		// Arrange
+		final var errandId = 12345L;
+		when(notificationServiceMock.findNotifications(MUNICIPALITY_ID, NAMESPACE, errandId, null)).thenReturn(List.of(Notification.builder().build()));
+
+		// Act
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(PATH + "/errands/{errandId}/notifications")
+				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "errandId", errandId)))
+			.accept(APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON)
+			.expectBody(List.class)
+			.returnResult();
+
+		// Assert
+		assertThat(response).isNotNull();
+		verify(notificationServiceMock).findNotifications(MUNICIPALITY_ID, NAMESPACE, errandId, Sort.unsorted());
 	}
 
 	@Test
 	void createNotification() {
 
 		// Arrange
+		final var errandId = 12345L;
 		final var requestBody = Notification.builder()
 			.withOwnerId("SomeOwnerId")
 			.withOwnerFullName("SomeOwnerFullName")
 			.withCreatedBy("SomeUser")
 			.withType("SomeType")
 			.withDescription("Some description")
-			.withErrandId(12345L)
+			.withErrandId(errandId)
 			.withAcknowledged(false)
 			.build();
 
 		final var notificationId = UUID.randomUUID().toString();
-		when(notificationServiceMock.createNotification(MUNICIPALITY_ID, NAMESPACE, requestBody)).thenReturn(Notification.builder().withId(notificationId).build());
+		when(notificationServiceMock.create(MUNICIPALITY_ID, NAMESPACE, requestBody)).thenReturn(Notification.builder().withErrandId(errandId).withId(notificationId).build());
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH)
-				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID)))
+			.uri(builder -> builder.path(PATH + "/errands/{errandId}/notifications")
+				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "errandId", requestBody.getErrandId())))
 			.contentType(APPLICATION_JSON)
 			.accept(APPLICATION_JSON)
 			.bodyValue(requestBody)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL)
-			.expectHeader().location("/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/notifications/" + notificationId)
+			.expectHeader().location("/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + errandId + "/notifications/" + notificationId)
 			.expectBody().isEmpty();
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(notificationServiceMock).createNotification(MUNICIPALITY_ID, NAMESPACE, requestBody);
+		verify(notificationServiceMock).create(MUNICIPALITY_ID, NAMESPACE, requestBody);
 	}
 
 	@Test
-	void updateNotification() {
+	void updateNotifications() {
 
 		// Arrange
 		final var notificationId1 = UUID.randomUUID().toString();
@@ -131,7 +157,7 @@ class NotificationsResourceTest {
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH)
+			.uri(builder -> builder.path(PATH + "/notifications")
 				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID)))
 			.contentType(APPLICATION_JSON)
 			.accept(APPLICATION_JSON)
@@ -142,7 +168,7 @@ class NotificationsResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(notificationServiceMock).updateNotifications(MUNICIPALITY_ID, NAMESPACE, requestBody);
+		verify(notificationServiceMock).update(MUNICIPALITY_ID, NAMESPACE, requestBody);
 	}
 
 	@Test
@@ -150,17 +176,18 @@ class NotificationsResourceTest {
 
 		// Arrange
 		final var notificationId = UUID.randomUUID().toString();
+		final var errandId = 12345L;
 
 		// Act
 		final var response = webTestClient.delete()
-			.uri(builder -> builder.path(PATH + "/" + notificationId)
-				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID)))
+			.uri(builder -> builder.path(PATH + "/errands/{errandId}/notifications/{notificationId}")
+				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "errandId", errandId, "notificationId", notificationId)))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(notificationServiceMock).deleteNotification(MUNICIPALITY_ID, NAMESPACE, notificationId);
+		verify(notificationServiceMock).delete(MUNICIPALITY_ID, NAMESPACE, errandId, notificationId);
 	}
 }

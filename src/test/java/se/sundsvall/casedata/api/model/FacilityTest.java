@@ -1,13 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Random;
-
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -17,6 +9,13 @@ import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
+
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Random;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 class FacilityTest {
 
@@ -72,16 +71,14 @@ class FacilityTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(Facility.builder().build()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version", "mainFacility")
+		assertThat(Facility.builder().build()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version", "mainFacility")
 			.satisfies(bean -> {
-				assertThat(bean.getId()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.isMainFacility()).isFalse();
 				assertThat(bean.getVersion()).isZero();
 			});
-		assertThat(new Facility()).hasAllNullFieldsOrPropertiesExcept("id", "extraParameters", "version", "mainFacility")
+		assertThat(new Facility()).hasAllNullFieldsOrPropertiesExcept("extraParameters", "version", "mainFacility")
 			.satisfies(bean -> {
-				assertThat(bean.getId()).isZero();
 				assertThat(bean.getExtraParameters()).isEmpty();
 				assertThat(bean.isMainFacility()).isFalse();
 				assertThat(bean.getVersion()).isZero();

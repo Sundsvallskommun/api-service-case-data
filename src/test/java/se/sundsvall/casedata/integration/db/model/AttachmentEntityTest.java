@@ -13,7 +13,6 @@ import static org.hamcrest.CoreMatchers.allOf;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Random;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -38,22 +37,22 @@ class AttachmentEntityTest {
 	@Test
 	void builder() {
 		// Arrange
-		var id = 1L;
-		var category = "category";
-		var name = "name";
-		var note = "note";
-		var extension = "extension";
-		var mimeType = "mimeType";
-		var file = "file";
-		var errandNumber = "errandNumber";
-		var municipalityId = "municipalityId";
-		var namespace = "namespace";
-		var created = now();
-		var updated = now();
-		var extraParameters = Map.of("key", "value");
+		final var id = 1L;
+		final var category = "category";
+		final var name = "name";
+		final var note = "note";
+		final var extension = "extension";
+		final var mimeType = "mimeType";
+		final var file = "file";
+		final var errandId = 123L;
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var created = now();
+		final var updated = now();
+		final var extraParameters = Map.of("key", "value");
 
 		// Act
-		var bean = AttachmentEntity.builder()
+		final var bean = AttachmentEntity.builder()
 			.withId(id)
 			.withCategory(category)
 			.withName(name)
@@ -61,7 +60,7 @@ class AttachmentEntityTest {
 			.withExtension(extension)
 			.withMimeType(mimeType)
 			.withFile(file)
-			.withErrandNumber(errandNumber)
+			.withErrandId(errandId)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.withCreated(created)
@@ -78,7 +77,7 @@ class AttachmentEntityTest {
 		assertThat(bean.getExtension()).isEqualTo(extension);
 		assertThat(bean.getMimeType()).isEqualTo(mimeType);
 		assertThat(bean.getFile()).isEqualTo(file);
-		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
+		assertThat(bean.getErrandId()).isEqualTo(errandId);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getNamespace()).isEqualTo(namespace);
 		assertThat(bean.getCreated()).isEqualTo(created);

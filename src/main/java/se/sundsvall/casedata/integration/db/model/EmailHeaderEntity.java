@@ -2,8 +2,6 @@ package se.sundsvall.casedata.integration.db.model;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-import java.util.List;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -16,9 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
-
-import se.sundsvall.casedata.integration.db.model.enums.Header;
-
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -26,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import se.sundsvall.casedata.integration.db.model.enums.Header;
 
 @Entity
 @Table(name = "email_header")

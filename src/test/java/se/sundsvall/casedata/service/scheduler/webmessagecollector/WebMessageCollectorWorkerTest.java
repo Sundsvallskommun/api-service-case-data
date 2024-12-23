@@ -45,7 +45,7 @@ import se.sundsvall.casedata.service.scheduler.MessageMapper;
 class WebMessageCollectorWorkerTest {
 
 	@Mock
-	AttachmentRepository attachmentRepositoryMock;
+	private AttachmentRepository attachmentRepositoryMock;
 
 	@Mock
 	private WebMessageCollectorProperties webMessageCollectorProperties;
@@ -107,12 +107,19 @@ class WebMessageCollectorWorkerTest {
 		final var instance = "instance";
 		final var externalCaseId = "someExternalCaseId";
 		final var errandNumber = "someErrandNumber";
-		final var errandId = 123L;
+		final var errandId = 678L;
 		final var messageDTOs = createMessages();
 		final var message = createMessage();
-		final var stakeholder = StakeholderEntity.builder()
-			.withAdAccount("adminAdAccount")
-			.withRoles(List.of(ADMINISTRATOR.name())).build();
+		final var errandEntity = ErrandEntity.builder()
+			.withId(errandId)
+			.withErrandNumber(errandNumber)
+			.withExternalCaseId(externalCaseId)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(StakeholderEntity.builder()
+				.withAdAccount("adminAdAccount")
+				.withRoles(List.of(ADMINISTRATOR.name())).build()))
+			.build();
 
 		final var bytes = new byte[] {
 			1, 23, 45
@@ -121,25 +128,20 @@ class WebMessageCollectorWorkerTest {
 		final var attachmentData = MessageAttachmentDataEntity.builder().withFile(blob).build();
 
 		when(webMessageCollectorClientMock.getMessages(MUNICIPALITY_ID, familyId, instance)).thenReturn(messageDTOs);
-
-		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(
-			Optional.ofNullable(ErrandEntity.builder().withId(errandId).withStakeholders(List.of(stakeholder)).withErrandNumber(errandNumber).withExternalCaseId(externalCaseId).withMunicipalityId(MUNICIPALITY_ID).withNamespace(NAMESPACE).build()));
+		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.ofNullable(errandEntity));
 		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(MUNICIPALITY_ID, Map.of(instance, List.of(familyId))));
-		when(messageMapperMock.toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(message);
-		when(messageRepositoryMock.saveAndFlush(any(MessageEntity.class))).thenReturn(message);
-
+		when(messageMapperMock.toMessageEntity(errandId, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(message);
+		when(messageRepositoryMock.saveAndFlush(any(MessageEntity.class))).thenReturn(message.withErrandId(errandId));
 		when(messageMapperMock.toAttachmentEntity(any(generated.se.sundsvall.webmessagecollector.MessageAttachment.class), any(String.class), any(String.class), any(String.class))).thenReturn(createAttachment());
-
 		when(webMessageCollectorClientMock.getAttachment(any(String.class), anyInt())).thenReturn(bytes);
 		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(attachmentData);
-
 		when(messageMapperMock.toAttachmentEntity(any(MessageAttachmentEntity.class))).thenReturn(AttachmentEntity.builder().withName("fileName").build());
 
 		// Act
 		webMessageCollectorWorker.getAndProcessMessages();
 
 		// Assert
-		verify(notificationServiceMock).createNotification(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 		assertThat(notificationCaptor.getValue()).satisfies(notification -> {
 			assertThat(notification.getErrandId()).isEqualTo(errandId);
 			assertThat(notification.getType()).isEqualTo("UPDATE");
@@ -153,7 +155,7 @@ class WebMessageCollectorWorkerTest {
 		assertThat(messageCaptor.getValue()).satisfies(WebMessageCollectorWorkerTest::assertSavedMessageHasCorrectValues);
 
 		verify(webMessageCollectorClientMock).getAttachment(MUNICIPALITY_ID, 1);
-		verify(messageMapperMock).toMessageEntity(errandNumber, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE);
+		verify(messageMapperMock).toMessageEntity(errandId, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE);
 
 		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachmentCaptor.capture());
 		assertThat(messageAttachmentCaptor.getValue()).satisfies(attachment -> {
@@ -164,14 +166,14 @@ class WebMessageCollectorWorkerTest {
 		});
 
 		verify(attachmentRepositoryMock).saveAndFlush(attachmentCaptor.capture());
-		assertThat(attachmentCaptor.getValue().getErrandNumber()).isEqualTo(errandNumber);
+		assertThat(attachmentCaptor.getValue()).isNotNull();
+		assertThat(attachmentCaptor.getValue().getErrandId()).isEqualTo(errandId);
 		assertThat(attachmentCaptor.getValue().getName()).isEqualTo("fileName");
 	}
 
 	@Test
 	void getAndProcessMessagesWhenNonMatchingErrandExists() {
 
-		// Arrange
 		final var familyId = "123";
 		final var instance = "instance";
 		when(webMessageCollectorClientMock.getMessages(MUNICIPALITY_ID, familyId, instance)).thenReturn(createMessages());
@@ -184,7 +186,7 @@ class WebMessageCollectorWorkerTest {
 		verify(webMessageCollectorClientMock).getMessages(MUNICIPALITY_ID, familyId, instance);
 		verify(webMessageCollectorClientMock, never()).deleteMessages(any(), any());
 		verify(messageRepositoryMock, never()).saveAndFlush(any());
-		verify(messageMapperMock, never()).toMessageEntity(any(), any(), any());
+		verify(messageMapperMock, never()).toMessageEntity(any(Long.class), any(), any(), any());
 	}
 
 	private MessageEntity createMessage() {

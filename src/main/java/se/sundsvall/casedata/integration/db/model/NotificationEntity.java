@@ -2,11 +2,6 @@ package se.sundsvall.casedata.integration.db.model;
 
 import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
-import java.time.OffsetDateTime;
-
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.UuidGenerator;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -17,11 +12,14 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.UuidGenerator;
 import se.sundsvall.casedata.integration.db.listeners.NotificationListener;
 
 @Entity

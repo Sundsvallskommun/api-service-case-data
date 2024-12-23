@@ -4,7 +4,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
 import org.springframework.stereotype.Component;
-import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 
 @Component
@@ -12,7 +11,7 @@ public class ExtraParameterListener {
 
 	private final ErrandListener errandListener;
 
-	public ExtraParameterListener(final IncomingRequestFilter incomingRequestFilter, final ErrandListener errandListener) {
+	public ExtraParameterListener(final ErrandListener errandListener) {
 		this.errandListener = errandListener;
 	}
 
@@ -26,5 +25,4 @@ public class ExtraParameterListener {
 	private void preUpdate(final ExtraParameterEntity extraParameterEntity) {
 		errandListener.updateErrandFields(extraParameterEntity.getErrand());
 	}
-
 }

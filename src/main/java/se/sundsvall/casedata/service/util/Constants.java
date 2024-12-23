@@ -1,12 +1,17 @@
 package se.sundsvall.casedata.service.util;
 
-import java.util.List;
-
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
-
 public final class Constants {
 
-	public static final String ERRAND_WAS_NOT_FOUND = "Errand with id: %s was not found";
+	public static final String ERRAND_ENTITY_NOT_FOUND = "Errand with id:'%s' not found in namespace:'%s' for municipality with id:'%s'";
+
+	public static final String ATTACHMENT_ENTITY_NOT_FOUND = "Attachment with id:'%s' not found on errand with id:'%s' in namespace:'%s' for municipality with id:'%s'";
+
+	public static final String MESSAGE_ENTITY_NOT_FOUND = "Message with id:'%s' not found in namespace:'%s' for municipality with id:'%s'";
+	public static final String MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND = "MessageAttachment with id:'%s' not found in namespace:'%s' for municipality with id:'%s'";
+
+	public static final String NOTIFICATION_ENTITY_NOT_FOUND = "Notification with id:'%s' not found in namespace:'%s' for municipality with id:'%s' and errand with id:'%s'";
+	public static final String NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Note with id:'%s' was not found on errand with id:'%s'";
+	public static final String STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Stakeholder with id:'%s' was not found on errand with id:'%s'";
 
 	public static final String NAMESPACE_REGEXP = "[\\w|\\.|\\-]+";
 	public static final String NAMESPACE_VALIDATION_MESSAGE = "can only contain A-Z, a-z, 0-9, -, _ and .";
@@ -22,13 +27,9 @@ public final class Constants {
 	public static final String AD_USER_HEADER_KEY = "sentbyuser";
 	public static final String X_JWT_ASSERTION_HEADER_KEY = "x-jwt-assertion";
 	public static final String CAMUNDA_USER = "WSO2_Camunda";
-	public static final List<CaseType> PARKING_PERMIT_CASE_TYPES = CaseType.getValuesByAbbreviation("PRH");
-	public static final List<CaseType> MEX_CASE_TYPES = CaseType.getValuesByAbbreviation("MEX");
 
 	public static final String NOTIFICATION_ERRAND_CREATED = "Ärende skapat";
 	public static final String NOTIFICATION_ERRAND_UPDATED = "Ärende uppdaterat";
-	public static final String NOTIFICATION_APPEAL_CREATED = "Överklagan skapad";
-	public static final String NOTIFICATION_APPEAL_UPDATED = "Överklagan uppdaterad";
 	public static final String NOTIFICATION_NOTE_CREATED = "Notering skapad";
 	public static final String NOTIFICATION_NOTE_UPDATED = "Notering uppdaterad";
 	public static final String NOTIFICATION_DECISION_CREATED = "Beslut skapat";
@@ -37,5 +38,4 @@ public final class Constants {
 	private Constants() {
 		// Prevent instantiation
 	}
-
 }

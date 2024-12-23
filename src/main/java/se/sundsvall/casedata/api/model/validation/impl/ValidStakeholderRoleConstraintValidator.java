@@ -1,11 +1,9 @@
 package se.sundsvall.casedata.api.model.validation.impl;
 
-import java.util.Arrays;
-import java.util.List;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
+import java.util.Arrays;
+import java.util.List;
 import se.sundsvall.casedata.api.model.validation.ValidStakeholderRole;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 
@@ -33,5 +31,4 @@ public class ValidStakeholderRoleConstraintValidator implements ConstraintValida
 		}
 		return isValid;
 	}
-
 }

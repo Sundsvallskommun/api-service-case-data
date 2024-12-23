@@ -13,14 +13,12 @@ import static se.sundsvall.casedata.TestUtil.createFacility;
 
 import java.util.List;
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.service.FacilityService;
@@ -31,7 +29,7 @@ class FacilityResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands";
 
-	@MockBean
+	@MockitoBean
 	private FacilityService facilityServiceMock;
 
 	@Autowired
@@ -42,7 +40,7 @@ class FacilityResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var facility = createFacility();
-		when(facilityServiceMock.findFacilitiesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(facility));
+		when(facilityServiceMock.findFacilities(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(facility));
 
 		// Act
 		final var response = webTestClient.get()
@@ -56,7 +54,7 @@ class FacilityResourceTest {
 
 		// Assert
 		assertThat(response).hasSize(1);
-		verify(facilityServiceMock).findFacilitiesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(facilityServiceMock).findFacilities(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(facilityServiceMock);
 	}
 
@@ -66,7 +64,7 @@ class FacilityResourceTest {
 		final var errandId = 123L;
 		final var facilityId = 456L;
 		final var facility = createFacility();
-		when(facilityServiceMock.findFacilityOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(facility);
+		when(facilityServiceMock.findFacility(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(facility);
 
 		// Act
 		final var response = webTestClient.get()
@@ -80,7 +78,7 @@ class FacilityResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(facilityServiceMock).findFacilityOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE);
+		verify(facilityServiceMock).findFacility(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(facilityServiceMock);
 	}
 
@@ -98,7 +96,7 @@ class FacilityResourceTest {
 			.expectStatus().isNoContent();
 
 		// Assert
-		verify(facilityServiceMock).deleteFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId);
+		verify(facilityServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId);
 		verifyNoMoreInteractions(facilityServiceMock);
 	}
 
@@ -108,7 +106,7 @@ class FacilityResourceTest {
 		final var errandId = 123L;
 		final var facility = createFacility();
 		facility.setId(456L);
-		when(facilityServiceMock.createFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facility)).thenReturn(facility);
+		when(facilityServiceMock.create(errandId, MUNICIPALITY_ID, NAMESPACE, facility)).thenReturn(facility);
 
 		// Act
 		webTestClient.post()
@@ -122,7 +120,7 @@ class FacilityResourceTest {
 			.expectHeader().location("/2281/my.namespace/errands/" + errandId + "/facilities/" + facility.getId());
 
 		// Assert
-		verify(facilityServiceMock).createFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facility);
+		verify(facilityServiceMock).create(errandId, MUNICIPALITY_ID, NAMESPACE, facility);
 	}
 
 	@Test
@@ -131,7 +129,7 @@ class FacilityResourceTest {
 		final var errandId = 123L;
 		final var facilityId = 456L;
 		final var facility = createFacility();
-		when(facilityServiceMock.updateFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, facility)).thenReturn(facility);
+		when(facilityServiceMock.update(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, facility)).thenReturn(facility);
 
 		// Act
 		webTestClient.patch()
@@ -143,7 +141,7 @@ class FacilityResourceTest {
 			.expectStatus().isNoContent();
 
 		// Assert
-		verify(facilityServiceMock).updateFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, facility);
+		verify(facilityServiceMock).update(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, facility);
 	}
 
 	@Test
@@ -168,7 +166,7 @@ class FacilityResourceTest {
 			.expectStatus().isNoContent();
 
 		// Assert
-		verify(facilityServiceMock).replaceFacilitiesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilities);
+		verify(facilityServiceMock).replaceFacilities(errandId, MUNICIPALITY_ID, NAMESPACE, facilities);
 	}
 
 }

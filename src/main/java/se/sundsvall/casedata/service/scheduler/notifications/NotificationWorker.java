@@ -5,7 +5,6 @@ import static java.time.ZoneId.systemDefault;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import se.sundsvall.casedata.integration.db.NotificationRepository;
 
 @Component

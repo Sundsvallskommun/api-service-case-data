@@ -1,0 +1,16 @@
+{
+	"note": "NOTE-1",
+	"municipalityId": "2281",
+	"extension": ".pdf",
+	"errandId": 1,
+	"created": "2022-12-02T15:13:45.363+01:00",
+	"extraParameters": {},
+	"mimeType": "application/pdf",
+	"version": 1,
+	"file": "FILE-1",
+	"namespace": "my.namespace",
+	"name": "test1.pdf",
+	"id": 1,
+	"category": "MEDICAL_CONFIRMATION",
+	"updated": "2022-12-02T15:15:01.563+01:00"
+}

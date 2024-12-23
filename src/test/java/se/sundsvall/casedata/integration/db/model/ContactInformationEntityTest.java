@@ -12,11 +12,9 @@ import static org.hamcrest.CoreMatchers.allOf;
 
 import java.time.OffsetDateTime;
 import java.util.Random;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.casedata.integration.db.model.enums.ContactType;
 
 class ContactInformationEntityTest {

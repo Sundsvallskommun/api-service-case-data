@@ -1,20 +1,17 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import java.time.OffsetDateTime;
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-
+import java.time.OffsetDateTime;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
 
 @Embeddable
 @Getter

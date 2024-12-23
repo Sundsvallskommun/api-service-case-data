@@ -6,13 +6,8 @@ import lombok.Data;
 public class GlobalId {
 
 	private int cdoId;
-
 	private String entity;
-
 	private String valueObject;
-
 	private String fragment;
-
 	private OwnerId ownerId;
-
 }

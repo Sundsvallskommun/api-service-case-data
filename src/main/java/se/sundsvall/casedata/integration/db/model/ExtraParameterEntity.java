@@ -11,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,8 +20,6 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import org.hibernate.annotations.UuidGenerator;
 import se.sundsvall.casedata.integration.db.listeners.ExtraParameterListener;
-
-import java.util.List;
 
 @Entity
 @Table(name = "errand_extra_parameters")
@@ -53,10 +53,10 @@ public class ExtraParameterEntity {
 	@Column(name = "value")
 	private List<String> values;
 
-
 	@Override
 	public String toString() {
-		final long errandId = errand == null ? 0 : errand.getId();
+		final var errandId = Objects.requireNonNullElse(errand, new ErrandEntity()).getId() == null ? 0 : errand.getId();
+
 		return "ExtraParameterEntity{" +
 			"id='" + id + '\'' +
 			", errand=" + errandId +
@@ -65,5 +65,4 @@ public class ExtraParameterEntity {
 			", values=" + values +
 			'}';
 	}
-
 }

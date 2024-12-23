@@ -64,7 +64,7 @@ public class WebMessageCollectorWorker {
 				.map(message -> {
 					processMessage(message)
 						.ifPresent(processedMessage -> message.getAttachments()
-							.forEach(messageAttachment -> processAttachment(messageAttachment, processedMessage.getMessageId(), processedMessage.getErrandNumber(), processedMessage.getMunicipalityId(), processedMessage.getNamespace())));
+							.forEach(messageAttachment -> processAttachment(messageAttachment, processedMessage.getMessageId(), processedMessage.getErrandId(), processedMessage.getMunicipalityId(), processedMessage.getNamespace())));
 					return message.getId();
 				})
 				.toList();
@@ -77,17 +77,20 @@ public class WebMessageCollectorWorker {
 	}
 
 	private Optional<MessageEntity> processMessage(final MessageDTO message) {
-		return errandRepository.findByExternalCaseId(message.getExternalCaseId()).map(errand -> {
-			final var errandNumber = errand.getErrandNumber();
-			final var municipalityId = errand.getMunicipalityId();
-			final var namespace = errand.getNamespace();
-			final var entity = messageMapper.toMessageEntity(errandNumber, message, municipalityId, namespace);
-			notificationService.createNotification(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
-			return messageRepository.saveAndFlush(entity);
-		});
+		return errandRepository.findByExternalCaseId(message.getExternalCaseId())
+			.map(errand -> {
+				final var errandId = errand.getId();
+				final var municipalityId = errand.getMunicipalityId();
+				final var namespace = errand.getNamespace();
+				final var entity = messageMapper.toMessageEntity(errandId, message, municipalityId, namespace);
+
+				notificationService.create(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
+				return messageRepository.saveAndFlush(entity);
+			});
 	}
 
-	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId, final String errandNumber, final String municipalityId, final String namespace) {
+	private void processAttachment(final generated.se.sundsvall.webmessagecollector.MessageAttachment attachment, final String messageId, final Long errandId, final String municipalityId, final String namespace) {
+
 		final var attachmentId = attachment.getAttachmentId();
 		// Map the attachment
 		final var messageAttachment = messageMapper.toAttachmentEntity(attachment, messageId, municipalityId, namespace);
@@ -96,7 +99,7 @@ public class WebMessageCollectorWorker {
 		messageAttachment.setAttachmentData(messageMapper.toMessageAttachmentData(data));
 		// Save the attachment
 		messageAttachmentRepository.saveAndFlush(messageAttachment);
-		attachmentRepository.saveAndFlush(messageMapper.toAttachmentEntity(messageAttachment).withErrandNumber(errandNumber));
+		attachmentRepository.saveAndFlush(messageMapper.toAttachmentEntity(messageAttachment).withErrandId(errandId));
 	}
 
 	private Map<String, List<MessageDTO>> getMessages() {

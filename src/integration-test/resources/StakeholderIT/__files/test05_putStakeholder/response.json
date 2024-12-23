@@ -1,22 +1,22 @@
 {
-  "id": 1,
-  "version": 1,
-  "municipalityId": "2281",
-  "namespace": "my.namespace",
-  "created": "2022-12-02T15:13:45.363+01:00",
-  "updated": "${json-unit.any-string}",
-  "type": "ORGANIZATION",
-  "firstName": "Put John AB",
-  "lastName": "",
-  "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
-  "organizationName": "Put John AB",
-  "organizationNumber": "112233-4455",
-  "authorizedSignatory": "John Doe",
-  "adAccount": "Put-Organization-AD",
-  "roles": [
-    "PROPERTY_OWNER"
-  ],
-  "addresses": [],
-  "contactInformation": [],
-  "extraParameters": {}
+	"lastName": "",
+	"municipalityId": "2281",
+	"addresses": [],
+	"organizationName": "Put John AB",
+	"adAccount": "Put-Organization-AD",
+	"created": "2022-12-02T15:13:45.363+01:00",
+	"organizationNumber": "112233-4455",
+	"roles": [
+		"PROPERTY_OWNER"
+	],
+	"extraParameters": {},
+	"type": "ORGANIZATION",
+	"version": 1,
+	"firstName": "Put John AB",
+	"contactInformation": [],
+	"authorizedSignatory": "John Doe",
+	"namespace": "my.namespace",
+	"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
+	"id": 1,
+	"updated": "${json-unit.any-string}"
 }

@@ -108,7 +108,7 @@ class EmailReaderWorkerTest {
 
 		// Assert
 
-		verify(notificationServiceMock).createNotification(eq(municipalityId), eq(namespace), notificationCaptor.capture());
+		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), notificationCaptor.capture());
 		assertThat(notificationCaptor.getValue()).satisfies(notification -> {
 			assertThat(notification.getErrandId()).isEqualTo(errandId);
 			assertThat(notification.getType()).isEqualTo("UPDATE");

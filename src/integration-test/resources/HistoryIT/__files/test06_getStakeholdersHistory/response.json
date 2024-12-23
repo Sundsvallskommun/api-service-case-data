@@ -1,216 +1,216 @@
 [
-  {
-	"changeType": "NewObject",
-	"commitMetadata": {
-	  "author": "ANDSOD",
-	  "commitDateInstant": "2024-01-25T12:00:00Z",
-	  "id": 6.0,
-	  "properties": [],
-	  "commitDate": "2024-01-25T12:00:00"
+	{
+		"changeType": "NewObject",
+		"commitMetadata": {
+			"author": "ANDSOD",
+			"commitDateInstant": "2024-01-25T12:00:00Z",
+			"id": 6,
+			"properties": [],
+			"commitDate": "2024-01-25T12:00:00"
+		},
+		"globalId": {
+			"cdoId": 6,
+			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		}
 	},
-	"globalId": {
-	  "cdoId": 6,
-	  "entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+	{
+		"changeType": "ReferenceChange",
+		"commitMetadata": {
+			"author": "ANDSOD",
+			"commitDateInstant": "2024-01-25T12:00:00Z",
+			"id": 6,
+			"properties": [],
+			"commitDate": "2024-01-25T12:00:00"
+		},
+		"globalId": {
+			"cdoId": 6,
+			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		},
+		"property": "errand",
+		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+		"right": {
+			"cdoId": 90,
+			"entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity"
+		}
+	},
+	{
+		"changeType": "InitialValueChange",
+		"commitMetadata": {
+			"author": "ANDSOD",
+			"commitDateInstant": "2024-01-25T12:00:00Z",
+			"id": 6,
+			"properties": [],
+			"commitDate": "2024-01-25T12:00:00"
+		},
+		"globalId": {
+			"cdoId": 6,
+			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		},
+		"property": "type",
+		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+		"right": "PERSON"
+	},
+	{
+		"changeType": "InitialValueChange",
+		"commitMetadata": {
+			"author": "ANDSOD",
+			"commitDateInstant": "2024-01-25T12:00:00Z",
+			"id": 6,
+			"properties": [],
+			"commitDate": "2024-01-25T12:00:00"
+		},
+		"globalId": {
+			"cdoId": 6,
+			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		},
+		"property": "municipalityId",
+		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+		"right": "2281"
+	},
+	{
+		"changeType": "InitialValueChange",
+		"commitMetadata": {
+			"author": "ANDSOD",
+			"commitDateInstant": "2024-01-25T12:00:00Z",
+			"id": 6,
+			"properties": [],
+			"commitDate": "2024-01-25T12:00:00"
+		},
+		"globalId": {
+			"cdoId": 6,
+			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		},
+		"property": "firstName",
+		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+		"right": "Kalle"
+	},
+	{
+		"changeType": "InitialValueChange",
+		"commitMetadata": {
+			"author": "ANDSOD",
+			"commitDateInstant": "2024-01-25T12:00:00Z",
+			"id": 6,
+			"properties": [],
+			"commitDate": "2024-01-25T12:00:00"
+		},
+		"globalId": {
+			"cdoId": 6,
+			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		},
+		"property": "lastName",
+		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+		"right": "Anka"
+	},
+	{
+		"changeType": "InitialValueChange",
+		"commitMetadata": {
+			"author": "ANDSOD",
+			"commitDateInstant": "2024-01-25T12:00:00Z",
+			"id": 6,
+			"properties": [],
+			"commitDate": "2024-01-25T12:00:00"
+		},
+		"globalId": {
+			"cdoId": 6,
+			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		},
+		"property": "personId",
+		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+		"right": "d7af5383-166a-468b-ab86-da8ccd0ea97c"
+	},
+	{
+		"changeType": "ListChange",
+		"commitMetadata": {
+			"author": "ANDSOD",
+			"commitDateInstant": "2024-01-25T12:00:00Z",
+			"id": 6,
+			"properties": [],
+			"commitDate": "2024-01-25T12:00:00"
+		},
+		"globalId": {
+			"cdoId": 6,
+			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		},
+		"property": "roles",
+		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+		"elementChanges": [
+			{
+				"elementChangeType": "ValueAdded",
+				"index": 0,
+				"value": "APPLICANT"
+			}
+		]
+	},
+	{
+		"changeType": "ListChange",
+		"commitMetadata": {
+			"author": "ANDSOD",
+			"commitDateInstant": "2024-01-25T12:00:00Z",
+			"id": 6,
+			"properties": [],
+			"commitDate": "2024-01-25T12:00:00"
+		},
+		"globalId": {
+			"cdoId": 6,
+			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		},
+		"property": "addresses",
+		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+		"elementChanges": [
+			{
+				"elementChangeType": "ValueAdded",
+				"index": 0,
+				"value": {
+					"valueObject": "se.sundsvall.casedata.integration.db.model.AddressEntity",
+					"fragment": "addresses/0",
+					"ownerId": {
+						"cdoId": 246,
+						"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+					}
+				}
+			}
+		]
+	},
+	{
+		"changeType": "ListChange",
+		"commitMetadata": {
+			"author": "ANDSOD",
+			"commitDateInstant": "2024-01-25T12:00:00Z",
+			"id": 6,
+			"properties": [],
+			"commitDate": "2024-01-25T12:00:00"
+		},
+		"globalId": {
+			"cdoId": 6,
+			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+		},
+		"property": "contactInformation",
+		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
+		"elementChanges": [
+			{
+				"elementChangeType": "ValueAdded",
+				"index": 0,
+				"value": {
+					"valueObject": "se.sundsvall.casedata.integration.db.model.ContactInformationEntity",
+					"fragment": "contactInformation/0",
+					"ownerId": {
+						"cdoId": 246,
+						"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+					}
+				}
+			},
+			{
+				"elementChangeType": "ValueAdded",
+				"index": 1,
+				"value": {
+					"valueObject": "se.sundsvall.casedata.integration.db.model.ContactInformationEntity",
+					"fragment": "contactInformation/1",
+					"ownerId": {
+						"cdoId": 246,
+						"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
+					}
+				}
+			}
+		]
 	}
-  },
-  {
-	"changeType": "ReferenceChange",
-	"commitMetadata": {
-	  "author": "ANDSOD",
-	  "commitDateInstant": "2024-01-25T12:00:00Z",
-	  "id": 6.0,
-	  "properties": [],
-	  "commitDate": "2024-01-25T12:00:00"
-	},
-	"globalId": {
-	  "cdoId": 6,
-	  "entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
-	},
-	"property": "errand",
-	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-	"right": {
-	  "entity": "se.sundsvall.casedata.integration.db.model.ErrandEntity",
-	  "cdoId": 90
-	}
-  },
-  {
-	"changeType": "InitialValueChange",
-	"commitMetadata": {
-	  "author": "ANDSOD",
-	  "commitDateInstant": "2024-01-25T12:00:00Z",
-	  "id": 6.0,
-	  "properties": [],
-	  "commitDate": "2024-01-25T12:00:00"
-	},
-	"globalId": {
-	  "cdoId": 6,
-	  "entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
-	},
-	"property": "type",
-	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-	"right": "PERSON"
-  },
-  {
-	"changeType": "InitialValueChange",
-	"commitMetadata": {
-	  "author": "ANDSOD",
-	  "commitDateInstant": "2024-01-25T12:00:00Z",
-	  "id": 6.0,
-	  "properties": [],
-	  "commitDate": "2024-01-25T12:00:00"
-	},
-	"globalId": {
-	  "cdoId": 6,
-	  "entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
-	},
-	"property": "municipalityId",
-	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-	"right": "2281"
-  },
-  {
-	"changeType": "InitialValueChange",
-	"commitMetadata": {
-	  "author": "ANDSOD",
-	  "commitDateInstant": "2024-01-25T12:00:00Z",
-	  "id": 6.0,
-	  "properties": [],
-	  "commitDate": "2024-01-25T12:00:00"
-	},
-	"globalId": {
-	  "cdoId": 6,
-	  "entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
-	},
-	"property": "firstName",
-	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-	"right": "Kalle"
-  },
-  {
-	"changeType": "InitialValueChange",
-	"commitMetadata": {
-	  "author": "ANDSOD",
-	  "commitDateInstant": "2024-01-25T12:00:00Z",
-	  "id": 6.0,
-	  "properties": [],
-	  "commitDate": "2024-01-25T12:00:00"
-	},
-	"globalId": {
-	  "cdoId": 6,
-	  "entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
-	},
-	"property": "lastName",
-	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-	"right": "Anka"
-  },
-  {
-	"changeType": "InitialValueChange",
-	"commitMetadata": {
-	  "author": "ANDSOD",
-	  "commitDateInstant": "2024-01-25T12:00:00Z",
-	  "id": 6.0,
-	  "properties": [],
-	  "commitDate": "2024-01-25T12:00:00"
-	},
-	"globalId": {
-	  "cdoId": 6,
-	  "entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
-	},
-	"property": "personId",
-	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-	"right": "d7af5383-166a-468b-ab86-da8ccd0ea97c"
-  },
-  {
-	"changeType": "ListChange",
-	"commitMetadata": {
-	  "author": "ANDSOD",
-	  "commitDateInstant": "2024-01-25T12:00:00Z",
-	  "id": 6.0,
-	  "properties": [],
-	  "commitDate": "2024-01-25T12:00:00"
-	},
-	"globalId": {
-	  "cdoId": 6,
-	  "entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
-	},
-	"property": "roles",
-	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-	"elementChanges": [
-	  {
-		"elementChangeType": "ValueAdded",
-		"index": 0,
-		"value": "APPLICANT"
-	  }
-	]
-  },
-  {
-	"changeType": "ListChange",
-	"commitMetadata": {
-	  "author": "ANDSOD",
-	  "commitDateInstant": "2024-01-25T12:00:00Z",
-	  "id": 6.0,
-	  "properties": [],
-	  "commitDate": "2024-01-25T12:00:00"
-	},
-	"globalId": {
-	  "cdoId": 6,
-	  "entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
-	},
-	"property": "addresses",
-	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-	"elementChanges": [
-	  {
-		"elementChangeType": "ValueAdded",
-		"index": 0,
-		"value": {
-		  "valueObject": "se.sundsvall.casedata.integration.db.model.AddressEntity",
-		  "ownerId": {
-			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity",
-			"cdoId": 246
-		  },
-		  "fragment": "addresses/0"
-		}
-	  }
-	]
-  },
-  {
-	"changeType": "ListChange",
-	"commitMetadata": {
-	  "author": "ANDSOD",
-	  "commitDateInstant": "2024-01-25T12:00:00Z",
-	  "id": 6.0,
-	  "properties": [],
-	  "commitDate": "2024-01-25T12:00:00"
-	},
-	"globalId": {
-	  "cdoId": 6,
-	  "entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity"
-	},
-	"property": "contactInformation",
-	"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-	"elementChanges": [
-	  {
-		"elementChangeType": "ValueAdded",
-		"index": 0,
-		"value": {
-		  "valueObject": "se.sundsvall.casedata.integration.db.model.ContactInformationEntity",
-		  "ownerId": {
-			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity",
-			"cdoId": 246
-		  },
-		  "fragment": "contactInformation/0"
-		}
-	  },
-	  {
-		"elementChangeType": "ValueAdded",
-		"index": 1,
-		"value": {
-		  "valueObject": "se.sundsvall.casedata.integration.db.model.ContactInformationEntity",
-		  "ownerId": {
-			"entity": "se.sundsvall.casedata.integration.db.model.StakeholderEntity",
-			"cdoId": 246
-		  },
-		  "fragment": "contactInformation/1"
-		}
-	  }
-	]
-  }
 ]

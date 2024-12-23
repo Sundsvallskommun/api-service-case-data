@@ -7,15 +7,15 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Base64;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
 import se.sundsvall.casedata.Application;
 
-@SpringBootTest(classes = { Application.class }, webEnvironment = MOCK)
+@SpringBootTest(classes = {
+	Application.class
+}, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class BlobBuilderTest {
 

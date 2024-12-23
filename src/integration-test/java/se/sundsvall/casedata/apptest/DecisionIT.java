@@ -17,7 +17,6 @@ import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADE
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
@@ -32,9 +31,7 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 class DecisionIT extends AbstractAppTest {
 
 	private static final String DECISION_ID = "1";
-
 	private static final String ERRAND_ID = "1";
-
 	private static final String PATH = "/{0}/{1}/errands/{2}/decisions/{3}";
 
 	@Test
@@ -86,5 +83,4 @@ class DecisionIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
-
 }

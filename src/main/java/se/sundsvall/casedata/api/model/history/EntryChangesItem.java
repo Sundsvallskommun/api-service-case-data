@@ -6,9 +6,6 @@ import lombok.Data;
 public class EntryChangesItem {
 
 	private String entryChangeType;
-
 	private String value;
-
 	private String key;
-
 }

@@ -1,5 +1,5 @@
 {
+	"detail": "Unexpected response from ProcessEngine API.",
 	"title": "Service Unavailable",
-	"status": 503,
-	"detail": "Unexpected response from ProcessEngine API."
+	"status": 503
 }

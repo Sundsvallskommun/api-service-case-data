@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+import se.sundsvall.casedata.api.model.validation.enums.Shortcode;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 
@@ -37,7 +37,7 @@ public class ErrandListener {
 
 	@PrePersist
 	private void prePersist(final ErrandEntity errand) {
-		errand.setErrandNumber(generateErrandNumber(errand.getCaseType()));
+		errand.setErrandNumber(generateErrandNumber(errand.getMunicipalityId(), errand.getNamespace()));
 	}
 
 	@PostPersist
@@ -64,11 +64,10 @@ public class ErrandListener {
 		}
 	}
 
-	private String generateErrandNumber(final String caseType) {
+	private String generateErrandNumber(final String municipalityId, final String namespace) {
 		// Get the latest errand with an errandNumber and only the ones within the same year. If this year i different, a new
 		// sequenceNumber begins.
-		final var abbreviation = CaseType.valueOf(caseType).getAbbreviation();
-		final Optional<ErrandEntity> latestErrand = errandRepository.findAllByErrandNumberStartingWith(abbreviation)
+		final Optional<ErrandEntity> latestErrand = errandRepository.findAllByMunicipalityIdAndNamespace(municipalityId, namespace)
 			.stream()
 			.filter(errand -> isNotBlank(errand.getErrandNumber()))
 			.filter(errand -> LocalDate.now().getYear() == extractYearFromErrandNumber(errand))
@@ -83,7 +82,7 @@ public class ErrandListener {
 		}
 
 		// prefix with the abbreviation
-		return abbreviation + DELIMITER +
+		return Shortcode.getByNamespace(namespace) + DELIMITER +
 			LocalDate.now().getYear() + DELIMITER +
 			String.format("%06d", nextSequenceNumber);
 	}

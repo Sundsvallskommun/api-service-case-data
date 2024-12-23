@@ -12,14 +12,12 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createPatchDecision;
 
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.model.Decision;
@@ -31,7 +29,7 @@ class DecisionResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands";
 
-	@MockBean
+	@MockitoBean
 	private DecisionService decisionServiceMock;
 
 	@Autowired
@@ -43,10 +41,10 @@ class DecisionResourceTest {
 		final var errandId = 123L;
 		final var decisionId = 456L;
 		final var decisionDTO = TestUtil.createDecision();
-		when(decisionServiceMock.findDecisionOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(decisionDTO);
+		when(decisionServiceMock.findDecision(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(decisionDTO);
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/decisions/{decisionId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, decisionId))
 			.exchange()
 			.expectStatus().isOk()
@@ -57,7 +55,7 @@ class DecisionResourceTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		verify(decisionServiceMock).findDecisionOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE);
+		verify(decisionServiceMock).findDecision(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(decisionServiceMock);
 	}
 
@@ -66,10 +64,10 @@ class DecisionResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var decisionDto = TestUtil.createDecision();
-		when(decisionServiceMock.findDecisionsOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(decisionDto));
+		when(decisionServiceMock.findDecisions(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(List.of(decisionDto));
 
 		// Act
-		var response = webTestClient.get()
+		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/decisions").build(MUNICIPALITY_ID, NAMESPACE, errandId))
 			.exchange()
 			.expectStatus().isOk()
@@ -80,7 +78,7 @@ class DecisionResourceTest {
 
 		// Assert
 		assertThat(response).hasSize(1);
-		verify(decisionServiceMock).findDecisionsOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(decisionServiceMock).findDecisions(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(decisionServiceMock);
 	}
 
@@ -91,7 +89,7 @@ class DecisionResourceTest {
 		final var decisionId = 456L;
 		final var body = TestUtil.createDecision();
 		body.setId(decisionId);
-		when(decisionServiceMock.addDecisionToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, body)).thenReturn(body);
+		when(decisionServiceMock.addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, body)).thenReturn(body);
 
 		// Act
 		webTestClient.patch()
@@ -104,7 +102,7 @@ class DecisionResourceTest {
 			.expectHeader().location("/2281/my.namespace/decisions/" + decisionId);
 
 		// Assert
-		verify(decisionServiceMock).addDecisionToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(decisionServiceMock).addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 	@Test
@@ -124,7 +122,7 @@ class DecisionResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(decisionServiceMock).updateDecisionOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(decisionServiceMock).update(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 	@Test
@@ -145,7 +143,7 @@ class DecisionResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(decisionServiceMock).replaceDecisionOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE, body);
+		verify(decisionServiceMock).replaceOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE, body);
 	}
 
 	@Test
@@ -162,7 +160,7 @@ class DecisionResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(decisionServiceMock).deleteDecisionOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, decisionId);
+		verify(decisionServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE, decisionId);
 		verifyNoMoreInteractions(decisionServiceMock);
 	}
 

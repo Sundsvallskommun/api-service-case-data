@@ -1,0 +1,29 @@
+{
+	"lastName": "doe",
+	"externalCaseId": "321",
+	"attachments": [
+		{
+			"content": "content",
+			"contentType": "text/plain",
+			"name": "this-is-an-attachment",
+			"messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee"
+		}
+	],
+	"errandNumber": "ERRAND-NUMBER-1",
+	"subject": "Subject",
+	"mobileNumber": "0701234567",
+	"messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
+	"message": "Message-POST",
+	"sent": "2024-01-02T12:00:00.000000",
+	"userId": "userId",
+	"familyId": "123",
+	"firstName": "john",
+	"messageType": "EMAIL",
+	"recipients": [
+		"patch@sundsvall.se"
+	],
+	"viewed": false,
+	"email": "johndoe@email.com",
+	"direction": "INBOUND",
+	"username": "kctest"
+}

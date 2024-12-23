@@ -16,11 +16,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
@@ -58,6 +56,8 @@ class PatchErrandTest {
 		final var extraParameters = createExtraParametersList();
 		final var facilities = List.of(createFacility());
 		final var suspension = new Suspension();
+		final var relatesTo = List.of(new RelatedErrand());
+		final var labels = List.of("label");
 
 		// Act
 		final var result = PatchErrand.builder()
@@ -74,6 +74,8 @@ class PatchErrandTest {
 			.withExtraParameters(extraParameters)
 			.withFacilities(facilities)
 			.withSuspension(suspension)
+			.withRelatesTo(relatesTo)
+			.withLabels(labels)
 			.build();
 
 		// Assert
@@ -91,6 +93,8 @@ class PatchErrandTest {
 		assertThat(result.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(result.getFacilities()).isEqualTo(facilities);
 		assertThat(result.getSuspension()).isEqualTo(suspension);
+		assertThat(result.getRelatesTo()).isEqualTo(relatesTo);
+		assertThat(result.getLabels()).isEqualTo(labels);
 	}
 
 	@Test
@@ -98,5 +102,4 @@ class PatchErrandTest {
 		assertThat(PatchErrand.builder().build()).hasAllNullFieldsOrProperties();
 		assertThat(new PatchErrand()).hasAllNullFieldsOrProperties();
 	}
-
 }

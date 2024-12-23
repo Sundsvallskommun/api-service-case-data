@@ -6,21 +6,17 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import jakarta.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 import java.util.List;
-
-import jakarta.validation.ConstraintValidatorContext;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.api.model.validation.impl.ValidStakeholderRoleConstraintValidator;
 
 class ValidStakeholderRoleConstraintValidatorTest {
-
 
 	private ValidStakeholderRoleConstraintValidator validator;
 

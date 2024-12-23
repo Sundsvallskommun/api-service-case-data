@@ -1,68 +1,68 @@
 [
-  {
-    "id": 1,
-    "version": 2,
-    "municipalityId": "2281",
-    "namespace": "my.namespace",
-    "created": "2024-04-25T15:37:23.52512+02:00",
-    "updated": "2024-04-26T08:14:14.039373+02:00",
-    "description": "Description 1",
-    "address": {
-      "addressCategory": "POSTAL_ADDRESS",
-      "street": "Street 1",
-      "houseNumber": "HouseNumber 1",
-      "postalCode": "PostalCode 1",
-      "city": "City 1",
-      "country": "Country 1",
-      "careOf": "Cateof 1",
-      "attention": "Attention",
-      "propertyDesignation": "PropertyDesignation 1",
-      "apartmentNumber": "apartmentNumber 1",
-      "isZoningPlanArea": true,
-      "invoiceMarking": "invoiceMarking 1",
-      "location": {
-        "latitude": 3.0,
-        "longitude": 2.0
-      }
-    },
-    "facilityCollectionName": "FacilityCollectionName 1",
-    "mainFacility": true,
-    "facilityType": "WORKSHOP_BUILDING",
-    "extraParameters": {
-      "additionalProp3": "string3",
-      "additionalProp2": "string2",
-      "additionalProp1": "string1"
-    }
-  },
-  {
-    "id": 2,
-    "version": 2,
-    "municipalityId": "2281",
-    "namespace": "my.namespace",
-    "created": "2024-04-25T15:37:23.52512+02:00",
-    "updated": "2024-04-26T08:14:14.039373+02:00",
-    "description": "Description 2",
-    "address": {
-      "addressCategory": "POSTAL_ADDRESS",
-      "street": "Street 2",
-      "houseNumber": "HouseNumber 2",
-      "postalCode": "PostalCode 2",
-      "city": "City 2",
-      "country": "Country 2",
-      "careOf": "Cateof 2",
-      "attention": "Attention",
-      "propertyDesignation": "PropertyDesignation 2",
-      "apartmentNumber": "apartmentNumber 2",
-      "isZoningPlanArea": true,
-      "invoiceMarking": "invoiceMarking 2",
-      "location": {
-        "latitude": 3.0,
-        "longitude": 2.0
-      }
-    },
-    "facilityCollectionName": "FacilityCollectionName 3",
-    "mainFacility": true,
-    "facilityType": "WORKSHOP_BUILDING",
-    "extraParameters": {}
-  }
+	{
+		"municipalityId": "2281",
+		"address": {
+			"country": "Country 1",
+			"city": "City 1",
+			"postalCode": "PostalCode 1",
+			"houseNumber": "HouseNumber 1",
+			"isZoningPlanArea": true,
+			"addressCategory": "POSTAL_ADDRESS",
+			"invoiceMarking": "invoiceMarking 1",
+			"careOf": "Cateof 1",
+			"street": "Street 1",
+			"attention": "Attention",
+			"propertyDesignation": "PropertyDesignation 1",
+			"location": {
+				"latitude": 3,
+				"longitude": 2
+			},
+			"apartmentNumber": "apartmentNumber 1"
+		},
+		"facilityType": "WORKSHOP_BUILDING",
+		"created": "2024-04-25T15:37:23.52512+02:00",
+		"mainFacility": true,
+		"namespace": "my.namespace",
+		"description": "Description 1",
+		"extraParameters": {
+			"additionalProp1": "string1",
+			"additionalProp3": "string3",
+			"additionalProp2": "string2"
+		},
+		"id": 1,
+		"facilityCollectionName": "FacilityCollectionName 1",
+		"version": 2,
+		"updated": "2024-04-26T08:14:14.039373+02:00"
+	},
+	{
+		"municipalityId": "2281",
+		"address": {
+			"country": "Country 2",
+			"city": "City 2",
+			"postalCode": "PostalCode 2",
+			"houseNumber": "HouseNumber 2",
+			"isZoningPlanArea": true,
+			"addressCategory": "POSTAL_ADDRESS",
+			"invoiceMarking": "invoiceMarking 2",
+			"careOf": "Cateof 2",
+			"street": "Street 2",
+			"attention": "Attention",
+			"propertyDesignation": "PropertyDesignation 2",
+			"location": {
+				"latitude": 3,
+				"longitude": 2
+			},
+			"apartmentNumber": "apartmentNumber 2"
+		},
+		"facilityType": "WORKSHOP_BUILDING",
+		"created": "2024-04-25T15:37:23.52512+02:00",
+		"mainFacility": true,
+		"namespace": "my.namespace",
+		"description": "Description 2",
+		"extraParameters": {},
+		"id": 2,
+		"facilityCollectionName": "FacilityCollectionName 3",
+		"version": 2,
+		"updated": "2024-04-26T08:14:14.039373+02:00"
+	}
 ]

@@ -1,29 +1,29 @@
 {
-	"description": "En fritextbeskrivning av facility.",
 	"address": {
-		"addressCategory": "POSTAL_ADDRESS",
-		"street": "Testvägen",
-		"houseNumber": "18",
-		"postalCode": "123 45",
-		"city": "Sundsvall",
 		"country": "Sverige",
+		"city": "Sundsvall",
+		"postalCode": "123 45",
+		"houseNumber": "18",
+		"isZoningPlanArea": true,
+		"addressCategory": "POSTAL_ADDRESS",
+		"invoiceMarking": "string",
 		"careOf": "Test Testorsson",
+		"street": "Testvägen",
 		"attention": "Test Testorsson",
 		"propertyDesignation": "SUNDSVALL LJUSTA 7:2",
-		"apartmentNumber": "LGH 1001",
-		"isZoningPlanArea": true,
-		"invoiceMarking": "string",
 		"location": {
 			"latitude": 62.390205,
 			"longitude": 17.306616
-		}
+		},
+		"apartmentNumber": "LGH 1001"
 	},
-	"facilityCollectionName": "Sundsvalls testfabrik",
-	"mainFacility": true,
 	"facilityType": "WORKSHOP_BUILDING",
+	"mainFacility": true,
+	"description": "En fritextbeskrivning av facility.",
 	"extraParameters": {
 		"additionalProp1": "string",
-		"additionalProp2": "string",
-		"additionalProp3": "string"
-	}
+		"additionalProp3": "string",
+		"additionalProp2": "string"
+	},
+	"facilityCollectionName": "Sundsvalls testfabrik"
 }

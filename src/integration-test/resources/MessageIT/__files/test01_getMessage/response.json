@@ -1,0 +1,53 @@
+[
+	{
+		"messageId": "a8883fb9-60b4-4f38-9f48-642070ff49ee",
+		"errandId": 1,
+		"direction": "INBOUND",
+		"familyId": "387",
+		"externalCaseId": "1234",
+		"message": "Message",
+		"sent": "2024-01-01T12:00:00.000000",
+		"subject": "Subject",
+		"username": "kctest",
+		"firstName": "john",
+		"lastName": "doe",
+		"messageType": "EMAIL",
+		"mobileNumber": "0701234567",
+		"recipients": [
+			"johndoe@email.com",
+			"someemail@sundsvall.se"
+		],
+		"email": "johndoe@email.com",
+		"userId": "userid",
+		"viewed": true,
+		"attachments": [
+			{
+				"attachmentId": "05b29c30-4512-46c0-9d82-d0f11cb04bae",
+				"name": "test_image.png",
+				"contentType": "image/png"
+			}
+		],
+		"emailHeaders": [
+			{
+				"header": "MESSAGE_ID",
+				"values": [
+					"<test123@domain.com>"
+				]
+			},
+			{
+				"header": "IN_REPLY_TO",
+				"values": [
+					"<123test@domain.com>"
+				]
+			},
+			{
+				"header": "REFERENCES",
+				"values": [
+					"<123test@domain.com>",
+					"<123@domain.com>",
+					"<456@domain.com>"
+				]
+			}
+		]
+	}
+]

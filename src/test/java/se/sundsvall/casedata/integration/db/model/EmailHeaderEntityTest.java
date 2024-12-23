@@ -9,10 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.util.List;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 
 class EmailHeaderEntityTest {

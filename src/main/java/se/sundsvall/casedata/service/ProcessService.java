@@ -2,8 +2,6 @@ package se.sundsvall.casedata.service;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
-import static se.sundsvall.casedata.service.util.Constants.MEX_CASE_TYPES;
-import static se.sundsvall.casedata.service.util.Constants.PARKING_PERMIT_CASE_TYPES;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +17,6 @@ public class ProcessService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessService.class);
 
 	private final ParkingPermitIntegration parkingPermitIntegration;
-
 	private final LandAndExploitationIntegration landAndExploitationIntegration;
 
 	public ProcessService(final ParkingPermitIntegration parkingPermitIntegration,
@@ -29,10 +26,10 @@ public class ProcessService {
 	}
 
 	public String startProcess(final ErrandEntity errand) {
-		if (PARKING_PERMIT_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType()))) {
+		if (CaseType.getParkingPermitCaseTypes().contains(CaseType.valueOf(errand.getCaseType()))) {
 			return parkingPermitIntegration.startProcess(errand).getProcessId();
 		}
-		if (MEX_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType()))) {
+		if (CaseType.getMexCaseTypes().contains(CaseType.valueOf(errand.getCaseType()))) {
 			return landAndExploitationIntegration.startProcess(errand).getProcessId();
 		}
 		LOGGER.info("No camunda process found for caseType: {}", errand.getCaseType());
@@ -54,11 +51,10 @@ public class ProcessService {
 	}
 
 	private boolean isValidParkingPermitCase(final ErrandEntity errand) {
-		return PARKING_PERMIT_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType())) && isNotEmpty(errand.getProcessId());
+		return CaseType.getParkingPermitCaseTypes().contains(CaseType.valueOf(errand.getCaseType())) && isNotEmpty(errand.getProcessId());
 	}
 
 	private boolean isValidMexCase(final ErrandEntity errand) {
-		return MEX_CASE_TYPES.contains(CaseType.valueOf(errand.getCaseType())) && isNotEmpty(errand.getProcessId());
+		return CaseType.getMexCaseTypes().contains(CaseType.valueOf(errand.getCaseType())) && isNotEmpty(errand.getProcessId());
 	}
-
 }

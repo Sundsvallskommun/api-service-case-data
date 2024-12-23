@@ -19,7 +19,7 @@ VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'MEDICAL_CON
         'FILE-1', 'application/pdf', 'test1.pdf', 'NOTE-1', 1, NULL, 'ERRAND-NUMBER-1', '2281',
         'my.namespace'),
        (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'PASSPORT_PHOTO', '.pdf',
-        'FILE-2', 'application/pdf', 'test2.pdf', 'NOTE-2', 2, NULL, 'ERRAND-NUMBER-2', '2281',
+        'FILE-2', 'application/pdf', 'test2.pdf', 'NOTE-2', 1, NULL, 'ERRAND-NUMBER-2', '2281',
         'my.namespace'),
        (3, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'POLICE_REPORT', '.pdf',
         'FILE-3', 'application/pdf', 'test3.pdf', 'NOTE-3', 2, NULL, 'ERRAND-NUMBER-2', '2281',

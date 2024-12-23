@@ -10,7 +10,6 @@ import static org.hamcrest.CoreMatchers.allOf;
 
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
 
 class AddressEntityTest {
@@ -24,7 +23,6 @@ class AddressEntityTest {
 			hasValidBeanEquals(),
 			hasValidBeanToString()));
 	}
-
 
 	@Test
 	void builder() {
@@ -77,7 +75,6 @@ class AddressEntityTest {
 		assertThat(bean.getLocation()).isEqualTo(location);
 
 	}
-
 
 	@Test
 	void testNoDirtOnCreatedBean() {

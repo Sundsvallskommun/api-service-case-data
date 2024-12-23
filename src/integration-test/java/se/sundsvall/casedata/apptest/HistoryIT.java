@@ -9,7 +9,6 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;

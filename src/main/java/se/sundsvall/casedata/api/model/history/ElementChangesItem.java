@@ -6,9 +6,6 @@ import lombok.Data;
 public class ElementChangesItem {
 
 	private String elementChangeType;
-
 	private int index;
-
 	private Object value;
-
 }

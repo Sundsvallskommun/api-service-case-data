@@ -1,10 +1,29 @@
 UPDATE errand
 SET namespace = 'SBK_MEX'
-WHERE case_type LIKE 'MEX%';
+WHERE case_type IN (
+                    'MEX_APPLICATION_FOR_ROAD_ALLOWANCE',
+                    'MEX_UNAUTHORIZED_RESIDENCE',
+                    'MEX_LAND_RIGHT',
+                    'MEX_EARLY_DIALOG_PLAN_NOTIFICATION',
+                    'MEX_PROTECTIVE_HUNTING',
+                    'MEX_LAND_INSTRUCTION',
+                    'MEX_OTHER',
+                    'MEX_LAND_SURVEYING_OFFICE',
+                    'MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOGUE_PLANNING_NOTICE',
+                    'MEX_INVOICE',
+                    'MEX_REQUEST_FOR_PUBLIC_DOCUMENT',
+                    'MEX_TERMINATION_OF_LEASE',
+                    'MEX_TERMINATION_OF_HUNTING_LEASE',
+                    'MEX_FORWARDED_FROM_CONTACTSUNDSVALL'
+    );
 
 UPDATE errand
 SET namespace = 'SBK_PARKINGPERMIT'
-WHERE case_type LIKE '%PARKING%';
+WHERE case_type IN (
+                    'PARKING_PERMIT',
+                    'PARKING_PERMIT_RENEWAL',
+                    'LOST_PARKING_PERMIT'
+    );
 
 update attachment
 set namespace = 'SBK_MEX'

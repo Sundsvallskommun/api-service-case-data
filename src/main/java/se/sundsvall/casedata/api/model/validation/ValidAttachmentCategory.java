@@ -1,18 +1,15 @@
 package se.sundsvall.casedata.api.model.validation;
 
-
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
-
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.impl.ValidAttachmentCategoryConstraintValidator;
 
@@ -21,7 +18,9 @@ import se.sundsvall.casedata.api.model.validation.impl.ValidAttachmentCategoryCo
  * Not allowed to be null or empty.
  */
 @Documented
-@Target({FIELD, CONSTRUCTOR, PARAMETER})
+@Target({
+	FIELD, CONSTRUCTOR, PARAMETER
+})
 @Retention(RUNTIME)
 @Constraint(validatedBy = ValidAttachmentCategoryConstraintValidator.class)
 public @interface ValidAttachmentCategory {

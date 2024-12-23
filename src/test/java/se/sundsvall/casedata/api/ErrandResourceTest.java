@@ -13,16 +13,14 @@ import static se.sundsvall.casedata.TestUtil.createFacility;
 
 import java.util.List;
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 import se.sundsvall.casedata.service.ErrandService;
@@ -33,7 +31,7 @@ class ErrandResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands";
 
-	@MockBean
+	@MockitoBean
 	private ErrandService errandServiceMock;
 
 	@Autowired
@@ -52,7 +50,7 @@ class ErrandResourceTest {
 			.expectStatus().isNoContent();
 
 		// Assert
-		verify(errandServiceMock).deleteByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandServiceMock);
 	}
 
@@ -67,7 +65,7 @@ class ErrandResourceTest {
 		final var facilities = List.of(facility);
 		body.setFacilities(facilities);
 
-		when(errandServiceMock.createErrand(body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(body);
+		when(errandServiceMock.create(body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(body);
 
 		// Act
 		webTestClient.post()
@@ -80,7 +78,7 @@ class ErrandResourceTest {
 			.expectHeader().location("/2281/my.namespace/errands/" + body.getId());
 
 		// Assert
-		verify(errandServiceMock).createErrand(body, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandServiceMock);
 	}
 

@@ -9,6 +9,7 @@ truncate table errand;
 truncate table errand_extra_parameters;
 truncate table errand_message_ids;
 truncate table errand_statuses;
+truncate table errand_labels;
 truncate table facility;
 truncate table facility_extra_parameters;
 truncate table jv_commit;
@@ -28,6 +29,6 @@ truncate table stakeholder_addresses;
 truncate table stakeholder_contact_information;
 truncate table stakeholder_extra_parameters;
 truncate table stakeholder_roles;
-truncate table appeal;
+truncate table message_recipients;
 
 set foreign_key_checks = 1;

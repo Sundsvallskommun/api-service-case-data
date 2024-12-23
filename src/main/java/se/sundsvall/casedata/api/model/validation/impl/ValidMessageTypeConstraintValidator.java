@@ -1,14 +1,11 @@
 package se.sundsvall.casedata.api.model.validation.impl;
 
-import java.util.Arrays;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
+import java.util.Arrays;
+import lombok.Setter;
 import se.sundsvall.casedata.api.model.validation.ValidMessageType;
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
-
-import lombok.Setter;
 
 @Setter
 public class ValidMessageTypeConstraintValidator implements ConstraintValidator<ValidMessageType, String> {

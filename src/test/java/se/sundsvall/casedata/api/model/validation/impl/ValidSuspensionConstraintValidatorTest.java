@@ -2,12 +2,10 @@ package se.sundsvall.casedata.api.model.validation.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import jakarta.validation.ConstraintValidatorContext;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.stream.Stream;
-
-import jakarta.validation.ConstraintValidatorContext;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,7 +14,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import se.sundsvall.casedata.api.model.Suspension;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,8 +38,7 @@ class ValidSuspensionConstraintValidatorTest {
 			Arguments.of(
 				OffsetDateTime.of(2024, 1, 1, 12, 0, 0, 0, ZoneOffset.ofHours(1)),
 				null,
-				false)
-		);
+				false));
 	}
 
 	@ParameterizedTest
@@ -57,6 +53,5 @@ class ValidSuspensionConstraintValidatorTest {
 	void nullSuspension() {
 		assertThat(validator.isValid(null, constraintValidatorContextMock)).isTrue();
 	}
-
 
 }

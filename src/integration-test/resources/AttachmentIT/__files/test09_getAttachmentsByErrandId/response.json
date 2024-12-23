@@ -1,0 +1,50 @@
+[
+	{
+		"note": "NOTE-2",
+		"municipalityId": "2281",
+		"extension": ".pdf",
+		"errandId": 2,
+		"created": "2022-12-02T15:13:45.363+01:00",
+		"extraParameters": {},
+		"mimeType": "application/pdf",
+		"version": 1,
+		"file": "FILE-2",
+		"namespace": "my.namespace",
+		"name": "test2.pdf",
+		"id": 2,
+		"category": "PASSPORT_PHOTO",
+		"updated": "2022-12-02T15:15:01.563+01:00"
+	},
+	{
+		"note": "NOTE-3",
+		"municipalityId": "2281",
+		"extension": ".pdf",
+		"errandId": 2,
+		"created": "2022-12-02T15:13:45.363+01:00",
+		"extraParameters": {},
+		"mimeType": "application/pdf",
+		"version": 1,
+		"file": "FILE-3",
+		"namespace": "my.namespace",
+		"name": "test3.pdf",
+		"id": 3,
+		"category": "POLICE_REPORT",
+		"updated": "2022-12-02T15:15:01.563+01:00"
+	},
+	{
+		"note": "NOTE-4",
+		"municipalityId": "2281",
+		"extension": ".pdf",
+		"errandId": 2,
+		"created": "2022-12-02T15:13:45.363+01:00",
+		"extraParameters": {},
+		"mimeType": "application/pdf",
+		"version": 1,
+		"file": "FILE-4",
+		"namespace": "my.namespace",
+		"name": "test4.pdf",
+		"id": 4,
+		"category": "ANSUPA",
+		"updated": "2022-12-02T15:15:01.563+01:00"
+	}
+]

@@ -1,5 +1,4 @@
 {
-	"name": "api-employee-getPersonalData",
 	"request": {
 		"method": "GET",
 		"urlPattern": "/employee/portalpersondata/personal/.*"
@@ -8,7 +7,8 @@
 		"headers": {
 			"Content-Type": "application/json"
 		},
-		"status": 200,
-		"bodyFileName": "getEmployeePersonalData200.json"
-	}
+		"bodyFileName": "getEmployeePersonalData200.json",
+		"status": 200
+	},
+	"name": "api-employee-getPersonalData"
 }

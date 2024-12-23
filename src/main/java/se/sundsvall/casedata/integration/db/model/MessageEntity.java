@@ -1,9 +1,9 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import java.util.List;
-
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -13,12 +13,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
-import org.hibernate.Length;
-
-import se.sundsvall.casedata.integration.db.model.enums.Classification;
-import se.sundsvall.casedata.integration.db.model.enums.Direction;
-
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,12 +23,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.With;
+import org.hibernate.Length;
+import se.sundsvall.casedata.integration.db.model.enums.Classification;
+import se.sundsvall.casedata.integration.db.model.enums.Direction;
 
 @Entity
 @Table(name = "message",
 	indexes = {
 		@Index(name = "idx_message_municipality_id", columnList = "municipality_id"),
-		@Index(name = "idx_message_namespace", columnList = "namespace")
+		@Index(name = "idx_message_namespace", columnList = "namespace"),
+		@Index(name = "idx_messsage_errand_id", columnList = "errand_id")
 	})
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -51,6 +50,10 @@ public class MessageEntity {
 	@With
 	@Column(name = "errand_number")
 	private String errandNumber;
+
+	@With
+	@Column(name = "errand_id")
+	private Long errandId;
 
 	@Column(name = "municipality_id")
 	private String municipalityId;
@@ -95,6 +98,13 @@ public class MessageEntity {
 	@Column(name = "email")
 	private String email;
 
+	@ElementCollection
+	@CollectionTable(name = "message_recipients",
+		joinColumns = @JoinColumn(name = "message_id"),
+		foreignKey = @ForeignKey(name = "fk_message_recipients_message_id"))
+	@Column(name = "recipient_email")
+	private List<String> recipients;
+
 	@Column(name = "userID")
 	private String userId;
 
@@ -109,7 +119,8 @@ public class MessageEntity {
 	private List<MessageAttachmentEntity> attachments;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "message_id", referencedColumnName = "messageID",
+	@JoinColumn(name = "message_id",
+		referencedColumnName = "messageID",
 		foreignKey = @ForeignKey(name = "fk_message_header_message_id"))
 	private List<EmailHeaderEntity> headers;
 
