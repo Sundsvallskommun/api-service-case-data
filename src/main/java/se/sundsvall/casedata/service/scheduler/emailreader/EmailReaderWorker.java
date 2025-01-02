@@ -51,7 +51,7 @@ public class EmailReaderWorker {
 		this.notificationService = notificationService;
 	}
 
-	List<Email> getAndProcessEmails() {
+	List<Email> getEmails() {
 
 		try {
 			return emailReaderClient.getEmail(emailReaderProperties.municipalityId(), emailReaderProperties.namespace());

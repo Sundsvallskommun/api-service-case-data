@@ -26,14 +26,14 @@ class EmailReaderSchedulerTest {
 	void getAndProcessEmails_success() {
 		// Arrange
 		final var email = new Email(); // Assuming Email is a class used in EmailReaderWorker
-		when(emailReaderWorkerMock.getAndProcessEmails()).thenReturn(Collections.singletonList(email));
+		when(emailReaderWorkerMock.getEmails()).thenReturn(Collections.singletonList(email));
 		when(emailReaderWorkerMock.save(email)).thenReturn(true);
 
 		// Act
 		emailReaderScheduler.getAndProcessEmails();
 
 		// Assert
-		verify(emailReaderWorkerMock).getAndProcessEmails();
+		verify(emailReaderWorkerMock).getEmails();
 		verify(emailReaderWorkerMock).save(email);
 		verify(emailReaderWorkerMock).deleteMail(email);
 		verifyNoMoreInteractions(emailReaderWorkerMock);
@@ -43,14 +43,14 @@ class EmailReaderSchedulerTest {
 	void getAndProcessEmails_saveFails() {
 		// Arrange
 		final var email = new Email(); // Assuming Email is a class used in EmailReaderWorker
-		when(emailReaderWorkerMock.getAndProcessEmails()).thenReturn(Collections.singletonList(email));
+		when(emailReaderWorkerMock.getEmails()).thenReturn(Collections.singletonList(email));
 		when(emailReaderWorkerMock.save(email)).thenReturn(false);
 
 		// Act
 		emailReaderScheduler.getAndProcessEmails();
 
 		// Assert
-		verify(emailReaderWorkerMock).getAndProcessEmails();
+		verify(emailReaderWorkerMock).getEmails();
 		verify(emailReaderWorkerMock).save(email);
 		verify(emailReaderWorkerMock, never()).deleteMail(email);
 		verifyNoMoreInteractions(emailReaderWorkerMock);
@@ -59,13 +59,13 @@ class EmailReaderSchedulerTest {
 	@Test
 	void getAndProcessEmails_noEmails() {
 		// Arrange
-		when(emailReaderWorkerMock.getAndProcessEmails()).thenReturn(Collections.emptyList());
+		when(emailReaderWorkerMock.getEmails()).thenReturn(Collections.emptyList());
 
 		// Act
 		emailReaderScheduler.getAndProcessEmails();
 
 		// Assert
-		verify(emailReaderWorkerMock).getAndProcessEmails();
+		verify(emailReaderWorkerMock).getEmails();
 		verifyNoMoreInteractions(emailReaderWorkerMock);
 	}
 }

@@ -63,7 +63,7 @@ class EmailReaderWorkerTest {
 	private ArgumentCaptor<Notification> notificationCaptor;
 
 	@Test
-	void getAndProcessEmails() {
+	void getEmails() {
 		// Arrange
 		final var email = new Email()
 			.id("someId")
@@ -83,7 +83,7 @@ class EmailReaderWorkerTest {
 			.thenReturn(List.of(email));
 
 		// Act
-		final var emails = emailReaderWorker.getAndProcessEmails();
+		final var emails = emailReaderWorker.getEmails();
 
 		// Assert
 		assertThat(emails).containsExactly(email);
@@ -91,7 +91,7 @@ class EmailReaderWorkerTest {
 	}
 
 	@Test
-	void getAndProcessEmails_emptyList() {
+	void getEmails_emptyList() {
 		// Arrange
 		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
 		when(emailReaderPropertiesMock.namespace()).thenReturn("someNamespace");
@@ -99,7 +99,7 @@ class EmailReaderWorkerTest {
 			.thenReturn(Collections.emptyList());
 
 		// Act
-		final var emails = emailReaderWorker.getAndProcessEmails();
+		final var emails = emailReaderWorker.getEmails();
 
 		// Assert
 		assertThat(emails).isEmpty();
