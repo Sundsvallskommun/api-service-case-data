@@ -39,7 +39,7 @@
 			"updated": "${json-unit.any-string}"
 		}
 	],
-	"errandNumber": "PRH-2025-000001",
+	"errandNumber": "${json-unit.regex}^PRH-\\d{4}-000001$",
 	"endDate": "2024-05-09",
 	"createdByClient": "UNKNOWN",
 	"channel": "EMAIL",
