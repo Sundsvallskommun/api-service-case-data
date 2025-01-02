@@ -57,7 +57,7 @@
 			"updated": "${json-unit.any-string}"
 		}
 	],
-	"errandNumber": "MEX-2024-000001",
+	"errandNumber": "MEX-2025-000001",
 	"endDate": "2024-05-09",
 	"createdByClient": "UNKNOWN",
 	"channel": "EMAIL",
