@@ -43,7 +43,7 @@ class MessageIT extends AbstractAppTest {
 	private MessageRepository messageRepository;
 
 	@Test
-	void test01_getMessage() {
+	void test01_getMessages() {
 		setupCall()
 			.withHttpMethod(GET)
 			.withServicePath(PATH)
@@ -51,9 +51,19 @@ class MessageIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
+	
+	@Test
+	void test02_getMessage() {
+		setupCall()
+			.withHttpMethod(GET)
+			.withServicePath(PATH + "/" + MESSAGE_ID)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
 
 	@Test
-	void test02_postMessage() {
+	void test03_createMessage() {
 		final var location = setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(POST)
@@ -72,7 +82,7 @@ class MessageIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test03_updateViewedStatus() {
+	void test04_updateViewedStatus() {
 		final var viewed = false;
 		setupCall()
 			.withServicePath(PATH + "/" + MESSAGE_ID + "/viewed/" + viewed)
@@ -85,7 +95,7 @@ class MessageIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test04_getMessageAttachmentStreamed() throws Exception {
+	void test05_getMessageAttachment() throws Exception {
 		setupCall()
 			.withHttpMethod(GET)
 			.withServicePath(PATH + "/" + MESSAGE_ID + "/attachments/" + MESSAGE_ATTACHMENT_ID)
@@ -96,7 +106,7 @@ class MessageIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test05_getMessageAttachmentStreamedNotFound() {
+	void test06_getMessageAttachmentNotFound() {
 		setupCall()
 			.withHttpMethod(GET)
 			.withServicePath(PATH + "/" + MESSAGE_ID + "/attachments/nonexistingid")

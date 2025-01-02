@@ -30,7 +30,7 @@ class ErrandListenerIT extends AbstractAppTest {
 
 	private static final int PATCH_ERRAND_ID = 2;
 	private static final String REQUEST_FILE = "request.json";
-	private static final String EXPECTED_FILE = "expected.json";
+	private static final String EXPECTED_FILE = "response.json";
 	private String namespace;
 
 	private String getPath() {
