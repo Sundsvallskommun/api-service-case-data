@@ -1,12 +1,15 @@
 package se.sundsvall.casedata.service.scheduler.emailreader;
 
+import static java.util.Collections.emptyList;
 import static se.sundsvall.casedata.service.scheduler.emailreader.ErrandNumberParser.parseSubject;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 import generated.se.sundsvall.emailreader.Email;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -47,18 +50,19 @@ public class EmailReaderWorker {
 		this.notificationService = notificationService;
 	}
 
-	void getAndProcessEmails() {
+	List<Email> getEmails() {
 
 		try {
-			emailReaderClient.getEmail(emailReaderProperties.municipalityId(), emailReaderProperties.namespace())
-				.forEach(this::saveAndRemoteDelete);
+			return emailReaderClient.getEmail(emailReaderProperties.municipalityId(), emailReaderProperties.namespace());
+
 		} catch (final Exception e) {
 			LOG.error("Error when fetching emails from EmailReader", e);
 		}
+		return emptyList();
 	}
 
-	@Transactional
-	public void saveAndRemoteDelete(final Email email) {
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean save(final Email email) {
 		try {
 			final var errandNumber = parseSubject(email.getSubject());
 
@@ -67,14 +71,21 @@ public class EmailReaderWorker {
 				.ifPresent(errand -> {
 					messageRepository.save(emailReaderMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace()).withErrandNumber(errandNumber));
 					notificationService.createNotification(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
-					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email, errand.getMunicipalityId(), errand.getNamespace()).stream()
-						.map(attachment -> attachment.withErrandNumber(errandNumber).withMunicipalityId(emailReaderProperties.municipalityId()))
+					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email, errand.getMunicipalityId(), errand.getNamespace(), errandNumber).stream()
 						.toList());
 				});
-
-			emailReaderClient.deleteEmail(emailReaderProperties.municipalityId(), email.getId());
+			return true;
 		} catch (final Exception e) {
 			LOG.error("Error when processing email with subject: {}", email.getSubject(), e);
+			return false;
+		}
+	}
+
+	void deleteMail(final Email email) {
+		try {
+			emailReaderClient.deleteEmail(emailReaderProperties.municipalityId(), email.getId());
+		} catch (final Exception e) {
+			LOG.error("Error when deleting email with ID: {}", email.getId(), e);
 		}
 	}
 

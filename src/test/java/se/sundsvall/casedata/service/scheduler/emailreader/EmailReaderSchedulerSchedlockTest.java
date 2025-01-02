@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,12 +57,12 @@ class EmailReaderSchedulerSchedlockTest {
 			.untilAsserted(() -> assertThat(getLockedAt("emailreader"))
 				.isCloseTo(LocalDateTime.now(systemUTC()), within(10, ChronoUnit.SECONDS)));
 
-		// Only one call should be made as long as getAndProcessEmails() is locked and mock is waiting for first call to finish
-		verify(emailReaderWorkerMock).getAndProcessEmails();
+		// Only one call should be made as long as getEmails() is locked and mock is waiting for first call to finish
+		verify(emailReaderWorkerMock).getEmails();
 		verifyNoMoreInteractions(emailReaderWorkerMock);
 	}
 
-	private LocalDateTime getLockedAt(String name) {
+	private LocalDateTime getLockedAt(final String name) {
 		return jdbcTemplate.query(
 			"SELECT locked_at FROM shedlock WHERE name = :name",
 			Map.of("name", name),
@@ -92,7 +91,7 @@ class EmailReaderSchedulerSchedlockTest {
 				await().forever()
 					.until(() -> false);
 				return null;
-			}).when(mockBean).getAndProcessEmails();
+			}).when(mockBean).getEmails();
 
 			return mockBean;
 		}

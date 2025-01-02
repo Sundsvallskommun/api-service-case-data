@@ -12,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -128,7 +129,7 @@ public class ErrandEntity {
 	@Column(name = "process_id")
 	private String processId;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand", fetch = FetchType.EAGER)
 	@JsonManagedReference
 	private List<StakeholderEntity> stakeholders;
 
@@ -196,14 +197,13 @@ public class ErrandEntity {
 
 	@Override
 	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("ErrandEntity [id=").append(id).append(", version=").append(version).append(", errandNumber=").append(errandNumber).append(", municipalityId=").append(municipalityId).append(", namespace=").append(namespace).append(
-			", externalCaseId=").append(externalCaseId).append(", caseType=").append(caseType).append(", channel=").append(channel).append(", priority=").append(priority).append(", description=").append(description).append(", caseTitleAddition=").append(
-				caseTitleAddition).append(", diaryNumber=").append(diaryNumber).append(", phase=").append(phase).append(", statuses=").append(statuses).append(", startDate=").append(startDate).append(", endDate=").append(endDate).append(
-					", applicationReceived=").append(applicationReceived).append(", processId=").append(processId).append(", stakeholders=").append(stakeholders).append(", facilities=").append(facilities).append(", decisions=").append(decisions).append(
-						", appeals=").append(appeals).append(", notes=").append(notes).append(", notifications=").append(notifications).append(", createdByClient=").append(createdByClient).append(", updatedByClient=").append(updatedByClient).append(
-							", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append(", created=").append(created).append(", updated=").append(updated).append(", suspendedTo=").append(suspendedTo).append(", suspendedFrom=").append(
-								suspendedFrom).append(", extraParameters=").append(extraParameters).append("]");
-		return builder.toString();
+		final String builder = "ErrandEntity [id=" + id + ", version=" + version + ", errandNumber=" + errandNumber + ", municipalityId=" + municipalityId + ", namespace=" + namespace
+			+ ", externalCaseId=" + externalCaseId + ", caseType=" + caseType + ", channel=" + channel + ", priority=" + priority + ", description=" + description + ", caseTitleAddition="
+			+ caseTitleAddition + ", diaryNumber=" + diaryNumber + ", phase=" + phase + ", statuses=" + statuses + ", startDate=" + startDate + ", endDate=" + endDate
+			+ ", applicationReceived=" + applicationReceived + ", processId=" + processId + ", stakeholders=" + stakeholders + ", facilities=" + facilities + ", decisions=" + decisions
+			+ ", appeals=" + appeals + ", notes=" + notes + ", notifications=" + notifications + ", createdByClient=" + createdByClient + ", updatedByClient=" + updatedByClient
+			+ ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + ", created=" + created + ", updated=" + updated + ", suspendedTo=" + suspendedTo + ", suspendedFrom="
+			+ suspendedFrom + ", extraParameters=" + extraParameters + "]";
+		return builder;
 	}
 }

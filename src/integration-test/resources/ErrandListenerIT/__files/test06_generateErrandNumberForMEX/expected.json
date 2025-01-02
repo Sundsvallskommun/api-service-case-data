@@ -5,7 +5,7 @@
   "namespace": "my.namespace",
   "created": "${json-unit.any-string}",
   "updated": "${json-unit.any-string}",
-  "errandNumber": "MEX-2024-000001",
+  "errandNumber": "MEX-2025-000001",
   "externalCaseId": "9527464e-c5a0-4971-a253-8b94a79e74c9",
   "caseType": "MEX_LEASE_REQUEST",
   "channel": "EMAIL",
