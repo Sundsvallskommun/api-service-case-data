@@ -8,7 +8,7 @@
 			"updatedBy": "sRXYGByNYE",
 			"createdBy": "UNKNOWN",
 			"created": "${json-unit.any-string}",
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_MEX",
 			"extraParameters": {
 				"test4": "test4",
 				"test2": "test2",
@@ -26,7 +26,7 @@
 			"updatedBy": "wZLYbWWWfF",
 			"createdBy": "UNKNOWN",
 			"created": "${json-unit.any-string}",
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_MEX",
 			"extraParameters": {
 				"test4": "test4",
 				"test2": "test2",
@@ -41,10 +41,10 @@
 		{
 			"municipalityId": "2281",
 			"noteType": "PUBLIC",
-			"updatedBy": "UNKNOWN",
+			"updatedBy": "oHfjmxxKyo",
 			"createdBy": "UNKNOWN",
 			"created": "${json-unit.any-string}",
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_MEX",
 			"extraParameters": {
 				"test4": "test4",
 				"test2": "test2",
@@ -57,7 +57,7 @@
 			"updated": "${json-unit.any-string}"
 		}
 	],
-	"errandNumber": "PRH-2024-000001",
+	"errandNumber": "${json-unit.regex}^MEX-\\d{4}-000001$",
 	"endDate": "2024-05-09",
 	"createdByClient": "UNKNOWN",
 	"channel": "EMAIL",
@@ -135,7 +135,7 @@
 					"value": "0987654321"
 				}
 			],
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_MEX",
 			"personId": "1262f329-e143-428d-9006-997459eb1552",
 			"id": 2,
 			"updated": "${json-unit.any-string}"
@@ -192,12 +192,12 @@
 				}
 			],
 			"authorizedSignatory": "Kalle Anka",
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_MEX",
 			"id": 3,
 			"updated": "${json-unit.any-string}"
 		}
 	],
-	"caseType": "PARKING_PERMIT",
+	"caseType": "MEX_LEASE_REQUEST",
 	"diaryNumber": "DIARY-123",
 	"processId": "49011dea-ee10-11ec-9505-0242c0a84503",
 	"caseTitleAddition": "Case title addition",
@@ -270,7 +270,7 @@
 						"value": "0987654321"
 					}
 				],
-				"namespace": "SBK_PARKINGPERMIT",
+				"namespace": "SBK_MEX",
 				"personId": "4cf41b59-864c-4a47-a3b9-52940a93b498",
 				"id": 1,
 				"updated": "${json-unit.any-string}"
@@ -278,7 +278,7 @@
 			"validFrom": "2012-08-17T11:04:04.33+02:00",
 			"version": 0,
 			"decidedAt": "2002-12-14T10:04:04.33+01:00",
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_MEX",
 			"decisionType": "FINAL",
 			"decisionOutcome": "CANCELLATION",
 			"id": 1,
@@ -297,7 +297,7 @@
 	"version": 2,
 	"labels": [],
 	"createdBy": "UNKNOWN",
-	"namespace": "SBK_PARKINGPERMIT",
+	"namespace": "SBK_MEX",
 	"statuses": [
 		{
 			"dateTime": "2023-01-24T10:04:04.326+01:00",
@@ -315,7 +315,7 @@
 			"facilityType": "ONE_FAMILY_HOUSE",
 			"created": "${json-unit.any-string}",
 			"mainFacility": true,
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_MEX",
 			"description": "Test facility",
 			"extraParameters": {},
 			"id": 1,

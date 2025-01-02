@@ -5,7 +5,7 @@
 		{
 			"municipalityId": "2281",
 			"noteType": "PUBLIC",
-			"updatedBy": "UNKNOWN",
+			"updatedBy": "sRXYGByNYE",
 			"createdBy": "UNKNOWN",
 			"created": "${json-unit.any-string}",
 			"namespace": "SBK_PARKINGPERMIT",
@@ -23,7 +23,7 @@
 		{
 			"municipalityId": "2281",
 			"noteType": "PUBLIC",
-			"updatedBy": "UNKNOWN",
+			"updatedBy": "wZLYbWWWfF",
 			"createdBy": "UNKNOWN",
 			"created": "${json-unit.any-string}",
 			"namespace": "SBK_PARKINGPERMIT",
@@ -37,9 +37,27 @@
 			"title": "sRGrJyRKNn",
 			"version": 0,
 			"updated": "${json-unit.any-string}"
+		},
+		{
+			"municipalityId": "2281",
+			"noteType": "PUBLIC",
+			"updatedBy": "UNKNOWN",
+			"createdBy": "UNKNOWN",
+			"created": "${json-unit.any-string}",
+			"namespace": "SBK_PARKINGPERMIT",
+			"extraParameters": {
+				"test4": "test4",
+				"test2": "test2",
+				"test3": "test3"
+			},
+			"id": 3,
+			"text": "OSOCnSgryb",
+			"title": "EzhsmgQlrP",
+			"version": 0,
+			"updated": "${json-unit.any-string}"
 		}
 	],
-	"errandNumber": "PRH-2024-000001",
+	"errandNumber": "${json-unit.regex}^PRH-\\d{4}-000001$",
 	"endDate": "2024-05-09",
 	"createdByClient": "UNKNOWN",
 	"channel": "EMAIL",
@@ -47,25 +65,22 @@
 	"applicationReceived": "2000-09-23T11:04:04.317+02:00",
 	"extraParameters": [
 		{
-			"displayName": "Test 9",
 			"values": [
-				"test9"
+				"test7"
 			],
-			"key": "test9"
+			"key": "test7"
 		},
 		{
-			"displayName": "Test 8",
 			"values": [
 				"test8"
 			],
 			"key": "test8"
 		},
 		{
-			"displayName": "Test 7",
 			"values": [
-				"test7"
+				"test9"
 			],
-			"key": "test7"
+			"key": "test9"
 		}
 	],
 	"stakeholders": [
@@ -182,8 +197,9 @@
 			"updated": "${json-unit.any-string}"
 		}
 	],
-	"caseType": "APPEAL",
+	"caseType": "PARKING_PERMIT",
 	"diaryNumber": "DIARY-123",
+	"processId": "49011dea-ee10-11ec-9505-0242c0a84503",
 	"caseTitleAddition": "Case title addition",
 	"decisions": [
 		{
@@ -278,7 +294,7 @@
 	"created": "${json-unit.any-string}",
 	"updatedByClient": "UNKNOWN",
 	"priority": "HIGH",
-	"version": 1,
+	"version": 2,
 	"labels": [],
 	"createdBy": "UNKNOWN",
 	"namespace": "SBK_PARKINGPERMIT",
