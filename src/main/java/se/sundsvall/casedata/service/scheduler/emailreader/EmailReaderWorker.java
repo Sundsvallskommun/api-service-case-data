@@ -47,8 +47,7 @@ public class EmailReaderWorker {
 		this.notificationService = notificationService;
 	}
 
-	@Transactional
-	public void getAndProcessEmails() {
+	void getAndProcessEmails() {
 
 		try {
 			emailReaderClient.getEmail(emailReaderProperties.municipalityId(), emailReaderProperties.namespace())
@@ -58,17 +57,20 @@ public class EmailReaderWorker {
 		}
 	}
 
-	private void saveAndRemoteDelete(final Email email) {
+	@Transactional
+	public void saveAndRemoteDelete(final Email email) {
 		try {
 			final var errandNumber = parseSubject(email.getSubject());
 
 			errandRepository.findByErrandNumber(errandNumber)
 				.filter(errand -> !messageRepository.existsById(email.getId()))
 				.ifPresent(errand -> {
+
 					messageRepository.save(emailReaderMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace()).withErrandId(errand.getId()));
 					notificationService.create(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
+
 					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email, errand.getMunicipalityId(), errand.getNamespace()).stream()
-						.map(attachment -> attachment.withErrandId(errand.getId()))
+						.map(attachment -> attachment.withErrandId(errand.getId()).withMunicipalityId(emailReaderProperties.municipalityId()))
 						.toList());
 				});
 
