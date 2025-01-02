@@ -5,7 +5,7 @@
   "namespace": "my.namespace",
   "created": "${json-unit.any-string}",
   "updated": "${json-unit.any-string}",
-  "errandNumber": "BUILD-2024-000001",
+  "errandNumber": "BUILD-2025-000001",
   "externalCaseId": "9527464e-c5a0-4971-a253-8b94a79e74c9",
   "caseType": "NYBYGGNAD_ANSOKAN_OM_BYGGLOV",
   "channel": "EMAIL",
@@ -243,19 +243,19 @@
 	}
   ],
   "appeals": [
-    {
-      "id": 1,
-      "version": 0,
-      "municipalityId": "2281",
-      "namespace": "my.namespace",
-      "created": "${json-unit.any-string}",
-      "updated": "${json-unit.any-string}",
-      "description": "Appeal description",
-      "registeredAt": "2010-01-15T10:04:04.337+01:00",
-      "appealConcernCommunicatedAt": "2009-02-19T10:04:04.337+01:00",
-      "status": "COMPLETED",
-      "timelinessReview": "NOT_RELEVANT"
-    }
+	{
+	  "id": 1,
+	  "version": 0,
+	  "municipalityId": "2281",
+	  "namespace": "my.namespace",
+	  "created": "${json-unit.any-string}",
+	  "updated": "${json-unit.any-string}",
+	  "description": "Appeal description",
+	  "registeredAt": "2010-01-15T10:04:04.337+01:00",
+	  "appealConcernCommunicatedAt": "2009-02-19T10:04:04.337+01:00",
+	  "status": "COMPLETED",
+	  "timelinessReview": "NOT_RELEVANT"
+	}
   ],
   "notes": [
 	{

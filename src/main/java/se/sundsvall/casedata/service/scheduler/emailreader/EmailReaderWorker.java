@@ -1,13 +1,16 @@
 package se.sundsvall.casedata.service.scheduler.emailreader;
 
+import static java.util.Collections.emptyList;
 import static se.sundsvall.casedata.service.scheduler.emailreader.ErrandNumberParser.parseSubject;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 import generated.se.sundsvall.emailreader.Email;
+import java.util.List;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -48,24 +51,19 @@ public class EmailReaderWorker {
 		this.notificationService = notificationService;
 	}
 
-	@Transactional
-	public void getAndProcessEmails() {
+	List<Email> getAndProcessEmails() {
 
 		try {
-			emailReaderClient.getEmail(emailReaderProperties.municipalityId(), emailReaderProperties.namespace())
-				.forEach(email ->
+			return emailReaderClient.getEmail(emailReaderProperties.municipalityId(), emailReaderProperties.namespace());
 
-				{
-					if (saveAndRemoteDelete(email)) {
-						deleteMail(email);
-					}
-				});
 		} catch (final Exception e) {
 			LOG.error("Error when fetching emails from EmailReader", e);
 		}
+		return emptyList();
 	}
 
-	private boolean saveAndRemoteDelete(final Email email) {
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean save(final Email email) {
 		try {
 			final var errandNumber = parseSubject(email.getSubject());
 
@@ -86,8 +84,12 @@ public class EmailReaderWorker {
 		}
 	}
 
-	private void deleteMail(final Email email) {
-		emailReaderClient.deleteEmail(emailReaderProperties.municipalityId(), email.getId());
+	void deleteMail(final Email email) {
+		try {
+			emailReaderClient.deleteEmail(emailReaderProperties.municipalityId(), email.getId());
+		} catch (final Exception e) {
+			LOG.error("Error when deleting email with ID: {}", email.getId(), e);
+		}
 	}
 
 }
