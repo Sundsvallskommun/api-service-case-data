@@ -6,7 +6,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotifica
 
 import generated.se.sundsvall.emailreader.Email;
 import java.util.List;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -70,11 +69,9 @@ public class EmailReaderWorker {
 			errandRepository.findByErrandNumber(errandNumber)
 				.filter(errand -> !messageRepository.existsById(email.getId()))
 				.ifPresent(errand -> {
-					Hibernate.initialize(errand.getStakeholders());
 					messageRepository.save(emailReaderMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace()).withErrandNumber(errandNumber));
 					notificationService.createNotification(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
-					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email, errand.getMunicipalityId(), errand.getNamespace()).stream()
-						.map(attachment -> attachment.withErrandNumber(errandNumber).withMunicipalityId(emailReaderProperties.municipalityId()))
+					attachmentRepository.saveAll(emailReaderMapper.toAttachments(email, errand.getMunicipalityId(), errand.getNamespace(), errandNumber).stream()
 						.toList());
 				});
 			return true;
