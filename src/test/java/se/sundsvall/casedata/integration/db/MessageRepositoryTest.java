@@ -23,7 +23,8 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 /**
  * MessageAttachmentRepository tests.
  *
- * @see /src/test/resources/db/testdata-junit.sql for data setup.
+ * @see <a href="/src/test/resources/db/testdata-junit.sql">/src/test/resources/db/testdata-junit.sql</a> for data
+ *      setup.
  */
 @DataJpaTest
 @Import(value = {
@@ -125,7 +126,6 @@ class MessageRepositoryTest {
 		// Arrange
 		final var direction = INBOUND;
 		final var email = "email";
-		final var errandNumber = "errandNumber";
 		final var externalCaseId = "externalCaseId";
 		final var familyId = "familyId";
 		final var firstName = "firstName";
@@ -143,7 +143,6 @@ class MessageRepositoryTest {
 		final var entity = MessageEntity.builder()
 			.withDirection(direction)
 			.withEmail(email)
-			.withErrandNumber(errandNumber)
 			.withExternalCaseId(externalCaseId)
 			.withFamilyId(familyId)
 			.withFirstName(firstName)
@@ -166,7 +165,6 @@ class MessageRepositoryTest {
 		assertThat(result.getMessageId()).isNotEmpty();
 		assertThat(result.getDirection()).isEqualTo(direction);
 		assertThat(result.getEmail()).isEqualTo(email);
-		assertThat(result.getErrandNumber()).isEqualTo(errandNumber);
 		assertThat(result.getExternalCaseId()).isEqualTo(externalCaseId);
 		assertThat(result.getFamilyId()).isEqualTo(familyId);
 		assertThat(result.getFirstName()).isEqualTo(firstName);

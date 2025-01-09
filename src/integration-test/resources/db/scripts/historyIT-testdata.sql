@@ -14,18 +14,18 @@ VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'my.namespace');
 
 INSERT INTO attachment (id, created, updated, version, category, extension, file, mime_type, name,
-                        note, errand_id, decision_id, errand_number, municipality_id, namespace)
+                        note, errand_id, decision_id, municipality_id, namespace)
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'MEDICAL_CONFIRMATION', '.pdf',
-        'FILE-1', 'application/pdf', 'test1.pdf', 'NOTE-1', 1, NULL, 'ERRAND-NUMBER-1', '2281',
+        'FILE-1', 'application/pdf', 'test1.pdf', 'NOTE-1', 1, NULL, '2281',
         'my.namespace'),
        (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'PASSPORT_PHOTO', '.pdf',
-        'FILE-2', 'application/pdf', 'test2.pdf', 'NOTE-2', 1, NULL, 'ERRAND-NUMBER-2', '2281',
+        'FILE-2', 'application/pdf', 'test2.pdf', 'NOTE-2', 1, NULL, '2281',
         'my.namespace'),
        (3, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'POLICE_REPORT', '.pdf',
-        'FILE-3', 'application/pdf', 'test3.pdf', 'NOTE-3', 2, NULL, 'ERRAND-NUMBER-2', '2281',
+        'FILE-3', 'application/pdf', 'test3.pdf', 'NOTE-3', 2, NULL, '2281',
         'my.namespace'),
        (4, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'ANSUPA', '.pdf', 'FILE-4',
-        'application/pdf', 'test4.pdf', 'NOTE-4', 2, NULL, 'ERRAND-NUMBER-2', '2281',
+        'application/pdf', 'test4.pdf', 'NOTE-4', 2, NULL, '2281',
         'my.namespace');
 
 INSERT INTO message_attachment_data (id, file)

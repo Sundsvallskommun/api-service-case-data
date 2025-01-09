@@ -28,7 +28,8 @@ import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 /**
  * AttachmentRepository tests.
  *
- * @see /src/test/resources/db/testdata-junit.sql for data setup.
+ * @see <a href="/src/test/resources/db/testdata-junit.sql">/src/test/resources/db/testdata-junit.sql</a> for data
+ *      setup.
  */
 @DataJpaTest
 @Import(value = {
