@@ -1,19 +1,16 @@
 openapi: 3.0.1
 info:
   title: pw-parking-permit
-  contact: { }
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "2.0"
-servers:
-  - url: https://pw-parking-permit-af-pwparkingpermit.apps.ocp201.sundsvall.se
-    description: Generated server url
+  version: "3.0"
 tags:
   - name: Camunda process endpoints
     description: Endpoints for starting and updating camunda processes
 paths:
-  /{municipalityId}/process/update/{processInstanceId}:
+  /{municipalityId}/{namespace}/process/update/{processInstanceId}:
     post:
       tags:
         - Camunda process endpoints
@@ -27,18 +24,20 @@ paths:
           schema:
             type: string
           example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: '[\w|\.|\-]+'
+            type: string
+          example: my.namespace
         - name: processInstanceId
           in: path
           required: true
           schema:
             type: string
       responses:
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "202":
           description: Accepted
         "400":
@@ -61,7 +60,13 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/process/start/{caseNumber}:
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/process/start/{caseNumber}:
     post:
       tags:
         - Camunda process endpoints
@@ -75,6 +80,14 @@ paths:
           schema:
             type: string
           example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: '[\w|\.|\-]+'
+            type: string
+          example: my.namespace
         - name: caseNumber
           in: path
           required: true
@@ -82,19 +95,10 @@ paths:
             type: integer
             format: int64
       responses:
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "202":
           description: Accepted
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/StartProcessResponse"
-            application/problem+json:
               schema:
                 $ref: "#/components/schemas/StartProcessResponse"
         "400":
@@ -117,22 +121,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /api-docs:
-    get:
-      tags:
-        - API
-      summary: OpenAPI
-      operationId: getApiDocs
-      responses:
-        "200":
-          description: OK
+        "502":
+          description: Bad Gateway
           content:
-            application/yaml:
+            application/problem+json:
               schema:
-                type: string
-      x-auth-type: None
-      x-throttling-tier: Unlimited
-      x-wso2-mutual-ssl: Optional
+                $ref: "#/components/schemas/Problem"
 components:
   schemas:
     Problem:
@@ -338,4 +332,4 @@ components:
           readOnly: true
           example: "5"
       description: Start process response
-  securitySchemes: { }
+  securitySchemes: {}
