@@ -28,7 +28,7 @@ public class EmailReaderMapper {
 		this.blobBuilder = blobBuilder;
 	}
 
-	List<AttachmentEntity> toAttachments(final Email email, final String municipalityId, final String namespace) {
+	List<AttachmentEntity> toAttachments(final Email email, final String municipalityId, final String namespace, final Long errandId) {
 		if (email == null) {
 			return List.of();
 		}
@@ -38,6 +38,7 @@ public class EmailReaderMapper {
 				.withFile(emailAttachment.getContent())
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
+				.withErrandId(errandId)
 				.withName(emailAttachment.getName())
 				.withMimeType(emailAttachment.getContentType())
 				.build())

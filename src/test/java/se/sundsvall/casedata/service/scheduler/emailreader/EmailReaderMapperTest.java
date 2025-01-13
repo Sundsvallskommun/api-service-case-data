@@ -47,9 +47,10 @@ class EmailReaderMapperTest {
 				.contentType("someContentType")));
 		final var namespace = "someNamespace";
 		final var municipalityId = "someMunicipalityId";
+		final var errandId = 666L;
 
 		// Act
-		final var result = emailReaderMapper.toAttachments(email, municipalityId, namespace);
+		final var result = emailReaderMapper.toAttachments(email, municipalityId, namespace, errandId);
 
 		// Assert
 		assertThat(result).isNotNull().hasSize(1)
@@ -59,12 +60,13 @@ class EmailReaderMapperTest {
 				assertThat(attachment.getMimeType()).isEqualTo("someContentType");
 				assertThat(attachment.getNamespace()).isEqualTo(namespace);
 				assertThat(attachment.getMunicipalityId()).isEqualTo(municipalityId);
+				assertThat(attachment.getErrandId()).isEqualTo(errandId);
 			});
 	}
 
 	@Test
 	void toAttachment_withNullEmail() {
-		assertThat(emailReaderMapper.toAttachments(null, null, null)).isEmpty();
+		assertThat(emailReaderMapper.toAttachments(null, null, null, null)).isEmpty();
 	}
 
 	@Test
@@ -80,8 +82,9 @@ class EmailReaderMapperTest {
 			.receivedAt(OffsetDateTime.now());
 		final var namespace = "someNamespace";
 		final var municipalityId = "someMunicipalityId";
+		final var errandId = 666L;
 		// Act
-		final var result = emailReaderMapper.toAttachments(email, namespace, municipalityId);
+		final var result = emailReaderMapper.toAttachments(email, namespace, municipalityId, errandId);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();

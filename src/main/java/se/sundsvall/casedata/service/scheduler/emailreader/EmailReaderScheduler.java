@@ -27,7 +27,12 @@ public class EmailReaderScheduler {
 			RequestId.init();
 
 			LOG.info("Getting and processing emails");
-			emailReaderWorker.getAndProcessEmails();
+			emailReaderWorker.getEmails()
+				.forEach(email -> {
+					if (emailReaderWorker.save(email)) {
+						emailReaderWorker.deleteMail(email);
+					}
+				});
 			LOG.info("Finished getting and processing emails");
 		} finally {
 			RequestId.reset();
