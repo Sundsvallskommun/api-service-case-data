@@ -30,10 +30,8 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
@@ -55,11 +53,9 @@ import se.sundsvall.casedata.integration.db.model.enums.Priority;
 		})
 	})
 @EntityListeners(ErrandListener.class)
-@Getter
-@Setter
+@Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-@EqualsAndHashCode
 @Builder(setterPrefix = "with")
 public class ErrandEntity {
 
@@ -143,14 +139,21 @@ public class ErrandEntity {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
 	@JsonManagedReference
-	private List<AppealEntity> appeals;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
-	@JsonManagedReference
 	private List<NoteEntity> notes;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
 	private List<NotificationEntity> notifications;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "errand_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_errand_related_errands_errand_id"))
+	private List<RelatedErrandEntity> relatesTo;
+
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "errand_labels",
+		joinColumns = @JoinColumn(name = "errand_id", foreignKey = @ForeignKey(name = "FK_errand_labels_errand_id")))
+	@OrderColumn(name = "value_order")
+	@Column(name = "value")
+	private List<String> labels;
 
 	// WSO2-client
 	@Column(name = "created_by_client")
@@ -195,15 +198,4 @@ public class ErrandEntity {
 	@OneToMany(mappedBy = "errand", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExtraParameterEntity> extraParameters;
 
-	@Override
-	public String toString() {
-		final String builder = "ErrandEntity [id=" + id + ", version=" + version + ", errandNumber=" + errandNumber + ", municipalityId=" + municipalityId + ", namespace=" + namespace
-			+ ", externalCaseId=" + externalCaseId + ", caseType=" + caseType + ", channel=" + channel + ", priority=" + priority + ", description=" + description + ", caseTitleAddition="
-			+ caseTitleAddition + ", diaryNumber=" + diaryNumber + ", phase=" + phase + ", statuses=" + statuses + ", startDate=" + startDate + ", endDate=" + endDate
-			+ ", applicationReceived=" + applicationReceived + ", processId=" + processId + ", stakeholders=" + stakeholders + ", facilities=" + facilities + ", decisions=" + decisions
-			+ ", appeals=" + appeals + ", notes=" + notes + ", notifications=" + notifications + ", createdByClient=" + createdByClient + ", updatedByClient=" + updatedByClient
-			+ ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + ", created=" + created + ", updated=" + updated + ", suspendedTo=" + suspendedTo + ", suspendedFrom="
-			+ suspendedFrom + ", extraParameters=" + extraParameters + "]";
-		return builder;
-	}
 }

@@ -1,0 +1,13 @@
+{
+	"note": "This is a note for test03",
+	"extension": ".pdf",
+	"file": "dGVzdDAz",
+	"name": "myfile03.pdf",
+	"extraParameters": {
+		"property2": "value2",
+		"property1": "value1",
+		"property3": "value3"
+	},
+	"mimeType": "application/pdf",
+	"category": "POLICE_REPORT"
+}

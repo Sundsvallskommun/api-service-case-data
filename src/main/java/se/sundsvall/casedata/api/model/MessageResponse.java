@@ -1,10 +1,11 @@
 package se.sundsvall.casedata.api.model;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static jakarta.persistence.EnumType.STRING;
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,33 +18,25 @@ import lombok.ToString;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 
-import java.util.List;
-
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
-
 @Data
-@Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@EqualsAndHashCode
+@Builder(setterPrefix = "with")
 public class MessageResponse {
 
 	@Schema(description = "The message ID", example = "12")
 	private String messageId;
 
-	@Schema(description = "The errand number", example = "PRH-2022-000001")
-	private String errandNumber;
+	@Schema(description = "The errand ID", example = "123")
+	private Long errandId;
 
 	@Schema(description = "The municipality ID", example = "2281")
-	@Size(max = 255)
 	private String municipalityId;
 
 	@Schema(description = "Namespace", example = "my.namespace")
-	@Size(max = 255)
 	private String namespace;
 
-	@Enumerated(EnumType.STRING)
+	@Enumerated(STRING)
 	@Schema(description = "If the message is inbound or outbound from the perspective of case-data/e-service.", example = "INBOUND")
 	private Direction direction;
 
@@ -77,6 +70,9 @@ public class MessageResponse {
 	@Schema(description = "The mobile number of the recipient", example = "+46701234567")
 	private String mobileNumber;
 
+	@Schema(description = "The recipients of the message, if email", example = "[\"kalle.anka@ankeborg.se\"]")
+	private List<String> recipients;
+
 	@Schema(description = "The email of the user that sent the message", example = "kalle.anka@ankeborg.se")
 	private String email;
 
@@ -104,17 +100,13 @@ public class MessageResponse {
 	@EqualsAndHashCode
 	public static class AttachmentResponse {
 
-		@NotBlank
 		@Schema(description = "The attachment ID", example = "aGVsbG8gd29ybGQK", requiredMode = REQUIRED)
 		private String attachmentId;
 
-		@NotBlank
 		@Schema(description = "The attachment filename", example = "test.txt", requiredMode = REQUIRED)
 		private String name;
 
 		@Schema(description = "The attachment content type", example = "text/plain")
 		private String contentType;
-
 	}
-
 }

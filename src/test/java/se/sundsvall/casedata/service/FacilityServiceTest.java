@@ -1,22 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.FacilityRepository;
-import se.sundsvall.casedata.integration.db.model.AddressEntity;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -25,13 +8,33 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createAddress;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.TestUtil.createExtraParameters;
 import static se.sundsvall.casedata.TestUtil.createFacility;
 import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.api.model.Facility;
+import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.FacilityRepository;
+import se.sundsvall.casedata.integration.db.model.AddressEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @ExtendWith(MockitoExtension.class)
 class FacilityServiceTest {
@@ -56,19 +59,29 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void createFacilityOnErrandTest() {
+	void create() {
 
 		// Arrange
 		final var errand = createErrandEntity();
 		final var errandId = errand.getId();
-		final var facility = createFacility();
+		final var facility = Facility.builder()
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withDescription("description")
+			.withExtraParameters(createExtraParameters())
+			.withAddress(createAddress(AddressCategory.VISITING_ADDRESS))
+			.withFacilityType(FacilityType.GARAGE.name())
+			.withFacilityCollectionName("facilityCollectionName")
+			.withMainFacility(true)
+			.build();
+
 		final var facilityEntity = toFacilityEntity(facility, MUNICIPALITY_ID, NAMESPACE);
 
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(facilityRepositoryMock.save(any())).thenReturn(facilityEntity);
 
 		// Act
-		final var result = facilityService.createFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facility);
+		final var result = facilityService.create(errandId, MUNICIPALITY_ID, NAMESPACE, facility);
 
 		// Assert
 		assertThat(result).isEqualTo(facility);
@@ -79,7 +92,7 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void findFacilityOnErrand() {
+	void findFacility() {
 
 		// Arrange
 		final var errandId = 123L;
@@ -88,7 +101,7 @@ class FacilityServiceTest {
 		when(facilityRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(facility));
 
 		// Act
-		final var result = facilityService.findFacilityOnErrand(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE);
+		final var result = facilityService.findFacility(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isEqualTo(toFacility(facility));
@@ -97,13 +110,13 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void findFacilitiesOnErrand() {
+	void findFacilities() {
 
 		// Arrange
 		final var errand = mockErrandFindByIdAndMunicipalityIdAndNamespace();
 
 		// Act
-		final var result = facilityService.findFacilitiesOnErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		final var result = facilityService.findFacilities(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(errand.getFacilities().stream().map(EntityMapper::toFacility).toList()).isEqualTo(result);
@@ -112,7 +125,7 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void replaceFacilitiesOnErrandTest() {
+	void replaceFacilities() {
 
 		// Arrange
 		final var errandId = 123L;
@@ -134,7 +147,7 @@ class FacilityServiceTest {
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
-		facilityService.replaceFacilitiesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilities);
+		facilityService.replaceFacilities(errandId, MUNICIPALITY_ID, NAMESPACE, facilities);
 
 		// Assert
 		assertThat(errand.getFacilities()).isNotEmpty().hasSize(3).allSatisfy(facility -> {
@@ -145,8 +158,6 @@ class FacilityServiceTest {
 			assertThat(facility.getExtraParameters()).isInstanceOf(HashMap.class).isNotNull();
 			assertThat(facility.getFacilityCollectionName()).isInstanceOf(String.class).isNotBlank();
 			assertThat(facility.getVersion()).isInstanceOf(Integer.class).isNotNull();
-			assertThat(facility.getCreated()).isInstanceOf(OffsetDateTime.class).isNotNull();
-			assertThat(facility.getUpdated()).isInstanceOf(OffsetDateTime.class).isNotNull();
 		});
 
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
@@ -155,7 +166,7 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void deleteFacilityOnErrand() {
+	void delete() {
 
 		// Arrange
 		final var errand = createErrandEntity();
@@ -166,7 +177,7 @@ class FacilityServiceTest {
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act
-		facilityService.deleteFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId);
+		facilityService.delete(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId);
 
 		// Assert
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
@@ -175,7 +186,7 @@ class FacilityServiceTest {
 	}
 
 	@Test
-	void updateFacilityOnErrand() {
+	void update() {
 
 		// Arrange
 		final var errand = createErrandEntity();
@@ -189,7 +200,7 @@ class FacilityServiceTest {
 		when(facilityRepositoryMock.save(facility)).thenReturn(facility);
 
 		// Act
-		final var result = facilityService.updateFacilityOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, patch);
+		final var result = facilityService.update(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, patch);
 
 		// Assert
 		assertThat(result).isNotNull().satisfies(f -> {
@@ -206,5 +217,4 @@ class FacilityServiceTest {
 		verify(facilityRepositoryMock).save(facility);
 		verify(processServiceMock).updateProcess(errand);
 	}
-
 }

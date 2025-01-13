@@ -12,10 +12,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +49,7 @@ class WebMessageCollectorSchedulerSchedlockTest {
 	void verifyShedLockForCleanSuspensions() {
 
 		// Make sure scheduling occurs multiple times
-		await().until(() -> mockCalledTime != null && LocalDateTime.now().isAfter(mockCalledTime.plusSeconds(2)));
+		await().until(() -> (mockCalledTime != null) && LocalDateTime.now().isAfter(mockCalledTime.plusSeconds(2)));
 
 		// Verify lock
 		await().atMost(5, SECONDS)
@@ -72,7 +70,7 @@ class WebMessageCollectorSchedulerSchedlockTest {
 
 	private LocalDateTime mapTimestamp(final ResultSet rs) throws SQLException {
 		if (rs.next()) {
-			return LocalDateTime.parse(rs.getString("locked_at"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+			return rs.getTimestamp("locked_at").toLocalDateTime();
 		}
 		return null;
 	}
@@ -82,7 +80,7 @@ class WebMessageCollectorSchedulerSchedlockTest {
 
 		@Bean
 		@Primary
-		public WebMessageCollectorWorker createMock() {
+		WebMessageCollectorWorker createMock() {
 
 			final var mockBean = Mockito.mock(WebMessageCollectorWorker.class);
 
@@ -96,7 +94,5 @@ class WebMessageCollectorSchedulerSchedlockTest {
 
 			return mockBean;
 		}
-
 	}
-
 }

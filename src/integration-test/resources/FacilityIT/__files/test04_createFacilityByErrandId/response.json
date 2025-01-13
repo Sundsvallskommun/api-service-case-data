@@ -1,35 +1,35 @@
 {
-  "id": 3,
-  "version": 1,
-  "municipalityId": "2281",
-  "namespace": "my.namespace",
-  "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-  "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-  "description": "En fritextbeskrivning av facility.",
-  "address": {
-    "addressCategory": "POSTAL_ADDRESS",
-    "street": "Testvägen",
-    "houseNumber": "18",
-    "postalCode": "123 45",
-    "city": "Sundsvall",
-    "country": "Sverige",
-    "careOf": "Test Testorsson",
-    "attention": "Test Testorsson",
-    "propertyDesignation": "SUNDSVALL LJUSTA 7:2",
-    "apartmentNumber": "LGH 1001",
-    "isZoningPlanArea": true,
-    "invoiceMarking": "string",
-    "location": {
-      "latitude": 62.390205,
-      "longitude": 17.306616
-    }
-  },
-  "facilityCollectionName": "Sundsvalls testfabrik",
-  "mainFacility": true,
-  "facilityType": "WORKSHOP_BUILDING",
-  "extraParameters": {
-    "additionalProp3": "string",
-    "additionalProp2": "string",
-    "additionalProp1": "string"
-  }
+	"municipalityId": "2281",
+	"address": {
+		"country": "Sverige",
+		"city": "Sundsvall",
+		"postalCode": "123 45",
+		"houseNumber": "18",
+		"isZoningPlanArea": true,
+		"addressCategory": "POSTAL_ADDRESS",
+		"invoiceMarking": "string",
+		"careOf": "Test Testorsson",
+		"street": "Testvägen",
+		"attention": "Test Testorsson",
+		"propertyDesignation": "SUNDSVALL LJUSTA 7:2",
+		"location": {
+			"latitude": 62.390205,
+			"longitude": 17.306616
+		},
+		"apartmentNumber": "LGH 1001"
+	},
+	"facilityType": "WORKSHOP_BUILDING",
+	"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+	"mainFacility": true,
+	"namespace": "my.namespace",
+	"description": "En fritextbeskrivning av facility.",
+	"extraParameters": {
+		"additionalProp1": "string",
+		"additionalProp3": "string",
+		"additionalProp2": "string"
+	},
+	"id": 3,
+	"facilityCollectionName": "Sundsvalls testfabrik",
+	"version": 0,
+	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
 }

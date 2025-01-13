@@ -21,7 +21,9 @@ import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.integration.db.model.EmailHeaderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 
-@SpringBootTest(classes = { Application.class }, webEnvironment = MOCK)
+@SpringBootTest(classes = {
+	Application.class
+}, webEnvironment = MOCK)
 @ActiveProfiles("junit")
 class EmailReaderMapperTest {
 
@@ -45,10 +47,10 @@ class EmailReaderMapperTest {
 				.contentType("someContentType")));
 		final var namespace = "someNamespace";
 		final var municipalityId = "someMunicipalityId";
-		final var errandNumber = "someErrandNumber";
+		final var errandId = 666L;
 
 		// Act
-		final var result = emailReaderMapper.toAttachments(email, municipalityId, namespace, errandNumber);
+		final var result = emailReaderMapper.toAttachments(email, municipalityId, namespace, errandId);
 
 		// Assert
 		assertThat(result).isNotNull().hasSize(1)
@@ -58,7 +60,7 @@ class EmailReaderMapperTest {
 				assertThat(attachment.getMimeType()).isEqualTo("someContentType");
 				assertThat(attachment.getNamespace()).isEqualTo(namespace);
 				assertThat(attachment.getMunicipalityId()).isEqualTo(municipalityId);
-				assertThat(attachment.getErrandNumber()).isEqualTo(errandNumber);
+				assertThat(attachment.getErrandId()).isEqualTo(errandId);
 			});
 	}
 
@@ -80,9 +82,9 @@ class EmailReaderMapperTest {
 			.receivedAt(OffsetDateTime.now());
 		final var namespace = "someNamespace";
 		final var municipalityId = "someMunicipalityId";
-		final var errandNumber = "someErrandNumber";
+		final var errandId = 666L;
 		// Act
-		final var result = emailReaderMapper.toAttachments(email, namespace, municipalityId, errandNumber);
+		final var result = emailReaderMapper.toAttachments(email, namespace, municipalityId, errandId);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -123,7 +125,8 @@ class EmailReaderMapperTest {
 				"textmessage",
 				"messageType",
 				"email",
-				"municipalityId")
+				"municipalityId",
+				"recipients")
 			.containsExactlyInAnyOrder(
 				email.getId(),
 				INBOUND,
@@ -131,7 +134,8 @@ class EmailReaderMapperTest {
 				"someMessage",
 				EMAIL.name(),
 				"someSender",
-				"someMunicipalityId");
+				"someMunicipalityId",
+				List.of("someRecipient"));
 
 		assertThat(result.getHeaders()).hasSize(3).containsExactlyInAnyOrder(
 			EmailHeaderEntity.builder()
@@ -197,7 +201,8 @@ class EmailReaderMapperTest {
 				"textmessage",
 				"messageType",
 				"email",
-				"municipalityId")
+				"municipalityId",
+				"recipients")
 			.containsExactlyInAnyOrder(
 				email.getId(),
 				INBOUND,
@@ -205,7 +210,8 @@ class EmailReaderMapperTest {
 				"someMessage",
 				EMAIL.name(),
 				"someSender",
-				"someMunicipalityId");
+				"someMunicipalityId",
+				List.of("someRecipient"));
 
 		assertThat(result.getSent())
 			.isEqualTo(email.getReceivedAt()

@@ -1,132 +1,133 @@
 {
-  "id": 1,
-  "version": 2,
-  "municipalityId": "2281",
-  "namespace": "my.namespace",
-  "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-  "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-  "errandNumber": "ERRAND-NUMBER-1",
-  "externalCaseId": "",
-  "caseType": "PARKING_PERMIT",
-  "priority": "MEDIUM",
-  "description": "",
-  "caseTitleAddition": "Nytt parkeringstillstånd",
-  "diaryNumber": "",
-  "phase": "Aktualisering",
-  "statuses": [],
-  "processId": "896a44d8-724b-11ed-a840-0242ac110002",
-  "stakeholders": [
-    {
-      "id": 1,
-      "version": 0,
-      "municipalityId": "2281",
-      "namespace": "my.namespace",
-      "created": "2022-12-02T15:13:45.363+01:00",
-      "updated": "2022-12-02T15:15:01.563+01:00",
-      "type": "PERSON",
-      "firstName": "FIRST-NAME-1",
-      "lastName": "LAST-NAME-1",
-      "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
-      "adAccount": "AD-1",
-      "roles": [],
-      "addresses": [],
-      "contactInformation": [],
-      "extraParameters": {}
-    }
-  ],
-  "facilities": [],
-  "decisions": [
-    {
-      "id": 1,
-      "version": 2,
-      "municipalityId": "2281",
-      "namespace": "my.namespace",
-      "created": "2024-01-01T12:00:00+01:00",
-      "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-      "decisionType": "FINAL",
-      "decisionOutcome": "DISMISSAL",
-      "description": "This is a put description",
-      "law": [
-        {
-          "heading": "this is a heading",
-          "sfs": "this is a sfs",
-          "chapter": "this is a chapter",
-          "article": "this is an article"
-        }
-      ],
-      "decidedBy": {
-        "id": 3,
-        "version": 2,
-        "municipalityId": "2281",
-        "namespace": "my.namespace",
-        "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-        "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-        "firstName": "John",
-        "lastName": "Doe",
-        "personId": "3ed5bc30-6308-4fd5-a5a7-78d7f96f4438",
-        "organizationName": "Test Organization",
-        "organizationNumber": "19901010-1234",
-        "authorizedSignatory": "Test Testorsson",
-        "adAccount": "AD-account",
-        "roles": [
-          "PAYMENT_PERSON"
-        ],
-        "addresses": [
-          {
-            "street": "test street",
-            "houseNumber": "18",
-            "postalCode": "123 45",
-            "city": "Test City",
-            "country": "Test Country",
-            "careOf": "Test CareOf",
-            "attention": "Test Attention",
-            "propertyDesignation": "Test PropertyDesignation",
-            "apartmentNumber": "LGH Test",
-            "invoiceMarking": "Test InvoiceMarking",
-            "location": {
-              "latitude": 1.0,
-              "longitude": 1.0
-            }
-          }
-        ],
-        "contactInformation": [
-          {
-            "contactType": "PHONE",
-            "value": "0701234567"
-          }
-        ],
-        "extraParameters": {}
-      },
-      "decidedAt": "2024-01-02T13:00:00+01:00",
-      "validFrom": "2024-01-01T13:00:00+01:00",
-      "validTo": "2025-01-02T13:00:00+01:00",
-      "attachments": [
-        {
-          "id": 1,
-          "version": 0,
-          "municipalityId": "2281",
-          "namespace": "my.namespace",
-          "created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-          "updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
-          "category": "FAPL",
-          "name": "Test name",
-          "note": "Test note",
-          "extension": "test extension",
-          "mimeType": "test mimeType",
-          "file": "test file",
-          "errandNumber": "test errandNumber",
-          "extraParameters": {}
-        }
-      ],
-      "extraParameters": {}
-    }
-  ],
-  "appeals": [],
-  "notes": [],
-  "suspension": {},
-  "createdByClient": "WSO2_test",
-  "updatedByClient": "WSO2_MS_caseManagement",
-  "createdBy": "UNKNOWN",
-  "updatedBy": "Hi my name is AD_USER",
-  "extraParameters": []
+	"municipalityId": "2281",
+	"externalCaseId": "",
+	"notes": [],
+	"errandNumber": "ERRAND-NUMBER-1",
+	"createdByClient": "WSO2_test",
+	"description": "",
+	"extraParameters": [],
+	"stakeholders": [
+		{
+			"lastName": "LAST-NAME-1",
+			"municipalityId": "2281",
+			"addresses": [],
+			"adAccount": "AD-1",
+			"created": "2022-12-02T15:13:45.363+01:00",
+			"roles": [],
+			"extraParameters": {},
+			"type": "PERSON",
+			"version": 0,
+			"firstName": "FIRST-NAME-1",
+			"contactInformation": [],
+			"namespace": "my.namespace",
+			"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
+			"id": 1,
+			"updated": "2022-12-02T15:15:01.563+01:00"
+		}
+	],
+	"caseType": "PARKING_PERMIT",
+	"diaryNumber": "",
+	"processId": "896a44d8-724b-11ed-a840-0242ac110002",
+	"caseTitleAddition": "Nytt parkeringstillstånd",
+	"decisions": [
+		{
+			"municipalityId": "2281",
+			"law": [
+				{
+					"sfs": "this is a sfs",
+					"chapter": "this is a chapter",
+					"heading": "this is a heading",
+					"article": "this is an article"
+				}
+			],
+			"attachments": [
+				{
+					"note": "Test note",
+					"municipalityId": "2281",
+					"extension": "test extension",
+					"errandId": 1,
+					"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+					"extraParameters": {},
+					"mimeType": "test mimeType",
+					"version": 0,
+					"file": "test file",
+					"namespace": "my.namespace",
+					"name": "Test name",
+					"id": 1,
+					"category": "FAPL",
+					"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
+				}
+			],
+			"created": "2024-01-01T12:00:00+01:00",
+			"description": "This is a put description",
+			"extraParameters": {},
+			"decidedBy": {
+				"lastName": "Doe",
+				"municipalityId": "2281",
+				"addresses": [
+					{
+						"country": "Test Country",
+						"invoiceMarking": "Test InvoiceMarking",
+						"careOf": "Test CareOf",
+						"city": "Test City",
+						"street": "test street",
+						"postalCode": "123 45",
+						"houseNumber": "18",
+						"attention": "Test Attention",
+						"propertyDesignation": "Test PropertyDesignation",
+						"location": {
+							"latitude": 1,
+							"longitude": 1
+						},
+						"apartmentNumber": "LGH Test"
+					}
+				],
+				"organizationName": "Test Organization",
+				"adAccount": "AD-account",
+				"organizationNumber": "19901010-1234",
+				"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+				"roles": [
+					"PAYMENT_PERSON"
+				],
+				"extraParameters": {},
+				"version": 1,
+				"firstName": "John",
+				"contactInformation": [
+					{
+						"contactType": "PHONE",
+						"value": "0701234567"
+					}
+				],
+				"authorizedSignatory": "Test Testorsson",
+				"namespace": "my.namespace",
+				"personId": "3ed5bc30-6308-4fd5-a5a7-78d7f96f4438",
+				"id": 3,
+				"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
+			},
+			"validFrom": "2024-01-01T13:00:00+01:00",
+			"version": 2,
+			"decidedAt": "2024-01-02T13:00:00+01:00",
+			"namespace": "my.namespace",
+			"decisionType": "FINAL",
+			"decisionOutcome": "DISMISSAL",
+			"id": 1,
+			"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+			"validTo": "2025-01-02T13:00:00+01:00"
+		}
+	],
+	"id": 1,
+	"relatesTo": [],
+	"suspension": {},
+	"phase": "Aktualisering",
+	"updatedBy": "Hi my name is AD_USER",
+	"updatedByClient": "WSO2_MS_caseManagement",
+	"created": "2022-12-02T15:13:45.363+01:00",
+	"priority": "MEDIUM",
+	"version": 2,
+	"labels": [],
+	"createdBy": "UNKNOWN",
+	"namespace": "my.namespace",
+	"statuses": [],
+	"facilities": [],
+	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
 }

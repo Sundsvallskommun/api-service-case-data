@@ -6,29 +6,25 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createAppeal;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
-import se.sundsvall.casedata.integration.db.model.enums.AppealStatus;
-import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
+import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.service.ErrandService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -37,7 +33,7 @@ class ErrandResourceFailureTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands";
 
-	@MockBean
+	@MockitoBean
 	private ErrandService errandServiceMock;
 
 	@Autowired
@@ -66,7 +62,9 @@ class ErrandResourceFailureTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"", " ", "invalid"})
+	@ValueSource(strings = {
+		"", " ", "invalid"
+	})
 	void postErrandWithInvalidFacilityType(final String facilityType) {
 		// Arrange
 		final var body = createErrandEntity();
@@ -91,7 +89,9 @@ class ErrandResourceFailureTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"", " ", "invalid"})
+	@ValueSource(strings = {
+		"", " ", "invalid"
+	})
 	void postFacilityWithInvalidFacilityType(final String facilityType) {
 		// Arrange
 		final var errandId = 123L;
@@ -114,7 +114,9 @@ class ErrandResourceFailureTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"", " ", "invalid"})
+	@ValueSource(strings = {
+		"", " ", "invalid"
+	})
 	void putFacilityWithInvalidFacilityType(final String facilityType) {
 		// Arrange
 		final var errandId = 123L;
@@ -140,16 +142,19 @@ class ErrandResourceFailureTest {
 	}
 
 	@Test
-	void postErrandWithInvalidAppeal() {
+	void postErrandWithDuplicateDecisionTypes() {
 		// Arrange
 		final var body = createErrand();
-		final var appeal = createAppeal();
-		appeal.setStatus("invalid");
-		appeal.setTimelinessReview("invalid");
-		body.setAppeals(List.of(appeal));
+		final var decision1 = Decision.builder()
+			.withDecisionType(DecisionType.FINAL)
+			.build();
+		final var decision2 = Decision.builder()
+			.withDecisionType(DecisionType.FINAL)
+			.build();
+		body.setDecisions(List.of(decision1, decision2));
 
 		// Act
-		var result = webTestClient.post()
+		final var result = webTestClient.post()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
@@ -160,38 +165,11 @@ class ErrandResourceFailureTest {
 			.getResponseBody();
 
 		// Assert
-		assertThat(result).isNotNull();
-		assertThat(result.getViolations()).hasSize(2)
-			.anyMatch(violation -> ("Invalid appeal status. Valid values are: " + Arrays.toString(AppealStatus.values())).equals(violation.getMessage()))
-			.anyMatch(violation -> ("Invalid timeliness review value. Valid values are: " + Arrays.toString(TimelinessReview.values())).equals(violation.getMessage()));
 		verifyNoInteractions(errandServiceMock);
-	}
-
-	@Test
-	void patchErrandWithInvalidAppeal() {
-		// Arrange
-		final var errandId = 123L;
-		final var body = createAppeal();
-		body.setStatus("invalid");
-		body.setTimelinessReview("invalid");
-
-		// Act
-		var result = webTestClient.patch()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/appeals").build(MUNICIPALITY_ID, NAMESPACE, errandId))
-			.contentType(APPLICATION_JSON)
-			.bodyValue(body)
-			.exchange()
-			.expectStatus().isBadRequest()
-			.expectBody(ConstraintViolationProblem.class)
-			.returnResult()
-			.getResponseBody();
-
-		// Assert
 		assertThat(result).isNotNull();
-		assertThat(result.getViolations()).hasSize(2)
-			.anyMatch(violation -> ("Invalid appeal status. Valid values are: " + Arrays.toString(AppealStatus.values())).equals(violation.getMessage()))
-			.anyMatch(violation -> ("Invalid timeliness review value. Valid values are: " + Arrays.toString(TimelinessReview.values())).equals(violation.getMessage()));
-		verifyNoInteractions(errandServiceMock);
+		assertThat(result.getViolations()).hasSize(1);
+		assertThat(result.getViolations().getFirst().getField()).isEqualTo("decisions");
+		assertThat(result.getViolations().getFirst().getMessage()).isEqualTo("Errand can contain one decision of each DecisionType");
 	}
 
 }

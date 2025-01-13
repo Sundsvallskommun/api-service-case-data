@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -16,13 +15,11 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.service.NotificationService;
-
 
 @ExtendWith(MockitoExtension.class)
 class SuspensionWorkerTest {
@@ -69,7 +66,7 @@ class SuspensionWorkerTest {
 
 		// Assert
 		verify(errandsRepositoryMock).findAllBySuspendedToBefore(any(OffsetDateTime.class));
-		verify(notificationServiceMock).createNotification(any(), any(), notificationCaptor.capture());
+		verify(notificationServiceMock).create(any(), any(), notificationCaptor.capture());
 
 		final var notification = notificationCaptor.getValue();
 		assertThat(notification).isNotNull();

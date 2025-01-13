@@ -14,11 +14,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 
@@ -38,7 +36,6 @@ class DecisionEntityTest {
 			hasValidBeanEqualsExcluding("errand"),
 			hasValidBeanToStringExcluding("errand")));
 	}
-
 
 	@Test
 	void builder() {

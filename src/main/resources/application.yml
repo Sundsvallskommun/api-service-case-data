@@ -3,7 +3,7 @@
 #========================================
 spring:
   application:
-    name: ms-case-data
+    name: api-service-case-data
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     password: ${config.datasource.password}
@@ -93,7 +93,7 @@ integration:
     base-url: ${config.employee.base-url}
     connectTimeout: 5
     readTimeout: 20
-    
+
 #----------------------------------------
 # Circuit breakers
 #----------------------------------------
@@ -104,7 +104,9 @@ resilience4j:
         ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
       landandexploitation:
         ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
-
+    configs:
+      default:
+        ignore-exceptions: org.springframework.data.mapping.PropertyReferenceException
   #----------------------------------------
   # Retry
   #----------------------------------------

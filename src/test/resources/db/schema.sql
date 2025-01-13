@@ -1,30 +1,13 @@
 
-    create table appeal (
-        version integer,
-        appeal_concern_communicated_at datetime(6),
-        created datetime(6),
-        decision_id bigint,
-        errand_id bigint,
-        id bigint not null auto_increment,
-        registered_at datetime(6),
-        updated datetime(6),
-        municipality_id varchar(255),
-        namespace varchar(255),
-        description text,
-        status varchar(255),
-        timeliness_review varchar(255),
-        primary key (id)
-    ) engine=InnoDB;
-
     create table attachment (
         version integer,
         created datetime(6),
         decision_id bigint,
+        errand_id bigint,
         id bigint not null auto_increment,
         updated datetime(6),
         note varchar(1000),
         category varchar(255),
-        errand_number varchar(255),
         extension varchar(255),
         mime_type varchar(255),
         municipality_id varchar(255),
@@ -132,6 +115,13 @@
         primary key (id)
     ) engine=InnoDB;
 
+    create table errand_labels (
+        value_order integer not null,
+        errand_id bigint not null,
+        value varchar(255),
+        primary key (value_order, errand_id)
+    ) engine=InnoDB;
+
     create table errand_statuses (
         status_order integer not null,
         date_time datetime(6),
@@ -179,6 +169,7 @@
 
     create table message (
         viewed bit not null,
+        errand_id bigint,
         email varchar(255),
         errand_number varchar(255),
         external_caseid varchar(255),
@@ -215,6 +206,11 @@
         id integer not null auto_increment,
         file longblob,
         primary key (id)
+    ) engine=InnoDB;
+
+    create table message_recipients (
+        message_id varchar(255) not null,
+        recipient_email varchar(255)
     ) engine=InnoDB;
 
     create table note (
@@ -256,6 +252,15 @@
         owner_full_name varchar(255),
         owner_id varchar(255),
         type varchar(255),
+        primary key (id)
+    ) engine=InnoDB;
+
+    create table related_errand (
+        errand_id bigint,
+        related_errand_id bigint,
+        id varchar(255) not null,
+        related_errand_number varchar(255),
+        relation_reason varchar(255),
         primary key (id)
     ) engine=InnoDB;
 
@@ -320,14 +325,11 @@
         primary key (role_order, stakeholder_id)
     ) engine=InnoDB;
 
-    create index idx_appeal_municipality_id 
-       on appeal (municipality_id);
-
-    create index idx_appeal_namespace 
-       on appeal (namespace);
-
     create index attachment_errand_number_idx 
        on attachment (errand_number);
+
+    create index idx_attachment_errand_id 
+       on attachment (errand_id);
 
     create index idx_attachment_municipality_id 
        on attachment (municipality_id);
@@ -365,6 +367,9 @@
     create index idx_message_namespace 
        on message (namespace);
 
+    create index idx_messsage_errand_id 
+       on message (errand_id);
+
     create index idx_message_attachment_municipality_id 
        on message_attachment (municipality_id);
 
@@ -394,16 +399,6 @@
 
     create index idx_stakeholder_namespace 
        on stakeholder (namespace);
-
-    alter table if exists appeal 
-       add constraint FK_appeal_decision_id 
-       foreign key (decision_id) 
-       references decision (id);
-
-    alter table if exists appeal 
-       add constraint FK_appeal_errand_id 
-       foreign key (errand_id) 
-       references errand (id);
 
     alter table if exists attachment 
        add constraint FK_decision_id 
@@ -455,6 +450,11 @@
        foreign key (errand_id) 
        references errand (id);
 
+    alter table if exists errand_labels 
+       add constraint FK_errand_labels_errand_id 
+       foreign key (errand_id) 
+       references errand (id);
+
     alter table if exists errand_statuses 
        add constraint FK_errand_statuses_errand_id 
        foreign key (errand_id) 
@@ -475,6 +475,11 @@
        foreign key (message_attachment_data_id) 
        references message_attachment_data (id);
 
+    alter table if exists message_recipients 
+       add constraint fk_message_recipients_message_id 
+       foreign key (message_id) 
+       references message (messageid);
+
     alter table if exists note 
        add constraint FK_note_errand_id 
        foreign key (errand_id) 
@@ -487,6 +492,11 @@
 
     alter table if exists notification 
        add constraint fk_notification_errand_id 
+       foreign key (errand_id) 
+       references errand (id);
+
+    alter table if exists related_errand 
+       add constraint FK_errand_related_errands_errand_id 
        foreign key (errand_id) 
        references errand (id);
 

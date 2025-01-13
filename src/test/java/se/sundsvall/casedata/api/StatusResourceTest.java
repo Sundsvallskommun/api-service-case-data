@@ -10,14 +10,12 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createStatus;
 
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.service.StatusService;
 
@@ -27,7 +25,7 @@ class StatusResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands/{errandId}/statuses";
 
-	@MockBean
+	@MockitoBean
 	private StatusService statusServiceMock;
 
 	@Autowired
@@ -49,7 +47,7 @@ class StatusResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(statusServiceMock).addStatusToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, status);
+		verify(statusServiceMock).addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, status);
 		verifyNoMoreInteractions(statusServiceMock);
 	}
 
@@ -69,7 +67,7 @@ class StatusResourceTest {
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(statusServiceMock).replaceStatusesOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, statusList);
+		verify(statusServiceMock).replaceOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, statusList);
 		verifyNoMoreInteractions(statusServiceMock);
 	}
 

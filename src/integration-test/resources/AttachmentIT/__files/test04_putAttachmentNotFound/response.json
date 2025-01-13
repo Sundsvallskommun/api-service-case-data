@@ -1,0 +1,5 @@
+{
+	"detail": "Attachment with id:'10' not found on errand with id:'1' in namespace:'my.namespace' for municipality with id:'2281'",
+	"title": "Not Found",
+	"status": 404
+}

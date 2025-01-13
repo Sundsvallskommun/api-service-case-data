@@ -1,44 +1,41 @@
 package se.sundsvall.casedata.api.model;
 
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-import se.sundsvall.casedata.api.model.validation.ValidFacilityType;
-import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
-
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.TimeZoneStorage;
+import se.sundsvall.casedata.api.model.validation.ValidFacilityType;
+import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 
 @Data
-@ToString
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(setterPrefix = "with")
 public class Facility {
 
-	@Schema(description = "The id of the facility", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
-	private long id;
+	@Schema(description = "The id of the facility", accessMode = READ_ONLY, example = "1")
+	private Long id;
 
-	@Schema(description = "The version of the facility", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
+	@Schema(description = "The version of the facility", accessMode = READ_ONLY, example = "1")
 	private int version;
 
-	@Schema(description = "The municipality ID", example = "2281", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "The municipality ID", example = "2281", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Namespace", example = "my.namespace", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "Namespace", example = "my.namespace", accessMode = READ_ONLY)
 	private String namespace;
 
-	@Schema(description = "Description of the facility", example = "En fritextbeskrivning av facility.")
+	@Schema(description = "Description of the facility", example = "En fritextbeskrivning av facility.", maxLength = 255)
 	@Size(max = 255)
 	private String description;
 
@@ -46,7 +43,7 @@ public class Facility {
 	@Schema(description = "The address of the facility")
 	private Address address;
 
-	@Schema(description = "The name on the sign", example = "Sundsvalls testfabrik")
+	@Schema(description = "The name on the sign", example = "Sundsvalls testfabrik", maxLength = 255)
 	@Size(max = 255)
 	private String facilityCollectionName;
 
@@ -58,11 +55,11 @@ public class Facility {
 	private String facilityType;
 
 	@Schema(description = "Date and time when the facility was created", accessMode = Schema.AccessMode.READ_ONLY, example = "2023-10-01T12:00:00Z")
-	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)
+	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime created;
 
 	@Schema(description = "Date and time when the facility was last updated", accessMode = Schema.AccessMode.READ_ONLY, example = "2023-10-02T12:00:00Z")
-	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)
+	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime updated;
 
 	@ValidMapValueSize(max = 8192)

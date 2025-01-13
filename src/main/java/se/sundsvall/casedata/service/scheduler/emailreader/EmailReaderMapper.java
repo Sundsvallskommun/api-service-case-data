@@ -28,7 +28,7 @@ public class EmailReaderMapper {
 		this.blobBuilder = blobBuilder;
 	}
 
-	List<AttachmentEntity> toAttachments(final Email email, final String municipalityId, final String namespace, final String errandNumber) {
+	List<AttachmentEntity> toAttachments(final Email email, final String municipalityId, final String namespace, final Long errandId) {
 		if (email == null) {
 			return List.of();
 		}
@@ -38,7 +38,7 @@ public class EmailReaderMapper {
 				.withFile(emailAttachment.getContent())
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
-				.withErrandNumber(errandNumber)
+				.withErrandId(errandId)
 				.withName(emailAttachment.getName())
 				.withMimeType(emailAttachment.getContentType())
 				.build())
@@ -56,6 +56,7 @@ public class EmailReaderMapper {
 			.withExternalCaseId("")
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
+			.withRecipients(email.getRecipients())
 			.withSubject(email.getSubject())
 			.withTextmessage(email.getMessage())
 			.withSent(email.getReceivedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))

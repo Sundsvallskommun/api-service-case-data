@@ -34,7 +34,7 @@ public class SuspensionWorker {
 		errandRepository
 			.findAllBySuspendedToBefore(now())
 			.forEach(entity -> notificationService
-				.createNotification(entity.getMunicipalityId(), entity.getNamespace(), createNotification(entity)));
+				.create(entity.getMunicipalityId(), entity.getNamespace(), createNotification(entity)));
 	}
 
 	private Notification createNotification(ErrandEntity errand) {

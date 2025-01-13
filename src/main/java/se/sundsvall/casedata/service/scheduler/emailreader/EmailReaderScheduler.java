@@ -28,8 +28,7 @@ public class EmailReaderScheduler {
 
 			LOG.info("Getting and processing emails");
 			emailReaderWorker.getEmails()
-				.forEach(email ->
-				{
+				.forEach(email -> {
 					if (emailReaderWorker.save(email)) {
 						emailReaderWorker.deleteMail(email);
 					}

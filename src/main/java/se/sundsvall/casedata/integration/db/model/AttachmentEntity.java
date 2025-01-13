@@ -2,10 +2,6 @@ package se.sundsvall.casedata.integration.db.model;
 
 import static org.hibernate.Length.LONG32;
 
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -20,13 +16,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.TimeZoneStorage;
-import org.hibernate.annotations.TimeZoneStorageType;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.javers.core.metamodel.annotation.DiffIgnore;
-
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -35,11 +27,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.With;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.TimeZoneStorage;
+import org.hibernate.annotations.TimeZoneStorageType;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.javers.core.metamodel.annotation.DiffIgnore;
 
 @Entity
 @Table(name = "attachment",
 	indexes = {
 		@Index(name = "attachment_errand_number_idx", columnList = "errand_number"),
+		@Index(name = "idx_attachment_errand_id", columnList = "errand_id"),
 		@Index(name = "idx_attachment_municipality_id", columnList = "municipality_id"),
 		@Index(name = "idx_attachment_namespace", columnList = "namespace")
 	})
@@ -82,8 +80,8 @@ public class AttachmentEntity {
 	private String file;
 
 	@With
-	@Column(name = "errand_number")
-	private String errandNumber;
+	@Column(name = "errand_id")
+	private Long errandId;
 
 	@With
 	@Column(name = "municipality_id")

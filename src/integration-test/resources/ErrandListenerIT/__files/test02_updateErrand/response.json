@@ -1,0 +1,33 @@
+{
+	"municipalityId": "2281",
+	"externalCaseId": "",
+	"notes": [],
+	"errandNumber": "PRH-2022-000030",
+	"createdByClient": "WSO2_test",
+	"description": "New description",
+	"extraParameters": [],
+	"stakeholders": [],
+	"caseType": "PARKING_PERMIT",
+	"diaryNumber": "Patch",
+	"processId": "896a44d8-724b-11ed-a840-0242ac110002",
+	"caseTitleAddition": "Nytt parkeringstillstånd",
+	"decisions": [],
+	"id": 2,
+	"relatesTo": [],
+	"suspension": {},
+	"phase": "Aktualisering",
+	"updatedBy": "PatchUser",
+	"created": "2022-12-02T15:13:45.363+01:00",
+	"updatedByClient": "WSO2_MS_caseManagement",
+	"priority": "HIGH",
+	"version": 2,
+	"labels": [
+		"updated-label-1",
+		"updated-label-2"
+	],
+	"createdBy": "UNKNOWN",
+	"namespace": "my.namespace",
+	"statuses": [],
+	"facilities": [],
+	"updated": "${json-unit.any-string}"
+}

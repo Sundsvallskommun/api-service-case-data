@@ -147,7 +147,7 @@ class EmailReaderWorkerTest {
 		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
 		verify(messageRepositoryMock).existsById(email.getId());
 		verify(messageRepositoryMock).save(any(MessageEntity.class));
-		verify(notificationServiceMock).createNotification(eq(municipalityId), eq(namespace), notificationCaptor.capture());
+		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), notificationCaptor.capture());
 		verify(attachmentRepositoryMock).saveAll(any());
 	}
 

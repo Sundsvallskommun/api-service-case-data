@@ -41,7 +41,6 @@ class CoordinatesEntityTest {
 		assertThat(bean.getLongitude()).isEqualTo(longitude);
 	}
 
-
 	@Test
 	void testNoDirtOnCreatedBean() {
 		assertThat(CoordinatesEntity.builder().build()).hasAllNullFieldsOrProperties();

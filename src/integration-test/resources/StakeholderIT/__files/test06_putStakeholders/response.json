@@ -1,40 +1,40 @@
 [
-  {
-    "id": 1,
-    "version": 1,
-    "municipalityId": "2281",
-    "namespace": "my.namespace",
-    "created": "${json-unit.any-string}",
-    "updated": "${json-unit.any-string}",
-    "type": "PERSON",
-    "firstName": "John",
-    "lastName": "Doe",
-    "personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
-    "adAccount": "AD-1",
-    "roles": [
-      "APPLICANT"
-    ],
-    "addresses": [],
-    "contactInformation": [],
-    "extraParameters": {}
-  },
-  {
-    "id": 2,
-    "version": 1,
-    "municipalityId": "2281",
-    "namespace": "my.namespace",
-    "created": "${json-unit.any-string}",
-    "updated": "${json-unit.any-string}",
-    "type": "PERSON",
-    "firstName": "Kalle",
-    "lastName": "Anka",
-    "personId": "d1af5f83-166a-468b-ab86-da8ca30ea97c",
-    "adAccount": "AD-2",
-    "roles": [
-      "APPLICANT"
-    ],
-    "addresses": [],
-    "contactInformation": [],
-    "extraParameters": {}
-  }
+	{
+		"lastName": "Doe",
+		"municipalityId": "2281",
+		"addresses": [],
+		"adAccount": "AD-1",
+		"created": "${json-unit.any-string}",
+		"roles": [
+			"APPLICANT"
+		],
+		"extraParameters": {},
+		"type": "PERSON",
+		"version": 1,
+		"firstName": "John",
+		"contactInformation": [],
+		"namespace": "my.namespace",
+		"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
+		"id": 4,
+		"updated": "${json-unit.any-string}"
+	},
+	{
+		"lastName": "Anka",
+		"municipalityId": "2281",
+		"addresses": [],
+		"adAccount": "AD-2",
+		"created": "${json-unit.any-string}",
+		"roles": [
+			"APPLICANT"
+		],
+		"extraParameters": {},
+		"type": "PERSON",
+		"version": 1,
+		"firstName": "Kalle",
+		"contactInformation": [],
+		"namespace": "my.namespace",
+		"personId": "d1af5f83-166a-468b-ab86-da8ca30ea97c",
+		"id": 5,
+		"updated": "${json-unit.any-string}"
+	}
 ]

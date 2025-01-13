@@ -1,16 +1,16 @@
 {
-	"type": "ORGANIZATION",
 	"firstName": "Patch John AB",
 	"lastName": "",
-	"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
+	"addresses": [],
+	"contactInformation": [],
 	"organizationName": "Patch John AB",
-	"organizationNumber": "112233-4455",
 	"adAccount": "Patch-Organization-AD",
+	"organizationNumber": "112233-4455",
 	"authorizedSignatory": "John Doe",
 	"roles": [
 		"PROPERTY_OWNER"
 	],
-	"addresses": [],
-	"contactInformation": [],
-	"extraParameters": {}
+	"extraParameters": {},
+	"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
+	"type": "ORGANIZATION"
 }

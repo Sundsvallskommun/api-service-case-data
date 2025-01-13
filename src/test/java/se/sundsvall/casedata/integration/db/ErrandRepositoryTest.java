@@ -14,7 +14,6 @@ import static se.sundsvall.casedata.integration.db.model.enums.NoteType.INTERNAL
 
 import java.time.OffsetDateTime;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -25,7 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
@@ -36,10 +34,13 @@ import se.sundsvall.casedata.integration.db.model.enums.Priority;
 /**
  * ErrandRepository tests.
  *
- * @see <a href="/src/test/resources/db/testdata-junit.sql">/src/test/resources/db/testdata-junit.sql</a> for data setup.
+ * @see <a href="/src/test/resources/db/testdata-junit.sql">/src/test/resources/db/testdata-junit.sql</a> for data
+ *      setup.
  */
 @DataJpaTest
-@Import(value = {JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class})
+@Import(value = {
+	JaversConfiguration.class, ErrandListener.class, IncomingRequestFilter.class
+})
 @Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
@@ -53,7 +54,7 @@ class ErrandRepositoryTest {
 	private ErrandRepository errandRepository;
 
 	@Test
-	void findAllByIdIn() {
+	void findAllByIdInAndMunicipalityIdAndNamespace() {
 
 		// Arrange
 		final var idList = List.of(2L, 3L);
@@ -72,7 +73,7 @@ class ErrandRepositoryTest {
 	}
 
 	@Test
-	void findAllByIdInNothingFound() {
+	void findAllByIdInAndMunicipalityIdAndNamespaceNothingFound() {
 
 		// Arrange
 		final var idList = List.of(666L, 777L);
@@ -80,35 +81,6 @@ class ErrandRepositoryTest {
 
 		// Act
 		final var result = errandRepository.findAllByIdInAndMunicipalityIdAndNamespace(idList, MUNICIPALITY_ID, NAMESPACE, pageRequest);
-
-		// Assert
-		assertThat(result).isNotNull().isEmpty();
-	}
-
-	@Test
-	void findAllByErrandNumberStartingWith() {
-
-		// Arrange
-		final var caseTypeAbbreviation = "PRH";
-
-		// Act
-		final var result = errandRepository.findAllByErrandNumberStartingWith(caseTypeAbbreviation);
-
-		// Assert
-		assertThat(result)
-			.isNotNull()
-			.extracting(ErrandEntity::getId, ErrandEntity::getErrandNumber, ErrandEntity::getCaseTitleAddition, ErrandEntity::getCaseType)
-			.containsExactly(tuple(3L, "PRH-2022-000029", "Nytt parkeringstillstånd", "PARKING_PERMIT"));
-	}
-
-	@Test
-	void findAllByErrandNumberStartingWithNothingFound() {
-
-		// Arrange
-		final var caseTypeAbbreviation = "NON-EXISTING";
-
-		// Act
-		final var result = errandRepository.findAllByErrandNumberStartingWith(caseTypeAbbreviation);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -164,7 +136,7 @@ class ErrandRepositoryTest {
 		final var errandNumber = "NON-EXISTING";
 
 		// Act
-		final var result = errandRepository.findByExternalCaseId(errandNumber);
+		final var result = errandRepository.findByErrandNumber(errandNumber);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
@@ -195,6 +167,7 @@ class ErrandRepositoryTest {
 		final var errandNumber = "errandNumber-123";
 		final var noteText = "noteText";
 		final var noteType = INTERNAL;
+		final var namespace = "SBK_PARKINGPERMIT";
 
 		final var entity = ErrandEntity.builder()
 			.withCaseTitleAddition(caseTitleAddition)
@@ -202,6 +175,8 @@ class ErrandRepositoryTest {
 			.withCreatedByClient(createdBy)
 			.withDescription(description)
 			.withErrandNumber(errandNumber)
+			.withNamespace(namespace)
+			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNotes(List.of(NoteEntity.builder().withText(noteText).withNoteType(noteType).build()))
 			.build();
 

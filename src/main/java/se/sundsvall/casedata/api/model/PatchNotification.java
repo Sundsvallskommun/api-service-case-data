@@ -1,27 +1,29 @@
 package se.sundsvall.casedata.api.model;
 
-import java.time.OffsetDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Builder(setterPrefix = "with")
 public class PatchNotification {
 
 	@ValidUuid
 	@Schema(description = "Unique identifier for the notification", example = "123e4567-e89b-12d3-a456-426614174000")
 	private String id;
+
+	@Schema(description = "The Errand Id", example = "123", accessMode = READ_ONLY)
+	private Long errandId;
 
 	@Schema(description = "Owner id of the notification", example = "AD01")
 	private String ownerId;
@@ -35,7 +37,7 @@ public class PatchNotification {
 	@Schema(description = "Content of the notification", example = "Some content of the notification")
 	private String content;
 
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	@DateTimeFormat(iso = DATE_TIME)
 	@Schema(description = "Timestamp when the notification expires", example = "2000-10-31T01:30:00.000+02:00")
 	private OffsetDateTime expires;
 
