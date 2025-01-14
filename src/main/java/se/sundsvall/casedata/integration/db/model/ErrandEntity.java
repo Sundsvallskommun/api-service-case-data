@@ -125,7 +125,7 @@ public class ErrandEntity {
 	@Column(name = "process_id")
 	private String processId;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "errand", fetch = FetchType.EAGER)
 	@JsonManagedReference
 	private List<StakeholderEntity> stakeholders;
 
@@ -197,4 +197,5 @@ public class ErrandEntity {
 
 	@OneToMany(mappedBy = "errand", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExtraParameterEntity> extraParameters;
+
 }

@@ -3,18 +3,17 @@ package se.sundsvall.casedata.service.scheduler.emailreader;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 
 import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -37,12 +36,6 @@ import se.sundsvall.casedata.service.NotificationService;
 class EmailReaderWorkerTest {
 
 	@Mock
-	private EmailReaderProperties emailReaderPropertiesMock;
-
-	@Mock
-	private NotificationService notificationServiceMock;
-
-	@Mock
 	private MessageRepository messageRepositoryMock;
 
 	@Mock
@@ -55,10 +48,13 @@ class EmailReaderWorkerTest {
 	private EmailReaderClient emailReaderClientMock;
 
 	@Mock
+	private EmailReaderProperties emailReaderPropertiesMock;
+
+	@Mock
 	private EmailReaderMapper emailReaderMapperMock;
 
 	@Mock
-	private MessageEntity messageMock;
+	private NotificationService notificationServiceMock;
 
 	@InjectMocks
 	private EmailReaderWorker emailReaderWorker;
@@ -66,19 +62,9 @@ class EmailReaderWorkerTest {
 	@Captor
 	private ArgumentCaptor<Notification> notificationCaptor;
 
-	@BeforeEach
-	void setUp() {
-		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
-		when(emailReaderPropertiesMock.namespace()).thenReturn("someNamespace");
-	}
-
 	@Test
-	void getAndProcessEmails() {
-
+	void getEmails() {
 		// Arrange
-		final var municipalityId = "someMunicipalityId";
-		final var namespace = "someNamespace";
-		final var errandId = 123L;
 		final var email = new Email()
 			.id("someId")
 			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
@@ -91,119 +77,223 @@ class EmailReaderWorkerTest {
 				.content("someContent")
 				.contentType("someContentType")));
 
-		final var stakeholder = StakeholderEntity.builder()
-			.withAdAccount("adminAdAccount")
-			.withRoles(List.of(ADMINISTRATOR.name())).build();
-
+		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
+		when(emailReaderPropertiesMock.namespace()).thenReturn("someNamespace");
 		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
 			.thenReturn(List.of(email));
 
-		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(ErrandEntity.builder().withId(errandId).withStakeholders(List.of(stakeholder)).withNamespace(namespace).withMunicipalityId(municipalityId).build()));
-
-		when(emailReaderMapperMock.toMessage(email, municipalityId, namespace)).thenReturn(messageMock);
-		when(messageRepositoryMock.existsById("someId")).thenReturn(false);
-
 		// Act
-		emailReaderWorker.getAndProcessEmails();
+		final var emails = emailReaderWorker.getEmails();
 
 		// Assert
+		assertThat(emails).containsExactly(email);
+		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
+	}
 
+	@Test
+	void getEmails_emptyList() {
+		// Arrange
+		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
+		when(emailReaderPropertiesMock.namespace()).thenReturn("someNamespace");
+		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
+			.thenReturn(Collections.emptyList());
+
+		// Act
+		final var emails = emailReaderWorker.getEmails();
+
+		// Assert
+		assertThat(emails).isEmpty();
+		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
+	}
+
+	@Test
+	void save() {
+		// Arrange
+		final var email = new Email()
+			.id("someId")
+			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.recipients(List.of("someRecipient"))
+			.sender("someSender")
+			.message("someMessage")
+			.receivedAt(OffsetDateTime.now())
+			.attachments(List.of(new EmailAttachment()
+				.name("someName")
+				.content("someContent")
+				.contentType("someContentType")));
+
+		final var errandNumber = "PRH-2022-01";
+		final var errandId = 123L;
+		final var municipalityId = "someMunicipalityId";
+		final var namespace = "someNamespace";
+		final var stakeholder = StakeholderEntity.builder()
+			.withAdAccount("adminAdAccount")
+			.withRoles(List.of("ADMINISTRATOR")).build();
+
+		when(errandRepositoryMock.findByErrandNumber(errandNumber))
+			.thenReturn(Optional.of(ErrandEntity.builder()
+				.withId(errandId)
+				.withStakeholders(List.of(stakeholder))
+				.withNamespace(namespace)
+				.withMunicipalityId(municipalityId)
+				.build()));
+		when(messageRepositoryMock.existsById(email.getId())).thenReturn(false);
+		when(emailReaderMapperMock.toMessage(email, municipalityId, namespace)).thenReturn(MessageEntity.builder().build());
+
+		// Act
+		final var result = emailReaderWorker.save(email);
+
+		// Assert
+		assertThat(result).isTrue();
+		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
+		verify(messageRepositoryMock).existsById(email.getId());
+		verify(messageRepositoryMock).save(any(MessageEntity.class));
 		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), notificationCaptor.capture());
-		assertThat(notificationCaptor.getValue()).satisfies(notification -> {
-			assertThat(notification.getErrandId()).isEqualTo(errandId);
-			assertThat(notification.getType()).isEqualTo("UPDATE");
-			assertThat(notification.getDescription()).isEqualTo("Meddelande mottaget");
-			assertThat(notification.getOwnerId()).isEqualTo("adminAdAccount");
-		});
-
-		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
-		verify(errandRepositoryMock).findByErrandNumber("PRH-2022-01");
-		verify(messageRepositoryMock).existsById("someId");
-		verify(emailReaderMapperMock).toMessage(email, municipalityId, namespace);
-		verify(emailReaderMapperMock).toAttachments(any(), eq(municipalityId), eq(namespace));
-		verify(messageRepositoryMock).save(any());
 		verify(attachmentRepositoryMock).saveAll(any());
-		verify(emailReaderClientMock).deleteEmail(municipalityId, "someId");
-		verifyNoMoreInteractions(emailReaderClientMock, messageRepositoryMock, attachmentRepositoryMock);
 	}
 
 	@Test
-	void getAndProcessEmailsSkipSave() {
+	void save_emailAlreadyExists() {
+		// Arrange
+		final var email = new Email()
+			.id("someId")
+			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.recipients(List.of("someRecipient"))
+			.sender("someSender")
+			.message("someMessage")
+			.receivedAt(OffsetDateTime.now())
+			.attachments(List.of(new EmailAttachment()
+				.name("someName")
+				.content("someContent")
+				.contentType("someContentType")));
 
-		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
-			.thenReturn(List.of(new Email()
-				.id("someId")
-				.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
-				.recipients(List.of("someRecipient"))
-				.sender("someSender")
-				.message("someMessage")
-				.receivedAt(OffsetDateTime.now())
-				.attachments(List.of(new EmailAttachment()
-					.name("someName")
-					.content("someContent")
-					.contentType("someContentType")))));
+		final var errandNumber = "PRH-2022-01";
+		final var errandId = 123L;
+		final var municipalityId = "someMunicipalityId";
+		final var namespace = "someNamespace";
+		final var stakeholder = StakeholderEntity.builder()
+			.withAdAccount("adminAdAccount")
+			.withRoles(List.of("ADMINISTRATOR")).build();
 
-		when(errandRepositoryMock.findByErrandNumber(any(String.class))).thenReturn(Optional.of(ErrandEntity.builder().build()));
-		when(messageRepositoryMock.existsById("someId")).thenReturn(true);
+		when(errandRepositoryMock.findByErrandNumber(errandNumber))
+			.thenReturn(Optional.of(ErrandEntity.builder()
+				.withId(errandId)
+				.withStakeholders(List.of(stakeholder))
+				.withNamespace(namespace)
+				.withMunicipalityId(municipalityId)
+				.build()));
+		when(messageRepositoryMock.existsById(email.getId())).thenReturn(true);
 
-		emailReaderWorker.getAndProcessEmails();
+		// Act
+		final var result = emailReaderWorker.save(email);
 
-		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
-		verify(errandRepositoryMock).findByErrandNumber("PRH-2022-01");
-		verify(messageRepositoryMock).existsById("someId");
+		// Assert
+		assertThat(result).isTrue();
+		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
+		verify(messageRepositoryMock).existsById(email.getId());
+		verifyNoMoreInteractions(messageRepositoryMock, notificationServiceMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void save_errandNotFound() {
+		// Arrange
+		final var email = new Email()
+			.id("someId")
+			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.recipients(List.of("someRecipient"))
+			.sender("someSender")
+			.message("someMessage")
+			.receivedAt(OffsetDateTime.now())
+			.attachments(List.of(new EmailAttachment()
+				.name("someName")
+				.content("someContent")
+				.contentType("someContentType")));
+		final var errandNumber = "PRH-2022-01";
+
+		when(errandRepositoryMock.findByErrandNumber(errandNumber))
+			.thenReturn(Optional.empty());
+
+		// Act
+		final var result = emailReaderWorker.save(email);
+
+		// Assert
+		assertThat(result).isTrue();
+		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
+		verifyNoMoreInteractions(messageRepositoryMock, notificationServiceMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void save_exceptionThrown() {
+		// Arrange
+		final var email = new Email()
+			.id("someId")
+			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.recipients(List.of("someRecipient"))
+			.sender("someSender")
+			.message("someMessage")
+			.receivedAt(OffsetDateTime.now())
+			.attachments(List.of(new EmailAttachment()
+				.name("someName")
+				.content("someContent")
+				.contentType("someContentType")));
+
+		final var errandNumber = "PRH-2022-01";
+
+		when(errandRepositoryMock.findByErrandNumber(errandNumber))
+			.thenThrow(new RuntimeException("Database error"));
+
+		// Act
+		final var result = emailReaderWorker.save(email);
+
+		// Assert
+		assertThat(result).isFalse();
+		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
+	}
+
+	@Test
+	void deleteMail() {
+		// Arrange
+		final var email = new Email()
+			.id("someId")
+			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.recipients(List.of("someRecipient"))
+			.sender("someSender")
+			.message("someMessage")
+			.receivedAt(OffsetDateTime.now())
+			.attachments(List.of(new EmailAttachment()
+				.name("someName")
+				.content("someContent")
+				.contentType("someContentType")));
+
+		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
+
+		// Act
+		emailReaderWorker.deleteMail(email);
+
+		// Assert
 		verify(emailReaderClientMock).deleteEmail("someMunicipalityId", "someId");
-		verifyNoInteractions(emailReaderMapperMock, attachmentRepositoryMock);
-		verifyNoMoreInteractions(emailReaderClientMock, messageRepositoryMock);
 	}
 
 	@Test
-	void getAndProcessEmailsFaultySubject() {
+	void deleteMail_exceptionThrown() {
+		// Arrange
+		final var email = new Email()
+			.id("someId")
+			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.recipients(List.of("someRecipient"))
+			.sender("someSender")
+			.message("someMessage")
+			.receivedAt(OffsetDateTime.now())
+			.attachments(List.of(new EmailAttachment()
+				.name("someName")
+				.content("someContent")
+				.contentType("someContentType")));
 
-		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
-			.thenReturn(List.of(new Email()
-				.id("someId")
-				.subject("im a faulty subject line")
-				.recipients(List.of("someRecipient"))
-				.sender("someSender")
-				.message("someMessage")
-				.receivedAt(OffsetDateTime.now())
-				.attachments(List.of(new EmailAttachment()
-					.name("someName")
-					.content("someContent")
-					.contentType("someContentType")))));
+		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
+		doThrow(new RuntimeException("Error when deleting email")).when(emailReaderClientMock).deleteEmail("someMunicipalityId", "someId");
+		// Act
+		emailReaderWorker.deleteMail(email);
 
-		emailReaderWorker.getAndProcessEmails();
-
-		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
+		// Assert
 		verify(emailReaderClientMock).deleteEmail("someMunicipalityId", "someId");
-		verifyNoMoreInteractions(emailReaderClientMock);
-		verifyNoInteractions(messageRepositoryMock, attachmentRepositoryMock);
 	}
-
-	@Test
-	void getAndProcessEmailsNoEmailsFound() {
-
-		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
-			.thenReturn(null);
-
-		emailReaderWorker.getAndProcessEmails();
-
-		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
-		verifyNoMoreInteractions(emailReaderClientMock);
-		verifyNoInteractions(messageRepositoryMock, attachmentRepositoryMock);
-
-	}
-
-	@Test
-	void getAndProcessEmailsClientThrowsException() {
-
-		when(emailReaderClientMock.getEmail(any(String.class), any(String.class)))
-			.thenThrow(new RuntimeException("some exception"));
-
-		emailReaderWorker.getAndProcessEmails();
-		verify(emailReaderClientMock).getEmail(any(String.class), any(String.class));
-		verifyNoMoreInteractions(emailReaderClientMock);
-		verifyNoInteractions(messageRepositoryMock, attachmentRepositoryMock);
-	}
-
 }
