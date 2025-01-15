@@ -28,7 +28,7 @@ public class ParkingPermitIntegration {
 
 	public StartProcessResponse startProcess(final ErrandEntity errand) {
 		try {
-			return parkingPermitClient.startProcess(errand.getMunicipalityId(), errand.getId());
+			return parkingPermitClient.startProcess(errand.getMunicipalityId(), errand.getNamespace(), errand.getId());
 		} catch (final AbstractThrowableProblem e) {
 			LOGGER.warn(COULD_NOT_START_PROCESS.formatted(errand.getCaseType(), errand.getId(), e));
 			throw Problem.valueOf(SERVICE_UNAVAILABLE, PROCESS_ENGINE_PROBLEM_DETAIL);
@@ -37,7 +37,7 @@ public class ParkingPermitIntegration {
 
 	public void updateProcess(final ErrandEntity errand) {
 		try {
-			parkingPermitClient.updateProcess(errand.getMunicipalityId(), errand.getProcessId());
+			parkingPermitClient.updateProcess(errand.getMunicipalityId(), errand.getNamespace(), errand.getProcessId());
 		} catch (final AbstractThrowableProblem e) {
 			LOGGER.warn(COULD_NOT_UPDATE_PROCESS.formatted(errand.getCaseType(), errand.getProcessId(), e));
 			throw Problem.valueOf(SERVICE_UNAVAILABLE, PROCESS_ENGINE_PROBLEM_DETAIL);

@@ -133,7 +133,7 @@ class ErrandIT extends AbstractAppTest {
 				EXCLUDE_FIELDS)
 			.isEqualTo(getErrand);
 
-		verify(1, postRequestedFor(urlEqualTo(format(PARKING_PERMIT_START_URL, municipalityId, id))));
+		verify(1, postRequestedFor(urlEqualTo(format(PARKING_PERMIT_START_URL, municipalityId, namespace, id))));
 	}
 
 	@ParameterizedTest
