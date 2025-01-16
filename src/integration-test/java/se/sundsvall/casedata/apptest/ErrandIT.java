@@ -97,7 +97,7 @@ class ErrandIT extends AbstractAppTest {
 		"note.*\\.updatedBy",
 		"appeal.*\\.decisionId"
 	};
-	final String namespace = "SBK_PARKINGPERMIT";
+	final String namespace = "SBK_PARKING_PERMIT";
 
 	@Autowired
 	private ErrandRepository errandRepository;

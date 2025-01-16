@@ -8,7 +8,7 @@
 			"updatedBy": "sRXYGByNYE",
 			"createdBy": "UNKNOWN",
 			"created": "${json-unit.any-string}",
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_PARKING_PERMIT",
 			"extraParameters": {
 				"test4": "test4",
 				"test2": "test2",
@@ -26,7 +26,7 @@
 			"updatedBy": "wZLYbWWWfF",
 			"createdBy": "UNKNOWN",
 			"created": "${json-unit.any-string}",
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_PARKING_PERMIT",
 			"extraParameters": {
 				"test4": "test4",
 				"test2": "test2",
@@ -44,7 +44,7 @@
 			"updatedBy": "UNKNOWN",
 			"createdBy": "UNKNOWN",
 			"created": "${json-unit.any-string}",
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_PARKING_PERMIT",
 			"extraParameters": {
 				"test4": "test4",
 				"test2": "test2",
@@ -135,7 +135,7 @@
 					"value": "0987654321"
 				}
 			],
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_PARKING_PERMIT",
 			"personId": "1262f329-e143-428d-9006-997459eb1552",
 			"id": 2,
 			"updated": "${json-unit.any-string}"
@@ -192,7 +192,7 @@
 				}
 			],
 			"authorizedSignatory": "Kalle Anka",
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_PARKING_PERMIT",
 			"id": 3,
 			"updated": "${json-unit.any-string}"
 		}
@@ -270,7 +270,7 @@
 						"value": "0987654321"
 					}
 				],
-				"namespace": "SBK_PARKINGPERMIT",
+				"namespace": "SBK_PARKING_PERMIT",
 				"personId": "4cf41b59-864c-4a47-a3b9-52940a93b498",
 				"id": 1,
 				"updated": "${json-unit.any-string}"
@@ -278,7 +278,7 @@
 			"validFrom": "2012-08-17T11:04:04.33+02:00",
 			"version": 0,
 			"decidedAt": "2002-12-14T10:04:04.33+01:00",
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_PARKING_PERMIT",
 			"decisionType": "FINAL",
 			"decisionOutcome": "CANCELLATION",
 			"id": 1,
@@ -297,7 +297,7 @@
 	"version": 2,
 	"labels": [],
 	"createdBy": "UNKNOWN",
-	"namespace": "SBK_PARKINGPERMIT",
+	"namespace": "SBK_PARKING_PERMIT",
 	"statuses": [
 		{
 			"dateTime": "2023-01-24T10:04:04.326+01:00",
@@ -315,7 +315,7 @@
 			"facilityType": "ONE_FAMILY_HOUSE",
 			"created": "${json-unit.any-string}",
 			"mainFacility": true,
-			"namespace": "SBK_PARKINGPERMIT",
+			"namespace": "SBK_PARKING_PERMIT",
 			"description": "Test facility",
 			"extraParameters": {},
 			"id": 1,

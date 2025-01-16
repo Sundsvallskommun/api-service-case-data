@@ -39,7 +39,7 @@ class ErrandListenerIT extends AbstractAppTest {
 
 	@Test
 	void test01_persistErrandUnknown() {
-		namespace = "SBK_PARKINGPERMIT";
+		namespace = "SBK_PARKING_PERMIT";
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(getPath())
@@ -79,7 +79,7 @@ class ErrandListenerIT extends AbstractAppTest {
 
 	@Test
 	void test03_generateErrandNumberForParkingPermit() {
-		namespace = "SBK_PARKINGPERMIT";
+		namespace = "SBK_PARKING_PERMIT";
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(getPath())
@@ -97,7 +97,7 @@ class ErrandListenerIT extends AbstractAppTest {
 
 	@Test
 	void test04_generateErrandNumberForLostParkingPermit() {
-		namespace = "SBK_PARKINGPERMIT";
+		namespace = "SBK_PARKING_PERMIT";
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(getPath())
