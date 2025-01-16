@@ -20,14 +20,16 @@ import se.sundsvall.casedata.integration.parkingpermit.configuration.ParkingPerm
 public interface ParkingPermitClient {
 
 	@Retry(name = CLIENT_ID)
-	@PostMapping(path = "/{municipalityId}/process/start/{errandId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/{municipalityId}/{namespace}/process/start/{errandId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	StartProcessResponse startProcess(
 		@PathVariable(name = "municipalityId") final String municipalityId,
+		@PathVariable(name = "namespace") final String namespace,
 		@PathVariable(name = "errandId") final Long errandId);
 
 	@Retry(name = CLIENT_ID)
-	@PostMapping(path = "/{municipalityId}/process/update/{processInstanceId}", consumes = APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/{municipalityId}/{namespace}/process/update/{processInstanceId}", consumes = APPLICATION_JSON_VALUE)
 	ResponseEntity<Void> updateProcess(
 		@PathVariable(name = "municipalityId") final String municipalityId,
+		@PathVariable(name = "namespace") final String namespace,
 		@PathVariable(name = "processInstanceId") final String processInstanceId);
 }
