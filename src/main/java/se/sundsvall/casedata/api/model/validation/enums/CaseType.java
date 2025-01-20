@@ -83,6 +83,6 @@ public enum CaseType {
 	}
 
 	public static List<CaseType> getParkingPermitCaseTypes() {
-		return List.copyOf(EnumSet.of(PARKING_PERMIT, PARKING_PERMIT_RENEWAL, LOST_PARKING_PERMIT));
+		return List.copyOf(EnumSet.of(PARKING_PERMIT, PARKING_PERMIT_RENEWAL, LOST_PARKING_PERMIT, APPEAL));
 	}
 }
