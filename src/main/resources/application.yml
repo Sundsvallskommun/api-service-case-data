@@ -148,16 +148,22 @@ turkraft:
 #----------------------------------------
 scheduler:
   message-collector:
-    fixedRate: PT10M
-    initialDelay: PT10M
-    shedlock-lock-at-most-for: PT10M
+    name: message-collector
+    cron: 0 */1 * * * *
+    shedlock-lock-at-most-for: PT2M
+    maximum-execution-time: PT1M
   emailreader:
-    fixedRate: PT1S
-    initialDelay: PT1S
-    shedlock-lock-at-most-for: PT10M
+    name: emailreader
+    cron: 0 */1 * * * *
+    shedlock-lock-at-most-for: PT2M
+    maximum-execution-time: PT1M
   suspension:
+    name: process_suspensions
     cron: 0 */15 * * * *
-    shedlock-lock-at-most-for: PT10M
+    shedlock-lock-at-most-for: PT4M
+    maximum-execution-time: PT2M
   notification:
+    name: process_notifications
     cron: 0 0 0 * * *
-    shedlock-lock-at-most-for: PT10M
+    shedlock-lock-at-most-for: PT4M
+    maximum-execution-time: PT2M

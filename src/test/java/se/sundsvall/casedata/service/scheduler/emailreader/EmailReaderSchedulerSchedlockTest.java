@@ -25,8 +25,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(properties = {
-	"scheduler.emailreader.initialDelay=PT0.5S", // Setup to execute every 500 milliseconds
-	"scheduler.emailreader.fixedRate=PT0.5S",
+	"scheduler.emailreader.cron=* * * * * *", // Setup to execute every second
 	"spring.flyway.enabled=true",
 	"scheduler.emailreader.enabled=true",
 	"spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",

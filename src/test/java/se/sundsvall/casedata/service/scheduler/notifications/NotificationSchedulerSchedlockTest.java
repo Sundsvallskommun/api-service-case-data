@@ -60,7 +60,7 @@ class NotificationSchedulerSchedlockTest {
 		verifyNoMoreInteractions(notificationWorkerMock);
 	}
 
-	private LocalDateTime getLockedAt(String name) {
+	private LocalDateTime getLockedAt(final String name) {
 		return jdbcTemplate.query("SELECT locked_at FROM shedlock WHERE name = :name", Map.of("name", name), this::mapTimestamp);
 	}
 
