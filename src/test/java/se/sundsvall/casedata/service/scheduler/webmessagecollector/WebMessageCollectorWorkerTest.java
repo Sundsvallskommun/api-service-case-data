@@ -191,7 +191,6 @@ class WebMessageCollectorWorkerTest {
 
 	private MessageEntity createMessage() {
 		return MessageEntity.builder()
-			.withErrandNumber("someErrandNumber")
 			.withDirection(INBOUND)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)

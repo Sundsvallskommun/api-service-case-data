@@ -171,7 +171,6 @@
         viewed bit not null,
         errand_id bigint,
         email varchar(255),
-        errand_number varchar(255),
         external_caseid varchar(255),
         familyid varchar(255),
         first_name varchar(255),
@@ -324,9 +323,6 @@
         roles varchar(255),
         primary key (role_order, stakeholder_id)
     ) engine=InnoDB;
-
-    create index attachment_errand_number_idx 
-       on attachment (errand_number);
 
     create index idx_attachment_errand_id 
        on attachment (errand_id);

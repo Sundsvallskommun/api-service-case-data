@@ -36,7 +36,6 @@ import org.javers.core.metamodel.annotation.DiffIgnore;
 @Entity
 @Table(name = "attachment",
 	indexes = {
-		@Index(name = "attachment_errand_number_idx", columnList = "errand_number"),
 		@Index(name = "idx_attachment_errand_id", columnList = "errand_id"),
 		@Index(name = "idx_attachment_municipality_id", columnList = "municipality_id"),
 		@Index(name = "idx_attachment_namespace", columnList = "namespace")
