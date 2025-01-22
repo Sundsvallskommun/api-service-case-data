@@ -18,13 +18,16 @@
 		<generated-sources-java-path>src/main/java</generated-sources-java-path>
 		<javers.version>7.7.0</javers.version>
 		<spring-filter.version>3.1.9</spring-filter.version>
-		<shedlock.version>6.2.0</shedlock.version>
 	</properties>
 	<dependencies>
 		<!-- Dept44-->
 		<dependency>
 			<groupId>se.sundsvall.dept44</groupId>
 			<artifactId>dept44-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>se.sundsvall.dept44</groupId>
+			<artifactId>dept44-starter-scheduler</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>se.sundsvall.dept44</groupId>
@@ -56,17 +59,6 @@
 			<groupId>org.javers</groupId>
 			<artifactId>javers-spring-boot-starter-sql</artifactId>
 			<version>${javers.version}</version>
-		</dependency>
-		<!--Other -->
-		<dependency>
-			<groupId>net.javacrumbs.shedlock</groupId>
-			<artifactId>shedlock-spring</artifactId>
-			<version>${shedlock.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>net.javacrumbs.shedlock</groupId>
-			<artifactId>shedlock-provider-jdbc-template</artifactId>
-			<version>${shedlock.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
