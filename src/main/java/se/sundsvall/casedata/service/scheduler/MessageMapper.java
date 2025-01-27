@@ -7,6 +7,7 @@ import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.sql.Blob;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Collections;
@@ -16,7 +17,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.EmailHeader;
-import se.sundsvall.casedata.api.model.MessageAttachment;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
@@ -177,22 +177,17 @@ public class MessageMapper {
 
 	public AttachmentEntity toAttachmentEntity(final MessageAttachmentEntity attachment) {
 
-		try {
-			String contentString = null;
-			if (attachment.getAttachmentData() != null) {
-				contentString = toContentString(attachment.getAttachmentData().getFile().getBinaryStream().readAllBytes());
-			}
+		final var contentString = Optional.ofNullable(attachment.getAttachmentData())
+			.map(data -> toContentString(data.getFile()))
+			.orElse(null);
 
-			return AttachmentEntity.builder()
-				.withMunicipalityId(attachment.getMunicipalityId())
-				.withNamespace(attachment.getNamespace())
-				.withFile(contentString)
-				.withName(attachment.getName())
-				.withMimeType(attachment.getContentType())
-				.build();
-		} catch (final Exception e) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
-		}
+		return AttachmentEntity.builder()
+			.withMunicipalityId(attachment.getMunicipalityId())
+			.withNamespace(attachment.getNamespace())
+			.withFile(contentString)
+			.withName(attachment.getName())
+			.withMimeType(attachment.getContentType())
+			.build();
 	}
 
 	public List<MessageAttachmentEntity> toAttachmentEntities(final List<MessageRequest.AttachmentRequest> attachmentRequests, final String messageID, final String municipalityId, final String namespace) {
@@ -233,27 +228,21 @@ public class MessageMapper {
 			.build();
 	}
 
-	public MessageAttachment toMessageAttachment(final MessageAttachmentEntity attachment) {
-		try {
-			return MessageAttachment.builder()
-				.withName(attachment.getName())
-				.withAttachmentId(attachment.getAttachmentId())
-				.withContent(new String(Base64.getEncoder().encode(attachment.getAttachmentData().getFile().getBinaryStream().readAllBytes()), UTF_8))
-				.withContentType(attachment.getContentType())
-				.build();
-		} catch (final Exception e) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
-		}
-	}
-
 	public MessageAttachmentDataEntity toMessageAttachmentData(final byte[] result) {
 		return MessageAttachmentDataEntity.builder()
 			.withFile(blobBuilder.createBlob(result))
 			.build();
 	}
 
-	public String toContentString(final byte[] result) {
+	public String toContentString(final Blob blob) {
+		try {
+			return toContentString(blob.getBinaryStream().readAllBytes());
+		} catch (final Exception e) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
+		}
+	}
 
+	public String toContentString(final byte[] result) {
 		return new String(Base64.getEncoder().encode(result), UTF_8);
 	}
 

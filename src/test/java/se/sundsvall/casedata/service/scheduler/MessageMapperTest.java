@@ -1,11 +1,8 @@
 package se.sundsvall.casedata.service.scheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
@@ -25,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.MessageRequest.AttachmentRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
@@ -181,43 +177,6 @@ class MessageMapperTest {
 	}
 
 	@Test
-	void testToAttachment() {
-
-		// Arrange
-		final var attachmentID = "attachmentID";
-		final var contentType = "contentType";
-		final var name = "name";
-		final var content = "content";
-		final var messageAttachment = MessageAttachmentEntity.builder()
-			.withAttachmentData(MessageAttachmentDataEntity.builder()
-				.withFile(new MariaDbBlob(content.getBytes()))
-				.build())
-			.withAttachmentId(attachmentID)
-			.withContentType(contentType)
-			.withName(name)
-			.build();
-
-		// Act
-		final var dto = messageMapper.toMessageAttachment(messageAttachment);
-
-		// Assert
-		assertThat(dto.getAttachmentId()).isEqualTo(attachmentID);
-		assertThat(dto.getContent()).isEqualTo(Base64.getEncoder().encodeToString(content.getBytes()));
-		assertThat(dto.getContentType()).isEqualTo(contentType);
-		assertThat(dto.getName()).isEqualTo(name);
-	}
-
-	@Test
-	void testToAttachmentWithException() {
-		// Arrange & Act
-		final var e = assertThrows(ThrowableProblem.class, () -> messageMapper.toMessageAttachment(null));
-
-		// Assert
-		assertThat(e.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR);
-		assertThat(e.getMessage()).isEqualTo("Internal Server Error: Failed to convert binary stream to base64 representation");
-	}
-
-	@Test
 	void testToAttachmentEntity() throws Exception {
 
 		// Arrange
@@ -354,23 +313,6 @@ class MessageMapperTest {
 		assertThat(result.getFile()).isEqualTo(Base64.getEncoder().encodeToString("content".getBytes()));
 		assertThat(result.getName()).isEqualTo("name");
 		assertThat(result.getMimeType()).isEqualTo("contentType");
-	}
-
-	@Test
-	void toAttachmentWhenAttachmentIsNull() {
-		// Arrange
-		final var attachment = MessageAttachmentEntity.builder()
-			.withAttachmentData(null)
-			.withAttachmentId("attachmentID")
-			.withContentType("contentType")
-			.withName("name")
-			.build();
-
-		// Act
-		assertThatThrownBy(() -> messageMapper.toMessageAttachment(attachment))
-			.isInstanceOf(ThrowableProblem.class)
-			.hasMessage("Internal Server Error: Failed to convert binary stream to base64 representation");
-
 	}
 
 	private boolean isValidUUID(final String uuid) {
