@@ -4,14 +4,19 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.UUID.randomUUID;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 
+import generated.se.sundsvall.emailreader.Email;
+import generated.se.sundsvall.emailreader.EmailAttachment;
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.sql.Blob;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.EmailHeader;
-import se.sundsvall.casedata.api.model.MessageAttachment;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
@@ -21,6 +26,7 @@ import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
+import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.casedata.service.util.BlobBuilder;
 
 @Component
@@ -157,18 +163,31 @@ public class MessageMapper {
 			.build();
 	}
 
+	public MessageAttachmentEntity toAttachmentEntity(final EmailAttachment attachment, final String messageId, final String municipalityId, final String namespace) {
+
+		return MessageAttachmentEntity.builder()
+			.withAttachmentId(String.valueOf(attachment.getId()))
+			.withMessageID(messageId)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.withName(attachment.getName())
+			.withContentType(attachment.getContentType())
+			.build();
+	}
+
 	public AttachmentEntity toAttachmentEntity(final MessageAttachmentEntity attachment) {
-		try {
-			return AttachmentEntity.builder()
-				.withMunicipalityId(attachment.getMunicipalityId())
-				.withNamespace(attachment.getNamespace())
-				.withFile(Base64.getEncoder().encodeToString(attachment.getAttachmentData().getFile().getBinaryStream().readAllBytes()))
-				.withName(attachment.getName())
-				.withMimeType(attachment.getContentType())
-				.build();
-		} catch (final Exception e) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
-		}
+
+		final var contentString = Optional.ofNullable(attachment.getAttachmentData())
+			.map(data -> toContentString(data.getFile()))
+			.orElse(null);
+
+		return AttachmentEntity.builder()
+			.withMunicipalityId(attachment.getMunicipalityId())
+			.withNamespace(attachment.getNamespace())
+			.withFile(contentString)
+			.withName(attachment.getName())
+			.withMimeType(attachment.getContentType())
+			.build();
 	}
 
 	public List<MessageAttachmentEntity> toAttachmentEntities(final List<MessageRequest.AttachmentRequest> attachmentRequests, final String messageID, final String municipalityId, final String namespace) {
@@ -209,23 +228,53 @@ public class MessageMapper {
 			.build();
 	}
 
-	public MessageAttachment toMessageAttachment(final MessageAttachmentEntity attachment) {
+	public MessageAttachmentDataEntity toMessageAttachmentData(final byte[] result) {
+		return MessageAttachmentDataEntity.builder()
+			.withFile(blobBuilder.createBlob(result))
+			.build();
+	}
+
+	public String toContentString(final Blob blob) {
 		try {
-			return MessageAttachment.builder()
-				.withName(attachment.getName())
-				.withAttachmentId(attachment.getAttachmentId())
-				.withContent(new String(Base64.getEncoder().encode(attachment.getAttachmentData().getFile().getBinaryStream().readAllBytes()), UTF_8))
-				.withContentType(attachment.getContentType())
-				.build();
+			return toContentString(blob.getBinaryStream().readAllBytes());
 		} catch (final Exception e) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
 		}
 	}
 
-	public MessageAttachmentDataEntity toMessageAttachmentData(final byte[] result) {
-		return MessageAttachmentDataEntity.builder()
-			.withFile(blobBuilder.createBlob(result))
+	public String toContentString(final byte[] result) {
+		return new String(Base64.getEncoder().encode(result), UTF_8);
+	}
+
+	public MessageEntity toMessage(final Email email, final String municipalityId, final String namespace, final Long errandId) {
+		if (email == null) {
+			return null;
+		}
+		return MessageEntity.builder()
+			.withErrandId(errandId)
+			.withMessageId(email.getId())
+			.withDirection(Direction.INBOUND)
+			.withFamilyId("")
+			.withExternalCaseId("")
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.withRecipients(email.getRecipients())
+			.withSubject(email.getSubject())
+			.withTextmessage(email.getMessage())
+			.withSent(email.getReceivedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+			.withMessageType(MessageType.EMAIL.name())
+			.withEmail(email.getSender())
+			.withHeaders(toEmailHeaders(email.getHeaders()))
 			.build();
+	}
+
+	private List<EmailHeaderEntity> toEmailHeaders(final Map<String, List<String>> headers) {
+		return Optional.ofNullable(headers).orElse(Collections.emptyMap()).entrySet().stream()
+			.map(entry -> EmailHeaderEntity.builder()
+				.withHeader(Header.valueOf(entry.getKey()))
+				.withValues(entry.getValue())
+				.build())
+			.toList();
 	}
 
 }
