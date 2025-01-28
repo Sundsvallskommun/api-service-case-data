@@ -55,6 +55,15 @@ public enum StakeholderRole {
 	// Företag
 	ORGANIZATION,
 	// Rättighetshavare
-	RIGHTS_HOLDER
-
+	RIGHTS_HOLDER,
+	// Avdelningschef
+	DEPARTMENT_HEAD,
+	// Exploatör
+	DEVELOPER,
+	// Sektionschef
+	SECTION_HEAD,
+	// Suppleant
+	ALTERNATE,
+	// Sekreterare
+	SECRETARY
 }
