@@ -18,7 +18,6 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.D
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.DRIVER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.FELLOW_APPLICANT;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.GRANTOR;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.INVOICE_RECIPENT;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.INVOICE_RECIPIENT;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.LAND_RIGHT_OWNER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.LEASEHOLDER;
@@ -42,7 +41,7 @@ class StakeholderRoleTest {
 	@Test
 	void enumValues() {
 
-		assertThat(values()).hasSize(32);
+		assertThat(values()).hasSize(31);
 
 		assertThat(values()).containsExactlyInAnyOrder(
 			CONTROL_OFFICIAL,
@@ -50,7 +49,6 @@ class StakeholderRoleTest {
 			PROPERTY_OWNER,
 			PAYMENT_PERSON,
 			INVOICE_RECIPIENT,
-			INVOICE_RECIPENT,
 			OPERATOR,
 			CONTACT_PERSON,
 			ADMINISTRATOR,

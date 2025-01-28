@@ -11,9 +11,6 @@ public enum StakeholderRole {
 	PAYMENT_PERSON,
 	// "Fakturamottagare"
 	INVOICE_RECIPIENT,
-	// "Fakturamottagare" Remove when Open-E platform is ready
-	@Deprecated(since = "2024-02-27")
-	INVOICE_RECIPENT,
 	// "Verksamhetsutövare"
 	OPERATOR,
 	// "KPER"
