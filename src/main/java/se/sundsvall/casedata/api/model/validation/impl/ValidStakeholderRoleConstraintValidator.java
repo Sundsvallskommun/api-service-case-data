@@ -18,7 +18,7 @@ public class ValidStakeholderRoleConstraintValidator implements ConstraintValida
 	public boolean isValid(final List<String> value, final ConstraintValidatorContext context) {
 		if ((value == null) || value.isEmpty()) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate("Stakeholder role cannot be null or empty. Valid roles are: " + Arrays.toString(Arrays.stream(StakeholderRole.values()).filter(role -> !StakeholderRole.INVOICE_RECIPENT.equals(role)).toArray()))
+			context.buildConstraintViolationWithTemplate("Stakeholder role cannot be null or empty. Valid roles are: " + Arrays.toString(Arrays.stream(StakeholderRole.values()).toArray()))
 				.addConstraintViolation();
 			return false;
 		}
@@ -26,7 +26,7 @@ public class ValidStakeholderRoleConstraintValidator implements ConstraintValida
 		final boolean isValid = value.stream().allMatch(role -> Arrays.stream(StakeholderRole.values()).anyMatch(stakeholderRole -> stakeholderRole.name().equals(role)));
 		if (!isValid) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate("Invalid stakeholder role. Valid roles are: " + Arrays.toString(Arrays.stream(StakeholderRole.values()).filter(role -> !StakeholderRole.INVOICE_RECIPENT.equals(role)).toArray()))
+			context.buildConstraintViolationWithTemplate("Invalid stakeholder role. Valid roles are: " + Arrays.toString(Arrays.stream(StakeholderRole.values()).toArray()))
 				.addConstraintViolation();
 		}
 		return isValid;
