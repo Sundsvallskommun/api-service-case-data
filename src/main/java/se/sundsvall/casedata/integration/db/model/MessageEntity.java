@@ -48,10 +48,6 @@ public class MessageEntity {
 	private String messageId;
 
 	@With
-	@Column(name = "errand_number")
-	private String errandNumber;
-
-	@With
 	@Column(name = "errand_id")
 	private Long errandId;
 

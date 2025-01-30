@@ -34,7 +34,6 @@ class MessageEntityTest {
 		final var attachments = List.of(MessageAttachmentEntity.builder().build());
 		final var direction = Direction.OUTBOUND;
 		final var email = "email";
-		final var errandNumber = "errandNumber";
 		final var errandId = 123L;
 		final var externalCaseId = "externalCaseID";
 		final var familyId = "familyID";
@@ -63,7 +62,6 @@ class MessageEntityTest {
 			.withAttachments(attachments)
 			.withDirection(direction)
 			.withEmail(email)
-			.withErrandNumber(errandNumber)
 			.withErrandId(errandId)
 			.withExternalCaseId(externalCaseId)
 			.withFamilyId(familyId)
@@ -92,7 +90,6 @@ class MessageEntityTest {
 		assertThat(bean.getNamespace()).isEqualTo(namespace);
 		assertThat(bean.getDirection()).isEqualTo(direction);
 		assertThat(bean.getEmail()).isEqualTo(email);
-		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
 		assertThat(bean.getErrandId()).isEqualTo(errandId);
 		assertThat(bean.getExternalCaseId()).isEqualTo(externalCaseId);
 		assertThat(bean.getFamilyId()).isEqualTo(familyId);
