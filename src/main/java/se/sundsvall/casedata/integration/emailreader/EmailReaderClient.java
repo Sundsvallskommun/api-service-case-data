@@ -21,6 +21,9 @@ public interface EmailReaderClient {
 	@GetMapping("/{municipalityId}/email/{namespace}")
 	List<Email> getEmail(@PathVariable("municipalityId") final String municipalityId, @PathVariable("namespace") final String namespace);
 
+	@GetMapping("/{municipalityId}/email/attachments/{attachmentId}")
+	byte[] getAttachment(@PathVariable("municipalityId") final String municipalityId, @PathVariable("attachmentId") final Long attachmentId);
+
 	@DeleteMapping("/{municipalityId}/email/{id}")
 	void deleteEmail(@PathVariable("municipalityId") final String municipalityId, @PathVariable("id") final String id);
 }

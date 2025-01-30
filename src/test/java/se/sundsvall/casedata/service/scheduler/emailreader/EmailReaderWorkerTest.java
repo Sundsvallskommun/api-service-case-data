@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -24,13 +25,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
+import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
 import se.sundsvall.casedata.service.NotificationService;
+import se.sundsvall.casedata.service.scheduler.MessageMapper;
+import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
 
 @ExtendWith(MockitoExtension.class)
 class EmailReaderWorkerTest {
@@ -51,7 +58,13 @@ class EmailReaderWorkerTest {
 	private EmailReaderProperties emailReaderPropertiesMock;
 
 	@Mock
-	private EmailReaderMapper emailReaderMapperMock;
+	private MessageMapper messageMapperMock;
+
+	@Mock
+	private MessageAttachmentRepository messageAttachmentRepositoryMock;
+
+	@Mock
+	private Dept44HealthUtility dept44HealthUtilityMock;
 
 	@Mock
 	private NotificationService notificationServiceMock;
@@ -74,7 +87,6 @@ class EmailReaderWorkerTest {
 			.receivedAt(OffsetDateTime.now())
 			.attachments(List.of(new EmailAttachment()
 				.name("someName")
-				.content("someContent")
 				.contentType("someContentType")));
 
 		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
@@ -109,17 +121,19 @@ class EmailReaderWorkerTest {
 	@Test
 	void save() {
 		// Arrange
+		final var messageId = 12L;
+		final var emailAttachment = new EmailAttachment()
+			.name("someName")
+			.contentType("someContentType");
+
 		final var email = new Email()
-			.id("someId")
+			.id(String.valueOf(messageId))
 			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
 			.recipients(List.of("someRecipient"))
 			.sender("someSender")
 			.message("someMessage")
 			.receivedAt(OffsetDateTime.now())
-			.attachments(List.of(new EmailAttachment()
-				.name("someName")
-				.content("someContent")
-				.contentType("someContentType")));
+			.attachments(List.of(emailAttachment));
 
 		final var errandNumber = "PRH-2022-01";
 		final var errandId = 123L;
@@ -129,6 +143,9 @@ class EmailReaderWorkerTest {
 			.withAdAccount("adminAdAccount")
 			.withRoles(List.of("ADMINISTRATOR")).build();
 
+		final var messageAttachmentEntity = MessageAttachmentEntity.builder().build();
+		final var attachmentEntity = AttachmentEntity.builder().build();
+
 		when(errandRepositoryMock.findByErrandNumber(errandNumber))
 			.thenReturn(Optional.of(ErrandEntity.builder()
 				.withId(errandId)
@@ -137,7 +154,10 @@ class EmailReaderWorkerTest {
 				.withMunicipalityId(municipalityId)
 				.build()));
 		when(messageRepositoryMock.existsById(email.getId())).thenReturn(false);
-		when(emailReaderMapperMock.toMessage(email, municipalityId, namespace)).thenReturn(MessageEntity.builder().build());
+		when(messageMapperMock.toMessage(email, municipalityId, namespace, errandId)).thenReturn(MessageEntity.builder().build());
+
+		when(messageMapperMock.toAttachmentEntity(any(EmailAttachment.class), any(), any(), any())).thenReturn(messageAttachmentEntity);
+		when(messageMapperMock.toAttachmentEntity(any())).thenReturn(attachmentEntity);
 
 		// Act
 		final var result = emailReaderWorker.save(email);
@@ -148,7 +168,11 @@ class EmailReaderWorkerTest {
 		verify(messageRepositoryMock).existsById(email.getId());
 		verify(messageRepositoryMock).save(any(MessageEntity.class));
 		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), notificationCaptor.capture());
-		verify(attachmentRepositoryMock).saveAll(any());
+		verify(messageAttachmentRepositoryMock).save(any());
+		verify(messageAttachmentRepositoryMock).saveAndFlush(any());
+		verify(attachmentRepositoryMock).save(any());
+		verify(attachmentRepositoryMock).saveAndFlush(any());
+		verifyNoMoreInteractions(errandRepositoryMock, messageRepositoryMock, notificationServiceMock, attachmentRepositoryMock, messageAttachmentRepositoryMock, dept44HealthUtilityMock);
 	}
 
 	@Test
@@ -163,7 +187,6 @@ class EmailReaderWorkerTest {
 			.receivedAt(OffsetDateTime.now())
 			.attachments(List.of(new EmailAttachment()
 				.name("someName")
-				.content("someContent")
 				.contentType("someContentType")));
 
 		final var errandNumber = "PRH-2022-01";
@@ -191,6 +214,8 @@ class EmailReaderWorkerTest {
 		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
 		verify(messageRepositoryMock).existsById(email.getId());
 		verifyNoMoreInteractions(messageRepositoryMock, notificationServiceMock, attachmentRepositoryMock);
+		verifyNoInteractions(dept44HealthUtilityMock);
+
 	}
 
 	@Test
@@ -205,7 +230,6 @@ class EmailReaderWorkerTest {
 			.receivedAt(OffsetDateTime.now())
 			.attachments(List.of(new EmailAttachment()
 				.name("someName")
-				.content("someContent")
 				.contentType("someContentType")));
 		final var errandNumber = "PRH-2022-01";
 
@@ -219,6 +243,8 @@ class EmailReaderWorkerTest {
 		assertThat(result).isTrue();
 		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
 		verifyNoMoreInteractions(messageRepositoryMock, notificationServiceMock, attachmentRepositoryMock);
+		verifyNoInteractions(dept44HealthUtilityMock);
+
 	}
 
 	@Test
@@ -233,7 +259,6 @@ class EmailReaderWorkerTest {
 			.receivedAt(OffsetDateTime.now())
 			.attachments(List.of(new EmailAttachment()
 				.name("someName")
-				.content("someContent")
 				.contentType("someContentType")));
 
 		final var errandNumber = "PRH-2022-01";
@@ -247,6 +272,10 @@ class EmailReaderWorkerTest {
 		// Assert
 		assertThat(result).isFalse();
 		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
+
+		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy(null, "Error when processing email");
+		verifyNoMoreInteractions(dept44HealthUtilityMock);
+
 	}
 
 	@Test
@@ -261,7 +290,7 @@ class EmailReaderWorkerTest {
 			.receivedAt(OffsetDateTime.now())
 			.attachments(List.of(new EmailAttachment()
 				.name("someName")
-				.content("someContent")
+
 				.contentType("someContentType")));
 
 		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
@@ -271,6 +300,8 @@ class EmailReaderWorkerTest {
 
 		// Assert
 		verify(emailReaderClientMock).deleteEmail("someMunicipalityId", "someId");
+		verifyNoInteractions(dept44HealthUtilityMock);
+
 	}
 
 	@Test
@@ -285,7 +316,7 @@ class EmailReaderWorkerTest {
 			.receivedAt(OffsetDateTime.now())
 			.attachments(List.of(new EmailAttachment()
 				.name("someName")
-				.content("someContent")
+
 				.contentType("someContentType")));
 
 		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
@@ -294,6 +325,87 @@ class EmailReaderWorkerTest {
 		emailReaderWorker.deleteMail(email);
 
 		// Assert
+		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy(null, "Error when deleting email");
 		verify(emailReaderClientMock).deleteEmail("someMunicipalityId", "someId");
+		verifyNoMoreInteractions(dept44HealthUtilityMock, emailReaderClientMock);
+
+	}
+
+	@Test
+	void processAttachment() {
+		// Arrange
+		final var attachment = new EmailAttachment();
+		final var messageId = "someMessageId";
+		final var errandId = 123L;
+		final var municipalityId = "someMunicipalityId";
+		final var namespace = "someNamespace";
+		final var messageAttachment = MessageAttachmentEntity.builder().build();
+		final var attachmentEntity = new AttachmentEntity().withErrandId(errandId);
+
+		when(messageMapperMock.toAttachmentEntity(attachment, messageId, municipalityId, namespace)).thenReturn(messageAttachment);
+		when(messageMapperMock.toAttachmentEntity(messageAttachment)).thenReturn(attachmentEntity);
+
+		// Act
+		emailReaderWorker.processAttachment(attachment, messageId, errandId, municipalityId, namespace);
+
+		// Assert
+		verify(messageAttachmentRepositoryMock).save(messageAttachment);
+		verify(attachmentRepositoryMock).save(attachmentEntity);
+		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachment);
+		verify(attachmentRepositoryMock).saveAndFlush(attachmentEntity);
+		verifyNoMoreInteractions(messageAttachmentRepositoryMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void processAttachment_exceptionThrown() {
+		// Arrange
+		final var attachment = new EmailAttachment();
+		final var messageId = "someMessageId";
+		final var errandId = 123L;
+		final var municipalityId = "someMunicipalityId";
+		final var namespace = "someNamespace";
+
+		when(messageMapperMock.toAttachmentEntity(attachment, messageId, municipalityId, namespace)).thenThrow(new RuntimeException("Error"));
+
+		// Act
+		emailReaderWorker.processAttachment(attachment, messageId, errandId, municipalityId, namespace);
+
+		// Assert
+		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy(any(), any());
+	}
+
+	@Test
+	void processAttachmentData() {
+		// Arrange
+		final var messageAttachment = MessageAttachmentEntity.builder().build();
+		final var attachmentEntity = new AttachmentEntity();
+		final var data = "someData".getBytes();
+
+		when(emailReaderClientMock.getAttachment(any(), any())).thenReturn(data);
+		when(messageMapperMock.toMessageAttachmentData(data)).thenReturn(MessageAttachmentDataEntity.builder().build());
+		when(messageMapperMock.toContentString(data)).thenReturn("someContentString");
+
+		// Act
+		emailReaderWorker.processAttachmentData(messageAttachment, attachmentEntity);
+
+		// Assert
+		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachment);
+		verify(attachmentRepositoryMock).saveAndFlush(attachmentEntity);
+		verifyNoMoreInteractions(messageAttachmentRepositoryMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void processAttachmentData_exceptionThrown() {
+		// Arrange
+		final var messageAttachment = MessageAttachmentEntity.builder().build();
+		final var attachmentEntity = new AttachmentEntity();
+
+		when(emailReaderClientMock.getAttachment(any(), any())).thenThrow(new RuntimeException("Error"));
+
+		// Act
+		emailReaderWorker.processAttachmentData(messageAttachment, attachmentEntity);
+
+		// Assert
+		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy(any(), any());
 	}
 }
