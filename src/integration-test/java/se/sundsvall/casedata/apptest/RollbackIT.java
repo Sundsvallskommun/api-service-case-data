@@ -22,7 +22,7 @@ class RollbackIT extends AbstractAppTest {
 
 	private static final String EXPECTED_FILE = "expected.json";
 
-	private static final String PATH = "/" + MUNICIPALITY_ID + "/SBK_PARKINGPERMIT/errands";
+	private static final String PATH = "/" + MUNICIPALITY_ID + "/SBK_PARKING_PERMIT/errands";
 
 	// Simulate HTTP 500 response from POST for starting process to ParkingPermit. No errand should be persisted.
 	@Test

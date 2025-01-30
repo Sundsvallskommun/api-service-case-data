@@ -167,7 +167,7 @@ class ErrandRepositoryTest {
 		final var errandNumber = "errandNumber-123";
 		final var noteText = "noteText";
 		final var noteType = INTERNAL;
-		final var namespace = "SBK_PARKINGPERMIT";
+		final var namespace = "SBK_PARKING_PERMIT";
 
 		final var entity = ErrandEntity.builder()
 			.withCaseTitleAddition(caseTitleAddition)

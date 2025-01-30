@@ -25,8 +25,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(properties = {
-	"scheduler.message-collector.initialDelay=PT1S", // Setup to execute every second
-	"scheduler.message-collector.fixedRate=PT1S",
+	"scheduler.message-collector.cron=* * * * * *", // Setup to execute every second
 	"spring.flyway.enabled=true",
 	"scheduler.message-collector.enabled=true",
 	"spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
@@ -61,7 +60,7 @@ class WebMessageCollectorSchedulerSchedlockTest {
 		verifyNoMoreInteractions(webMessageCollectorWorker);
 	}
 
-	private LocalDateTime getLockedAt(String name) {
+	private LocalDateTime getLockedAt(final String name) {
 		return jdbcTemplate.query(
 			"SELECT locked_at FROM shedlock WHERE name = :name",
 			Map.of("name", name),

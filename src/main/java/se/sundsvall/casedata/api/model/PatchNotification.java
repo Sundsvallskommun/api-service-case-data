@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,7 +21,7 @@ public class PatchNotification {
 	@Schema(description = "Unique identifier for the notification", example = "123e4567-e89b-12d3-a456-426614174000")
 	private String id;
 
-	@Schema(description = "The Errand Id", example = "123", accessMode = READ_ONLY)
+	@Schema(description = "The Errand Id", example = "123")
 	private Long errandId;
 
 	@Schema(description = "Owner id of the notification", example = "AD01")
