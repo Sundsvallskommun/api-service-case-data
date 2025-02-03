@@ -82,7 +82,7 @@ public class EmailReaderWorker {
 					notificationService.create(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
 
 					email.getAttachments()
-						.forEach(emailAttachment -> processAttachment(emailAttachment, email.getId(), errand.getId(), errand.getMunicipalityId(), errand.getMunicipalityId()));
+						.forEach(emailAttachment -> processAttachment(emailAttachment, email.getId(), errand.getId(), errand.getMunicipalityId(), errand.getNamespace()));
 				});
 			return true;
 		} catch (final Exception e) {
@@ -104,7 +104,7 @@ public class EmailReaderWorker {
 			attachmentRepository.save(attachmentEntity);
 
 			// Process the file content
-			processAttachmentData(messageAttachment, attachmentEntity);
+			processAttachmentData(attachment.getId(), messageAttachment, attachmentEntity);
 		} catch (final Exception e) {
 			dept44HealthUtility.setHealthIndicatorUnhealthy(jobName, "Error when processing attachment");
 			LOG.error("Error when processing attachment", e);
@@ -112,9 +112,9 @@ public class EmailReaderWorker {
 
 	}
 
-	void processAttachmentData(final MessageAttachmentEntity messageAttachment, final AttachmentEntity attachmentEntity) {
+	void processAttachmentData(final Long attachmentId, final MessageAttachmentEntity messageAttachment, final AttachmentEntity attachmentEntity) {
 		try {
-			final var data = emailReaderClient.getAttachment(messageAttachment.getMunicipalityId(), attachmentEntity.getId());
+			final var data = emailReaderClient.getAttachment(messageAttachment.getMunicipalityId(), attachmentId);
 
 			messageAttachment.getAttachmentData().setFile(messageMapper.toMessageAttachmentData(data).getFile());
 			attachmentEntity.setFile(messageMapper.toContentString(data));
