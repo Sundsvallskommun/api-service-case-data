@@ -143,7 +143,7 @@ class EmailReaderWorkerTest {
 			.withAdAccount("adminAdAccount")
 			.withRoles(List.of("ADMINISTRATOR")).build();
 
-		final var messageAttachmentEntity = MessageAttachmentEntity.builder().build();
+		final var messageAttachmentEntity = MessageAttachmentEntity.builder().withAttachmentData(MessageAttachmentDataEntity.builder().build()).build();
 		final var attachmentEntity = AttachmentEntity.builder().build();
 
 		when(errandRepositoryMock.findByErrandNumber(errandNumber))
@@ -158,7 +158,7 @@ class EmailReaderWorkerTest {
 
 		when(messageMapperMock.toAttachmentEntity(any(EmailAttachment.class), any(), any(), any())).thenReturn(messageAttachmentEntity);
 		when(messageMapperMock.toAttachmentEntity(any())).thenReturn(attachmentEntity);
-
+		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(MessageAttachmentDataEntity.builder().build());
 		// Act
 		final var result = emailReaderWorker.save(email);
 
@@ -339,11 +339,12 @@ class EmailReaderWorkerTest {
 		final var errandId = 123L;
 		final var municipalityId = "someMunicipalityId";
 		final var namespace = "someNamespace";
-		final var messageAttachment = MessageAttachmentEntity.builder().build();
+		final var messageAttachment = MessageAttachmentEntity.builder().withAttachmentData(MessageAttachmentDataEntity.builder().build()).build();
 		final var attachmentEntity = new AttachmentEntity().withErrandId(errandId);
 
 		when(messageMapperMock.toAttachmentEntity(attachment, messageId, municipalityId, namespace)).thenReturn(messageAttachment);
 		when(messageMapperMock.toAttachmentEntity(messageAttachment)).thenReturn(attachmentEntity);
+		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(MessageAttachmentDataEntity.builder().build());
 
 		// Act
 		emailReaderWorker.processAttachment(attachment, messageId, errandId, municipalityId, namespace);
@@ -377,7 +378,7 @@ class EmailReaderWorkerTest {
 	@Test
 	void processAttachmentData() {
 		// Arrange
-		final var messageAttachment = MessageAttachmentEntity.builder().build();
+		final var messageAttachment = MessageAttachmentEntity.builder().withAttachmentData(MessageAttachmentDataEntity.builder().build()).build();
 		final var attachmentEntity = new AttachmentEntity();
 		final var data = "someData".getBytes();
 
