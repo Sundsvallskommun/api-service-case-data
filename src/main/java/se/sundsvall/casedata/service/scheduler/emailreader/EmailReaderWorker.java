@@ -18,6 +18,7 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
+import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
@@ -96,6 +97,8 @@ public class EmailReaderWorker {
 		try {
 			final var messageAttachment = messageMapper.toAttachmentEntity(attachment, messageId, municipalityId, namespace);
 			final var attachmentEntity = messageMapper.toAttachmentEntity(messageAttachment).withErrandId(errandId);
+
+			messageAttachment.setAttachmentData(MessageAttachmentDataEntity.builder().build()); // Create empty attachment data to populate later
 			// Save the attachment
 			messageAttachmentRepository.save(messageAttachment);
 			attachmentRepository.save(attachmentEntity);
@@ -112,7 +115,8 @@ public class EmailReaderWorker {
 	void processAttachmentData(final MessageAttachmentEntity messageAttachment, final AttachmentEntity attachmentEntity) {
 		try {
 			final var data = emailReaderClient.getAttachment(messageAttachment.getMunicipalityId(), attachmentEntity.getId());
-			messageAttachment.setAttachmentData(messageMapper.toMessageAttachmentData(data));
+
+			messageAttachment.getAttachmentData().setFile(messageMapper.toMessageAttachmentData(data).getFile());
 			attachmentEntity.setFile(messageMapper.toContentString(data));
 			messageAttachmentRepository.saveAndFlush(messageAttachment);
 			attachmentRepository.saveAndFlush(attachmentEntity);
