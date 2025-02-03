@@ -387,7 +387,7 @@ class EmailReaderWorkerTest {
 		when(messageMapperMock.toContentString(data)).thenReturn("someContentString");
 
 		// Act
-		emailReaderWorker.processAttachmentData(messageAttachment, attachmentEntity);
+		emailReaderWorker.processAttachmentData(1L, messageAttachment, attachmentEntity);
 
 		// Assert
 		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachment);
@@ -404,7 +404,7 @@ class EmailReaderWorkerTest {
 		when(emailReaderClientMock.getAttachment(any(), any())).thenThrow(new RuntimeException("Error"));
 
 		// Act
-		emailReaderWorker.processAttachmentData(messageAttachment, attachmentEntity);
+		emailReaderWorker.processAttachmentData(1L, messageAttachment, attachmentEntity);
 
 		// Assert
 		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy(any(), any());
