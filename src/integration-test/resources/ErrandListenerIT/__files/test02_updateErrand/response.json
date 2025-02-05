@@ -2,6 +2,7 @@
 	"municipalityId": "2281",
 	"externalCaseId": "",
 	"notes": [],
+	"notifications": [],
 	"errandNumber": "PRH-2022-000030",
 	"createdByClient": "WSO2_test",
 	"description": "New description",
@@ -26,7 +27,7 @@
 		"updated-label-2"
 	],
 	"createdBy": "UNKNOWN",
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"statuses": [],
 	"facilities": [],
 	"updated": "${json-unit.any-string}"

@@ -75,11 +75,10 @@ class ErrandResourceTest {
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/2281/my.namespace/errands/" + body.getId());
+			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + body.getId());
 
 		// Assert
 		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandServiceMock);
 	}
-
 }

@@ -178,6 +178,7 @@ class EntityMapperTest {
 			"relatesTo",
 			"notes",
 			"suspension",
+			"notifications",
 			"extraParameters");
 
 		assertThat(dto.getId()).isEqualTo(entity.getId());

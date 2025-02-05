@@ -2,6 +2,7 @@
 	"municipalityId": "2281",
 	"externalCaseId": "",
 	"notes": [],
+	"notifications": [],
 	"errandNumber": "ERRAND-NUMBER-1",
 	"createdByClient": "WSO2_test",
 	"description": "",
@@ -19,7 +20,7 @@
 			"version": 0,
 			"firstName": "FIRST-NAME-1",
 			"contactInformation": [],
-			"namespace": "my.namespace",
+			"namespace": "MY_NAMESPACE",
 			"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
 			"id": 1,
 			"updated": "2022-12-02T15:15:01.563+01:00"
@@ -49,7 +50,7 @@
 				"version": 0,
 				"firstName": "FIRST-NAME-1",
 				"contactInformation": [],
-				"namespace": "my.namespace",
+				"namespace": "MY_NAMESPACE",
 				"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
 				"id": 2,
 				"updated": "${json-unit.any-string}"
@@ -57,7 +58,7 @@
 			"validFrom": "2024-01-01T13:00:00+01:00",
 			"version": 2,
 			"decidedAt": "2024-01-02T13:00:00+01:00",
-			"namespace": "my.namespace",
+			"namespace": "MY_NAMESPACE",
 			"decisionType": "FINAL",
 			"decisionOutcome": "DISMISSAL",
 			"id": 1,
@@ -76,7 +77,7 @@
 	"version": 2,
 	"labels": [],
 	"createdBy": "UNKNOWN",
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"statuses": [],
 	"facilities": [],
 	"updated": "${json-unit.any-string}"

@@ -4,7 +4,7 @@ public final class TestConstants {
 
 	public static final String MUNICIPALITY_ID = "2281";
 
-	public static final String NAMESPACE = "my.namespace";
+	public static final String NAMESPACE = "MY_NAMESPACE";
 
 	public static final String REQUEST_FILE = "request.json";
 

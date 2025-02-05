@@ -162,7 +162,7 @@ class AttachmentServiceTest {
 		// Assert
 		assertThat(result)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
-			.hasFieldOrPropertyWithValue("detail", "Attachment with id:'1' not found on errand with id:'2' in namespace:'my.namespace' for municipality with id:'2281'");
+			.hasFieldOrPropertyWithValue("detail", "Attachment with id:'1' not found on errand with id:'2' in namespace:'MY_NAMESPACE' for municipality with id:'2281'");
 
 		verify(attachmentRepository).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(attachmentRepository, never()).delete(any(AttachmentEntity.class));

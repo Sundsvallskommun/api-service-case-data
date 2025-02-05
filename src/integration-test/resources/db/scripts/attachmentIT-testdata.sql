@@ -7,27 +7,27 @@ INSERT INTO errand(id, created, updated, version, application_received, case_tit
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
         'ERRAND-NUMBER-1', '', '2281', 'Aktualisering', 'MEDIUM',
-        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'my.namespace'),
+        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE'),
        (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
         'ERRAND-NUMBER-2', '', '2281', 'Aktualisering', 'MEDIUM',
-        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'my.namespace');
+        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE');
 
 
 INSERT INTO attachment (id, created, updated, version, category, extension, file, mime_type, name,
                         note, errand_id, decision_id, municipality_id, namespace)
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'MEDICAL_CONFIRMATION', '.pdf',
         'FILE-1', 'application/pdf', 'test1.pdf', 'NOTE-1', 1, NULL, '2281',
-        'my.namespace'),
+        'MY_NAMESPACE'),
        (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'PASSPORT_PHOTO', '.pdf',
         'FILE-2', 'application/pdf', 'test2.pdf', 'NOTE-2', 2, NULL, '2281',
-        'my.namespace'),
+        'MY_NAMESPACE'),
        (3, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'POLICE_REPORT', '.pdf',
         'FILE-3', 'application/pdf', 'test3.pdf', 'NOTE-3', 2, NULL,
-        '2281', 'my.namespace'),
+        '2281', 'MY_NAMESPACE'),
        (4, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'ANSUPA', '.pdf', 'FILE-4',
         'application/pdf', 'test4.pdf', 'NOTE-4', 2, NULL, '2281',
-        'my.namespace');
+        'MY_NAMESPACE');
 
 INSERT INTO message_attachment_data (id, file)
 VALUES (1,
@@ -36,4 +36,4 @@ VALUES (1,
 INSERT INTO message_attachment (message_attachment_data_id, attachmentid, content_type, messageid,
                                 name, municipality_id, namespace)
 VALUES (1, '05b29c30-4512-46c0-9d82-d0f11cb04bae', 'image/png',
-        '02485d15-fa8b-488a-a907-fa4de5d6e5c9', 'test_image.png', '2281', 'my.namespace');
+        '02485d15-fa8b-488a-a907-fa4de5d6e5c9', 'test_image.png', '2281', 'MY_NAMESPACE');

@@ -78,6 +78,7 @@ public final class EntityMapper {
 				.withFacilities(new ArrayList<>(ofNullable(errandEntity.getFacilities()).orElse(emptyList()).stream().map(EntityMapper::toFacility).toList()))
 				.withDecisions(new ArrayList<>(ofNullable(errandEntity.getDecisions()).orElse(emptyList()).stream().map(EntityMapper::toDecision).toList()))
 				.withRelatesTo(new ArrayList<>(ofNullable(errandEntity.getRelatesTo()).orElse(emptyList()).stream().map(EntityMapper::toRelatedErrand).toList()))
+				.withNotifications(new ArrayList<>(ofNullable(errandEntity.getNotifications()).orElse(emptyList()).stream().map(EntityMapper::toNotification).toList()))
 				.withExtraParameters(toParameterList(errandEntity.getExtraParameters()))
 				.withLabels(errandEntity.getLabels())
 				.build())

@@ -43,6 +43,7 @@ class PatchNotificationTest {
 		final var content = "Some content of the notification";
 		final var expires = now();
 		final var acknowledged = true;
+		final var globalAcknowledged = true;
 
 		// Act
 		final var bean = PatchNotification.builder()
@@ -52,6 +53,7 @@ class PatchNotificationTest {
 			.withContent(content)
 			.withExpires(expires)
 			.withAcknowledged(acknowledged)
+			.withGlobalAcknowledged(globalAcknowledged)
 			.build();
 
 		// Assert
@@ -61,12 +63,12 @@ class PatchNotificationTest {
 		assertThat(bean.getContent()).isEqualTo(content);
 		assertThat(bean.getExpires()).isEqualTo(expires);
 		assertThat(bean.getAcknowledged()).isEqualTo(acknowledged);
+		assertThat(bean.getGlobalAcknowledged()).isEqualTo(globalAcknowledged);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Notification.builder().build()).hasAllNullFieldsOrPropertiesExcept("acknowledged");
-		assertThat(new Notification()).hasAllNullFieldsOrPropertiesExcept("acknowledged");
+		assertThat(Notification.builder().build()).hasAllNullFieldsOrPropertiesExcept("acknowledged", "globalAcknowledged");
+		assertThat(new Notification()).hasAllNullFieldsOrPropertiesExcept("acknowledged", "globalAcknowledged");
 	}
-
 }

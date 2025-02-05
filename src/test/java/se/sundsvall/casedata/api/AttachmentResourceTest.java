@@ -103,7 +103,7 @@ class AttachmentResourceTest {
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/2281/my.namespace/errands/" + errandId + "/attachments/" + attachmentId);
+			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + errandId + "/attachments/" + attachmentId);
 
 		// Assert
 		verify(attachmentServiceMock).create(errandId, body, MUNICIPALITY_ID, NAMESPACE);

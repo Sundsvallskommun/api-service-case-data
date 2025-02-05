@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.service.scheduler.notifications;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
@@ -9,8 +7,6 @@ import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 @Service
 @ConditionalOnProperty(prefix = "scheduler.notification", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class NotificationScheduler {
-
-	private static final Logger LOG = LoggerFactory.getLogger(NotificationScheduler.class);
 
 	private final NotificationWorker notificationWorker;
 

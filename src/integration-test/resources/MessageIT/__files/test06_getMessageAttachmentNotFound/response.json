@@ -1,5 +1,5 @@
 {
-	"detail": "MessageAttachment with id:'nonexistingid' not found in namespace:'my.namespace' for municipality with id:'2281'",
+	"detail": "MessageAttachment with id:'nonexistingid' not found in namespace:'MY_NAMESPACE' for municipality with id:'2281'",
 	"title": "Not Found",
 	"status": 404
 }

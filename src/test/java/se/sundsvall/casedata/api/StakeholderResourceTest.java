@@ -144,7 +144,7 @@ class StakeholderResourceTest {
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/2281/my.namespace/stakeholders/" + stakeholderId);
+			.expectHeader().location("/2281/MY_NAMESPACE/stakeholders/" + stakeholderId);
 
 		// Assert
 		verify(stakeholderServiceMock).addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholder);

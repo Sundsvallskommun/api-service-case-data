@@ -15,7 +15,7 @@
 	"firstName": "Patch John AB",
 	"contactInformation": [],
 	"authorizedSignatory": "John Doe",
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
 	"id": 1,
 	"updated": "${json-unit.any-string}"

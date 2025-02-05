@@ -13,7 +13,7 @@
 		"version": 1,
 		"firstName": "John",
 		"contactInformation": [],
-		"namespace": "my.namespace",
+		"namespace": "MY_NAMESPACE",
 		"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
 		"id": 4,
 		"updated": "${json-unit.any-string}"
@@ -32,7 +32,7 @@
 		"version": 1,
 		"firstName": "Kalle",
 		"contactInformation": [],
-		"namespace": "my.namespace",
+		"namespace": "MY_NAMESPACE",
 		"personId": "d1af5f83-166a-468b-ab86-da8ca30ea97c",
 		"id": 5,
 		"updated": "${json-unit.any-string}"
