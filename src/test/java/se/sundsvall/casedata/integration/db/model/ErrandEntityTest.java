@@ -22,6 +22,41 @@ import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 class ErrandEntityTest {
 
+	private static final long ID = 1L;
+	private static final String ERRAND_NUMBER = "errandNumber";
+	private static final String MUNICIPALITY_ID = "municipalityId";
+	private static final String NAMESPACE = "namespace";
+	private static final String EXTERNAL_CASE_ID = "externalCaseId";
+	private static final String CASE_TYPE = "caseType";
+	private static final Channel CHANNEL = Channel.EMAIL;
+	private static final Priority PRIORITY = Priority.HIGH;
+	private static final String DESCRIPTION = "description";
+	private static final String CASE_TITLE_ADDITION = "caseTitleAddition";
+	private static final String DIARY_NUMBER = "diaryNumber";
+	private static final String PHASE = "phase";
+	private static final List<StatusEntity> STATUSES = List.of(new StatusEntity());
+	private static final LocalDate START_DATE = LocalDate.now();
+	private static final LocalDate END_DATE = LocalDate.now();
+	private static final OffsetDateTime APPLICATION_RECEIVED = now();
+	private static final String PROCESS_ID = "processId";
+	private static final List<StakeholderEntity> STAKEHOLDERS = List.of(new StakeholderEntity());
+	private static final List<FacilityEntity> FACILITIES = List.of(new FacilityEntity());
+	private static final List<DecisionEntity> DECISIONS = List.of(new DecisionEntity());
+	private static final List<NoteEntity> NOTES = List.of(new NoteEntity());
+	private static final List<NotificationEntity> NOTIFICATIONS = List.of(new NotificationEntity());
+	private static final String CREATED_BY_CLIENT = "createdByClient";
+	private static final String UPDATED_BY_CLIENT = "updatedByClient";
+	private static final String CREATED_BY = "createdBy";
+	private static final String UPDATED_BY = "updatedBy";
+	private static final List<ExtraParameterEntity> EXTRA_PARAMETERS = List.of(new ExtraParameterEntity());
+	private static final OffsetDateTime CREATED = now();
+	private static final OffsetDateTime UPDATED = now();
+	private static final OffsetDateTime SUSPENSION_FROM = now();
+	private static final OffsetDateTime SUSPENSION_TO = now();
+	private static final List<RelatedErrandEntity> RELATES_TO = List.of(new RelatedErrandEntity());
+	private static final List<String> LABELS = List.of("label");
+	private static final String STATUS = "status";
+
 	@BeforeAll
 	static void setup() {
 		registerValueGenerator(() -> now().plusDays(new Random().nextInt()), OffsetDateTime.class);
@@ -42,144 +77,105 @@ class ErrandEntityTest {
 	void builder() {
 		// Arrange
 
-		final var id = 1L;
-		final var errandNumber = "errandNumber";
-		final var municipalityId = "municipalityId";
-		final var namespace = "namespace";
-		final var externalCaseId = "externalCaseId";
-		final var caseType = "caseType";
-		final var channel = Channel.EMAIL;
-		final var priority = Priority.HIGH;
-		final var description = "description";
-		final var caseTitleAddition = "caseTitleAddition";
-		final var diaryNumber = "diaryNumber";
-		final var phase = "phase";
-		final var statuses = List.of(new StatusEntity());
-		final var startDate = LocalDate.now();
-		final var endDate = LocalDate.now();
-		final var applicationReceived = now();
-		final var processId = "processId";
-		final var stakeholders = List.of(new StakeholderEntity());
-		final var facilities = List.of(new FacilityEntity());
-		final var decisions = List.of(new DecisionEntity());
-		final var notes = List.of(new NoteEntity());
-		final var notifications = List.of(new NotificationEntity());
-		final var createdByClient = "createdByClient";
-		final var updatedByClient = "updatedByClient";
-		final var createdBy = "createdBy";
-		final var updatedBy = "updatedBy";
-		final var extraParameters = List.of(new ExtraParameterEntity());
-		final var created = now();
-		final var updated = now();
-		final var suspensionFrom = now();
-		final var suspensionTo = now();
-		final var relatesTo = List.of(new RelatedErrandEntity());
-		final var labels = List.of("label");
-
 		// Act
 		final var bean = ErrandEntity.builder()
-			.withId(id)
-			.withErrandNumber(errandNumber)
-			.withMunicipalityId(municipalityId)
-			.withNamespace(namespace)
-			.withExternalCaseId(externalCaseId)
-			.withCaseType(caseType)
-			.withChannel(channel)
-			.withPriority(priority)
-			.withDescription(description)
-			.withCaseTitleAddition(caseTitleAddition)
-			.withDiaryNumber(diaryNumber)
-			.withPhase(phase)
-			.withStatuses(statuses)
-			.withStartDate(startDate)
-			.withEndDate(endDate)
-			.withApplicationReceived(applicationReceived)
-			.withProcessId(processId)
-			.withStakeholders(stakeholders)
-			.withFacilities(facilities)
-			.withDecisions(decisions)
-			.withNotes(notes)
-			.withNotifications(notifications)
-			.withCreatedByClient(createdByClient)
-			.withUpdatedByClient(updatedByClient)
-			.withCreatedBy(createdBy)
-			.withUpdatedBy(updatedBy)
-			.withExtraParameters(extraParameters)
-			.withCreated(created)
-			.withUpdated(updated)
-			.withSuspendedFrom(suspensionFrom)
-			.withSuspendedTo(suspensionTo)
-			.withRelatesTo(relatesTo)
-			.withLabels(labels)
+			.withId(ID)
+			.withErrandNumber(ERRAND_NUMBER)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withExternalCaseId(EXTERNAL_CASE_ID)
+			.withCaseType(CASE_TYPE)
+			.withChannel(CHANNEL)
+			.withPriority(PRIORITY)
+			.withDescription(DESCRIPTION)
+			.withCaseTitleAddition(CASE_TITLE_ADDITION)
+			.withDiaryNumber(DIARY_NUMBER)
+			.withPhase(PHASE)
+			.withStatuses(STATUSES)
+			.withStartDate(START_DATE)
+			.withEndDate(END_DATE)
+			.withApplicationReceived(APPLICATION_RECEIVED)
+			.withProcessId(PROCESS_ID)
+			.withStakeholders(STAKEHOLDERS)
+			.withFacilities(FACILITIES)
+			.withDecisions(DECISIONS)
+			.withNotes(NOTES)
+			.withNotifications(NOTIFICATIONS)
+			.withCreatedByClient(CREATED_BY_CLIENT)
+			.withUpdatedByClient(UPDATED_BY_CLIENT)
+			.withCreatedBy(CREATED_BY)
+			.withUpdatedBy(UPDATED_BY)
+			.withExtraParameters(EXTRA_PARAMETERS)
+			.withCreated(CREATED)
+			.withUpdated(UPDATED)
+			.withSuspendedFrom(SUSPENSION_FROM)
+			.withSuspendedTo(SUSPENSION_TO)
+			.withRelatesTo(RELATES_TO)
+			.withLabels(LABELS)
+			.withStatus(STATUS)
 			.build();
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
-		assertBasicFields(bean, id, errandNumber, municipalityId, namespace, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase);
-		assertDates(bean, startDate, endDate, applicationReceived, created, updated, suspensionFrom, suspensionTo);
-		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, notifications, extraParameters, relatesTo, labels);
-		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
+		assertBasicFields(bean);
+		assertDates(bean);
+		assertCollections(bean);
+		assertClients(bean);
 	}
 
-	private void assertBasicFields(final ErrandEntity bean, final Long id, final String errandNumber, final String municipalityId, final String namespace, final String externalCaseId, final String caseType, final Channel channel, final Priority priority,
-		final String description, final String caseTitleAddition,
-		final String diaryNumber, final String phase) {
-		assertThat(bean.getId()).isEqualTo(id);
-		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
-		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
-		assertThat(bean.getNamespace()).isEqualTo(namespace);
-		assertThat(bean.getExternalCaseId()).isEqualTo(externalCaseId);
-		assertThat(bean.getCaseType()).isEqualTo(caseType);
-		assertThat(bean.getChannel()).isEqualTo(channel);
-		assertThat(bean.getPriority()).isEqualTo(priority);
-		assertThat(bean.getDescription()).isEqualTo(description);
-		assertThat(bean.getCaseTitleAddition()).isEqualTo(caseTitleAddition);
-		assertThat(bean.getDiaryNumber()).isEqualTo(diaryNumber);
-		assertThat(bean.getPhase()).isEqualTo(phase);
+	private void assertBasicFields(final ErrandEntity bean) {
+		assertThat(bean.getId()).isEqualTo(ID);
+		assertThat(bean.getErrandNumber()).isEqualTo(ERRAND_NUMBER);
+		assertThat(bean.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+		assertThat(bean.getNamespace()).isEqualTo(NAMESPACE);
+		assertThat(bean.getExternalCaseId()).isEqualTo(EXTERNAL_CASE_ID);
+		assertThat(bean.getCaseType()).isEqualTo(CASE_TYPE);
+		assertThat(bean.getChannel()).isEqualTo(CHANNEL);
+		assertThat(bean.getPriority()).isEqualTo(PRIORITY);
+		assertThat(bean.getDescription()).isEqualTo(DESCRIPTION);
+		assertThat(bean.getCaseTitleAddition()).isEqualTo(CASE_TITLE_ADDITION);
+		assertThat(bean.getDiaryNumber()).isEqualTo(DIARY_NUMBER);
+		assertThat(bean.getPhase()).isEqualTo(PHASE);
+		assertThat(bean.getStatus()).isEqualTo(STATUS);
+		assertThat(bean.getProcessId()).isEqualTo(PROCESS_ID);
 	}
 
-	private void assertDates(final ErrandEntity bean, final LocalDate startDate, final LocalDate endDate, final OffsetDateTime applicationReceived, final OffsetDateTime created, final OffsetDateTime updated, final OffsetDateTime suspensionFrom,
-		final OffsetDateTime suspensionTo) {
-		assertThat(bean.getStartDate()).isEqualTo(startDate);
-		assertThat(bean.getEndDate()).isEqualTo(endDate);
-		assertThat(bean.getApplicationReceived()).isEqualTo(applicationReceived);
-		assertThat(bean.getCreated()).isEqualTo(created);
-		assertThat(bean.getUpdated()).isEqualTo(updated);
-		assertThat(bean.getSuspendedFrom()).isEqualTo(suspensionFrom);
-		assertThat(bean.getSuspendedTo()).isEqualTo(suspensionTo);
+	private void assertDates(final ErrandEntity bean) {
+		assertThat(bean.getStartDate()).isEqualTo(START_DATE);
+		assertThat(bean.getEndDate()).isEqualTo(END_DATE);
+		assertThat(bean.getApplicationReceived()).isEqualTo(APPLICATION_RECEIVED);
+		assertThat(bean.getCreated()).isEqualTo(CREATED);
+		assertThat(bean.getUpdated()).isEqualTo(UPDATED);
+		assertThat(bean.getSuspendedFrom()).isEqualTo(SUSPENSION_FROM);
+		assertThat(bean.getSuspendedTo()).isEqualTo(SUSPENSION_TO);
 	}
 
-	private void assertCollections(final ErrandEntity bean, final List<StatusEntity> statuses, final List<StakeholderEntity> stakeholders, final List<FacilityEntity> facilities, final List<DecisionEntity> decisions, final List<NoteEntity> notes,
-		final List<NotificationEntity> notifications, final List<ExtraParameterEntity> extraParameters, final List<RelatedErrandEntity> relatesTo, final List<String> labels) {
+	private void assertCollections(final ErrandEntity bean) {
 
-		assertThat(bean.getStatuses()).isEqualTo(statuses);
-		assertThat(bean.getStakeholders()).isEqualTo(stakeholders);
-		assertThat(bean.getFacilities()).isEqualTo(facilities);
-		assertThat(bean.getDecisions()).isEqualTo(decisions);
-		assertThat(bean.getNotes()).isEqualTo(notes);
-		assertThat(bean.getNotifications()).isEqualTo(notifications);
-		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
-		assertThat(bean.getRelatesTo()).isEqualTo(relatesTo);
-		assertThat(bean.getLabels()).isEqualTo(labels);
+		assertThat(bean.getStatuses()).isEqualTo(STATUSES);
+		assertThat(bean.getStakeholders()).isEqualTo(STAKEHOLDERS);
+		assertThat(bean.getFacilities()).isEqualTo(FACILITIES);
+		assertThat(bean.getDecisions()).isEqualTo(DECISIONS);
+		assertThat(bean.getNotes()).isEqualTo(NOTES);
+		assertThat(bean.getNotifications()).isEqualTo(NOTIFICATIONS);
+		assertThat(bean.getExtraParameters()).isEqualTo(EXTRA_PARAMETERS);
+		assertThat(bean.getRelatesTo()).isEqualTo(RELATES_TO);
+		assertThat(bean.getLabels()).isEqualTo(LABELS);
 	}
 
-	private void assertClients(final ErrandEntity bean, final String createdByClient, final String updatedByClient, final String createdBy, final String updatedBy) {
-		assertThat(bean.getCreatedByClient()).isEqualTo(createdByClient);
-		assertThat(bean.getUpdatedByClient()).isEqualTo(updatedByClient);
-		assertThat(bean.getCreatedBy()).isEqualTo(createdBy);
-		assertThat(bean.getUpdatedBy()).isEqualTo(updatedBy);
+	private void assertClients(final ErrandEntity bean) {
+		assertThat(bean.getCreatedByClient()).isEqualTo(CREATED_BY_CLIENT);
+		assertThat(bean.getUpdatedByClient()).isEqualTo(UPDATED_BY_CLIENT);
+		assertThat(bean.getCreatedBy()).isEqualTo(CREATED_BY);
+		assertThat(bean.getUpdatedBy()).isEqualTo(UPDATED_BY);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
 		assertThat(ErrandEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("version")
-			.satisfies(bean -> {
-				assertThat(bean.getVersion()).isZero();
-			});
+			.satisfies(bean -> assertThat(bean.getVersion()).isZero());
 		assertThat(new ErrandEntity()).hasAllNullFieldsOrPropertiesExcept("version")
-			.satisfies(bean -> {
-				assertThat(bean.getVersion()).isZero();
-			});
+			.satisfies(bean -> assertThat(bean.getVersion()).isZero());
 	}
 
 }
