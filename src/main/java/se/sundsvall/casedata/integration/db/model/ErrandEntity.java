@@ -105,6 +105,9 @@ public class ErrandEntity {
 	@Column(name = "phase")
 	private String phase;
 
+	@Column(name = "status")
+	private String status;
+
 	@ElementCollection
 	@CollectionTable(name = "errand_statuses",
 		joinColumns = @JoinColumn(name = "errand_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_errand_statuses_errand_id")))
