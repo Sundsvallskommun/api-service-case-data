@@ -48,6 +48,7 @@ class NotificationEntityTest {
 		final var content = "Some content of the notification";
 		final var expires = now();
 		final var acknowledged = true;
+		final var globalAcknowledged = true;
 		final var errandEntity = ErrandEntity.builder()
 			.withId(12345L)
 			.withErrandNumber("ERRAND-NUMBER").build();
@@ -68,6 +69,7 @@ class NotificationEntityTest {
 			.withContent(content)
 			.withExpires(expires)
 			.withAcknowledged(acknowledged)
+			.withGlobalAcknowledged(globalAcknowledged)
 			.withErrand(errandEntity)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
@@ -86,6 +88,7 @@ class NotificationEntityTest {
 		assertThat(notification.getContent()).isEqualTo(content);
 		assertThat(notification.getExpires()).isEqualTo(expires);
 		assertThat(notification.isAcknowledged()).isEqualTo(acknowledged);
+		assertThat(notification.isGlobalAcknowledged()).isEqualTo(globalAcknowledged);
 		assertThat(notification.getErrand()).isEqualTo(errandEntity);
 		assertThat(notification.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(notification.getNamespace()).isEqualTo(namespace);
@@ -93,7 +96,7 @@ class NotificationEntityTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(NotificationEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("acknowledged");
-		assertThat(new NotificationEntity()).hasAllNullFieldsOrPropertiesExcept("acknowledged");
+		assertThat(NotificationEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("acknowledged", "globalAcknowledged");
+		assertThat(new NotificationEntity()).hasAllNullFieldsOrPropertiesExcept("acknowledged", "globalAcknowledged");
 	}
 }

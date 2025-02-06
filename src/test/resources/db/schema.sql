@@ -237,6 +237,7 @@
 
     create table notification (
         acknowledged bit,
+        global_acknowledged bit,
         created datetime(6),
         errand_id bigint,
         expires datetime(6),
