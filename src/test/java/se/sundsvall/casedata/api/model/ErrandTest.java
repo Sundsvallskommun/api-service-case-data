@@ -74,6 +74,7 @@ class ErrandTest {
 		final var namespace = "namespace";
 		final var relatesTo = List.of(new RelatedErrand());
 		final var labels = List.of("label");
+		final var notifications = List.of(new Notification());
 
 		// Act
 		final var bean = Errand.builder()
@@ -110,13 +111,14 @@ class ErrandTest {
 			.withNamespace(namespace)
 			.withRelatesTo(relatesTo)
 			.withLabels(labels)
+			.withNotifications(notifications)
 			.build();
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertBasicFields(bean, id, errandNumber, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase, suspension, municipalityId, namespace);
 		assertDates(bean, startDate, endDate, applicationReceived, created, updated);
-		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, extraParameters, relatesTo, labels);
+		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, extraParameters, relatesTo, labels, notifications);
 		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
 	}
 
@@ -147,7 +149,7 @@ class ErrandTest {
 	}
 
 	private void assertCollections(final Errand bean, final List<Status> statuses, final List<Stakeholder> stakeholders, final List<Facility> facilities, final List<Decision> decisions, final List<Note> notes, final List<ExtraParameter> extraParameters,
-		final List<RelatedErrand> relatesTo, final List<String> labels) {
+		final List<RelatedErrand> relatesTo, final List<String> labels, final List<Notification> notifications) {
 		assertThat(bean.getStatuses()).isEqualTo(statuses);
 		assertThat(bean.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(bean.getFacilities()).isEqualTo(facilities);
@@ -156,6 +158,7 @@ class ErrandTest {
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(bean.getRelatesTo()).isEqualTo(relatesTo);
 		assertThat(bean.getLabels()).isEqualTo(labels);
+		assertThat(bean.getNotifications()).isEqualTo(notifications);
 	}
 
 	private void assertClients(final Errand bean, final String createdByClient, final String updatedByClient, final String createdBy, final String updatedBy) {

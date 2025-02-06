@@ -4,13 +4,14 @@
 	"errandId": 1,
 	"ownerFullName": "Joe Doe",
 	"acknowledged": false,
+	"globalAcknowledged": false,
 	"errandNumber": "BUILD-2024-000001",
 	"created": "2024-10-15T10:16:29.097+02:00",
 	"description": "Ärende skapat",
 	"ownerId": "testuser1",
 	"type": "CREATE",
 	"createdBy": "creator123",
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"createdByFullName": "Creator Creatorson",
 	"id": "25d818b7-763e-4b77-9fce-1c7dfc42deb2"
 }

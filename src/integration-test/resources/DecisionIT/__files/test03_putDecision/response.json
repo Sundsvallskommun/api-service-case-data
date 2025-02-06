@@ -2,6 +2,7 @@
 	"municipalityId": "2281",
 	"externalCaseId": "",
 	"notes": [],
+	"notifications": [],
 	"errandNumber": "ERRAND-NUMBER-1",
 	"createdByClient": "WSO2_test",
 	"description": "",
@@ -19,7 +20,7 @@
 			"version": 0,
 			"firstName": "FIRST-NAME-1",
 			"contactInformation": [],
-			"namespace": "my.namespace",
+			"namespace": "MY_NAMESPACE",
 			"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
 			"id": 1,
 			"updated": "2022-12-02T15:15:01.563+01:00"
@@ -51,7 +52,7 @@
 					"mimeType": "test mimeType",
 					"version": 0,
 					"file": "test file",
-					"namespace": "my.namespace",
+					"namespace": "MY_NAMESPACE",
 					"name": "Test name",
 					"id": 1,
 					"category": "FAPL",
@@ -99,7 +100,7 @@
 					}
 				],
 				"authorizedSignatory": "Test Testorsson",
-				"namespace": "my.namespace",
+				"namespace": "MY_NAMESPACE",
 				"personId": "3ed5bc30-6308-4fd5-a5a7-78d7f96f4438",
 				"id": 3,
 				"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
@@ -107,7 +108,7 @@
 			"validFrom": "2024-01-01T13:00:00+01:00",
 			"version": 2,
 			"decidedAt": "2024-01-02T13:00:00+01:00",
-			"namespace": "my.namespace",
+			"namespace": "MY_NAMESPACE",
 			"decisionType": "FINAL",
 			"decisionOutcome": "DISMISSAL",
 			"id": 1,
@@ -126,7 +127,7 @@
 	"version": 2,
 	"labels": [],
 	"createdBy": "UNKNOWN",
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"statuses": [],
 	"facilities": [],
 	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"

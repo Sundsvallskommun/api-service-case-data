@@ -5,6 +5,7 @@
 		"errandId": 1,
 		"ownerFullName": "Test Testsson",
 		"acknowledged": true,
+		"globalAcknowledged": false,
 		"errandNumber": "BUILD-2024-000001",
 		"created": "2024-10-14T11:25:51.457+02:00",
 		"description": "Some description of the notification 2",
@@ -12,7 +13,7 @@
 		"type": "UPDATE",
 		"content": "Some content of the notification 2",
 		"createdBy": "TestUser",
-		"namespace": "my.namespace",
+		"namespace": "MY_NAMESPACE",
 		"modified": "2024-10-14T12:31:31.147+02:00",
 		"createdByFullName": "Test Testsson",
 		"id": "b28ce1ec-2557-4007-b50c-fc7a273cadee"
@@ -23,6 +24,7 @@
 		"errandId": 1,
 		"ownerFullName": "Test Testsson",
 		"acknowledged": false,
+		"globalAcknowledged": false,
 		"errandNumber": "BUILD-2024-000001",
 		"created": "2024-10-14T11:25:51.457+02:00",
 		"description": "Some description of the notification 1 ",
@@ -30,7 +32,7 @@
 		"type": "UPDATE",
 		"content": "Some content of the notification 1",
 		"createdBy": "TestUser",
-		"namespace": "my.namespace",
+		"namespace": "MY_NAMESPACE",
 		"modified": "2024-10-14T12:31:31.147+02:00",
 		"createdByFullName": "Test Testsson",
 		"id": "b7d6cc06-a08b-48a1-b7d3-1241b3bc345f"

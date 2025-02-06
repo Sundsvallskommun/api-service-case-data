@@ -12,7 +12,7 @@
 	"mimeType": "application/pdf",
 	"version": 0,
 	"file": "dGVzdDA3",
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"name": "myfile07.pdf",
 	"id": 5,
 	"category": "SIGNATURE",

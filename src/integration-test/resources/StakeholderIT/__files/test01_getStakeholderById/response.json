@@ -12,7 +12,7 @@
 	"version": 0,
 	"firstName": "John",
 	"contactInformation": [],
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
 	"id": 1,
 	"updated": "2022-12-02T15:15:01.563+01:00"

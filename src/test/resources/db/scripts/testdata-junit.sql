@@ -4,15 +4,15 @@ INSERT INTO errand (id, created, updated, version, application_received, case_ti
                     process_id, start_date, updated_by, updated_by_client, channel)
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
-        'ERRAND-NUMBER-1', 'ext-no-1', '2281', 'my.namespace', 'Aktualisering', 'MEDIUM',
+        'ERRAND-NUMBER-1', 'ext-no-1', '2281', 'MY_NAMESPACE', 'Aktualisering', 'MEDIUM',
         '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL),
        (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
-        'ERRAND-NUMBER-2', 'ext-no-2', '2281', 'my.namespace', 'Aktualisering', 'MEDIUM',
+        'ERRAND-NUMBER-2', 'ext-no-2', '2281', 'MY_NAMESPACE', 'Aktualisering', 'MEDIUM',
         '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL),
        (3, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
-        'PRH-2022-000029', 'ext-no-3', '2281', 'my.namespace', 'Aktualisering', 'HIGH',
+        'PRH-2022-000029', 'ext-no-3', '2281', 'MY_NAMESPACE', 'Aktualisering', 'HIGH',
         '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL);
 
 INSERT INTO errand_extra_parameters (errand_id, id, display_name, parameters_key)
@@ -29,29 +29,29 @@ INSERT INTO decision (id, created, updated, version, decided_at, decision_outcom
                       namespace)
 VALUES (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'APPROVAL', 'RECOMMENDED',
         'Personen är boende i Sundsvalls kommun. Nuvarande kontroll ger rekommenderat beslut att godkänna ansökan.',
-        NULL, NULL, NULL, 1, '2281', 'my.namespace');
+        NULL, NULL, NULL, 1, '2281', 'MY_NAMESPACE');
 
 INSERT INTO attachment (id, created, updated, version, category, extension, file, mime_type, name,
                         note, errand_id, decision_id, municipality_id, namespace)
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'MEDICAL_CONFIRMATION', '.pdf',
         'FILE-1', 'application/pdf', 'test1.pdf', 'NOTE-1', 1, NULL, '2281',
-        'my.namespace'),
+        'MY_NAMESPACE'),
        (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'PASSPORT_PHOTO', '.pdf',
         'FILE-2', 'application/pdf', 'test2.pdf', 'NOTE-2', 2, NULL, '2281',
-        'my.namespace'),
+        'MY_NAMESPACE'),
        (3, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'POLICE_REPORT', '.pdf',
         'FILE-3', 'application/pdf', 'test3.pdf', 'NOTE-3', 2, NULL, '2281',
-        'my.namespace'),
+        'MY_NAMESPACE'),
        (4, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'ANSUPA', '.pdf', 'FILE-4',
         'application/pdf', 'test4.pdf', 'NOTE-4', 2, NULL, '2281',
-        'my.namespace');
+        'MY_NAMESPACE');
 
 INSERT INTO stakeholder (id, created, updated, version, ad_account, authorized_signatory,
                          first_name, last_name, organization_name, organization_number, person_id,
                          `type`, errand_id, municipality_id, namespace)
 VALUES (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 0, 'AD-1', NULL, 'FIRST-NAME-1',
         'LAST-NAME-1', NULL, NULL, 'd7af5f83-166a-468b-ab86-da8ca30ea97c', 'PERSON', 1, '2281',
-        'my.namespace');
+        'MY_NAMESPACE');
 
 INSERT INTO stakeholder_contact_information (stakeholder_id, contact_type, value,
                                              contact_information_order)
@@ -65,9 +65,9 @@ VALUES (2, 'APPLICANT', 0),
 INSERT INTO note (id, created, updated, version, created_by, `text`, title, updated_by, errand_id,
                   municipality_id, namespace)
 VALUES (1, '2023-10-02 15:13:45.363', '2023-10-02 15:13:45.363', 1, 'UNKNOWN', 'TEXT', 'TITLE-1',
-        'testUser', 1, '2281', 'my.namespace'),
+        'testUser', 1, '2281', 'MY_NAMESPACE'),
        (2, '2023-10-02 15:13:45.363', '2023-10-02 15:13:45.363', 1, 'UNKNOWN', 'TEXT', 'TITLE-1',
-        'testUser', 3, '2281', 'my.namespace');
+        'testUser', 3, '2281', 'MY_NAMESPACE');
 
 INSERT INTO message_attachment_data (id, file)
 VALUES (1,
@@ -76,7 +76,7 @@ VALUES (1,
 INSERT INTO message_attachment (message_attachment_data_id, attachmentid, content_type, messageid,
                                 name, municipality_id, namespace)
 VALUES (1, '05b29c30-4512-46c0-9d82-d0f11cb04bae', 'image/png',
-        '02485d15-fa8b-488a-a907-fa4de5d6e5c9', 'test_image.png', '2281', 'my.namespace');
+        '02485d15-fa8b-488a-a907-fa4de5d6e5c9', 'test_image.png', '2281', 'MY_NAMESPACE');
 
 INSERT INTO message (viewed, email, errand_id, external_caseid, familyid, first_name, last_name,
                      message, messageId, sent, subject, userid, username, direction, message_type,
@@ -84,7 +84,7 @@ INSERT INTO message (viewed, email, errand_id, external_caseid, familyid, first_
 VALUES (1, 'test.testorsson@noreply.com', 456, '123456', '123', 'Test', 'Testorsson',
         'Some message', '02485d15-fa8b-488a-a907-fa4de5d6e5c9', '2023-10-02 15:13:45.363',
         'Some subject', 'aba01cal', 'Abacus Calculator', 'INBOUND', 'EMAIL', '2281',
-        'my.namespace');
+        'MY_NAMESPACE');
 
 INSERT INTO facility (id, created, updated, version, address_category, apartment_number, attention,
                       care_of, city, country, house_number, invoice_marking, is_zoning_plan_area,
@@ -93,4 +93,4 @@ INSERT INTO facility (id, created, updated, version, address_category, apartment
                       municipality_id, namespace)
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 0, NULL, NULL, NULL, NULL, NULL,
         NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'SUNDSVALL 666:1', NULL, NULL, NULL, 1, 1, NULL,
-        '2281', 'my.namespace');
+        '2281', 'MY_NAMESPACE');

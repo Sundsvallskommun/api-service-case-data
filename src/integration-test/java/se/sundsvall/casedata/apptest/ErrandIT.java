@@ -88,6 +88,7 @@ class ErrandIT extends AbstractAppTest {
 		"relatesTo",
 		"statuses",
 		"notes",
+		"notifications",
 		"facilities",
 		"decisions",
 		"suspension",

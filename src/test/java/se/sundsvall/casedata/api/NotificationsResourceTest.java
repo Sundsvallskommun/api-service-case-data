@@ -10,7 +10,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -124,7 +123,7 @@ class NotificationsResourceTest {
 			.withAcknowledged(false)
 			.build();
 
-		final var notificationId = UUID.randomUUID().toString();
+		final var notificationId = randomUUID().toString();
 		when(notificationServiceMock.create(MUNICIPALITY_ID, NAMESPACE, requestBody)).thenReturn(Notification.builder().withErrandId(errandId).withId(notificationId).build());
 
 		// Act
@@ -149,11 +148,9 @@ class NotificationsResourceTest {
 	void updateNotifications() {
 
 		// Arrange
-		final var notificationId1 = UUID.randomUUID().toString();
-		final var notificationId2 = UUID.randomUUID().toString();
 		final var requestBody = List.of(
-			PatchNotification.builder().withId(notificationId1).withAcknowledged(true).build(),
-			PatchNotification.builder().withId(notificationId2).withAcknowledged(true).build());
+			PatchNotification.builder().withId(randomUUID().toString()).withAcknowledged(true).withErrandId(1L).build(),
+			PatchNotification.builder().withId(randomUUID().toString()).withAcknowledged(true).withErrandId(2L).build());
 
 		// Act
 		final var response = webTestClient.patch()
@@ -175,7 +172,7 @@ class NotificationsResourceTest {
 	void deleteNotification() {
 
 		// Arrange
-		final var notificationId = UUID.randomUUID().toString();
+		final var notificationId = randomUUID().toString();
 		final var errandId = 12345L;
 
 		// Act
@@ -189,5 +186,30 @@ class NotificationsResourceTest {
 		// Assert
 		assertThat(response).isNotNull();
 		verify(notificationServiceMock).delete(MUNICIPALITY_ID, NAMESPACE, errandId, notificationId);
+	}
+
+	@Test
+	void globalAcknowledgeNotifications() {
+
+		// Arrange
+		final var errandId = 12345L;
+
+		// TODO: Mock
+		// doNothing().when(notificationServiceMock).globalAcknowledgeNotificationsByErrandId(MUNICIPALITY_ID, NAMESPACE,
+		// ERRAND_ID);
+
+		// Call
+		final var response = webTestClient.put()
+			.uri(builder -> builder.path(PATH + "/errands/{errandId}/notifications/global-acknowledged")
+				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "errandId", errandId)))
+			.exchange()
+			.expectStatus().isNoContent()
+			.expectHeader().contentType(ALL)
+			.expectBody().isEmpty();
+
+		// Verification
+		assertThat(response).isNotNull();
+		// TODO: verify(notificationServiceMock).globalAcknowledgeNotificationsByErrandId(MUNICIPALITY_ID, NAMESPACE,
+		// ERRAND_ID);
 	}
 }

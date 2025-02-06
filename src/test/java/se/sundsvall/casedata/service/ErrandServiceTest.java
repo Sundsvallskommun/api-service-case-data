@@ -169,7 +169,7 @@ class ErrandServiceTest {
 		final var exception = assertThrows(ThrowableProblem.class, () -> errandService.delete(id, MUNICIPALITY_ID, NAMESPACE));
 
 		// Assert
-		assertThat(exception.getMessage()).isEqualTo("Not Found: Errand with id:'1' not found in namespace:'my.namespace' for municipality with id:'2281'");
+		assertThat(exception.getMessage()).isEqualTo("Not Found: Errand with id:'1' not found in namespace:'MY_NAMESPACE' for municipality with id:'2281'");
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);

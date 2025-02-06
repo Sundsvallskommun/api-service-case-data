@@ -68,7 +68,7 @@ import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 public final class TestUtil {
 
 	public static final String MUNICIPALITY_ID = "2281";
-	public static final String NAMESPACE = "my.namespace";
+	public static final String NAMESPACE = "MY_NAMESPACE";
 
 	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
 		.enable(SerializationFeature.INDENT_OUTPUT)
