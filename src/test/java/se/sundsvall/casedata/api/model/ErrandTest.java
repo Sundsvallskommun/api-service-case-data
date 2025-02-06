@@ -74,6 +74,7 @@ class ErrandTest {
 		final var namespace = "namespace";
 		final var relatesTo = List.of(new RelatedErrand());
 		final var labels = List.of("label");
+		final var status = "Pågående";
 		final var notifications = List.of(new Notification());
 
 		// Act
@@ -111,12 +112,13 @@ class ErrandTest {
 			.withNamespace(namespace)
 			.withRelatesTo(relatesTo)
 			.withLabels(labels)
+			.withStatus(status)
 			.withNotifications(notifications)
 			.build();
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
-		assertBasicFields(bean, id, errandNumber, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase, suspension, municipalityId, namespace);
+		assertBasicFields(bean, id, errandNumber, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase, suspension, municipalityId, namespace, status);
 		assertDates(bean, startDate, endDate, applicationReceived, created, updated);
 		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, extraParameters, relatesTo, labels, notifications);
 		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
@@ -124,7 +126,7 @@ class ErrandTest {
 
 	private void assertBasicFields(final Errand bean, final Long id, final String errandNumber, final String externalCaseId, final String caseType, final Channel channel, final Priority priority, final String description, final String caseTitleAddition,
 		final String diaryNumber, final String phase,
-		final Suspension suspension, final String municipalityId, final String namespace) {
+		final Suspension suspension, final String municipalityId, final String namespace, final String status) {
 		assertThat(bean.getId()).isEqualTo(id);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
 		assertThat(bean.getExternalCaseId()).isEqualTo(externalCaseId);
@@ -138,6 +140,7 @@ class ErrandTest {
 		assertThat(bean.getSuspension()).isEqualTo(suspension);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getNamespace()).isEqualTo(namespace);
+		assertThat(bean.getStatus()).isEqualTo(status);
 	}
 
 	private void assertDates(final Errand bean, final LocalDate startDate, final LocalDate endDate, final OffsetDateTime applicationReceived, final OffsetDateTime created, final OffsetDateTime updated) {

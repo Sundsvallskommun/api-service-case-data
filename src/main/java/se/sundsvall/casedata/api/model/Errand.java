@@ -71,7 +71,10 @@ public class Errand {
 	@Size(max = 255)
 	private String phase;
 
-	@Schema(description = "The statuses connected to the errand")
+	@Schema(description = "The current status of the errand", example = "Pågående", maxLength = 255)
+	private String status;
+
+	@Schema(description = "The statuses connected to the errand", accessMode = READ_ONLY)
 	private List<Status> statuses;
 
 	@Schema(description = "Start date for the business", format = "date", example = "2022-01-01")
