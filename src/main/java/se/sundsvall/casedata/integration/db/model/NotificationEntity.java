@@ -78,6 +78,9 @@ public class NotificationEntity {
 	@Column(name = "acknowledged")
 	private boolean acknowledged;
 
+	@Column(name = "global_acknowledged")
+	private boolean globalAcknowledged;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "errand_id", nullable = true, foreignKey = @ForeignKey(name = "fk_notification_errand_id"))
 	private ErrandEntity errand;
