@@ -95,6 +95,7 @@
         namespace varchar(255),
         phase varchar(255),
         process_id varchar(255),
+        status varchar(255),
         updated_by_client varchar(255),
         channel enum ('EMAIL','ESERVICE','MOBILE','SYSTEM','WEB_UI'),
         description longtext,
