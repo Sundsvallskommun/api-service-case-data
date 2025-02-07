@@ -7,7 +7,6 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.A
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
 
-import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Optional;
@@ -462,19 +461,18 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace, final ErrandEntity errand, final PortalPersonData creator, final PortalPersonData owner) {
+	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace, final ErrandEntity errand) {
 		return ofNullable(notification)
 			.map(obj -> NotificationEntity.builder()
 				.withAcknowledged(notification.isAcknowledged())
+				.withGlobalAcknowledged(notification.isGlobalAcknowledged())
 				.withContent(notification.getContent())
 				.withCreatedBy(notification.getCreatedBy())
-				.withCreatedByFullName(ofNullable(creator).map(PortalPersonData::getFullname).orElse("unknown"))
 				.withDescription(notification.getDescription())
 				.withExpires(ofNullable(notification.getExpires()).orElse(now().plusDays(DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS)))
 				.withErrand(errand)
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
-				.withOwnerFullName(ofNullable(owner).map(PortalPersonData::getFullname).orElse("unknown"))
 				.withOwnerId(notification.getOwnerId())
 				.withType(notification.getType())
 				.build())
@@ -485,6 +483,7 @@ public final class EntityMapper {
 		return ofNullable(notificationEntity)
 			.map(obj -> Notification.builder()
 				.withAcknowledged(notificationEntity.isAcknowledged())
+				.withGlobalAcknowledged(notificationEntity.isGlobalAcknowledged())
 				.withContent(notificationEntity.getContent())
 				.withCreated(notificationEntity.getCreated())
 				.withCreatedBy(notificationEntity.getCreatedBy())

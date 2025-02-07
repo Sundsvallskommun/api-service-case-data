@@ -1,13 +1,16 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Optional.empty;
+import static java.util.Collections.emptyList;
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.data.domain.Sort.unsorted;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createNotificationEntity;
 import static se.sundsvall.casedata.TestUtil.createPatchNotification;
@@ -49,6 +52,9 @@ class NotificationServiceTest {
 
 	@Captor
 	private ArgumentCaptor<NotificationEntity> notificationEntityArgumentCaptor;
+
+	@Captor
+	private ArgumentCaptor<List<NotificationEntity>> notificationEntityListArgumentCaptor;
 
 	@Test
 	void findNotification() {
@@ -137,8 +143,6 @@ class NotificationServiceTest {
 
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)).thenReturn(Optional.of(notificationEntity.getErrand()));
 		when(incomingRequestFilterMock.getAdUser()).thenReturn("otherAD");
-		when(notificationRepositoryMock.findByNamespaceAndMunicipalityIdAndOwnerIdAndAcknowledgedAndErrandIdAndType(namespace, municipalityId, notification.getOwnerId(), notification.isAcknowledged(), notification.getErrandId(), notification.getType()))
-			.thenReturn(empty());
 		when(notificationRepositoryMock.save(any())).thenReturn(createNotificationEntity(n -> n.setId(id)));
 		when(employeeServiceMock.getEmployeeByLoginName(any())).thenReturn(personalPortalData);
 
@@ -149,7 +153,70 @@ class NotificationServiceTest {
 		assertThat(result).isNotNull();
 		verify(notificationRepositoryMock).save(notificationEntityArgumentCaptor.capture());
 		assertThat(notificationEntityArgumentCaptor.getValue().getOwnerFullName()).isEqualTo(fullName);
-		verify(notificationRepositoryMock).findByNamespaceAndMunicipalityIdAndOwnerIdAndAcknowledgedAndErrandIdAndType(namespace, municipalityId, notification.getOwnerId(), notification.isAcknowledged(), notification.getErrandId(), notification.getType());
+		verifyNoMoreInteractions(notificationRepositoryMock);
+	}
+
+	@Test
+	void createNotification() {
+
+		// Arrange
+		final var municipalityId = "2281";
+		final var namespace = "namespace";
+		final var notification = TestUtil.createNotification(n -> {});
+		final var notificationEntity = createNotificationEntity(n -> {});
+		final var id = "SomeId";
+		final var executingUserId = "executingUserId";
+		final var createdByFullName = "createdByFullName";
+		final var ownerFullName = "ownerFullName";
+
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)).thenReturn(Optional.of(notificationEntity.getErrand()));
+		when(notificationRepositoryMock.save(any())).thenReturn(createNotificationEntity(n -> n.setId(id)));
+		when(employeeServiceMock.getEmployeeByLoginName(notification.getOwnerId())).thenReturn(new PortalPersonData().loginName(notification.getOwnerId()).fullname(ownerFullName));
+		when(employeeServiceMock.getEmployeeByLoginName(executingUserId)).thenReturn(new PortalPersonData().loginName(executingUserId).fullname(createdByFullName));
+		when(incomingRequestFilterMock.getAdUser()).thenReturn("executingUserId");
+
+		// Act
+		final var result = notificationService.create(municipalityId, namespace, notification);
+
+		// Assert
+		assertThat(result).isNotNull().isEqualTo(id);
+		verify(employeeServiceMock).getEmployeeByLoginName(executingUserId);
+		verify(employeeServiceMock).getEmployeeByLoginName(notification.getOwnerId());
+		verify(notificationRepositoryMock).save(notificationEntityArgumentCaptor.capture());
+		assertThat(notificationEntityArgumentCaptor.getValue().getOwnerFullName()).isEqualTo(ownerFullName);
+		assertThat(notificationEntityArgumentCaptor.getValue().getCreatedByFullName()).isEqualTo(createdByFullName);
+		assertThat(notificationEntityArgumentCaptor.getValue().isGlobalAcknowledged()).isFalse();
+		assertThat(notificationEntityArgumentCaptor.getValue().isAcknowledged()).isFalse();
+	}
+
+	@Test
+	void createNotificationWhenExecutinUserIsTheSameAsOwnerId() {
+
+		// Arrange
+		final var municipalityId = "2281";
+		final var namespace = "namespace";
+		final var notification = TestUtil.createNotification(n -> {});
+		final var errandEntity = TestUtil.createNotificationEntity(n -> {}).getErrand();
+		final var id = "SomeId";
+		final var executingUserId = notification.getOwnerId();
+		final var fullName = "fullName";
+
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)).thenReturn(Optional.of(errandEntity));
+		when(notificationRepositoryMock.save(any())).thenReturn(createNotificationEntity(n -> n.setId(id)));
+		when(employeeServiceMock.getEmployeeByLoginName(executingUserId)).thenReturn(new PortalPersonData().loginName(executingUserId).fullname(fullName));
+		when(incomingRequestFilterMock.getAdUser()).thenReturn(executingUserId);
+
+		// Act
+		final var result = notificationService.create(municipalityId, namespace, notification);
+
+		// Assert
+		assertThat(result).isNotNull().isEqualTo(id);
+		verify(employeeServiceMock, times(2)).getEmployeeByLoginName(executingUserId);
+		verify(notificationRepositoryMock).save(notificationEntityArgumentCaptor.capture());
+		assertThat(notificationEntityArgumentCaptor.getValue().getOwnerFullName()).isEqualTo(fullName);
+		assertThat(notificationEntityArgumentCaptor.getValue().getCreatedByFullName()).isEqualTo(fullName);
+		assertThat(notificationEntityArgumentCaptor.getValue().isGlobalAcknowledged()).isFalse();
+		assertThat(notificationEntityArgumentCaptor.getValue().isAcknowledged()).isTrue(); // Set to true when ownerId == executingUserId
 	}
 
 	@Test
@@ -238,5 +305,53 @@ class NotificationServiceTest {
 		// Assert
 		verify(notificationRepositoryMock).findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId);
 		verifyNoMoreInteractions(notificationRepositoryMock);
+	}
+
+	@Test
+	void globalAcknowledgeNotificationsByErrandId() {
+
+		// Arrange
+		final var municipalityId = "2281";
+		final var namespace = "namespace";
+		final var errandId = 678L;
+		final var notificationEntity1 = new NotificationEntity();
+		final var notificationEntity2 = new NotificationEntity();
+		final var notificationEntity3 = new NotificationEntity();
+
+		when(notificationRepositoryMock.findAllByNamespaceAndMunicipalityIdAndErrandId(eq(namespace), eq(municipalityId), eq(errandId), any()))
+			.thenReturn(List.of(notificationEntity1, notificationEntity2, notificationEntity3));
+
+		// Act
+		notificationService.globalAcknowledgeNotificationsByErrandId(municipalityId, namespace, errandId);
+
+		// Assert
+		verify(notificationRepositoryMock).findAllByNamespaceAndMunicipalityIdAndErrandId(namespace, municipalityId, errandId, unsorted());
+		verify(notificationRepositoryMock).saveAll(notificationEntityListArgumentCaptor.capture());
+
+		final var capturedNotificationEntitySaveList = notificationEntityListArgumentCaptor.getValue();
+		assertThat(capturedNotificationEntitySaveList).hasSize(3);
+		capturedNotificationEntitySaveList.stream().forEach(elem -> assertThat(elem.isGlobalAcknowledged()).isTrue());
+	}
+
+	@Test
+	void globalAcknowledgeNotificationsByErrandIdWhenNothingFound() {
+
+		// Arrange
+		final var municipalityId = "2281";
+		final var namespace = "namespace";
+		final var errandId = 678L;
+
+		when(notificationRepositoryMock.findAllByNamespaceAndMunicipalityIdAndErrandId(eq(namespace), eq(municipalityId), eq(errandId), any()))
+			.thenReturn(emptyList());
+
+		// Act
+		notificationService.globalAcknowledgeNotificationsByErrandId(municipalityId, namespace, errandId);
+
+		// Assert
+		verify(notificationRepositoryMock).findAllByNamespaceAndMunicipalityIdAndErrandId(namespace, municipalityId, errandId, unsorted());
+		verify(notificationRepositoryMock).saveAll(notificationEntityListArgumentCaptor.capture());
+
+		final var capturedNotificationEntitySaveList = notificationEntityListArgumentCaptor.getValue();
+		assertThat(capturedNotificationEntitySaveList).isEmpty();
 	}
 }

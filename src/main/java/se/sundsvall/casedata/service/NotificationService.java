@@ -1,6 +1,9 @@
 package se.sundsvall.casedata.service;
 
+import static java.lang.Boolean.TRUE;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.springframework.data.domain.Sort.unsorted;
+import static org.springframework.util.StringUtils.hasText;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ENTITY_NOT_FOUND;
@@ -13,12 +16,14 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchNotification;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.NotificationRepository;
+import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @Service
@@ -72,19 +77,15 @@ public class NotificationService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTIFICATION_ENTITY_NOT_FOUND.formatted(notificationId, namespace, municipalityId, errandId)));
 	}
 
-	public Notification create(final String municipalityId, final String namespace, final Notification notification) {
-		if ((notification.getOwnerId() == null) || isExecutingUserTheOwner(notification.getOwnerId()) || notificationExists(municipalityId, namespace, notification)) {
-			return null;
-		}
-
+	public String create(final String municipalityId, final String namespace, final Notification notification) {
 		final var errandEntity = errandRepository.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(notification.getErrandId(), namespace, municipalityId)));
 
-		final var creator = getPortalPersonData(incomingRequestFilter.getAdUser());
-		final var owner = getPortalPersonData(notification.getOwnerId());
+		final var notificationEntity = toNotificationEntity(notification, municipalityId, namespace, errandEntity);
 
-		return toNotification(notificationRepository.save(toNotificationEntity(notification, municipalityId, namespace, errandEntity, creator, owner)));
+		applyBusinessLogicForCreate(notificationEntity);
 
+		return toNotification(notificationRepository.save(notificationEntity)).getId();
 	}
 
 	public void update(final String municipalityId, final String namespace, final List<PatchNotification> notifications) {
@@ -98,34 +99,75 @@ public class NotificationService {
 		notificationRepository.delete(entity);
 	}
 
+	public void globalAcknowledgeNotificationsByErrandId(final String municipalityId, final String namespace, final long errandId) {
+
+		final var errandEntityList = notificationRepository.findAllByNamespaceAndMunicipalityIdAndErrandId(namespace, municipalityId, errandId, unsorted());
+
+		errandEntityList.forEach(errand -> errand.setGlobalAcknowledged(true));
+
+		notificationRepository.saveAll(errandEntityList);
+	}
+
 	private void updateNotification(final String municipalityId, final String namespace, final String notificationId, final PatchNotification notification) {
-		final var entity = notificationRepository.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, notification.getErrandId())
+		final var notificationEntity = notificationRepository.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, notification.getErrandId())
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTIFICATION_ENTITY_NOT_FOUND.formatted(notificationId, namespace, municipalityId, notification.getErrandId())));
 
-		final var owner = getPortalPersonData(notification.getOwnerId());
+		patchNotification(notificationEntity, notification);
 
-		notificationRepository.save(patchNotification(entity, notification, owner));
-	}
+		applyBusinessLogicForUpdate(notification, notificationEntity);
 
-	private boolean notificationExists(final String municipalityId, final String namespace, final Notification notification) {
-		return notificationRepository
-			.findByNamespaceAndMunicipalityIdAndOwnerIdAndAcknowledgedAndErrandIdAndType(
-				namespace,
-				municipalityId,
-				notification.getOwnerId(),
-				notification.isAcknowledged(),
-				notification.getErrandId(),
-				notification.getType())
-			.isPresent();
-	}
-
-	private boolean isExecutingUserTheOwner(final String ownerId) {
-		return equalsIgnoreCase(ownerId, incomingRequestFilter.getAdUser());
+		notificationRepository.save(notificationEntity);
 	}
 
 	private PortalPersonData getPortalPersonData(final String adAccountId) {
 		return Optional.ofNullable(adAccountId)
 			.map(employeeService::getEmployeeByLoginName)
 			.orElse(null);
+	}
+
+	private void applyBusinessLogicForCreate(final NotificationEntity notificationEntity) {
+
+		final var executingUser = incomingRequestFilter.getAdUser();
+
+		// If notification is created by the user that owns the notification (ownnerId) it should be acknowledged from start.
+		if (equalsIgnoreCase(notificationEntity.getOwnerId(), executingUser)) {
+			notificationEntity.setAcknowledged(true);
+		}
+
+		// If ownerId is set, use this to fetch "ownerFullName".
+		if (hasText(notificationEntity.getOwnerId())) {
+			final var ownerFullName = Optional.ofNullable(getPortalPersonData(notificationEntity.getOwnerId()))
+				.map(PortalPersonData::getFullname)
+				.orElse(null);
+
+			notificationEntity.setOwnerFullName(ownerFullName);
+		}
+
+		// If executingUser is set, use this to populate "createdBy" and createdByFullName (but only if createdBy is empty).
+		if (StringUtils.hasText(executingUser)) {
+			final var createdByFullName = Optional.ofNullable(getPortalPersonData(executingUser))
+				.map(PortalPersonData::getFullname)
+				.orElse(null);
+
+			notificationEntity.setCreatedBy(executingUser);
+			notificationEntity.setCreatedByFullName(createdByFullName);
+		}
+	}
+
+	private void applyBusinessLogicForUpdate(final PatchNotification notification, final NotificationEntity notificationEntity) {
+
+		// If a notification is acknowledged, it's also global_acknowledged.
+		if (TRUE.equals(notification.getAcknowledged())) {
+			notificationEntity.setGlobalAcknowledged(true);
+		}
+
+		// If ownerId is set, fetch "ownerFullName" again.
+		if (hasText(notification.getOwnerId())) {
+			final var ownerFullName = Optional.ofNullable(getPortalPersonData(notification.getOwnerId()))
+				.map(PortalPersonData::getFullname)
+				.orElse(null);
+
+			notificationEntity.setOwnerFullName(ownerFullName);
+		}
 	}
 }

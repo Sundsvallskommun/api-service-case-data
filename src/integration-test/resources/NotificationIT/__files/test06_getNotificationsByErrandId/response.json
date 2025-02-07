@@ -21,7 +21,7 @@
 		"expires": "2000-10-30T23:30:00Z",
 		"municipalityId": "2281",
 		"acknowledged": true,
-		"globalAcknowledged": false,
+		"globalAcknowledged": true,
 		"ownerFullName": "Test Testsson",
 		"errandNumber": "BUILD-2024-000001",
 		"created": "2024-10-14T11:25:51.457+02:00",

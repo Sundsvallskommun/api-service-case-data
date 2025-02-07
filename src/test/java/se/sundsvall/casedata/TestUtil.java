@@ -402,7 +402,7 @@ public final class TestUtil {
 
 	public static Notification createNotification(final Consumer<Notification> modifier) {
 		final var notification = Notification.builder()
-			.withAcknowledged(true)
+			.withAcknowledged(false)
 			.withContent(RandomStringUtils.secure().next(10, true, false))
 			.withCreated(getRandomOffsetDateTime())
 			.withCreatedBy(RandomStringUtils.secure().next(10, true, false))

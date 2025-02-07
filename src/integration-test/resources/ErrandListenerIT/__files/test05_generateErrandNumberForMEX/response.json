@@ -6,7 +6,7 @@
 			"municipalityId": "2281",
 			"noteType": "PUBLIC",
 			"updatedBy": "sRXYGByNYE",
-			"createdBy": "UNKNOWN",
+			"createdBy": "user123",
 			"created": "${json-unit.any-string}",
 			"namespace": "SBK_MEX",
 			"extraParameters": {
@@ -24,7 +24,7 @@
 			"municipalityId": "2281",
 			"noteType": "PUBLIC",
 			"updatedBy": "wZLYbWWWfF",
-			"createdBy": "UNKNOWN",
+			"createdBy": "user123",
 			"created": "${json-unit.any-string}",
 			"namespace": "SBK_MEX",
 			"extraParameters": {
@@ -42,7 +42,7 @@
 			"municipalityId": "2281",
 			"noteType": "PUBLIC",
 			"updatedBy": "oHfjmxxKyo",
-			"createdBy": "UNKNOWN",
+			"createdBy": "user123",
 			"created": "${json-unit.any-string}",
 			"namespace": "SBK_MEX",
 			"extraParameters": {
@@ -57,7 +57,23 @@
 			"updated": "${json-unit.any-string}"
 		}
 	],
-	"notifications": [],
+	"notifications": [
+		{
+			"id": "${json-unit.any-string}",
+			"municipalityId": "2281",
+			"namespace": "SBK_MEX",
+			"created": "${json-unit.any-string}",
+			"createdBy": "user123",
+			"createdByFullName": "Usersson User",
+			"type": "CREATE",
+			"description": "Ärende skapat",
+			"expires": "${json-unit.any-string}",
+			"acknowledged": false,
+			"globalAcknowledged": false,
+			"errandId": 3,
+			"errandNumber": "MEX-2025-000001"
+		}
+	],
 	"errandNumber": "${json-unit.regex}^MEX-\\d{4}-000001$",
 	"endDate": "2024-05-09",
 	"createdByClient": "UNKNOWN",
@@ -291,13 +307,13 @@
 	"relatesTo": [],
 	"suspension": {},
 	"phase": "Actualization",
-	"updatedBy": "UNKNOWN",
+	"updatedBy": "user123",
 	"created": "${json-unit.any-string}",
 	"updatedByClient": "UNKNOWN",
 	"priority": "HIGH",
-	"version": 2,
+	"version": 3,
 	"labels": [],
-	"createdBy": "UNKNOWN",
+	"createdBy": "user123",
 	"namespace": "SBK_MEX",
 	"statuses": [
 		{
