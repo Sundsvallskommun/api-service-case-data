@@ -9,7 +9,6 @@ import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createStatus;
 
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,26 +47,6 @@ class StatusResourceTest {
 
 		// Assert
 		verify(statusServiceMock).addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, status);
-		verifyNoMoreInteractions(statusServiceMock);
-	}
-
-	@Test
-	void replaceStatusOnErrand() {
-		// Arrange
-		final var errandId = 123L;
-		final var statusList = List.of(createStatus());
-
-		// Act
-		webTestClient.put()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
-			.contentType(APPLICATION_JSON)
-			.bodyValue(statusList)
-			.exchange()
-			.expectStatus().isNoContent()
-			.expectHeader().contentType(ALL_VALUE);
-
-		// Assert
-		verify(statusServiceMock).replaceOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, statusList);
 		verifyNoMoreInteractions(statusServiceMock);
 	}
 

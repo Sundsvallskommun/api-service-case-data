@@ -299,11 +299,11 @@
 	"labels": [],
 	"createdBy": "UNKNOWN",
 	"namespace": "SBK_MEX",
+	"status": "Ärende inkommit",
 	"statuses": [
 		{
-			"dateTime": "2023-01-24T10:04:04.326+01:00",
-			"statusType": "Ärende inkommit",
-			"description": "Ärende inkommit"
+			"dateTime": "${json-unit.any-string}",
+			"statusType": "Ärende inkommit"
 		}
 	],
 	"facilities": [

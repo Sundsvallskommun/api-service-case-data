@@ -101,6 +101,7 @@ public final class TestUtil {
 			.withProcessId(RandomStringUtils.secure().next(10, true, true))
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
+			.withStatus("status")
 			.withRelatesTo(new ArrayList<>(List.of(RelatedErrand.builder().withErrandId(new Random().nextLong()).withErrandNumber("ErrandNumber").withRelationReason("Relation reason").build())))
 			.withNotes(new ArrayList<>(List.of(createNote(), createNote(), createNote())))
 			.withStakeholders(new ArrayList<>(List.of(
@@ -617,6 +618,7 @@ public final class TestUtil {
 			.withCaseTitleAddition("caseTitleAddition")
 			.withDiaryNumber("diaryNumber")
 			.withDescription("description")
+			.withStatus("status")
 			.withPhase("phase")
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)

@@ -175,13 +175,7 @@
 	"caseType": "LOST_PARKING_PERMIT",
 	"diaryNumber": "DIARY-123",
 	"caseTitleAddition": "Borttappat parkeringstillstånd",
-	"statuses": [
-		{
-			"dateTime": "2023-01-24T10:04:04.326+01:00",
-			"statusType": "Ärende inkommit",
-			"description": "Ärende inkommit"
-		}
-	],
+	"status": "Ärende inkommit",
 	"decisions": [
 		{
 			"law": [
