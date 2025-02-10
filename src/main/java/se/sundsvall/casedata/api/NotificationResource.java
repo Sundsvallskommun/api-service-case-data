@@ -101,7 +101,7 @@ class NotificationResource {
 		notification.setErrandId(errandId);
 		final var result = notificationService.create(municipalityId, namespace, notification);
 		return created(fromPath("/{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}")
-			.buildAndExpand(municipalityId, namespace, result.getErrandId(), result.getId()).toUri())
+			.buildAndExpand(municipalityId, namespace, errandId, result).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
@@ -131,8 +131,7 @@ class NotificationResource {
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId) {
 
-		// TODO: Add implementation
-
+		notificationService.globalAcknowledgeNotificationsByErrandId(municipalityId, namespace, errandId);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

@@ -2,7 +2,23 @@
 	"municipalityId": "2281",
 	"externalCaseId": "",
 	"notes": [],
-	"notifications": [],
+	"notifications": [
+		{
+			"id": "${json-unit.any-string}",
+			"municipalityId": "2281",
+			"namespace": "MY_NAMESPACE",
+			"created": "${json-unit.any-string}",
+			"createdBy": "PatchUser",
+			"createdByFullName": "Usersson User",
+			"type": "UPDATE",
+			"description": "Ärende uppdaterat",
+			"expires": "${json-unit.any-string}",
+			"acknowledged": false,
+			"globalAcknowledged": false,
+			"errandId": 2,
+			"errandNumber": "PRH-2022-000030"
+		}
+	],
 	"errandNumber": "PRH-2022-000030",
 	"createdByClient": "WSO2_test",
 	"description": "New description",
@@ -21,7 +37,7 @@
 	"created": "2022-12-02T15:13:45.363+01:00",
 	"updatedByClient": "WSO2_MS_caseManagement",
 	"priority": "HIGH",
-	"version": 2,
+	"version": 3,
 	"labels": [
 		"updated-label-1",
 		"updated-label-2"
