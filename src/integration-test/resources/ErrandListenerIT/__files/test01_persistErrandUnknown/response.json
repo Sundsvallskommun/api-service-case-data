@@ -6,7 +6,7 @@
 			"municipalityId": "2281",
 			"noteType": "PUBLIC",
 			"updatedBy": "UNKNOWN",
-			"createdBy": "user123",
+			"createdBy": "UNKNOWN",
 			"created": "${json-unit.any-string}",
 			"namespace": "SBK_PARKING_PERMIT",
 			"extraParameters": {
@@ -24,7 +24,7 @@
 			"municipalityId": "2281",
 			"noteType": "PUBLIC",
 			"updatedBy": "UNKNOWN",
-			"createdBy": "user123",
+			"createdBy": "UNKNOWN",
 			"created": "${json-unit.any-string}",
 			"namespace": "SBK_PARKING_PERMIT",
 			"extraParameters": {
@@ -45,8 +45,7 @@
 			"municipalityId": "2281",
 			"namespace": "SBK_PARKING_PERMIT",
 			"created": "${json-unit.any-string}",
-			"createdBy": "user123",
-			"createdByFullName": "Usersson User",
+			"createdBy": "UNKNOWN",
 			"type": "CREATE",
 			"description": "Ärende skapat",
 			"expires": "${json-unit.any-string}",
@@ -292,13 +291,13 @@
 	"relatesTo": [],
 	"suspension": {},
 	"phase": "Actualization",
-	"updatedBy": "user123",
+	"updatedBy": "UNKNOWN",
 	"created": "${json-unit.any-string}",
 	"updatedByClient": "UNKNOWN",
 	"priority": "HIGH",
 	"version": 3,
 	"labels": [],
-	"createdBy": "user123",
+	"createdBy": "UNKNOWN",
 	"namespace": "SBK_PARKING_PERMIT",
 	"statuses": [
 		{

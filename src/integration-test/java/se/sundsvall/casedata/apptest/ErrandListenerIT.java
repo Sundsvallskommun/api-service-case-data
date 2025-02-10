@@ -43,7 +43,6 @@ class ErrandListenerIT extends AbstractAppTest {
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(getPath())
-			.withHeader(AD_USER_HEADER_KEY, "user123")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
 			.sendRequest();
