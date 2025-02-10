@@ -20,6 +20,6 @@ public class NotificationScheduler {
 		lockAtMostFor = "${scheduler.notification.shedlock-lock-at-most-for}",
 		maximumExecutionTime = "${scheduler.notification.maximum-execution-time}")
 	void process() {
-		notificationWorker.processExpiredNotifications();
+		notificationWorker.cleanUpNotifications();
 	}
 }

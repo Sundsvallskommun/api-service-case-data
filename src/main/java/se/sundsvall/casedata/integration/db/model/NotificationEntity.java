@@ -16,7 +16,6 @@ import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.UuidGenerator;
@@ -35,7 +34,6 @@ import se.sundsvall.casedata.integration.db.listeners.NotificationListener;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(setterPrefix = "with")
-@EqualsAndHashCode
 public class NotificationEntity {
 
 	@Id
