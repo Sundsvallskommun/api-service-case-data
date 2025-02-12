@@ -25,7 +25,7 @@ class NotificationSchedulerTest {
 		notificationScheduler.process();
 
 		// Assert
-		verify(notificationWorkerMock).processExpiredNotifications();
+		verify(notificationWorkerMock).cleanUpNotifications();
 		verifyNoMoreInteractions(notificationWorkerMock);
 	}
 }
