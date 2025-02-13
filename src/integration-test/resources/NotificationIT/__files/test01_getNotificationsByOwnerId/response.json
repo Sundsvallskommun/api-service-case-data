@@ -27,7 +27,7 @@
 		"globalAcknowledged": false,
 		"errandNumber": "BUILD-2024-000001",
 		"created": "2024-10-14T11:25:51.457+02:00",
-		"description": "Some description of the notification 1 ",
+		"description": "Some description of the notification 1",
 		"ownerId": "testuser2",
 		"type": "UPDATE",
 		"content": "Some content of the notification 1",
