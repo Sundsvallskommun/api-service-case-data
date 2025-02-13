@@ -61,6 +61,7 @@ import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
+// TODO: Rewrite this to follow the same pattern as the other tests
 @WireMockAppTestSuite(files = "classpath:/ErrandIT", classes = Application.class)
 class ErrandIT extends AbstractAppTest {
 
@@ -86,6 +87,7 @@ class ErrandIT extends AbstractAppTest {
 		"updatedBy",
 		"stakeholders",
 		"relatesTo",
+		"status.dateTime",
 		"statuses",
 		"notes",
 		"notifications",
