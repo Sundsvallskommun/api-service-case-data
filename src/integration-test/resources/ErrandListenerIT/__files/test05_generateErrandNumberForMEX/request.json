@@ -175,13 +175,11 @@
 	"caseType": "MEX_LEASE_REQUEST",
 	"diaryNumber": "DIARY-123",
 	"caseTitleAddition": "Case title addition",
-	"status": "Ärende inkommit",
-	"statuses": [
-		{
-			"dateTime": "2023-01-24T10:04:04.326+01:00",
-			"statusType": "Ärende inkommit"
-		}
-	],
+	"status": {
+		"statusType": "Ärende inkommit",
+		"description": "Ärende inkommit",
+		"dateTime": "2025-12-02T15:15:01+01:00"
+	},
 	"decisions": [
 		{
 			"law": [

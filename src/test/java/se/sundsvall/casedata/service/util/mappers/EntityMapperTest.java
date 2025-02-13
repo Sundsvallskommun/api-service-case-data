@@ -85,7 +85,7 @@ class EntityMapperTest {
 		final var errand = toErrandEntity(errandDto, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		assertThat(errand).hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "notifications", "statuses").satisfies(e -> {
+		assertThat(errand).hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "notifications").satisfies(e -> {
 			assertThat(e.getErrandNumber()).isEqualTo(errandDto.getErrandNumber());
 			assertThat(e.getUpdatedByClient()).isEqualTo(errandDto.getUpdatedByClient());
 			assertThat(e.getUpdatedBy()).isEqualTo(errandDto.getUpdatedBy());

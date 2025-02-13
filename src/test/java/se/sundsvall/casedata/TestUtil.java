@@ -1,5 +1,6 @@
 package se.sundsvall.casedata;
 
+import static java.time.OffsetDateTime.now;
 import static java.util.UUID.randomUUID;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
@@ -101,7 +102,7 @@ public final class TestUtil {
 			.withProcessId(RandomStringUtils.secure().next(10, true, true))
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
-			.withStatus("status")
+			.withStatus(Status.builder().withStatusType("test").withDateTime(now()).withDescription("test").build())
 			.withRelatesTo(new ArrayList<>(List.of(RelatedErrand.builder().withErrandId(new Random().nextLong()).withErrandNumber("ErrandNumber").withRelationReason("Relation reason").build())))
 			.withNotes(new ArrayList<>(List.of(createNote(), createNote(), createNote())))
 			.withStakeholders(new ArrayList<>(List.of(
@@ -111,7 +112,7 @@ public final class TestUtil {
 				RandomStringUtils.secure().next(10, true, true),
 				RandomStringUtils.secure().next(10, true, true),
 				RandomStringUtils.secure().next(10, true, true))))
-			.withSuspension(Suspension.builder().withSuspendedFrom(OffsetDateTime.now()).withSuspendedTo(OffsetDateTime.now().plusDays(5)).build())
+			.withSuspension(Suspension.builder().withSuspendedFrom(now()).withSuspendedTo(now().plusDays(5)).build())
 			.withExtraParameters(createExtraParametersList())
 			.withLabels(new ArrayList<>(List.of("label1", "label2")))
 			.build();
@@ -126,7 +127,7 @@ public final class TestUtil {
 	}
 
 	public static OffsetDateTime getRandomOffsetDateTime() {
-		return toOffsetDateTimeWithLocalOffset(OffsetDateTime.now().minusDays(new Random().nextInt(10000)).truncatedTo(ChronoUnit.MILLIS));
+		return toOffsetDateTimeWithLocalOffset(now().minusDays(new Random().nextInt(10000)).truncatedTo(ChronoUnit.MILLIS));
 	}
 
 	public static Status createStatus() {
@@ -331,7 +332,7 @@ public final class TestUtil {
 			.withApplicationReceived(getRandomOffsetDateTime())
 			.withExtraParameters(createExtraParametersList())
 			.withFacilities(new ArrayList<>(List.of(createFacility())))
-			.withSuspension(Suspension.builder().withSuspendedFrom(OffsetDateTime.now()).withSuspendedTo(OffsetDateTime.now().plusDays(5)).build())
+			.withSuspension(Suspension.builder().withSuspendedFrom(now()).withSuspendedTo(now().plusDays(5)).build())
 			.withRelatesTo(new ArrayList<>(List.of(new RelatedErrand())))
 			.withLabels(new ArrayList<>(List.of("label-xxx", "label-yyy")))
 			.build();
@@ -618,7 +619,7 @@ public final class TestUtil {
 			.withCaseTitleAddition("caseTitleAddition")
 			.withDiaryNumber("diaryNumber")
 			.withDescription("description")
-			.withStatus("status")
+			.withStatus(StatusEntity.builder().withStatusType("test").withDateTime(now()).withDescription("test").build())
 			.withPhase("phase")
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)

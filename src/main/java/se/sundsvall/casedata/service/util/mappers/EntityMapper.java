@@ -10,7 +10,6 @@ import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMap
 import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Optional;
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -72,7 +71,7 @@ public final class EntityMapper {
 				.withUpdatedBy(errandEntity.getUpdatedBy())
 				.withMunicipalityId(errandEntity.getMunicipalityId())
 				.withNamespace(errandEntity.getNamespace())
-				.withStatus(errandEntity.getStatus())
+				.withStatus(EntityMapper.toStatus(errandEntity.getStatus()))
 				.withSuspension(Suspension.builder().withSuspendedFrom(errandEntity.getSuspendedFrom()).withSuspendedTo(errandEntity.getSuspendedTo()).build())
 				.withNotes(new ArrayList<>(ofNullable(errandEntity.getNotes()).orElse(emptyList()).stream().map(EntityMapper::toNote).toList()))
 				.withStatuses(new ArrayList<>(ofNullable(errandEntity.getStatuses()).orElse(emptyList()).stream().map(EntityMapper::toStatus).toList()))
@@ -111,14 +110,12 @@ public final class EntityMapper {
 				.withUpdatedBy(errand.getUpdatedBy())
 				.withSuspendedFrom(ofNullable(errand.getSuspension()).map(Suspension::getSuspendedFrom).orElse(null))
 				.withSuspendedTo(ofNullable(errand.getSuspension()).map(Suspension::getSuspendedTo).orElse(null))
-				.withStatus(errand.getStatus())
-
-				.withStatuses(Optional.ofNullable(errand.getStatus())
-					.map(status -> new ArrayList<>(List.of(StatusEntity.builder()
-						.withDateTime(now())
-						.withStatusType(status)
-						.build())))
-					.orElse(new ArrayList<>()))
+				.withStatus(EntityMapper.toStatusEntity(errand.getStatus()))
+				.withStatuses(new ArrayList<>(ofNullable(errand.getStatuses())
+					.orElse(emptyList())
+					.stream()
+					.map(EntityMapper::toStatusEntity)
+					.toList()))
 
 				.withStakeholders(new ArrayList<>(ofNullable(errand.getStakeholders())
 					.orElse(emptyList())

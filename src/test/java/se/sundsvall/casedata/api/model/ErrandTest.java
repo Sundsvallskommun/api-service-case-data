@@ -74,7 +74,7 @@ class ErrandTest {
 		final var namespace = "namespace";
 		final var relatesTo = List.of(new RelatedErrand());
 		final var labels = List.of("label");
-		final var status = "Pågående";
+		final var status = new Status();
 		final var notifications = List.of(new Notification());
 
 		// Act
@@ -126,7 +126,7 @@ class ErrandTest {
 
 	private void assertBasicFields(final Errand bean, final Long id, final String errandNumber, final String externalCaseId, final String caseType, final Channel channel, final Priority priority, final String description, final String caseTitleAddition,
 		final String diaryNumber, final String phase,
-		final Suspension suspension, final String municipalityId, final String namespace, final String status) {
+		final Suspension suspension, final String municipalityId, final String namespace, final Status status) {
 		assertThat(bean.getId()).isEqualTo(id);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
 		assertThat(bean.getExternalCaseId()).isEqualTo(externalCaseId);

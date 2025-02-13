@@ -4,10 +4,12 @@ import static org.hibernate.Length.LONG32;
 import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -105,8 +107,11 @@ public class ErrandEntity {
 	@Column(name = "phase")
 	private String phase;
 
-	@Column(name = "status")
-	private String status;
+	@Embedded
+	@AttributeOverride(name = "statusType", column = @Column(name = "status"))
+	@AttributeOverride(name = "description", column = @Column(name = "status_description"))
+	@AttributeOverride(name = "dateTime", column = @Column(name = "status_updated"))
+	private StatusEntity status;
 
 	@ElementCollection
 	@CollectionTable(name = "errand_statuses",
