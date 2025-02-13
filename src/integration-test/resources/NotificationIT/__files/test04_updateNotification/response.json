@@ -4,7 +4,7 @@
 	"errandId": 1,
 	"ownerFullName": "Doe Joe",
 	"acknowledged": true,
-	"globalAcknowledged": false,
+	"globalAcknowledged": true,
 	"errandNumber": "BUILD-2024-000001",
 	"created": "2024-10-15T10:16:29.097+02:00",
 	"description": "Updated description",

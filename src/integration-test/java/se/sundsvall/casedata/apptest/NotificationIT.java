@@ -5,6 +5,7 @@ import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -16,10 +17,8 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
@@ -34,7 +33,7 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 class NotificationIT extends AbstractAppTest {
 
 	private static final String NOTIFICATION_ID = "25d818b7-763e-4b77-9fce-1c7dfc42deb2";
-	private static final String NOTIFICATIONS_PATH =  "/{municipalityId}/{namespace}/notifications";
+	private static final String NOTIFICATIONS_PATH = "/{municipalityId}/{namespace}/notifications";
 	private static final String ERRAND_NOTIFICATIONS_PATH = "/{municipalityId}/{namespace}/errands/{errandId}/notifications";
 	private static final String NOTIFICATION_PATH = "/{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}";
 
@@ -128,6 +127,27 @@ class NotificationIT extends AbstractAppTest {
 
 	@Test
 	void test06_getNotificationsByErrandId() {
+		setupCall()
+			.withServicePath(builder -> fromPath(ERRAND_NOTIFICATIONS_PATH)
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 1)))
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test07_globalAcknowledgeNotifications() {
+
+		setupCall()
+			.withServicePath(builder -> fromPath(ERRAND_NOTIFICATIONS_PATH + "/global-acknowledged")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 1)))
+			.withHttpMethod(PUT)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(NO_CONTENT)
+			.withExpectedResponseBodyIsNull()
+			.sendRequest();
+
 		setupCall()
 			.withServicePath(builder -> fromPath(ERRAND_NOTIFICATIONS_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 1)))

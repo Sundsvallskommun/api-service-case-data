@@ -2,6 +2,7 @@ package se.sundsvall.casedata.api;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -112,6 +113,7 @@ class NotificationsResourceTest {
 	void createNotification() {
 
 		// Arrange
+		final var notificationId = randomUUID().toString();
 		final var errandId = 12345L;
 		final var requestBody = Notification.builder()
 			.withOwnerId("SomeOwnerId")
@@ -123,8 +125,7 @@ class NotificationsResourceTest {
 			.withAcknowledged(false)
 			.build();
 
-		final var notificationId = randomUUID().toString();
-		when(notificationServiceMock.create(MUNICIPALITY_ID, NAMESPACE, requestBody)).thenReturn(Notification.builder().withErrandId(errandId).withId(notificationId).build());
+		when(notificationServiceMock.create(MUNICIPALITY_ID, NAMESPACE, requestBody)).thenReturn(notificationId);
 
 		// Act
 		final var response = webTestClient.post()
@@ -194,9 +195,8 @@ class NotificationsResourceTest {
 		// Arrange
 		final var errandId = 12345L;
 
-		// TODO: Mock
-		// doNothing().when(notificationServiceMock).globalAcknowledgeNotificationsByErrandId(MUNICIPALITY_ID, NAMESPACE,
-		// ERRAND_ID);
+		// Mock
+		doNothing().when(notificationServiceMock).globalAcknowledgeNotificationsByErrandId(MUNICIPALITY_ID, NAMESPACE, errandId);
 
 		// Call
 		final var response = webTestClient.put()
@@ -209,7 +209,6 @@ class NotificationsResourceTest {
 
 		// Verification
 		assertThat(response).isNotNull();
-		// TODO: verify(notificationServiceMock).globalAcknowledgeNotificationsByErrandId(MUNICIPALITY_ID, NAMESPACE,
-		// ERRAND_ID);
+		verify(notificationServiceMock).globalAcknowledgeNotificationsByErrandId(MUNICIPALITY_ID, NAMESPACE, errandId);
 	}
 }

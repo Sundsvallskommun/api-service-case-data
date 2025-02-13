@@ -56,7 +56,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakehol
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatusEntity;
 
-import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -653,18 +652,18 @@ class EntityMapperTest {
 		// Arrange
 		final var notification = createNotification(null);
 		final var errand = createErrandEntity();
-		final var creator = new PortalPersonData().fullname("creatorFullName");
-		final var owner = new PortalPersonData().fullname("ownerFullName");
 
 		// Act
-		final var notificationEntity = toNotificationEntity(notification, MUNICIPALITY_ID, NAMESPACE, errand, creator, owner);
+		final var notificationEntity = toNotificationEntity(notification, MUNICIPALITY_ID, NAMESPACE, errand);
 
 		// Assert
 		assertThat(notificationEntity).satisfies(entity -> {
+			assertThat(entity.isAcknowledged()).isEqualTo(notification.isAcknowledged());
+			assertThat(entity.isGlobalAcknowledged()).isEqualTo(notification.isGlobalAcknowledged());
 			assertThat(entity.getContent()).isEqualTo(notification.getContent());
 			assertThat(entity.getCreated()).isNull();
 			assertThat(entity.getCreatedBy()).isEqualTo(notification.getCreatedBy());
-			assertThat(entity.getCreatedByFullName()).isEqualTo("creatorFullName");
+			assertThat(entity.getCreatedByFullName()).isNull();
 			assertThat(entity.getDescription()).isEqualTo(notification.getDescription());
 			assertThat(entity.getExpires()).isEqualTo(notification.getExpires());
 			assertThat(entity.getErrand()).isEqualTo(errand);
@@ -672,7 +671,7 @@ class EntityMapperTest {
 			assertThat(entity.getModified()).isNull();
 			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 			assertThat(entity.getNamespace()).isEqualTo(NAMESPACE);
-			assertThat(entity.getOwnerFullName()).isEqualTo("ownerFullName");
+			assertThat(entity.getOwnerFullName()).isNull();
 			assertThat(entity.getOwnerId()).isEqualTo(notification.getOwnerId());
 			assertThat(entity.getType()).isEqualTo(notification.getType());
 		});
@@ -683,20 +682,20 @@ class EntityMapperTest {
 		// Arrange
 		final var notification = createNotification(null);
 		final var errand = createErrandEntity();
-		final var creator = new PortalPersonData().fullname("creatorFullName");
-		final var owner = new PortalPersonData().fullname("ownerFullName");
 
 		notification.setExpires(null);
 
 		// Act
-		final var notificationEntity = toNotificationEntity(notification, MUNICIPALITY_ID, NAMESPACE, errand, creator, owner);
+		final var notificationEntity = toNotificationEntity(notification, MUNICIPALITY_ID, NAMESPACE, errand);
 
 		// Assert
 		assertThat(notificationEntity).satisfies(entity -> {
+			assertThat(entity.isAcknowledged()).isEqualTo(notification.isAcknowledged());
+			assertThat(entity.isGlobalAcknowledged()).isEqualTo(notification.isGlobalAcknowledged());
 			assertThat(entity.getContent()).isEqualTo(notification.getContent());
 			assertThat(entity.getCreated()).isNull();
 			assertThat(entity.getCreatedBy()).isEqualTo(notification.getCreatedBy());
-			assertThat(entity.getCreatedByFullName()).isEqualTo("creatorFullName");
+			assertThat(entity.getCreatedByFullName()).isNull();
 			assertThat(entity.getDescription()).isEqualTo(notification.getDescription());
 			assertThat(entity.getExpires()).isCloseTo(now().plusDays(30), within(1, SECONDS)); // Should be 30 days from now
 			assertThat(entity.getErrand()).isEqualTo(errand);
@@ -704,35 +703,7 @@ class EntityMapperTest {
 			assertThat(entity.getModified()).isNull();
 			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 			assertThat(entity.getNamespace()).isEqualTo(NAMESPACE);
-			assertThat(entity.getOwnerFullName()).isEqualTo("ownerFullName");
-			assertThat(entity.getOwnerId()).isEqualTo(notification.getOwnerId());
-			assertThat(entity.getType()).isEqualTo(notification.getType());
-		});
-	}
-
-	@Test
-	void toNotificationEntityTestWhenOwnerAndCreatorAreNull() {
-		// Arrange
-		final var notification = createNotification(null);
-		final var errand = createErrandEntity();
-
-		// Act
-		final var notificationEntity = toNotificationEntity(notification, MUNICIPALITY_ID, NAMESPACE, errand, null, null); // owner and creator null
-
-		// Assert
-		assertThat(notificationEntity).satisfies(entity -> {
-			assertThat(entity.getContent()).isEqualTo(notification.getContent());
-			assertThat(entity.getCreated()).isNull();
-			assertThat(entity.getCreatedBy()).isEqualTo(notification.getCreatedBy());
-			assertThat(entity.getCreatedByFullName()).isEqualTo("unknown");
-			assertThat(entity.getDescription()).isEqualTo(notification.getDescription());
-			assertThat(entity.getExpires()).isEqualTo(notification.getExpires());
-			assertThat(entity.getErrand()).isEqualTo(errand);
-			assertThat(entity.getId()).isNull();
-			assertThat(entity.getModified()).isNull();
-			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
-			assertThat(entity.getNamespace()).isEqualTo(NAMESPACE);
-			assertThat(entity.getOwnerFullName()).isEqualTo("unknown");
+			assertThat(entity.getOwnerFullName()).isNull();
 			assertThat(entity.getOwnerId()).isEqualTo(notification.getOwnerId());
 			assertThat(entity.getType()).isEqualTo(notification.getType());
 		});
@@ -748,6 +719,8 @@ class EntityMapperTest {
 
 		// Assert
 		assertThat(notification).satisfies(obj -> {
+			assertThat(obj.isAcknowledged()).isEqualTo(notificationEntity.isAcknowledged());
+			assertThat(obj.isGlobalAcknowledged()).isEqualTo(notificationEntity.isGlobalAcknowledged());
 			assertThat(obj.getContent()).isEqualTo(notificationEntity.getContent());
 			assertThat(obj.getCreated()).isEqualTo(notificationEntity.getCreated());
 			assertThat(obj.getCreatedBy()).isEqualTo(notificationEntity.getCreatedBy());

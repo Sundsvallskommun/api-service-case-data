@@ -1,0 +1,19 @@
+{
+	"request": {
+		"method": "GET",
+		"urlPath": "/employee/portalpersondata/personal/UNKNOWN"
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"jsonBody": {
+			"type": "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+			"title": "Not Found",
+			"status": 404,
+			"traceId": "00-4fc1f6a3c7bc2da1c348461b9886239e-83eb89ef54da4299-00"
+		},
+		"status": 404
+	},
+	"name": "api-employee-getEmployeePersonalData"
+}
