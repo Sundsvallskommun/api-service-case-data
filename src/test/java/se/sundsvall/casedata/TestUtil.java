@@ -102,7 +102,7 @@ public final class TestUtil {
 			.withProcessId(RandomStringUtils.secure().next(10, true, true))
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
-			.withStatus(Status.builder().withStatusType("test").withDateTime(now()).withDescription("test").build())
+			.withStatus(Status.builder().withStatusType("test").withDescription("test").build())
 			.withRelatesTo(new ArrayList<>(List.of(RelatedErrand.builder().withErrandId(new Random().nextLong()).withErrandNumber("ErrandNumber").withRelationReason("Relation reason").build())))
 			.withNotes(new ArrayList<>(List.of(createNote(), createNote(), createNote())))
 			.withStakeholders(new ArrayList<>(List.of(
@@ -135,7 +135,7 @@ public final class TestUtil {
 		return Status.builder()
 			.withStatusType(RandomStringUtils.secure().next(10, true, false))
 			.withDescription(RandomStringUtils.secure().next(20, true, false))
-			.withDateTime(getRandomOffsetDateTime())
+			.withCreated(getRandomOffsetDateTime())
 			.build();
 	}
 
@@ -447,7 +447,7 @@ public final class TestUtil {
 	public static StatusEntity createStatusEntity() {
 		return StatusEntity.builder()
 			.withDescription("description")
-			.withDateTime(getRandomOffsetDateTime())
+			.withCreated(getRandomOffsetDateTime())
 			.withStatusType("statusType")
 			.build();
 	}
@@ -619,7 +619,7 @@ public final class TestUtil {
 			.withCaseTitleAddition("caseTitleAddition")
 			.withDiaryNumber("diaryNumber")
 			.withDescription("description")
-			.withStatus(StatusEntity.builder().withStatusType("test").withDateTime(now()).withDescription("test").build())
+			.withStatus(StatusEntity.builder().withStatusType("test").withCreated(now()).withDescription("test").build())
 			.withPhase("phase")
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)

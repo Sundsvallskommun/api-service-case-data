@@ -110,7 +110,7 @@ public class ErrandEntity {
 	@Embedded
 	@AttributeOverride(name = "statusType", column = @Column(name = "status"))
 	@AttributeOverride(name = "description", column = @Column(name = "status_description"))
-	@AttributeOverride(name = "dateTime", column = @Column(name = "status_updated"))
+	@AttributeOverride(name = "created", column = @Column(name = "status_created"))
 	private StatusEntity status;
 
 	@ElementCollection

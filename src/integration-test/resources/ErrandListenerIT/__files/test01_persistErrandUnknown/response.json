@@ -300,13 +300,13 @@
 	"createdBy": "UNKNOWN",
 	"namespace": "SBK_PARKING_PERMIT",
 	"status": {
-		"dateTime": "${json-unit.any-string}",
+		"created": "${json-unit.any-string}",
 		"statusType": "Ärende inkommit",
 		"description": "Ärende inkommit"
 	},
 	"statuses": [
 		{
-			"dateTime": "${json-unit.any-string}",
+			"created": "${json-unit.any-string}",
 			"statusType": "Ärende inkommit",
 			"description": "Ärende inkommit"
 		}

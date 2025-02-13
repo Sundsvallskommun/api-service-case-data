@@ -80,7 +80,7 @@
         application_received datetime(6),
         created datetime(6),
         id bigint not null auto_increment,
-        status_updated datetime(6),
+        status_created datetime(6),
         suspended_from datetime(6),
         suspended_to datetime(6),
         updated datetime(6),

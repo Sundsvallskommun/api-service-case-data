@@ -61,7 +61,7 @@ import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
-// TODO: Rewrite this to follow the same pattern as the other tests
+// TODO: Rewrite this to follow the same pattern as the other tests (UF-14474)
 @WireMockAppTestSuite(files = "classpath:/ErrandIT", classes = Application.class)
 class ErrandIT extends AbstractAppTest {
 
@@ -87,7 +87,7 @@ class ErrandIT extends AbstractAppTest {
 		"updatedBy",
 		"stakeholders",
 		"relatesTo",
-		"status.dateTime",
+		"status.created",
 		"statuses",
 		"notes",
 		"notifications",
@@ -853,7 +853,7 @@ class ErrandIT extends AbstractAppTest {
 
 		final var status = createStatus();
 
-		webTestClient.patch().uri(format("/{0}/{1}/errands/{2}/statuses", municipalityId, namespace, errandId))
+		webTestClient.patch().uri(format("/{0}/{1}/errands/{2}/status", municipalityId, namespace, errandId))
 			.bodyValue(status)
 			.exchange()
 			.expectStatus().isNoContent();
@@ -867,7 +867,10 @@ class ErrandIT extends AbstractAppTest {
 			.getResponseBody();
 
 		assertThat(result).isNotNull().isNotEqualTo(errand);
-		assertThat(result.getStatuses()).contains(status);
+		assertThat(result.getStatuses()).hasSize(2);
+		assertThat(result.getStatuses().getLast().getStatusType()).isEqualTo(status.getStatusType());
+		assertThat(result.getStatuses().getLast().getCreated()).isCloseTo(OffsetDateTime.now(), Assertions.within(2, SECONDS));
+		assertThat(result.getStatuses().getLast().getDescription()).isEqualTo(status.getDescription());
 	}
 
 	@ParameterizedTest

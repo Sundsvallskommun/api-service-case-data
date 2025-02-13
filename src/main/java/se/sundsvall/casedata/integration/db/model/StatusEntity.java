@@ -28,9 +28,9 @@ public class StatusEntity {
 	@Column(name = "description")
 	private String description;
 
-	@Column(name = "date_time")
+	@Column(name = "date_time") // TODO: rename to created when CD 10 is retired (UF-14476)
 	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)
-	private OffsetDateTime dateTime;
+	private OffsetDateTime created;
 
 	@Override
 	public boolean equals(final Object o) {
@@ -40,12 +40,12 @@ public class StatusEntity {
 		if (!(o instanceof final StatusEntity statusEntity)) {
 			return false;
 		}
-		return Objects.equals(statusType, statusEntity.statusType) && Objects.equals(description, statusEntity.description) && Objects.equals(dateTime, statusEntity.dateTime);
+		return Objects.equals(statusType, statusEntity.statusType) && Objects.equals(description, statusEntity.description) && Objects.equals(created, statusEntity.created);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(statusType, description, dateTime);
+		return Objects.hash(statusType, description, created);
 	}
 
 }

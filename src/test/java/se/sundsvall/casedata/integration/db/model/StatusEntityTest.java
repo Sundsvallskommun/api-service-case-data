@@ -36,22 +36,22 @@ class StatusEntityTest {
 	@Test
 	void builder() {
 		// Arrange
-		var statusType = "statusType";
-		var description = "description";
-		var dateTime = now().plusDays(new Random().nextInt());
+		final var statusType = "statusType";
+		final var description = "description";
+		final var dateTime = now().plusDays(new Random().nextInt());
 
 		// Act
-		var bean = StatusEntity.builder()
+		final var bean = StatusEntity.builder()
 			.withStatusType(statusType)
 			.withDescription(description)
-			.withDateTime(dateTime)
+			.withCreated(dateTime)
 			.build();
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(bean.getStatusType()).isEqualTo(statusType);
 		assertThat(bean.getDescription()).isEqualTo(description);
-		assertThat(bean.getDateTime()).isEqualTo(dateTime);
+		assertThat(bean.getCreated()).isEqualTo(dateTime);
 
 	}
 

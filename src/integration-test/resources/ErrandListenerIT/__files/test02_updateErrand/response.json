@@ -50,6 +50,6 @@
 	"status": {
 		"statusType": "UNKNOWN",
 		"description": "Status description",
-		"dateTime": "${json-unit.any-string}"
+		"created": "${json-unit.any-string}"
 	}
 }

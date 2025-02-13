@@ -485,7 +485,7 @@ class EntityMapperTest {
 
 		// Assert
 		assertThat(status).hasNoNullFieldsOrProperties().satisfies(s -> {
-			assertThat(s.getDateTime()).isEqualTo(statusDto.getDateTime());
+			assertThat(s.getCreated()).isCloseTo(now(), within(2, SECONDS));
 			assertThat(s.getStatusType()).isEqualTo(statusDto.getStatusType());
 			assertThat(s.getDescription()).isEqualTo(statusDto.getDescription());
 		});
@@ -501,7 +501,7 @@ class EntityMapperTest {
 
 		// Assert
 		assertThat(statusDto).hasNoNullFieldsOrProperties().satisfies(s -> {
-			assertThat(s.getDateTime()).isEqualTo(status.getDateTime());
+			assertThat(s.getCreated()).isEqualTo(status.getCreated());
 			assertThat(s.getStatusType()).isEqualTo(status.getStatusType());
 			assertThat(s.getDescription()).isEqualTo(status.getDescription());
 		});

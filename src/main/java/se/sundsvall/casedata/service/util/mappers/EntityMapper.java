@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import static java.time.OffsetDateTime.now;
+import static java.time.ZoneId.systemDefault;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
@@ -318,7 +319,7 @@ public final class EntityMapper {
 			.map(obj -> StatusEntity.builder()
 				.withStatusType(status.getStatusType())
 				.withDescription(status.getDescription())
-				.withDateTime(status.getDateTime())
+				.withCreated(now(systemDefault()))
 				.build())
 			.orElse(null);
 	}
@@ -328,7 +329,7 @@ public final class EntityMapper {
 			.map(obj -> Status.builder()
 				.withStatusType(entity.getStatusType())
 				.withDescription(entity.getDescription())
-				.withDateTime(entity.getDateTime())
+				.withCreated(entity.getCreated())
 				.build())
 			.orElse(null);
 	}

@@ -22,7 +22,7 @@ import se.sundsvall.casedata.service.StatusService;
 @ActiveProfiles("junit")
 class StatusResourceTest {
 
-	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands/{errandId}/statuses";
+	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands/{errandId}/status";
 
 	@MockitoBean
 	private StatusService statusServiceMock;

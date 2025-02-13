@@ -71,7 +71,7 @@ public class Errand {
 	@Size(max = 255)
 	private String phase;
 
-	@Schema(description = "The current status of the errand", maxLength = 255)
+	@Schema(description = "The current status of the errand", maxLength = 255, nullable = true)
 	private Status status;
 
 	@Schema(description = "The statuses connected to the errand", accessMode = READ_ONLY)

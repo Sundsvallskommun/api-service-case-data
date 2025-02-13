@@ -53,6 +53,12 @@ public final class PatchMapper {
 				errand.setSuspendedTo(suspension.getSuspendedTo());
 			});
 
+		ofNullable(patch.getStatus()).ifPresent(status -> {
+			final var statusEntity = EntityMapper.toStatusEntity(status);
+			errand.setStatus(statusEntity);
+			errand.getStatuses().add(statusEntity);
+		});
+
 		return errand;
 	}
 

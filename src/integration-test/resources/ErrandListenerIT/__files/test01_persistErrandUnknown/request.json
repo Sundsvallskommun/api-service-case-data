@@ -170,8 +170,7 @@
 	"caseTitleAddition": "Case title addition",
 	"status": {
 		"statusType": "Ärende inkommit",
-		"description": "Ärende inkommit",
-		"dateTime": "2024-04-26T11:04:04.33+02:00"
+		"description": "Ärende inkommit"
 	},
 	"decisions": [
 		{

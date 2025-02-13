@@ -31,7 +31,7 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
 @Validated
-@RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/statuses")
+@RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/status")
 @Tag(name = "Status", description = "Errand status operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 	Problem.class, ConstraintViolationProblem.class
