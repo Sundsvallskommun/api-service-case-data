@@ -58,6 +58,7 @@ class PatchErrandTest {
 		final var suspension = new Suspension();
 		final var relatesTo = List.of(new RelatedErrand());
 		final var labels = List.of("label");
+		final var status = new Status();
 
 		// Act
 		final var result = PatchErrand.builder()
@@ -76,6 +77,7 @@ class PatchErrandTest {
 			.withSuspension(suspension)
 			.withRelatesTo(relatesTo)
 			.withLabels(labels)
+			.withStatus(status)
 			.build();
 
 		// Assert
@@ -95,6 +97,7 @@ class PatchErrandTest {
 		assertThat(result.getSuspension()).isEqualTo(suspension);
 		assertThat(result.getRelatesTo()).isEqualTo(relatesTo);
 		assertThat(result.getLabels()).isEqualTo(labels);
+		assertThat(result.getStatus()).isEqualTo(status);
 	}
 
 	@Test

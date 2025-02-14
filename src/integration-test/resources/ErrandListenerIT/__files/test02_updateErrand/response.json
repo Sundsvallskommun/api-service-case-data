@@ -46,5 +46,10 @@
 	"namespace": "MY_NAMESPACE",
 	"statuses": [],
 	"facilities": [],
-	"updated": "${json-unit.any-string}"
+	"updated": "${json-unit.any-string}",
+	"status": {
+		"statusType": "UNKNOWN",
+		"description": "Status description",
+		"created": "${json-unit.any-string}"
+	}
 }

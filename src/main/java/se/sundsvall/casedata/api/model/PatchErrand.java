@@ -76,4 +76,8 @@ public class PatchErrand {
 
 	@Schema(description = "List of labels for the errand", example = "[\"label1\",\"label2\"]")
 	private List<String> labels;
+
+	@Valid
+	@Schema(description = "The current status of the errand")
+	private Status status;
 }

@@ -55,7 +55,7 @@ class ErrandEntityTest {
 	private static final OffsetDateTime SUSPENSION_TO = now();
 	private static final List<RelatedErrandEntity> RELATES_TO = List.of(new RelatedErrandEntity());
 	private static final List<String> LABELS = List.of("label");
-	private static final String STATUS = "status";
+	private static final StatusEntity STATUS = new StatusEntity();
 
 	@BeforeAll
 	static void setup() {

@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import static java.time.OffsetDateTime.now;
+import static java.time.ZoneId.systemDefault;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
@@ -70,6 +71,7 @@ public final class EntityMapper {
 				.withUpdatedBy(errandEntity.getUpdatedBy())
 				.withMunicipalityId(errandEntity.getMunicipalityId())
 				.withNamespace(errandEntity.getNamespace())
+				.withStatus(EntityMapper.toStatus(errandEntity.getStatus()))
 				.withSuspension(Suspension.builder().withSuspendedFrom(errandEntity.getSuspendedFrom()).withSuspendedTo(errandEntity.getSuspendedTo()).build())
 				.withNotes(new ArrayList<>(ofNullable(errandEntity.getNotes()).orElse(emptyList()).stream().map(EntityMapper::toNote).toList()))
 				.withStatuses(new ArrayList<>(ofNullable(errandEntity.getStatuses()).orElse(emptyList()).stream().map(EntityMapper::toStatus).toList()))
@@ -108,11 +110,13 @@ public final class EntityMapper {
 				.withUpdatedBy(errand.getUpdatedBy())
 				.withSuspendedFrom(ofNullable(errand.getSuspension()).map(Suspension::getSuspendedFrom).orElse(null))
 				.withSuspendedTo(ofNullable(errand.getSuspension()).map(Suspension::getSuspendedTo).orElse(null))
+				.withStatus(EntityMapper.toStatusEntity(errand.getStatus()))
 				.withStatuses(new ArrayList<>(ofNullable(errand.getStatuses())
 					.orElse(emptyList())
 					.stream()
 					.map(EntityMapper::toStatusEntity)
 					.toList()))
+
 				.withStakeholders(new ArrayList<>(ofNullable(errand.getStakeholders())
 					.orElse(emptyList())
 					.stream().map(stakeholderDTO -> toStakeholderEntity(stakeholderDTO, municipalityId, namespace))
@@ -315,7 +319,7 @@ public final class EntityMapper {
 			.map(obj -> StatusEntity.builder()
 				.withStatusType(status.getStatusType())
 				.withDescription(status.getDescription())
-				.withDateTime(status.getDateTime())
+				.withCreated(now(systemDefault()))
 				.build())
 			.orElse(null);
 	}
@@ -325,7 +329,7 @@ public final class EntityMapper {
 			.map(obj -> Status.builder()
 				.withStatusType(entity.getStatusType())
 				.withDescription(entity.getDescription())
-				.withDateTime(entity.getDateTime())
+				.withCreated(entity.getCreated())
 				.build())
 			.orElse(null);
 	}

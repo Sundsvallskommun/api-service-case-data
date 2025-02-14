@@ -84,7 +84,7 @@ class EntityMapperTest {
 		final var errand = toErrandEntity(errandDto, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		assertThat(errand).hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "notifications", "status").satisfies(e -> {
+		assertThat(errand).hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "notifications").satisfies(e -> {
 			assertThat(e.getErrandNumber()).isEqualTo(errandDto.getErrandNumber());
 			assertThat(e.getUpdatedByClient()).isEqualTo(errandDto.getUpdatedByClient());
 			assertThat(e.getUpdatedBy()).isEqualTo(errandDto.getUpdatedBy());
@@ -144,7 +144,7 @@ class EntityMapperTest {
 		final var errandDto = toErrand(errand);
 
 		// Assert
-		assertThat(errandDto).hasNoNullFieldsOrPropertiesExcept("messageIds", "status").satisfies(e -> {
+		assertThat(errandDto).hasNoNullFieldsOrPropertiesExcept("messageIds").satisfies(e -> {
 			assertThat(e.getErrandNumber()).isEqualTo(errand.getErrandNumber());
 			assertThat(e.getUpdatedByClient()).isEqualTo(errand.getUpdatedByClient());
 			assertThat(e.getUpdatedBy()).isEqualTo(errand.getUpdatedBy());
@@ -485,7 +485,7 @@ class EntityMapperTest {
 
 		// Assert
 		assertThat(status).hasNoNullFieldsOrProperties().satisfies(s -> {
-			assertThat(s.getDateTime()).isEqualTo(statusDto.getDateTime());
+			assertThat(s.getCreated()).isCloseTo(now(), within(2, SECONDS));
 			assertThat(s.getStatusType()).isEqualTo(statusDto.getStatusType());
 			assertThat(s.getDescription()).isEqualTo(statusDto.getDescription());
 		});
@@ -501,7 +501,7 @@ class EntityMapperTest {
 
 		// Assert
 		assertThat(statusDto).hasNoNullFieldsOrProperties().satisfies(s -> {
-			assertThat(s.getDateTime()).isEqualTo(status.getDateTime());
+			assertThat(s.getCreated()).isEqualTo(status.getCreated());
 			assertThat(s.getStatusType()).isEqualTo(status.getStatusType());
 			assertThat(s.getDescription()).isEqualTo(status.getDescription());
 		});

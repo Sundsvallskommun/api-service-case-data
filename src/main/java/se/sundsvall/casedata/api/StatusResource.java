@@ -16,12 +16,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +31,7 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
 @Validated
-@RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/statuses")
+@RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/status")
 @Tag(name = "Status", description = "Errand status operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 	Problem.class, ConstraintViolationProblem.class
@@ -64,19 +62,4 @@ class StatusResource {
 			.build();
 	}
 
-	@PutMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
-	@Operation(description = "Add/replace status on errand", responses = {
-		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	})
-	ResponseEntity<Void> replaceStatusOnErrand(
-		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
-		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final List<Status> statusList) {
-
-		statusService.replaceOnErrand(errandId, municipalityId, namespace, statusList);
-		return noContent()
-			.header(CONTENT_TYPE, ALL_VALUE)
-			.build();
-	}
 }

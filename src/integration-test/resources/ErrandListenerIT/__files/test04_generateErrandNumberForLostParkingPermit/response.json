@@ -315,9 +315,14 @@
 	"labels": [],
 	"createdBy": "user123",
 	"namespace": "SBK_PARKING_PERMIT",
+	"status": {
+		"statusType": "Ärende inkommit",
+		"description": "Ärende inkommit",
+		"created": "${json-unit.any-string}"
+	},
 	"statuses": [
 		{
-			"dateTime": "2023-01-24T10:04:04.326+01:00",
+			"created": "${json-unit.any-string}",
 			"statusType": "Ärende inkommit",
 			"description": "Ärende inkommit"
 		}
