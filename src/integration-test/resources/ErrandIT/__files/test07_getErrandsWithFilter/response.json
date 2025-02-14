@@ -1,0 +1,78 @@
+{
+	"content": [
+		{
+			"id": 1,
+			"version": 1,
+			"errandNumber": "PRH-2022-000029",
+			"municipalityId": "2281",
+			"namespace": "MY_NAMESPACE",
+			"externalCaseId": "123",
+			"caseType": "PARKING_PERMIT",
+			"priority": "MEDIUM",
+			"description": "",
+			"caseTitleAddition": "Nytt parkeringstillstånd",
+			"diaryNumber": "",
+			"phase": "Aktualisering",
+			"status": {
+				"statusType": "UNKNOWN",
+				"description": "Status description",
+				"created": "2022-12-02T15:15:01.563+01:00"
+			},
+			"statuses": [],
+			"processId": "896a44d8-724b-11ed-a840-0242ac110002",
+			"stakeholders": [],
+			"facilities": [],
+			"notifications": [],
+			"decisions": [],
+			"notes": [],
+			"labels": [
+				"errand-1-label-1",
+				"errand-1-label-2"
+			],
+			"relatesTo": [],
+			"createdByClient": "WSO2_test",
+			"updatedByClient": "WSO_test",
+			"createdBy": "UNKNOWN",
+			"updatedBy": "UNKNOWN",
+			"suspension": {},
+			"extraParameters": [],
+			"created": "2022-12-02T15:13:45.363+01:00",
+			"updated": "2022-12-02T15:15:01.563+01:00"
+		}
+	],
+	"pageable": {
+		"pageNumber": 0,
+		"pageSize": 10,
+		"sort": [
+			{
+				"direction": "DESC",
+				"property": "id",
+				"ignoreCase": false,
+				"nullHandling": "NATIVE",
+				"ascending": false,
+				"descending": true
+			}
+		],
+		"offset": 0,
+		"unpaged": false,
+		"paged": true
+	},
+	"last": true,
+	"totalPages": 1,
+	"totalElements": 1,
+	"first": true,
+	"size": 10,
+	"number": 0,
+	"sort": [
+		{
+			"direction": "DESC",
+			"property": "id",
+			"ignoreCase": false,
+			"nullHandling": "NATIVE",
+			"ascending": false,
+			"descending": true
+		}
+	],
+	"numberOfElements": 1,
+	"empty": false
+}

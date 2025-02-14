@@ -27,7 +27,7 @@
 				""
 			]
 		},
-		"bodyFileName": "postUpdateProcess200.json",
+		"bodyFileName": "common/response/postUpdateProcess200.json",
 		"status": 200
 	}
 }

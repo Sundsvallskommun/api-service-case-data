@@ -1,0 +1,42 @@
+{
+	"caseTitleAddition": "Nytt parkeringstillstånd",
+	"caseType": "PARKING_PERMIT",
+	"created": "2022-12-02T15:13:45.363+01:00",
+	"createdBy": "UNKNOWN",
+	"createdByClient": "WSO2_test",
+	"decisions": [],
+	"description": "",
+	"diaryNumber": "",
+	"errandNumber": "PRH-2022-000029",
+	"externalCaseId": "",
+	"extraParameters": [],
+	"facilities": [],
+	"id": 1,
+	"labels": [],
+	"municipalityId": "2281",
+	"namespace": "MY_NAMESPACE",
+	"notes": [],
+	"notifications": [],
+	"phase": "Aktualisering",
+	"priority": "MEDIUM",
+	"processId": "896a44d8-724b-11ed-a840-0242ac110002",
+	"relatesTo": [],
+	"stakeholders": [],
+	"status": {
+		"created": "${json-unit.any-string}",
+		"description": "Status description",
+		"statusType": "test01_patchStatus"
+	},
+	"statuses": [
+		{
+			"created": "${json-unit.any-string}",
+			"description": "Status description",
+			"statusType": "test01_patchStatus"
+		}
+	],
+	"suspension": {},
+	"updated": "${json-unit.any-string}",
+	"updatedBy": "UNKNOWN",
+	"updatedByClient": "UNKNOWN",
+	"version": 2
+}
