@@ -36,6 +36,9 @@ class SuspensionWorkerTest {
 	@Captor
 	private ArgumentCaptor<Notification> notificationCaptor;
 
+	@Captor
+	private ArgumentCaptor<ErrandEntity> errandEntityCaptor;
+
 	@Test
 	void processExpiredSuspensionsHasExpired() {
 
@@ -66,6 +69,7 @@ class SuspensionWorkerTest {
 
 		// Assert
 		verify(errandsRepositoryMock).findAllBySuspendedToBefore(any(OffsetDateTime.class));
+		verify(errandsRepositoryMock).save(errandEntityCaptor.capture());
 		verify(notificationServiceMock).create(any(), any(), notificationCaptor.capture());
 
 		final var notification = notificationCaptor.getValue();
@@ -76,6 +80,11 @@ class SuspensionWorkerTest {
 		assertThat(notification.getOwnerFullName()).isNotNull();
 		assertThat(notification.getType()).isEqualTo(notificationType);
 		assertThat(notification.getDescription()).isEqualTo(description);
+
+		final var capturedErrandEntity = errandEntityCaptor.getValue();
+		assertThat(capturedErrandEntity).isNotNull();
+		assertThat(capturedErrandEntity.getSuspendedFrom()).isNull();
+		assertThat(capturedErrandEntity.getSuspendedTo()).isNull();
 
 		verifyNoMoreInteractions(errandsRepositoryMock);
 	}

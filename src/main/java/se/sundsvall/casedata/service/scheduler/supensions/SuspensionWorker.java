@@ -31,17 +31,28 @@ public class SuspensionWorker {
 	public void processExpiredSuspensions() {
 		errandRepository
 			.findAllBySuspendedToBefore(now())
-			.forEach(entity -> notificationService.create(entity.getMunicipalityId(), entity.getNamespace(), createNotification(entity)));
+			.forEach(this::processSuspension);
+	}
+	
+	private void processSuspension(ErrandEntity errandEntity) {
+		
+		// Create notification
+		notificationService.create(errandEntity.getMunicipalityId(), errandEntity.getNamespace(), createNotification(errandEntity));
+		
+		// Remove suspension date.
+		errandEntity.setSuspendedFrom(null);
+		errandEntity.setSuspendedTo(null);
+		errandRepository.save(errandEntity);
 	}
 
-	private Notification createNotification(ErrandEntity errand) {
+	private Notification createNotification(ErrandEntity errandEntity) {
 		return Notification.builder()
-			.withOwnerFullName(findAdministratorStakeholderFullName(errand))
-			.withOwnerId(findAdministratorStakeholderUserId(errand))
+			.withOwnerFullName(findAdministratorStakeholderFullName(errandEntity))
+			.withOwnerId(findAdministratorStakeholderUserId(errandEntity))
 			.withType(NOTIFICATION_TYPE)
 			.withDescription(NOTIFICATION_MESSAGE)
-			.withErrandId(errand.getId())
-			.withErrandNumber(errand.getErrandNumber())
+			.withErrandId(errandEntity.getId())
+			.withErrandNumber(errandEntity.getErrandNumber())
 			.build();
 	}
 
