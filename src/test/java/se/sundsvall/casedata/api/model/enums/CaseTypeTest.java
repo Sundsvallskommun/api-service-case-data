@@ -28,6 +28,8 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_REQU
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_RETURNED_TO_CONTACT_SUNDSVALL;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_ROAD_ASSOCIATION;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_SELL_LAND_TO_THE_MUNICIPALITY;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_SELL_LAND_TO_THE_MUNICIPALITY_PRIVATE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_SMALL_BOAT_HARBOR_DOCK_PORT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_SQUARE_PLACE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_STORMWATER;
@@ -79,6 +81,8 @@ class CaseTypeTest {
 			MEX_ROAD_ASSOCIATION,
 			MEX_RETURNED_TO_CONTACT_SUNDSVALL,
 			MEX_SMALL_BOAT_HARBOR_DOCK_PORT,
+			MEX_SELL_LAND_TO_THE_MUNICIPALITY_PRIVATE,
+			MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS,
 			APPEAL);
 	}
 
@@ -122,6 +126,8 @@ class CaseTypeTest {
 		assertThat(MEX_ROAD_ASSOCIATION).hasToString("MEX_ROAD_ASSOCIATION");
 		assertThat(MEX_RETURNED_TO_CONTACT_SUNDSVALL).hasToString("MEX_RETURNED_TO_CONTACT_SUNDSVALL");
 		assertThat(MEX_SMALL_BOAT_HARBOR_DOCK_PORT).hasToString("MEX_SMALL_BOAT_HARBOR_DOCK_PORT");
+		assertThat(MEX_SELL_LAND_TO_THE_MUNICIPALITY).hasToString("MEX_SELL_LAND_TO_THE_MUNICIPALITY");
+		assertThat(MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS).hasToString("MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS");
 	}
 
 	@Test
@@ -171,6 +177,8 @@ class CaseTypeTest {
 			MEX_TREES_FORESTS,
 			MEX_ROAD_ASSOCIATION,
 			MEX_RETURNED_TO_CONTACT_SUNDSVALL,
-			MEX_SMALL_BOAT_HARBOR_DOCK_PORT);
+			MEX_SMALL_BOAT_HARBOR_DOCK_PORT,
+			MEX_SELL_LAND_TO_THE_MUNICIPALITY_PRIVATE,
+			MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS);
 	}
 }
