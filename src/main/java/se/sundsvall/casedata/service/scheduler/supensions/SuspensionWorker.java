@@ -33,12 +33,12 @@ public class SuspensionWorker {
 			.findAllBySuspendedToBefore(now())
 			.forEach(this::processSuspension);
 	}
-	
+
 	private void processSuspension(ErrandEntity errandEntity) {
-		
+
 		// Create notification
 		notificationService.create(errandEntity.getMunicipalityId(), errandEntity.getNamespace(), createNotification(errandEntity));
-		
+
 		// Remove suspension date.
 		errandEntity.setSuspendedFrom(null);
 		errandEntity.setSuspendedTo(null);
