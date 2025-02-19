@@ -127,6 +127,7 @@ public final class PatchMapper {
 
 	public static NotificationEntity patchNotification(final NotificationEntity notificationEntity, final PatchNotification patch) {
 		ofNullable(patch.getAcknowledged()).ifPresent(notificationEntity::setAcknowledged);
+		ofNullable(patch.getGlobalAcknowledged()).ifPresent(notificationEntity::setGlobalAcknowledged);
 		ofNullable(patch.getContent()).ifPresent(notificationEntity::setContent);
 		ofNullable(patch.getDescription()).ifPresent(notificationEntity::setDescription);
 		ofNullable(patch.getExpires()).ifPresent(notificationEntity::setExpires);
