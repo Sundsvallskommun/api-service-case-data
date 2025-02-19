@@ -379,7 +379,8 @@ public final class TestUtil {
 
 	public static NotificationEntity createNotificationEntity(final Consumer<NotificationEntity> modifier) {
 		final var notification = NotificationEntity.builder()
-			.withAcknowledged(true)
+			.withAcknowledged(false)
+			.withGlobalAcknowledged(false)
 			.withContent(RandomStringUtils.secure().next(10, true, false))
 			.withCreated(getRandomOffsetDateTime())
 			.withCreatedBy(RandomStringUtils.secure().next(10, true, false))
@@ -429,6 +430,7 @@ public final class TestUtil {
 	public static PatchNotification createPatchNotification(final Consumer<PatchNotification> modifier) {
 		final var patchNotification = PatchNotification.builder()
 			.withAcknowledged(true)
+			.withGlobalAcknowledged(true)
 			.withContent(RandomStringUtils.secure().next(10, true, false))
 			.withDescription(RandomStringUtils.secure().next(10, true, false))
 			.withExpires(getRandomOffsetDateTime())
