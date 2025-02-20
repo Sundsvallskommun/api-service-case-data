@@ -6,7 +6,8 @@ import java.util.Arrays;
 public enum Shortcode {
 
 	MEX("SBK_MEX"),
-	PRH("SBK_PARKING_PERMIT");
+	PRH("SBK_PARKING_PERMIT"),
+	APP("ANGE_PARKING_PERMIT");
 
 	final String namespace;
 
