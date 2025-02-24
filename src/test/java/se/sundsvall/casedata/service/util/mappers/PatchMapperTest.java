@@ -132,7 +132,6 @@ class PatchMapperTest {
 			assertThat(a.getNote()).isEqualTo(patch.getNote());
 			assertThat(a.getExtension()).isEqualTo(patch.getExtension());
 			assertThat(a.getMimeType()).isEqualTo(patch.getMimeType());
-			assertThat(a.getFile()).isEqualTo(patch.getFile());
 			assertThat(a.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
 		});
 	}

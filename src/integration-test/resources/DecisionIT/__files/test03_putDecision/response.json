@@ -67,7 +67,6 @@
 					"extraParameters": {},
 					"mimeType": "test mimeType",
 					"version": 0,
-					"file": "test file",
 					"namespace": "MY_NAMESPACE",
 					"name": "Test name",
 					"id": 1,

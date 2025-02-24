@@ -4,6 +4,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
@@ -26,9 +27,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.api.model.MessageRequest;
@@ -78,7 +80,7 @@ class MessageResource {
 		return ok(service.findMessage(errandId, municipalityId, namespace, messageId));
 	}
 
-	@PostMapping(path = "/errands/{errandId}/messages", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@PostMapping(path = "/errands/{errandId}/messages", consumes = MULTIPART_FORM_DATA_VALUE, produces = ALL_VALUE)
 	@Operation(description = "Save a message on an errand", responses = {
 		@ApiResponse(responseCode = "201", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
@@ -86,9 +88,10 @@ class MessageResource {
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
-		@RequestBody final MessageRequest request) {
+		@RequestPart("message") final MessageRequest request,
+		@RequestPart(value = "files", required = false) final List<MultipartFile> files) {
 
-		final var result = service.create(errandId, request, municipalityId, namespace);
+		final var result = service.create(errandId, request, municipalityId, namespace, files);
 		return created(
 			fromPath("/{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}")
 				.buildAndExpand(municipalityId, namespace, errandId, result.getMessageId())

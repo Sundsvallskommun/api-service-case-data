@@ -24,7 +24,7 @@
 			{
 				"attachmentId": "05b29c30-4512-46c0-9d82-d0f11cb04bae",
 				"name": "test_image.png",
-				"contentType": "image/png"
+				"mimeType": "image/png"
 			}
 		],
 		"emailHeaders": [

@@ -448,7 +448,7 @@ class EntityMapperTest {
 		final var attachment = toAttachmentEntity(errandId, attachmentDto, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		assertThat(attachment).hasNoNullFieldsOrPropertiesExcept("id", "created", "updated").satisfies(a -> {
+		assertThat(attachment).hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "file").satisfies(a -> {
 			assertThat(a.getErrandId()).isEqualTo(errandId);
 			assertThat(a.getCategory()).isEqualTo(attachmentDto.getCategory());
 			assertThat(a.getVersion()).isEqualTo(attachmentDto.getVersion());

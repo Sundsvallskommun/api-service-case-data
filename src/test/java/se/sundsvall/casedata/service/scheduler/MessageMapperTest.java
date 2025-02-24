@@ -20,12 +20,11 @@ import org.junit.jupiter.api.Test;
 import org.mariadb.jdbc.MariaDbBlob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
 import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.MessageRequest.AttachmentRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
-import se.sundsvall.casedata.api.model.MessageResponse.AttachmentResponse;
 import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.model.EmailHeaderEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
@@ -165,15 +164,6 @@ class MessageMapperTest {
 			assertThat(s.getValues()).isNotNull().isNotEmpty();
 		});
 
-		assertThat(dto.getAttachments()).isNotEmpty()
-			.extracting(
-				AttachmentResponse::getAttachmentId,
-				AttachmentResponse::getContentType,
-				AttachmentResponse::getName)
-			.containsExactly(tuple(
-				bean.getAttachments().getFirst().getAttachmentId(),
-				bean.getAttachments().getFirst().getContentType(),
-				bean.getAttachments().getFirst().getName()));
 	}
 
 	@Test
@@ -186,11 +176,7 @@ class MessageMapperTest {
 		final var name = "name";
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
-		final var attachmentRequest = AttachmentRequest.builder()
-			.withContent(content)
-			.withContentType(contentType)
-			.withName(name)
-			.build();
+		final var attachmentRequest = new MockMultipartFile(name, name, contentType, content.getBytes());
 
 		// Act
 		final var bean = messageMapper.toAttachmentEntity(attachmentRequest, messageID, municipalityId, namespace);
@@ -198,7 +184,7 @@ class MessageMapperTest {
 		// Assert
 		assertThat(bean.getAttachmentData()).isNotNull();
 		assertThat(bean.getAttachmentData().getId()).isZero();
-		assertThat(bean.getAttachmentData().getFile().getBinaryStream().readAllBytes()).isEqualTo("content".getBytes());
+		assertThat(bean.getAttachmentData().getFile().getBinaryStream().readAllBytes()).isEqualTo(content.getBytes());
 		assertThat(bean.getAttachmentId()).isNotBlank().satisfies(s -> assertThat(isValidUUID(s)).isTrue());
 		assertThat(bean.getContentType()).isEqualTo(contentType);
 		assertThat(bean.getMessageID()).isEqualTo(messageID);

@@ -1,7 +1,7 @@
 {
 	"note": "This is a note for test07",
 	"municipalityId": "2281",
-	"extension": ".pdf",
+	"extension": ".txt",
 	"errandId": 1,
 	"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
 	"extraParameters": {
@@ -9,11 +9,10 @@
 		"property1": "value1",
 		"property3": "value3"
 	},
-	"mimeType": "application/pdf",
+	"mimeType": "plain/text",
 	"version": 0,
-	"file": "dGVzdDA3",
 	"namespace": "MY_NAMESPACE",
-	"name": "myfile07.pdf",
+	"name": "test.txt",
 	"id": 5,
 	"category": "SIGNATURE",
 	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"

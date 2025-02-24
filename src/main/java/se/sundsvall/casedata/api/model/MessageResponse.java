@@ -106,7 +106,7 @@ public class MessageResponse {
 		@Schema(description = "The attachment filename", example = "test.txt", requiredMode = REQUIRED)
 		private String name;
 
-		@Schema(description = "The attachment content type", example = "text/plain")
-		private String contentType;
+		@Schema(description = "MIME type of the attachment", example = "application/pdf")
+		private String mimeType;
 	}
 }

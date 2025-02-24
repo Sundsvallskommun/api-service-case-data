@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
@@ -49,18 +50,23 @@ public class MessageService {
 		return mapper.toMessageResponses(messageRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace));
 	}
 
-	public MessageResponse findMessage(final Long errandId, final String municipalityId, final String namespace, String messageId) {
+	public MessageResponse findMessage(final Long errandId, final String municipalityId, final String namespace, final String messageId) {
 		final var messageEntity = messageRepository.findByMunicipalityIdAndNamespaceAndErrandIdAndMessageId(municipalityId, namespace, errandId, messageId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MESSAGE_ENTITY_NOT_FOUND.formatted(messageId, namespace, municipalityId)));
 
 		return mapper.toMessageResponse(messageEntity);
 	}
 
-	public MessageResponse create(final Long errandId, final MessageRequest request, final String municipalityId, final String namespace) {
+	public MessageResponse create(final Long errandId, final MessageRequest request, final String municipalityId, final String namespace, final List<MultipartFile> files) {
 		final var errand = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 
 		final var messageEntity = messageRepository.save(mapper.toMessageEntity(request, errandId, municipalityId, namespace));
+
+		if (files != null) {
+			messageEntity.setAttachments(mapper.toAttachmentEntities(files, messageEntity.getMessageId(), municipalityId, namespace));
+		}
+
 		notificationService.create(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
 
 		return mapper.toMessageResponse(messageEntity);
@@ -89,7 +95,7 @@ public class MessageService {
 			response.addHeader(CONTENT_DISPOSITION, "attachment; filename=\"" + attachmentEntity.getName() + "\"");
 			response.setContentLength((int) file.length());
 			StreamUtils.copy(file.getBinaryStream(), response.getOutputStream());
-		} catch (IOException | SQLException e) {
+		} catch (final IOException | SQLException e) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "%s occurred when copying file with attachment id '%s' to response: %s".formatted(e.getClass().getSimpleName(), attachmentId, e.getMessage()));
 		}
 	}

@@ -25,7 +25,6 @@ public final class PutMapper {
 			oldAttachmentEntity.setNote(newAttachment.getNote());
 			oldAttachmentEntity.setExtension(newAttachment.getExtension());
 			oldAttachmentEntity.setMimeType(newAttachment.getMimeType());
-			oldAttachmentEntity.setFile(newAttachment.getFile());
 		});
 		return oldAttachmentEntity;
 	}

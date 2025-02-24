@@ -33,7 +33,6 @@ class PutMapperTest {
 			assertThat(a.getNote()).isNotEqualTo(attachmentDTO.getNote());
 			assertThat(a.getExtension()).isNotEqualTo(attachmentDTO.getExtension());
 			assertThat(a.getMimeType()).isNotEqualTo(attachmentDTO.getMimeType());
-			assertThat(a.getFile()).isNotEqualTo(attachmentDTO.getFile());
 		});
 
 		putAttachment(attachment, attachmentDTO);
@@ -44,7 +43,6 @@ class PutMapperTest {
 			assertThat(a.getNote()).isEqualTo(attachmentDTO.getNote());
 			assertThat(a.getExtension()).isEqualTo(attachmentDTO.getExtension());
 			assertThat(a.getMimeType()).isEqualTo(attachmentDTO.getMimeType());
-			assertThat(a.getFile()).isEqualTo(attachmentDTO.getFile());
 			assertThat(a.getExtraParameters()).containsAllEntriesOf(attachmentDTO.getExtraParameters());
 		});
 	}

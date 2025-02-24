@@ -36,6 +36,8 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.MessageRequest;
@@ -213,12 +215,14 @@ class MessageServiceTest {
 			.withStakeholders(List.of(stakeholder))
 			.build();
 
+		final List<MultipartFile> files = List.of(new MockMultipartFile("file", "file.txt", "text/plain", "content".getBytes()));
+
 		when(messageRepositoryMock.save(any(MessageEntity.class))).thenReturn(MessageEntity.builder().build());
 		when(messageMapperMock.toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(MessageEntity.builder().build());
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
 		// Act
-		messageService.create(errandId, request, MUNICIPALITY_ID, NAMESPACE);
+		messageService.create(errandId, request, MUNICIPALITY_ID, NAMESPACE, files);
 
 		// Assert
 		verify(messageMapperMock).toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);
@@ -233,6 +237,7 @@ class MessageServiceTest {
 		});
 		verify(messageMapperMock).toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageRepositoryMock).save(any());
+		verify(messageMapperMock).toAttachmentEntities(files, request.getMessageId(), MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(messageRepositoryMock, messageMapperMock);
 	}
 

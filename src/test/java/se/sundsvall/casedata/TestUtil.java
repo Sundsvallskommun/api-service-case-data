@@ -188,7 +188,6 @@ public final class TestUtil {
 			.withNote(RandomStringUtils.secure().next(20, true, false))
 			.withExtension(".pdf")
 			.withMimeType("application/pdf")
-			.withFile("dGVzdA==")
 			.withErrandId(new Random().nextLong(1, 100000))
 			.withExtraParameters(createExtraParameters())
 			.build();

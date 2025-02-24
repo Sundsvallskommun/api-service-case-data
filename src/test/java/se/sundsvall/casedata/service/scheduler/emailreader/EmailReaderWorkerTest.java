@@ -316,7 +316,6 @@ class EmailReaderWorkerTest {
 			.receivedAt(OffsetDateTime.now())
 			.attachments(List.of(new EmailAttachment()
 				.name("someName")
-
 				.contentType("someContentType")));
 
 		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
