@@ -1,7 +1,7 @@
 {
 	"request": {
 		"method": "GET",
-		"urlPath": "/employee/portalpersondata/personal/owner123"
+		"urlPath": "/employee/2281/portalpersondata/personal/owner123"
 	},
 	"response": {
 		"headers": {

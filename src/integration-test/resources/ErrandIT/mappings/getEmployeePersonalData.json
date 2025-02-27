@@ -1,7 +1,7 @@
 {
 	"request": {
 		"method": "GET",
-		"urlPattern": "/employee/portalpersondata/personal/.*"
+		"urlPattern": "/employee/(2281|2061|2062)/portalpersondata/personal/.*"
 	},
 	"response": {
 		"headers": {

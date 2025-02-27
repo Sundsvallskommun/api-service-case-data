@@ -27,36 +27,38 @@ class EmployeeServiceTest {
 	void getEmployeeByLoginName() {
 
 		// Arrange
+		final String municipalityId = "municipalityId";
 		final var loginName = "loginName";
 		final var domain = "personal";
 		final var portalPersonData = new PortalPersonData();
 
-		when(employeeClientMock.getEmployeeByDomainAndLoginName(domain, loginName)).thenReturn(Optional.of(portalPersonData));
+		when(employeeClientMock.getEmployeeByDomainAndLoginName(municipalityId, domain, loginName)).thenReturn(Optional.of(portalPersonData));
 
 		// Act
-		final var result = employeeService.getEmployeeByLoginName(loginName);
+		final var result = employeeService.getEmployeeByLoginName(municipalityId, loginName);
 
 		// Assert
 		assertThat(result).isNotNull().isSameAs(portalPersonData);
 
-		verify(employeeClientMock).getEmployeeByDomainAndLoginName(domain, loginName);
+		verify(employeeClientMock).getEmployeeByDomainAndLoginName(municipalityId, domain, loginName);
 	}
 
 	@Test
 	void getEmployeeByLoginNameNotFound() {
 
 		// Arrange
+		final String municipalityId = "municipalityId";
 		final var loginName = "loginName";
 		final var domain = "personal";
 
-		when(employeeClientMock.getEmployeeByDomainAndLoginName(domain, loginName)).thenReturn(empty());
+		when(employeeClientMock.getEmployeeByDomainAndLoginName(municipalityId, domain, loginName)).thenReturn(empty());
 
 		// Act
-		final var result = employeeService.getEmployeeByLoginName(loginName);
+		final var result = employeeService.getEmployeeByLoginName(municipalityId, loginName);
 
 		// Assert
 		assertThat(result).isNull();
 
-		verify(employeeClientMock).getEmployeeByDomainAndLoginName(domain, loginName);
+		verify(employeeClientMock).getEmployeeByDomainAndLoginName(municipalityId, domain, loginName);
 	}
 }

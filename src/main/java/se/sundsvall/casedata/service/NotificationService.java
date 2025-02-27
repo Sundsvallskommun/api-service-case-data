@@ -80,11 +80,10 @@ public class NotificationService {
 		final var errandEntity = errandRepository.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(notification.getErrandId(), namespace, municipalityId)));
 
-		final var creator = getPortalPersonData(incomingRequestFilter.getAdUser());
-		final var owner = getPortalPersonData(notification.getOwnerId());
+		final var creator = getPortalPersonData(municipalityId, incomingRequestFilter.getAdUser());
+		final var owner = getPortalPersonData(municipalityId, notification.getOwnerId());
 
 		return toNotification(notificationRepository.save(toNotificationEntity(notification, municipalityId, namespace, errandEntity, creator, owner)));
-
 	}
 
 	public void update(final String municipalityId, final String namespace, final List<PatchNotification> notifications) {
@@ -102,7 +101,7 @@ public class NotificationService {
 		final var entity = notificationRepository.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, notification.getErrandId())
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTIFICATION_ENTITY_NOT_FOUND.formatted(notificationId, namespace, municipalityId, notification.getErrandId())));
 
-		final var owner = getPortalPersonData(notification.getOwnerId());
+		final var owner = getPortalPersonData(municipalityId, notification.getOwnerId());
 
 		notificationRepository.save(patchNotification(entity, notification, owner));
 	}
@@ -123,9 +122,9 @@ public class NotificationService {
 		return equalsIgnoreCase(ownerId, incomingRequestFilter.getAdUser());
 	}
 
-	private PortalPersonData getPortalPersonData(final String adAccountId) {
+	private PortalPersonData getPortalPersonData(final String municipalityId, final String adAccountId) {
 		return Optional.ofNullable(adAccountId)
-			.map(employeeService::getEmployeeByLoginName)
+			.map(userId -> employeeService.getEmployeeByLoginName(municipalityId, userId))
 			.orElse(null);
 	}
 }
