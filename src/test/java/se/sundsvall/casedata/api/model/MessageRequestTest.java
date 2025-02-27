@@ -45,7 +45,6 @@ class MessageRequestTest {
 		final var recipients = List.of("email@sundsvall.se");
 		final var userId = "12";
 		final var classification = Classification.INFORMATION;
-		final var attachments = List.of(MessageRequest.AttachmentRequest.builder().build());
 		final var emailHeaders = List.of(EmailHeader.builder().build());
 		// Act
 		final var result = MessageRequest.builder()
@@ -65,7 +64,6 @@ class MessageRequestTest {
 			.withRecipients(recipients)
 			.withUserId(userId)
 			.withClassification(classification)
-			.withAttachments(attachments)
 			.withEmailHeaders(emailHeaders)
 			.build();
 		// Assert
@@ -86,7 +84,6 @@ class MessageRequestTest {
 		assertThat(result.getRecipients()).isEqualTo(recipients);
 		assertThat(result.getUserId()).isEqualTo(userId);
 		assertThat(result.getClassification()).isEqualTo(classification);
-		assertThat(result.getAttachments()).isEqualTo(attachments);
 		assertThat(result.getEmailHeaders()).isEqualTo(emailHeaders);
 
 	}

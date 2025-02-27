@@ -7,6 +7,7 @@ import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
+import java.io.IOException;
 import java.sql.Blob;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.EmailHeader;
 import se.sundsvall.casedata.api.model.MessageRequest;
@@ -81,10 +83,6 @@ public class MessageMapper {
 			.withUsername(request.getUsername());
 
 		Optional.ofNullable(request.getEmailHeaders()).ifPresent(headers -> entity.withHeaders(toEmailHeadersEntities(headers)));
-		if (request.getAttachments() != null) {
-			entity.withAttachments(toAttachmentEntities(request.getAttachments(),
-				request.getMessageId(), municipalityId, namespace));
-		}
 
 		return entity.build();
 	}
@@ -190,28 +188,32 @@ public class MessageMapper {
 			.build();
 	}
 
-	public List<MessageAttachmentEntity> toAttachmentEntities(final List<MessageRequest.AttachmentRequest> attachmentRequests, final String messageID, final String municipalityId, final String namespace) {
+	public List<MessageAttachmentEntity> toAttachmentEntities(final List<MultipartFile> attachmentRequests, final String messageID, final String municipalityId, final String namespace) {
 		return attachmentRequests.stream()
 			.map(attachmentRequest -> toAttachmentEntity(attachmentRequest, messageID, municipalityId, namespace))
 			.toList();
 	}
 
-	public MessageAttachmentEntity toAttachmentEntity(final MessageRequest.AttachmentRequest attachmentRequest, final String messageID, final String municipalityId, final String namespace) {
+	public MessageAttachmentEntity toAttachmentEntity(final MultipartFile attachmentRequest, final String messageID, final String municipalityId, final String namespace) {
 		return MessageAttachmentEntity.builder()
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.withAttachmentId(randomUUID().toString())
 			.withMessageID(messageID)
-			.withName(attachmentRequest.getName())
+			.withName(attachmentRequest.getOriginalFilename())
 			.withContentType(attachmentRequest.getContentType())
 			.withAttachmentData(toAttachmentDataEntity(attachmentRequest))
 			.build();
 	}
 
-	private MessageAttachmentDataEntity toAttachmentDataEntity(final MessageRequest.AttachmentRequest attachmentRequest) {
-		return MessageAttachmentDataEntity.builder()
-			.withFile(blobBuilder.createBlob(attachmentRequest.getContent()))
-			.build();
+	private MessageAttachmentDataEntity toAttachmentDataEntity(final MultipartFile attachmentRequest) {
+		try {
+			return MessageAttachmentDataEntity.builder()
+				.withFile(blobBuilder.createBlob(attachmentRequest.getBytes()))
+				.build();
+		} catch (final IOException e) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert attachment to blob");
+		}
 	}
 
 	public List<MessageResponse.AttachmentResponse> toAttachmentResponses(final List<MessageAttachmentEntity> attachment) {
@@ -224,7 +226,7 @@ public class MessageMapper {
 		return MessageResponse.AttachmentResponse.builder()
 			.withName(attachment.getName())
 			.withAttachmentId(attachment.getAttachmentId())
-			.withContentType(attachment.getContentType())
+			.withMimeType(attachment.getContentType())
 			.build();
 	}
 

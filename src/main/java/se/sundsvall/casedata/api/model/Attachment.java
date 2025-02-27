@@ -60,9 +60,6 @@ public class Attachment {
 	@Schema(description = "MIME type of the attachment", example = "application/pdf")
 	private String mimeType;
 
-	@Schema(description = "Base64 encoded file content", example = "dGVzdCBjb250ZW50")
-	private String file;
-
 	@Schema(description = "Additional parameters for the attachment", example = "{\"key1\": \"value1\", \"key2\": \"value2\"}")
 	@ValidMapValueSize(max = 8192)
 	@Builder.Default

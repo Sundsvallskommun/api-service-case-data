@@ -11,12 +11,14 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,12 +66,15 @@ class MessageIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test03_createMessage() {
+	void test03_createMessage() throws FileNotFoundException {
 		final var location = setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(POST)
 			.withHeader(AD_USER_HEADER_KEY, "user123")
-			.withRequest(REQUEST_FILE)
+			.withContentType(MULTIPART_FORM_DATA)
+			.withRequestFile("message", REQUEST_FILE)
+			.withRequestFile("files", "test.txt")
+			.withRequestFile("files", "test2.txt")
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseBodyIsNull()
 			.sendRequest()

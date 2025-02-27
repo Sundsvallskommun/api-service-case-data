@@ -11,6 +11,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
@@ -20,9 +22,11 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
@@ -98,21 +102,28 @@ class MessageResourceTest {
 		final var messageId = "the-message-id";
 		final var request = MessageRequest.builder().withMessageId(messageId).build();
 
-		when(messageServiceMock.create(errandId, request, MUNICIPALITY_ID, NAMESPACE))
+		final var multipartBodyBuilder = new MultipartBodyBuilder();
+		multipartBodyBuilder.part("files", "file").filename("file.txt").contentType(TEXT_PLAIN);
+		multipartBodyBuilder.part("files", "file").filename("file2.txt").contentType(TEXT_PLAIN);
+		multipartBodyBuilder.part("message", request, APPLICATION_JSON);
+
+		final var body = multipartBodyBuilder.build();
+
+		when(messageServiceMock.create(eq(errandId), eq(request), eq(MUNICIPALITY_ID), eq(NAMESPACE), any()))
 			.thenReturn(MessageResponse.builder().withMessageId(messageId).build());
 
 		// Act
 		webTestClient.post()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
-			.contentType(APPLICATION_JSON)
-			.bodyValue(request)
+			.contentType(MULTIPART_FORM_DATA)
+			.body(BodyInserters.fromMultipartData(body))
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().location("/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + errandId + "/messages/" + messageId)
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(messageServiceMock).create(errandId, request, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageServiceMock).create(eq(errandId), eq(request), eq(MUNICIPALITY_ID), eq(NAMESPACE), any());
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 

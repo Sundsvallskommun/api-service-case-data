@@ -1,14 +1,6 @@
 {
 	"lastName": "doe",
 	"externalCaseId": "321",
-	"attachments": [
-		{
-			"content": "content",
-			"contentType": "text/plain",
-			"name": "this-is-an-attachment",
-			"messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee"
-		}
-	],
 	"errandNumber": "ERRAND-NUMBER-1",
 	"subject": "Subject",
 	"mobileNumber": "0701234567",

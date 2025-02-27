@@ -11,6 +11,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
@@ -19,6 +20,7 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
+import java.io.FileNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -124,10 +126,13 @@ class AttachmentIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test07_createAttachment() {
+	void test07_createAttachment() throws FileNotFoundException {
 		final var location = setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(format(ATTACHMENTS_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
+			.withContentType(MULTIPART_FORM_DATA)
+			.withRequestFile("attachment", REQUEST_FILE)
+			.withRequestFile("file", "test.txt")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseBodyIsNull()

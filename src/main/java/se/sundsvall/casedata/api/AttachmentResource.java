@@ -5,6 +5,7 @@ import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
@@ -32,7 +34,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -81,7 +85,21 @@ class AttachmentResource {
 		return ok(attachmentService.findAttachments(errandId, municipalityId, namespace));
 	}
 
-	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@GetMapping(path = "/{attachmentId}", produces = ALL_VALUE)
+	@Operation(summary = "Get a streamed attachment.", description = "Fetches the attachment that matches the provided id in a streamed manner", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
+	void getMessageAttachment(
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
+		@PathVariable(name = "attachmentId") final Long attachmentId,
+		final HttpServletResponse response) {
+
+		attachmentService.findAttachmentAsStreamedResponse(errandId, attachmentId, municipalityId, namespace, response);
+	}
+
+	@PostMapping(consumes = MULTIPART_FORM_DATA_VALUE, produces = ALL_VALUE)
 	@Operation(description = "Create attachment on errand.", responses = {
 		@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource.", schema = @Schema(type = "string")), useReturnTypeSchema = true)
 	})
@@ -89,9 +107,10 @@ class AttachmentResource {
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
-		@RequestBody @Valid final Attachment attachment) {
+		@RequestPart("attachment") final Attachment attachment,
+		@RequestPart("file") final MultipartFile file) {
 
-		final var result = attachmentService.create(errandId, attachment, municipalityId, namespace);
+		final var result = attachmentService.create(errandId, attachment, municipalityId, namespace, file);
 		return created(fromPath("/{municipalityId}/{namespace}/errands/{errandId}/attachments/{id}").buildAndExpand(municipalityId, namespace, errandId, result.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

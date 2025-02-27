@@ -21,8 +21,13 @@
 	"attachments": [
 		{
 			"attachmentId": "${json-unit.any-string}",
-			"name": "this-is-an-attachment",
-			"contentType": "text/plain"
+			"name": "test2.txt",
+			"mimeType": "text/plain"
+		},
+		{
+			"attachmentId": "${json-unit.any-string}",
+			"name": "test.txt",
+			"mimeType": "text/plain"
 		}
 	],
 	"emailHeaders": []

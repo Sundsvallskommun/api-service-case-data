@@ -129,13 +129,13 @@ class MessageResponseTest {
 		final var bean = AttachmentResponse.builder()
 			.withAttachmentId(attachmentId)
 			.withName(name)
-			.withContentType(contentType)
+			.withMimeType(contentType)
 			.build();
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(bean.getAttachmentId()).isEqualTo(attachmentId);
-		assertThat(bean.getContentType()).isEqualTo(contentType);
+		assertThat(bean.getMimeType()).isEqualTo(contentType);
 		assertThat(bean.getName()).isEqualTo(name);
 	}
 

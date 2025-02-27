@@ -1,12 +1,15 @@
 package se.sundsvall.casedata.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
@@ -16,9 +19,12 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
@@ -88,25 +94,32 @@ class AttachmentResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-		final var body = createAttachment(AttachmentCategory.MEDICAL_CONFIRMATION);
+		final var request = createAttachment(AttachmentCategory.MEDICAL_CONFIRMATION);
 		final var attachment = createAttachmentEntity();
 		attachment.setId(attachmentId);
-		body.setId(attachmentId);
+		request.setId(attachmentId);
+		final var file = "file";
 
-		when(attachmentServiceMock.create(errandId, body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachment);
+		final var multipartBodyBuilder = new MultipartBodyBuilder();
+		multipartBodyBuilder.part("file", file).filename("file.txt").contentType(TEXT_PLAIN);
+
+		multipartBodyBuilder.part("attachment", request, APPLICATION_JSON);
+		final var body = multipartBodyBuilder.build();
+
+		when(attachmentServiceMock.create(eq(errandId), eq(request), eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(attachment);
 
 		// Act
 		webTestClient.post()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
-			.contentType(APPLICATION_JSON)
-			.bodyValue(body)
+			.contentType(MediaType.MULTIPART_FORM_DATA)
+			.body(BodyInserters.fromMultipartData(body))
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
 			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + errandId + "/attachments/" + attachmentId);
 
 		// Assert
-		verify(attachmentServiceMock).create(errandId, body, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentServiceMock).create(eq(errandId), eq(request), eq(MUNICIPALITY_ID), eq(NAMESPACE), any());
 	}
 
 	@Test
