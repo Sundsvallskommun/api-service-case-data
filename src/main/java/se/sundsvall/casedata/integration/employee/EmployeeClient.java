@@ -22,10 +22,14 @@ public interface EmployeeClient {
 	/**
 	 * Get Userdata from the employee service by domain and loginName.
 	 *
-	 * @param  domain    domain of the employee
-	 * @param  loginName login name of the employee
-	 * @return           PortalPersonData with information about the employee
+	 * @param  municipalityId the municipalityId.
+	 * @param  domain         domain of the employee.
+	 * @param  loginName      login name of the employee.
+	 * @return                PortalPersonData with information about the employee
 	 */
-	@GetMapping(path = "/portalpersondata/{domain}/{loginName}", produces = APPLICATION_JSON_VALUE)
-	Optional<PortalPersonData> getEmployeeByDomainAndLoginName(@PathVariable("domain") String domain, @PathVariable("loginName") String loginName);
+	@GetMapping(path = "/{municipalityId}/portalpersondata/{domain}/{loginName}", produces = APPLICATION_JSON_VALUE)
+	Optional<PortalPersonData> getEmployeeByDomainAndLoginName(
+		@PathVariable("municipalityId") String municipalityId,
+		@PathVariable("domain") String domain,
+		@PathVariable("loginName") String loginName);
 }

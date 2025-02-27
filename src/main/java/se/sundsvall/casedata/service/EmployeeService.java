@@ -15,7 +15,7 @@ public class EmployeeService {
 		this.employeeClient = employeeClient;
 	}
 
-	public PortalPersonData getEmployeeByLoginName(final String loginName) {
-		return employeeClient.getEmployeeByDomainAndLoginName(DOMAIN_PERSONAL, loginName).orElse(null);
+	public PortalPersonData getEmployeeByLoginName(final String municipalityId, final String loginName) {
+		return employeeClient.getEmployeeByDomainAndLoginName(municipalityId, DOMAIN_PERSONAL, loginName).orElse(null);
 	}
 }

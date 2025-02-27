@@ -132,15 +132,16 @@ class NotificationServiceTest {
 		final var notification = TestUtil.createNotification(n -> {});
 		final var notificationEntity = createNotificationEntity(n -> {});
 		final var id = "SomeId";
+		final var userId = "otherAD";
 		final var fullName = "Full Name";
 		final var personalPortalData = new PortalPersonData().fullname(fullName);
 
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)).thenReturn(Optional.of(notificationEntity.getErrand()));
-		when(incomingRequestFilterMock.getAdUser()).thenReturn("otherAD");
+		when(incomingRequestFilterMock.getAdUser()).thenReturn(userId);
 		when(notificationRepositoryMock.findByNamespaceAndMunicipalityIdAndOwnerIdAndAcknowledgedAndErrandIdAndType(namespace, municipalityId, notification.getOwnerId(), notification.isAcknowledged(), notification.getErrandId(), notification.getType()))
 			.thenReturn(empty());
 		when(notificationRepositoryMock.save(any())).thenReturn(createNotificationEntity(n -> n.setId(id)));
-		when(employeeServiceMock.getEmployeeByLoginName(any())).thenReturn(personalPortalData);
+		when(employeeServiceMock.getEmployeeByLoginName(any(), any())).thenReturn(personalPortalData);
 
 		// Act
 		final var result = notificationService.create(municipalityId, namespace, notification);
@@ -150,6 +151,7 @@ class NotificationServiceTest {
 		verify(notificationRepositoryMock).save(notificationEntityArgumentCaptor.capture());
 		assertThat(notificationEntityArgumentCaptor.getValue().getOwnerFullName()).isEqualTo(fullName);
 		verify(notificationRepositoryMock).findByNamespaceAndMunicipalityIdAndOwnerIdAndAcknowledgedAndErrandIdAndType(namespace, municipalityId, notification.getOwnerId(), notification.isAcknowledged(), notification.getErrandId(), notification.getType());
+		verify(employeeServiceMock).getEmployeeByLoginName(municipalityId, userId);
 	}
 
 	@Test
@@ -165,7 +167,7 @@ class NotificationServiceTest {
 		when(notificationRepositoryMock.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, NAMESPACE, municipalityId, patchNotification.getErrandId()))
 			.thenReturn(Optional.ofNullable(createNotificationEntity(n -> n.setId(notificationId))));
 
-		when(employeeServiceMock.getEmployeeByLoginName(any())).thenReturn(personalPortalData);
+		when(employeeServiceMock.getEmployeeByLoginName(any(), any())).thenReturn(personalPortalData);
 
 		// Act
 		notificationService.update(municipalityId, NAMESPACE, List.of(patchNotification));
