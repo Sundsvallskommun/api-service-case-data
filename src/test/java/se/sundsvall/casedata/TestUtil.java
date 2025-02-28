@@ -640,6 +640,13 @@ public final class TestUtil {
 			.build();
 	}
 
+	public static List<NotificationEntity> createNotificationEntityList() {
+		return new ArrayList<NotificationEntity>(List.of(
+			createNotificationEntity(n -> {}),
+			createNotificationEntity(n -> {}),
+			createNotificationEntity(n -> {})));
+	}
+
 	private static List<ExtraParameterEntity> createExtraParameterEntityList() {
 		final var list = new ArrayList<ExtraParameterEntity>();
 		list.add(

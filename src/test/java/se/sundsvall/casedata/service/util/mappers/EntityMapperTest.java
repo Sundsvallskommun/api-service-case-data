@@ -26,6 +26,7 @@ import static se.sundsvall.casedata.TestUtil.createNote;
 import static se.sundsvall.casedata.TestUtil.createNoteEntity;
 import static se.sundsvall.casedata.TestUtil.createNotification;
 import static se.sundsvall.casedata.TestUtil.createNotificationEntity;
+import static se.sundsvall.casedata.TestUtil.createNotificationEntityList;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
 import static se.sundsvall.casedata.TestUtil.createStatus;
@@ -137,6 +138,7 @@ class EntityMapperTest {
 
 	@Test
 	void toErrandTest() {
+
 		// Arrange
 		final var errand = createErrandEntity();
 
@@ -190,6 +192,30 @@ class EntityMapperTest {
 		assertThat(dto.getSuspension().getSuspendedFrom()).isNull();
 		assertThat(dto.getSuspension().getSuspendedTo()).isNull();
 		assertThat(dto.getExtraParameters()).isEmpty();
+	}
+
+	@Test
+	void toErrandWithOnlyActiveNotificationsTest() {
+
+		// Arrange
+		final var notifications = createNotificationEntityList();
+		final var errand = createErrandEntity();
+
+		errand.setNotifications(notifications);
+
+		// Assert that all notifications are returned.
+		final var errand1 = toErrand(errand);
+		assertThat(errand1.getNotifications()).hasSize(notifications.size());
+
+		// Acknowledge all notifications
+		notifications.forEach(notification -> {
+			notification.setAcknowledged(true);
+			notification.setGlobalAcknowledged(true);
+		});
+
+		// Assert that no notifications are returned.
+		final var errand2 = toErrand(errand);
+		assertThat(errand2.getNotifications()).isEmpty();
 	}
 
 	@Test
