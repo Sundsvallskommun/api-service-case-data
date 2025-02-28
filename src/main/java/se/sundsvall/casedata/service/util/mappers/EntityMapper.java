@@ -10,6 +10,7 @@ import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMap
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Optional;
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -79,7 +80,7 @@ public final class EntityMapper {
 				.withFacilities(new ArrayList<>(ofNullable(errandEntity.getFacilities()).orElse(emptyList()).stream().map(EntityMapper::toFacility).toList()))
 				.withDecisions(new ArrayList<>(ofNullable(errandEntity.getDecisions()).orElse(emptyList()).stream().map(EntityMapper::toDecision).toList()))
 				.withRelatesTo(new ArrayList<>(ofNullable(errandEntity.getRelatesTo()).orElse(emptyList()).stream().map(EntityMapper::toRelatedErrand).toList()))
-				.withNotifications(new ArrayList<>(ofNullable(errandEntity.getNotifications()).orElse(emptyList()).stream().map(EntityMapper::toNotification).toList()))
+				.withNotifications(toNotifications(errandEntity.getNotifications()))
 				.withExtraParameters(toParameterList(errandEntity.getExtraParameters()))
 				.withLabels(errandEntity.getLabels())
 				.build())
@@ -481,6 +482,14 @@ public final class EntityMapper {
 				.withType(notification.getType())
 				.build())
 			.orElse(null);
+	}
+
+	public static List<Notification> toNotifications(final List<NotificationEntity> notificationEntityList) {
+		return new ArrayList<>(Optional.ofNullable(notificationEntityList).orElse(emptyList())
+			.stream()
+			.filter(notification -> !notification.isGlobalAcknowledged() || !notification.isAcknowledged())
+			.map(EntityMapper::toNotification)
+			.toList());
 	}
 
 	public static Notification toNotification(final NotificationEntity notificationEntity) {
