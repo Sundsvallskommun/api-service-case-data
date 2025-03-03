@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.service.util;
 
 public final class Constants {
-
 	public static final String ERRAND_ENTITY_NOT_FOUND = "Errand with id:'%s' not found in namespace:'%s' for municipality with id:'%s'";
 
 	public static final String ATTACHMENT_ENTITY_NOT_FOUND = "Attachment with id:'%s' not found on errand with id:'%s' in namespace:'%s' for municipality with id:'%s'";
@@ -38,4 +37,5 @@ public final class Constants {
 	private Constants() {
 		// Prevent instantiation
 	}
+
 }

@@ -1,7 +1,9 @@
 package se.sundsvall.casedata.apptest;
 
 import static java.text.MessageFormat.format;
+import org.junit.jupiter.api.Test;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -11,19 +13,17 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
-import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+import se.sundsvall.casedata.Application;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
-import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
-import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.service.util.Constants;
+import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
+import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -65,9 +65,9 @@ class AttachmentIT extends AbstractAppTest {
 			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withRequest(REQUEST_FILE)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(Constants.AD_USER_HEADER_KEY, AD_USER)
+			.withHeader(Constants.AD_USER_HEADER_KEY, "someUser123")
 			.withExpectedResponseStatus(NO_CONTENT)
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		setupCall()
 			.withHttpMethod(GET)
@@ -96,15 +96,15 @@ class AttachmentIT extends AbstractAppTest {
 			.withHttpMethod(GET)
 			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withExpectedResponseStatus(OK)
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		setupCall()
 			.withHttpMethod(DELETE)
 			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(Constants.AD_USER_HEADER_KEY, AD_USER)
+			.withHeader(Constants.AD_USER_HEADER_KEY, "user123")
 			.withExpectedResponseStatus(NO_CONTENT)
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		setupCall()
 			.withHttpMethod(GET)
@@ -128,11 +128,12 @@ class AttachmentIT extends AbstractAppTest {
 		final var location = setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(format(ATTACHMENTS_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
+			.withHeader(AD_USER_HEADER_KEY, "user123")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseBodyIsNull()
-			.sendRequestAndVerifyResponse()
-			.getResponseHeaders().get("Location").getFirst();
+			.sendRequest()
+			.getResponseHeaders().get(LOCATION).getFirst();
 
 		setupCall()
 			.withHttpMethod(GET)
@@ -168,9 +169,10 @@ class AttachmentIT extends AbstractAppTest {
 		setupCall()
 			.withHttpMethod(PATCH)
 			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
+			.withHeader("sentbyuser", "user123")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		setupCall()
 			.withHttpMethod(GET)

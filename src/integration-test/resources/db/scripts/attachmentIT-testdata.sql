@@ -5,13 +5,13 @@ INSERT INTO errand(id, created, updated, version, application_received, case_tit
                    municipality_id, phase, priority, process_id, start_date, updated_by,
                    updated_by_client, channel, namespace)
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
-        'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
+        'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'UNKNOWN', '', '', NULL,
         'ERRAND-NUMBER-1', '', '2281', 'Aktualisering', 'MEDIUM',
-        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE'),
+        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'UNKNOWN', NULL, 'MY_NAMESPACE'),
        (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
-        'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
+        'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'UNKNOWN', '', '', NULL,
         'ERRAND-NUMBER-2', '', '2281', 'Aktualisering', 'MEDIUM',
-        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE');
+        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'UNKNOWN', NULL, 'MY_NAMESPACE');
 
 
 INSERT INTO attachment (id, created, updated, version, category, extension, file, mime_type, name,
@@ -37,3 +37,13 @@ INSERT INTO message_attachment (message_attachment_data_id, attachmentid, conten
                                 name, municipality_id, namespace)
 VALUES (1, '05b29c30-4512-46c0-9d82-d0f11cb04bae', 'image/png',
         '02485d15-fa8b-488a-a907-fa4de5d6e5c9', 'test_image.png', '2281', 'MY_NAMESPACE');
+
+INSERT INTO stakeholder (id, created, updated, version, ad_account, authorized_signatory,
+                         first_name, last_name, organization_name, organization_number, person_id,
+                         `type`, errand_id, municipality_id, namespace)
+VALUES (1, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'string',
+        'Test Testorsson', 'Test', 'Testorsson', 'Sundsvalls testfabrik', '19901010-1234',
+        '3ed5bc30-6308-4fd5-a5a7-78d7f96f4438', 'PERSON', NULL, '2281', 'MY_NAMESPACE'),
+       (2, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'string',
+        'Test Testorsson', 'Test', 'Testorsson', 'Sundsvalls testfabrik', '19901010-1234',
+        '3ed5bc30-6308-4fd5-a5a7-78d7f96f4438', 'PERSON', 1, '2281', 'MY_NAMESPACE');
