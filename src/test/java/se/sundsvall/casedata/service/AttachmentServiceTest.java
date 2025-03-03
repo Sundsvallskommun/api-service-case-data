@@ -40,10 +40,13 @@ import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 class AttachmentServiceTest {
 
 	@Mock
-	private ErrandRepository errandRepository;
+	private NotificationService notificationServiceMock;
 
 	@Mock
-	private AttachmentRepository attachmentRepository;
+	private ErrandRepository errandRepositoryMock;
+
+	@Mock
+	private AttachmentRepository attachmentRepositoryMock;
 
 	@InjectMocks
 	private AttachmentService attachmentService;
@@ -58,14 +61,14 @@ class AttachmentServiceTest {
 		final var errandId = 1L;
 		final var attachmentId = 123L;
 		final var attachment = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.SIGNATURE), MUNICIPALITY_ID, NAMESPACE);
-		when(attachmentRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(attachment));
+		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(attachment));
 
 		// Act
 		final var result = attachmentService.findAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isEqualTo(toAttachment(attachment));
-		verify(attachmentRepository).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 	@Test
@@ -74,13 +77,13 @@ class AttachmentServiceTest {
 		// Arrange
 		final var errandId = 1L;
 		final var attachmentId = 123L;
-		when(attachmentRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
+		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
 
 		// Act & Assert
 		assertThatThrownBy(() -> attachmentService.findAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND);
-		verify(attachmentRepository).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
 	}
 
 	@Test
@@ -92,13 +95,16 @@ class AttachmentServiceTest {
 		final var attachmentEntity = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.PASSPORT_PHOTO), MUNICIPALITY_ID, NAMESPACE);
 		attachmentEntity.setId(attachmentId);
 		final var attachment = createAttachment(AttachmentCategory.LEASE_REQUEST);
-		when(attachmentRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(attachmentEntity));
+		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(attachmentEntity));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(TestUtil.createErrandEntity()));
 
 		// Act
 		attachmentService.replace(errandId, attachmentEntity.getId(), MUNICIPALITY_ID, NAMESPACE, attachment);
 
 		// Assert
-		verify(attachmentRepository).save(attachmentArgumentCaptor.capture());
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), any());
+		verify(attachmentRepositoryMock).save(attachmentArgumentCaptor.capture());
 		assertThat(attachmentArgumentCaptor.getValue()).satisfies(entity -> {
 			assertThat(entity.getExtraParameters()).isEqualTo(attachment.getExtraParameters());
 			assertThat(entity.getCategory()).isEqualTo(attachment.getCategory());
@@ -119,14 +125,17 @@ class AttachmentServiceTest {
 		final var dto = new Attachment();
 		final var entity = new AttachmentEntity();
 
-		when(attachmentRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
+		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(TestUtil.createErrandEntity()));
 
 		// Act
 		attachmentService.update(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, dto);
 
 		// Assert
-		verify(attachmentRepository).save(entity);
-		verifyNoMoreInteractions(attachmentRepository);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), any());
+		verify(attachmentRepositoryMock).save(entity);
+		verifyNoMoreInteractions(attachmentRepositoryMock);
 	}
 
 	@Test
@@ -137,15 +146,18 @@ class AttachmentServiceTest {
 		final var errandId = 2L;
 		final var attachmentEntity = TestUtil.createAttachmentEntity();
 
-		when(attachmentRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(attachmentEntity));
+		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(attachmentEntity));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(TestUtil.createErrandEntity()));
 
 		// Act
 		attachmentService.delete(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		verify(attachmentRepository).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(attachmentRepository).delete(attachmentEntity);
-		verifyNoMoreInteractions(attachmentRepository);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), any());
+		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentRepositoryMock).delete(attachmentEntity);
+		verifyNoMoreInteractions(attachmentRepositoryMock);
 	}
 
 	@Test
@@ -154,7 +166,7 @@ class AttachmentServiceTest {
 		// Arrange
 		final var attachmentId = 1L;
 		final var errandId = 2L;
-		when(attachmentRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(empty());
+		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(empty());
 
 		// Act
 		final var result = assertThrows(ThrowableProblem.class, () -> attachmentService.delete(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE));
@@ -164,9 +176,9 @@ class AttachmentServiceTest {
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Attachment with id:'1' not found on errand with id:'2' in namespace:'MY_NAMESPACE' for municipality with id:'2281'");
 
-		verify(attachmentRepository).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(attachmentRepository, never()).delete(any(AttachmentEntity.class));
-		verifyNoMoreInteractions(attachmentRepository);
+		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentRepositoryMock, never()).delete(any(AttachmentEntity.class));
+		verifyNoMoreInteractions(attachmentRepositoryMock);
 	}
 
 	@Test
@@ -175,30 +187,30 @@ class AttachmentServiceTest {
 		final var errandId = 123L;
 		final var attachment = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.MEX_PROTOCOL), MUNICIPALITY_ID, NAMESPACE);
 		attachment.setErrandId(errandId);
-		doReturn(List.of(attachment)).when(attachmentRepository).findAllByErrandIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		doReturn(List.of(attachment)).when(attachmentRepositoryMock).findAllByErrandIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 
 		// Act
 		final var result = attachmentService.findAttachments(errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertEquals(List.of(toAttachment(attachment)), result);
-		verify(attachmentRepository).findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(attachmentRepository);
+		verify(attachmentRepositoryMock).findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoMoreInteractions(attachmentRepositoryMock);
 	}
 
 	@Test
 	void findAttachmentsNothingFound() {
 		// Arrange
 		final var errandId = 123L;
-		doReturn(List.of()).when(attachmentRepository).findAllByErrandIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		doReturn(List.of()).when(attachmentRepositoryMock).findAllByErrandIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 
 		// Act
 		final var result = attachmentService.findAttachments(errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertEquals(List.of(), result);
-		verify(attachmentRepository).findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(attachmentRepository);
+		verify(attachmentRepositoryMock).findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoMoreInteractions(attachmentRepositoryMock);
 	}
 
 	@Test
@@ -207,14 +219,16 @@ class AttachmentServiceTest {
 		final var errandId = 123L;
 		final var attachment = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.POWER_OF_ATTORNEY), MUNICIPALITY_ID, NAMESPACE);
 		attachment.setErrandId(errandId);
-		doReturn(attachment).when(attachmentRepository).save(any(AttachmentEntity.class));
+		doReturn(attachment).when(attachmentRepositoryMock).save(any(AttachmentEntity.class));
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(TestUtil.createErrandEntity()));
 
 		// Act
 		final var result = attachmentService.create(errandId, createAttachment(AttachmentCategory.ROAD_ALLOWANCE_APPROVAL), MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertEquals(attachment, result);
-		verify(attachmentRepository).save(any(AttachmentEntity.class));
-		verifyNoMoreInteractions(attachmentRepository);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentRepositoryMock).save(any(AttachmentEntity.class));
+		verifyNoMoreInteractions(attachmentRepositoryMock);
 	}
 }
