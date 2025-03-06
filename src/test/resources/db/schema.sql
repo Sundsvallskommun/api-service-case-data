@@ -171,6 +171,7 @@
     ) engine=InnoDB;
 
     create table message (
+        internal bit,
         viewed bit not null,
         errand_id bigint,
         email varchar(255),
