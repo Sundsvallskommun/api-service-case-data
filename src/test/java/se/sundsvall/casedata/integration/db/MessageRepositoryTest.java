@@ -138,6 +138,7 @@ class MessageRepositoryTest {
 		final var userId = "userId";
 		final var username = "username";
 		final var viewed = true;
+		final var internal = true;
 
 		MessageEntity.builder().build();
 		final var entity = MessageEntity.builder()
@@ -155,6 +156,7 @@ class MessageRepositoryTest {
 			.withUserId(userId)
 			.withUsername(username)
 			.withViewed(viewed)
+			.withInternal(internal)
 			.build();
 
 		// Act
@@ -177,5 +179,6 @@ class MessageRepositoryTest {
 		assertThat(result.getUserId()).isEqualTo(userId);
 		assertThat(result.getUsername()).isEqualTo(username);
 		assertThat(result.isViewed()).isTrue();
+		assertThat(result.getInternal()).isTrue();
 	}
 }

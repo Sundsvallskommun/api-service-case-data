@@ -107,6 +107,9 @@ public class MessageEntity {
 	@Column(name = "viewed", nullable = false)
 	private boolean viewed;
 
+	@Column(name = "internal")
+	private Boolean internal;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "classification")
 	private Classification classification;
