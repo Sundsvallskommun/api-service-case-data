@@ -91,6 +91,9 @@ public class MessageResponse {
 	@Schema(description = "List of email headers on the message")
 	private List<EmailHeader> emailHeaders;
 
+	@Schema(description = "Is message internal", example = "true")
+	private Boolean internal;
+
 	@Getter
 	@Setter
 	@NoArgsConstructor
