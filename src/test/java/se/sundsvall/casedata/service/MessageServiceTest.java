@@ -116,6 +116,7 @@ class MessageServiceTest {
 		verifyNoMoreInteractions(messageRepositoryMock);
 	}
 
+	@Test
 	void findExternalMessages() {
 
 		// Arrange
