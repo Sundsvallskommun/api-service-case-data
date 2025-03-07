@@ -66,6 +66,31 @@ class MessageResourceTest {
 	}
 
 	@Test
+	void getExternalMessages() {
+
+		// Arrange
+		final var errandId = new Random().nextLong(1, 100000);
+		final var messages = List.of(MessageResponse.builder().build());
+
+		when(messageServiceMock.findExternalMessages(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
+
+		// Act
+		final var response = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/external").build(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON_VALUE)
+			.expectBodyList(MessageResponse.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		assertThat(response).isEqualTo(messages);
+		verify(messageServiceMock).findExternalMessages(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoMoreInteractions(messageServiceMock);
+	}
+
+	@Test
 	void getMessageById() {
 
 		// Arrange

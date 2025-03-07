@@ -80,7 +80,7 @@ public class MessageResponse {
 	private String userId;
 
 	@Schema(description = "Signal if the message has been viewed or not", example = "true")
-	private boolean viewed;
+	private Boolean viewed;
 
 	@Schema(description = "The classification of the message")
 	private Classification classification;

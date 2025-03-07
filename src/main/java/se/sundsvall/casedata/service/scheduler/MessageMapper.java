@@ -90,13 +90,13 @@ public class MessageMapper {
 		return entity.build();
 	}
 
-	public List<MessageResponse> toMessageResponses(final List<MessageEntity> allByExternalCaseId) {
+	public List<MessageResponse> toMessageResponses(final List<MessageEntity> allByExternalCaseId, final boolean includeViewed) {
 		return allByExternalCaseId.stream()
-			.map(this::toMessageResponse)
+			.map(messageEntity -> toMessageResponse(messageEntity, includeViewed))
 			.toList();
 	}
 
-	public MessageResponse toMessageResponse(final MessageEntity entity) {
+	public MessageResponse toMessageResponse(final MessageEntity entity, final boolean includeViewed) {
 		if (entity == null) {
 			return null;
 		}
@@ -119,9 +119,11 @@ public class MessageMapper {
 			.withUserId(entity.getUserId())
 			.withUsername(entity.getUsername())
 			.withClassification(entity.getClassification())
-			.withViewed(entity.isViewed())
 			.withInternal(entity.getInternal());
 
+		if (includeViewed) {
+			response.withViewed(entity.isViewed());
+		}
 		Optional.ofNullable(entity.getHeaders()).ifPresent(headers -> response.withEmailHeaders(toEmailHeaders(headers)));
 		Optional.ofNullable(entity.getAttachments()).ifPresent(attachments -> response.withAttachments(toAttachmentResponses(attachments)));
 		return response.build();
