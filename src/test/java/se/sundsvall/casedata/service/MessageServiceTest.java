@@ -111,7 +111,26 @@ class MessageServiceTest {
 
 		// Assert
 		verify(messageRepositoryMock).findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(messageMapperMock).toMessageResponses(any());
+		verify(messageMapperMock).toMessageResponses(any(), eq(true));
+		verifyNoMoreInteractions(messageMapperMock);
+		verifyNoMoreInteractions(messageRepositoryMock);
+	}
+
+	void findExternalMessages() {
+
+		// Arrange
+		final var errandId = new Random().nextLong(1, 100000);
+		final var messages = List.of(MessageEntity.builder()
+			.withAttachments(List.of(MessageAttachmentEntity.builder().build()))
+			.build());
+		when(messageRepositoryMock.findAllByErrandIdAndMunicipalityIdAndNamespaceAndInternalFalse(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
+
+		// Act
+		messageService.findExternalMessages(errandId, MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
+		verify(messageRepositoryMock).findAllByErrandIdAndMunicipalityIdAndNamespaceAndInternalFalse(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messageMapperMock).toMessageResponses(any(), eq(false));
 		verifyNoMoreInteractions(messageMapperMock);
 		verifyNoMoreInteractions(messageRepositoryMock);
 	}
@@ -222,7 +241,7 @@ class MessageServiceTest {
 
 		// Assert
 		verify(messageMapperMock).toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(messageMapperMock).toMessageResponse(any(MessageEntity.class));
+		verify(messageMapperMock).toMessageResponse(any(MessageEntity.class), eq(true));
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
 		assertThat(notificationCaptor.getValue()).satisfies(notification -> {
