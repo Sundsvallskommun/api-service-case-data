@@ -128,4 +128,16 @@ class MessageResource {
 
 		service.findMessageAttachmentAsStreamedResponse(errandId, attachmentId, municipalityId, namespace, response);
 	}
+
+	@GetMapping(path = "/errands/{errandId}/messages/external", produces = APPLICATION_JSON_VALUE)
+	@Operation(description = "Get non internal messages", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
+	ResponseEntity<List<MessageResponse>> getExternalMessagesByErrand(
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "namespace", description = "Namespace", example = "my.namespace") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId) {
+
+		return ok(service.findExternalMessages(errandId, municipalityId, namespace));
+	}
 }

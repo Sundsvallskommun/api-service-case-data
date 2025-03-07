@@ -112,7 +112,7 @@ class MessageResponseTest {
 		assertThat(bean.getSubject()).isEqualTo(subject);
 		assertThat(bean.getUserId()).isEqualTo(userId);
 		assertThat(bean.getUsername()).isEqualTo(userName);
-		assertThat(bean.isViewed()).isEqualTo(viewed);
+		assertThat(bean.getViewed()).isEqualTo(viewed);
 		assertThat(bean.getClassification()).isEqualTo(classification);
 		assertThat(bean.getEmailHeaders()).isEqualTo(headers);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
@@ -144,8 +144,8 @@ class MessageResponseTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(MessageResponse.builder().build()).hasAllNullFieldsOrPropertiesExcept("viewed").extracting(MessageResponse::isViewed).isEqualTo(false);
-		assertThat(new MessageResponse()).hasAllNullFieldsOrPropertiesExcept("viewed").extracting(MessageResponse::isViewed).isEqualTo(false);
+		assertThat(MessageResponse.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new MessageResponse()).hasAllNullFieldsOrProperties();
 
 		assertThat(AttachmentResponse.builder().build()).hasAllNullFieldsOrProperties();
 		assertThat(new AttachmentResponse()).hasAllNullFieldsOrProperties();

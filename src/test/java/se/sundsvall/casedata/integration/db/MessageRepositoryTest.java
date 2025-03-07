@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.integration.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
@@ -90,21 +91,17 @@ class MessageRepositoryTest {
 
 		// Assert
 		assertThat(result)
-			.hasSize(1)
-			.allSatisfy(obj -> {
-				assertThat(obj.getDirection()).isEqualTo(INBOUND);
-				assertThat(obj.getEmail()).isEqualTo("test.testorsson@noreply.com");
-				assertThat(obj.getErrandId()).isEqualTo(456L);
-				assertThat(obj.getExternalCaseId()).isEqualTo("123456");
-				assertThat(obj.getFamilyId()).isEqualTo("123");
-				assertThat(obj.getFirstName()).isEqualTo("Test");
-				assertThat(obj.getLastName()).isEqualTo("Testorsson");
-				assertThat(obj.getTextmessage()).isEqualTo("Some message");
-				assertThat(obj.getSent()).isEqualTo("2023-10-02 15:13:45.363");
-				assertThat(obj.getSubject()).isEqualTo("Some subject");
-				assertThat(obj.getUserId()).isEqualTo("aba01cal");
-				assertThat(obj.getUsername()).isEqualTo("Abacus Calculator");
-			});
+			.hasSize(3)
+			.extracting(MessageEntity::getMessageId, MessageEntity::getDirection, MessageEntity::getEmail, MessageEntity::getErrandId,
+				MessageEntity::getExternalCaseId, MessageEntity::getFamilyId, MessageEntity::getFirstName, MessageEntity::getLastName,
+				MessageEntity::getTextmessage, MessageEntity::getSent, MessageEntity::getSubject, MessageEntity::getUserId, MessageEntity::getUsername)
+			.containsExactlyInAnyOrder(
+				tuple("02485d15-fa8b-488a-a907-fa4de5d6e5c9", INBOUND, "test.testorsson@noreply.com", 456L, "123456", "123", "Test", "Testorsson",
+					"Some message", "2023-10-02 15:13:45.363", "Some subject", "aba01cal", "Abacus Calculator"),
+				tuple("02485d15-fa8b-488a-a907-fa4de5d6e5c8", INBOUND, "test.testorsson@noreply.com", 456L, "123456", "123", "Test", "Testorsson",
+					"Some internal message", "2023-10-02 15:13:45.363", "Some subject", "aba01cal", "Abacus Calculator"),
+				tuple("02485d15-fa8b-488a-a907-fa4de5d6e5c7", INBOUND, "test.testorsson@noreply.com", 456L, "123456", "123", "Test", "Testorsson",
+					"Some external message", "2023-10-02 15:13:45.363", "Some subject", "aba01cal", "Abacus Calculator"));
 	}
 
 	@Test
@@ -115,6 +112,48 @@ class MessageRepositoryTest {
 
 		// Act
 		final var result = messageRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
+		assertThat(result).isNotNull().isEmpty();
+	}
+
+	@Test
+	void findAllByErrandIdAndMunicipalityIdAndNamespaceAndInternalFalse() {
+
+		// Arrange
+		final var errandId = 456L;
+
+		// Act
+		final var result = messageRepository.findAllByErrandIdAndMunicipalityIdAndNamespaceAndInternalFalse(errandId, MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
+		assertThat(result)
+			.hasSize(1)
+			.allSatisfy(obj -> {
+				assertThat(obj.getMessageId()).isEqualTo("02485d15-fa8b-488a-a907-fa4de5d6e5c7");
+				assertThat(obj.getDirection()).isEqualTo(INBOUND);
+				assertThat(obj.getEmail()).isEqualTo("test.testorsson@noreply.com");
+				assertThat(obj.getErrandId()).isEqualTo(456L);
+				assertThat(obj.getExternalCaseId()).isEqualTo("123456");
+				assertThat(obj.getFamilyId()).isEqualTo("123");
+				assertThat(obj.getFirstName()).isEqualTo("Test");
+				assertThat(obj.getLastName()).isEqualTo("Testorsson");
+				assertThat(obj.getTextmessage()).isEqualTo("Some external message");
+				assertThat(obj.getSent()).isEqualTo("2023-10-02 15:13:45.363");
+				assertThat(obj.getSubject()).isEqualTo("Some subject");
+				assertThat(obj.getUserId()).isEqualTo("aba01cal");
+				assertThat(obj.getUsername()).isEqualTo("Abacus Calculator");
+			});
+	}
+
+	@Test
+	void findAllByErrandIdAndMunicipalityIdAndNamespaceAndInternalFalseNothingFound() {
+
+		// Arrange
+		final var errandId = 999L;
+
+		// Act
+		final var result = messageRepository.findAllByErrandIdAndMunicipalityIdAndNamespaceAndInternalFalse(errandId, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();

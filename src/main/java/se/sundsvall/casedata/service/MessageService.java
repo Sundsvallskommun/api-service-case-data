@@ -49,14 +49,18 @@ public class MessageService {
 	}
 
 	public List<MessageResponse> findMessages(final Long errandId, final String municipalityId, final String namespace) {
-		return mapper.toMessageResponses(messageRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace));
+		return mapper.toMessageResponses(messageRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace), true);
 	}
 
 	public MessageResponse findMessage(final Long errandId, final String municipalityId, final String namespace, final String messageId) {
 		final var messageEntity = messageRepository.findByMunicipalityIdAndNamespaceAndErrandIdAndMessageId(municipalityId, namespace, errandId, messageId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MESSAGE_ENTITY_NOT_FOUND.formatted(messageId, namespace, municipalityId)));
 
-		return mapper.toMessageResponse(messageEntity);
+		return mapper.toMessageResponse(messageEntity, true);
+	}
+
+	public List<MessageResponse> findExternalMessages(final Long errandId, final String municipalityId, final String namespace) {
+		return mapper.toMessageResponses(messageRepository.findAllByErrandIdAndMunicipalityIdAndNamespaceAndInternalFalse(errandId, municipalityId, namespace), false);
 	}
 
 	public MessageResponse create(final Long errandId, final MessageRequest request, final String municipalityId, final String namespace) {
@@ -66,7 +70,7 @@ public class MessageService {
 		final var messageEntity = messageRepository.save(mapper.toMessageEntity(request, errandId, municipalityId, namespace));
 		notificationService.create(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errand);
 
-		return mapper.toMessageResponse(messageEntity);
+		return mapper.toMessageResponse(messageEntity, true);
 	}
 
 	public void updateViewedStatus(final Long errandId, final String messageId, final String municipalityId, final String namespace, final boolean isViewed) {
