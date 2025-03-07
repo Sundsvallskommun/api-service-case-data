@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "11.1"
 servers:
-  - url: http://localhost:61794
+  - url: http://localhost:58424
     description: Generated server url
 tags:
   - name: Notes
@@ -630,6 +630,12 @@ paths:
       responses:
         "204":
           description: No content - Successful operation
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -638,12 +644,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
@@ -1642,6 +1642,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/MessageResponse"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -1650,12 +1656,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
@@ -1700,6 +1700,12 @@ paths:
       responses:
         "201":
           description: No content - Successful operation
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -1708,12 +1714,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
@@ -2988,6 +2988,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -2996,12 +3002,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
@@ -3053,6 +3053,12 @@ paths:
       responses:
         "200":
           description: OK - Successful operation
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -3061,12 +3067,65 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/messages/external:
+    get:
+      tags:
+        - Messages
+      description: Get non internal messages
+      operationId: getExternalMessagesByErrand
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\.|\\-]+"
+            type: string
+          example: my.namespace
+        - name: errandId
+          in: path
+          description: Errand ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 123
+      responses:
+        "200":
+          description: OK - Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MessageResponse"
         "404":
           description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
@@ -3380,18 +3439,18 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        detail:
-          type: string
         title:
+          type: string
+        detail:
           type: string
     StatusType:
       type: object
       properties:
-        reasonPhrase:
-          type: string
         statusCode:
           type: integer
           format: int32
+        reasonPhrase:
+          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -3515,9 +3574,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        detail:
-          type: string
         title:
+          type: string
+        detail:
           type: string
         suppressed:
           type: array
@@ -4825,6 +4884,10 @@ components:
         totalPages:
           type: integer
           format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
         size:
           type: integer
           format: int32
@@ -4837,10 +4900,6 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         numberOfElements:
           type: integer
           format: int32
@@ -4856,6 +4915,8 @@ components:
           format: int64
         sort:
           $ref: "#/components/schemas/SortObject"
+        unpaged:
+          type: boolean
         paged:
           type: boolean
         pageNumber:
@@ -4864,16 +4925,14 @@ components:
         pageSize:
           type: integer
           format: int32
-        unpaged:
-          type: boolean
     SortObject:
       type: object
       properties:
         empty:
           type: boolean
-        sorted:
-          type: boolean
         unsorted:
+          type: boolean
+        sorted:
           type: boolean
     CommitMetadata:
       type: object
