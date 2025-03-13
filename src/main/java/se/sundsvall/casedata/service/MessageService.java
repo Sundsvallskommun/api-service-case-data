@@ -27,7 +27,7 @@ import se.sundsvall.casedata.service.scheduler.MessageMapper;
 public class MessageService {
 
 	private static final String NOTIFICATION_TYPE = "UPDATE";
-	private static final String NOTIFICATION_DESCRIPTION = "Meddelande mottaget";
+	private static final String NOTIFICATION_DESCRIPTION = "Meddelande skickat";
 	private final MessageRepository messageRepository;
 	private final ErrandRepository errandRepository;
 	private final MessageAttachmentRepository messageAttachmentRepository;
