@@ -34,6 +34,8 @@ class NotificationResourceFailuresTest {
 	private static final String ERRAND_NOTIFICATIONS_PATH = BASE_PATH + "/errands/{errandId}/notifications";
 	private static final String NAMESPACE = "namespace";
 	private static final String MUNICIPALITY_ID = "2281";
+	private static final String INVALID = "invalid";
+	private static final Long ERRAND_ID = 12345L;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -44,12 +46,9 @@ class NotificationResourceFailuresTest {
 	@Test
 	void createWithMissingBody() {
 
-		// Arrange
-		final var errandId = 12345L;
-
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId)))
+			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", ERRAND_ID)))
 			.contentType(APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -72,9 +71,8 @@ class NotificationResourceFailuresTest {
 	void createWithInvalidMunicipalityId() {
 
 		// Arrange
-		final var municipalityId = "invalid";
-		final var errandId = 12345L;
 		final var requestBody = Notification.builder()
+
 			.withOwnerId("SomeOwnerId")
 			.withOwnerFullName("SomeOwnerFullName")
 			.withCreatedBy("SomeUser")
@@ -86,7 +84,7 @@ class NotificationResourceFailuresTest {
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH).build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE, "errandId", errandId)))
+			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH).build(Map.of("municipalityId", INVALID, "namespace", NAMESPACE, "errandId", ERRAND_ID)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(requestBody)
 			.exchange()
@@ -115,7 +113,7 @@ class NotificationResourceFailuresTest {
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 12345L)))
+			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", ERRAND_ID)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(requestBody)
 			.exchange()
@@ -133,7 +131,6 @@ class NotificationResourceFailuresTest {
 			.extracting(Violation::getField, Violation::getMessage)
 			.containsExactlyInAnyOrder(
 				tuple("description", "must not be blank"),
-				tuple("errandId", "must not be null"),
 				tuple("ownerId", "must not be blank"),
 				tuple("type", "must not be blank"));
 
@@ -168,10 +165,10 @@ class NotificationResourceFailuresTest {
 	void updateWithInvalidMunicipalityId() {
 
 		// Arrange
-		final var municipalityId = "invalid";
 		final var requestBody = List.of(
 			PatchNotification.builder()
 				.withId(randomUUID().toString())
+				.withErrandId(ERRAND_ID)
 				.withOwnerId("SomeOwnerId")
 				.withType("SomeType")
 				.withDescription("Some description")
@@ -180,7 +177,7 @@ class NotificationResourceFailuresTest {
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(NOTIFICATIONS_PATH).build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE)))
+			.uri(builder -> builder.path(NOTIFICATIONS_PATH).build(Map.of("municipalityId", INVALID, "namespace", NAMESPACE)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(requestBody)
 			.exchange()
@@ -206,9 +203,9 @@ class NotificationResourceFailuresTest {
 
 		// Arrange
 		final var requestBody = List.of(
-			PatchNotification.builder().withId(randomUUID().toString()).withAcknowledged(false).build(),
-			PatchNotification.builder().withAcknowledged(false).build(), // Missing ID
-			PatchNotification.builder().withId(randomUUID().toString()).withAcknowledged(false).build());
+			PatchNotification.builder().withId(randomUUID().toString()).withErrandId(ERRAND_ID).withAcknowledged(false).build(),
+			PatchNotification.builder().withAcknowledged(false).withErrandId(ERRAND_ID).build(), // Missing ID
+			PatchNotification.builder().withId(randomUUID().toString()).withErrandId(ERRAND_ID).withAcknowledged(false).build());
 
 		// Act
 		final var response = webTestClient.patch()
@@ -237,12 +234,11 @@ class NotificationResourceFailuresTest {
 	void getNotificationsWithInvalidMunicipalityId() {
 
 		// Arrange
-		final var ownerId = "owner";
-		final var municipalityId = "invalid";
+		final var ownerId = "ownerId";
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(NOTIFICATIONS_PATH).queryParam("ownerId", ownerId).build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE)))
+			.uri(builder -> builder.path(NOTIFICATIONS_PATH).queryParam("ownerId", ownerId).build(Map.of("municipalityId", INVALID, "namespace", NAMESPACE)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
@@ -288,12 +284,10 @@ class NotificationResourceFailuresTest {
 
 		// Arrange
 		final var notificationId = randomUUID().toString();
-		final var municipalityId = "invalid";
-		final var errandId = 12345L;
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH + "/{notificationId}").build(Map.of("municipalityId", municipalityId, "namespace", NAMESPACE, "errandId", errandId, "notificationId", notificationId)))
+			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH + "/{notificationId}").build(Map.of("municipalityId", INVALID, "namespace", NAMESPACE, "errandId", ERRAND_ID, "notificationId", notificationId)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
@@ -308,6 +302,52 @@ class NotificationResourceFailuresTest {
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
 			.containsExactlyInAnyOrder(tuple("getNotification.municipalityId", "not a valid municipality ID"));
+
+		verifyNoInteractions(notificationServiceMock);
+	}
+
+	@Test
+	void globalAcknowledgeNotificationsWithInvalidNamespace() {
+
+		// Act
+		final var response = webTestClient.put()
+			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH + "/global-acknowledged").build(Map.of("namespace", "invalid namespace", "municipalityId", MUNICIPALITY_ID, "errandId", ERRAND_ID)))
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		assertThat(response).isNotNull();
+		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
+		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
+		assertThat(response.getViolations())
+			.extracting(Violation::getField, Violation::getMessage)
+			.containsExactlyInAnyOrder(tuple("globalAcknowledgeNotification.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
+
+		verifyNoInteractions(notificationServiceMock);
+	}
+
+	@Test
+	void globalAcknowledgeNotificationsWithInvalidMunicipalityId() {
+
+		// Act
+		final var response = webTestClient.put()
+			.uri(builder -> builder.path(ERRAND_NOTIFICATIONS_PATH + "/global-acknowledged").build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "errandId", ERRAND_ID)))
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		assertThat(response).isNotNull();
+		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
+		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
+		assertThat(response.getViolations())
+			.extracting(Violation::getField, Violation::getMessage)
+			.containsExactlyInAnyOrder(tuple("globalAcknowledgeNotification.municipalityId", "not a valid municipality ID"));
 
 		verifyNoInteractions(notificationServiceMock);
 	}

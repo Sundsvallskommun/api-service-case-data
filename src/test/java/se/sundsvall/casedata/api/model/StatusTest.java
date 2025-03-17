@@ -44,13 +44,13 @@ class StatusTest {
 		final var bean = Status.builder()
 			.withStatusType(statusType)
 			.withDescription(description)
-			.withDateTime(dateTime)
+			.withCreated(dateTime)
 			.build();
 
 		// Assert
 		assertThat(bean.getStatusType()).isEqualTo(statusType);
 		assertThat(bean.getDescription()).isEqualTo(description);
-		assertThat(bean.getDateTime()).isEqualTo(dateTime);
+		assertThat(bean.getCreated()).isEqualTo(dateTime);
 	}
 
 	@Test

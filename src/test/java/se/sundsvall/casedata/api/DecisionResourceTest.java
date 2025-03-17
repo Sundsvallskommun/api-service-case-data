@@ -99,7 +99,7 @@ class DecisionResourceTest {
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/2281/my.namespace/decisions/" + decisionId);
+			.expectHeader().location("/2281/MY_NAMESPACE/decisions/" + decisionId);
 
 		// Assert
 		verify(decisionServiceMock).addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, body);

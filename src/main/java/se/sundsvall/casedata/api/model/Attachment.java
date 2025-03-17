@@ -33,7 +33,7 @@ public class Attachment {
 	@Schema(description = "Errand id associated with the attachment", accessMode = READ_ONLY, example = "123456")
 	private Long errandId;
 
-	@Schema(description = "Namespace", example = "my.namespace", accessMode = READ_ONLY)
+	@Schema(description = "Namespace", example = "MY_NAMESPACE", accessMode = READ_ONLY)
 	private String namespace;
 
 	@Schema(description = "The date when this attachment was created", accessMode = READ_ONLY, example = "2023-10-01T12:00:00Z")

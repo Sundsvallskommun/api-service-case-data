@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.service;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
@@ -15,6 +16,7 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import org.hibernate.query.sqm.PathElementException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
@@ -71,6 +73,13 @@ public class ErrandService {
 	 * Saves errand and update the process in ParkingPermit if it's a parking permit errand
 	 */
 	public Errand create(final Errand errand, final String municipalityId, final String namespace) {
+
+		final var statuses = Optional.ofNullable(errand.getStatus())
+			.map(List::of)
+			.orElse(emptyList());
+
+		errand.setStatuses(statuses);
+
 		final var errandEntity = toErrandEntity(errand, municipalityId, namespace);
 		final var resultErrand = errandRepository.save(errandEntity);
 

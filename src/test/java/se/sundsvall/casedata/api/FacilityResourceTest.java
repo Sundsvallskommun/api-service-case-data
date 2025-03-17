@@ -117,7 +117,7 @@ class FacilityResourceTest {
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
-			.expectHeader().location("/2281/my.namespace/errands/" + errandId + "/facilities/" + facility.getId());
+			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + errandId + "/facilities/" + facility.getId());
 
 		// Assert
 		verify(facilityServiceMock).create(errandId, MUNICIPALITY_ID, NAMESPACE, facility);

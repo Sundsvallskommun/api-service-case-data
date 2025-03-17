@@ -8,7 +8,7 @@
 	"mimeType": "application/pdf",
 	"version": 1,
 	"file": "FILE-1",
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"name": "test1.pdf",
 	"id": 1,
 	"category": "MEDICAL_CONFIRMATION",

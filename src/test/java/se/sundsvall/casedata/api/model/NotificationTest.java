@@ -49,6 +49,7 @@ class NotificationTest {
 		final var content = "Some content of the notification";
 		final var expires = now();
 		final var acknowledged = true;
+		final var globalAcknowledged = true;
 		final var errandId = 12345L;
 		final var errandNumber = "PRH-2022-000001";
 		final var municipalityId = "municipalityId";
@@ -68,6 +69,7 @@ class NotificationTest {
 			.withContent(content)
 			.withExpires(expires)
 			.withAcknowledged(acknowledged)
+			.withGlobalAcknowledged(globalAcknowledged)
 			.withErrandId(errandId)
 			.withErrandNumber(errandNumber)
 			.withMunicipalityId(municipalityId)
@@ -87,6 +89,7 @@ class NotificationTest {
 		assertThat(bean.getContent()).isEqualTo(content);
 		assertThat(bean.getExpires()).isEqualTo(expires);
 		assertThat(bean.isAcknowledged()).isEqualTo(acknowledged);
+		assertThat(bean.isGlobalAcknowledged()).isEqualTo(globalAcknowledged);
 		assertThat(bean.getErrandId()).isEqualTo(errandId);
 		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
@@ -95,7 +98,7 @@ class NotificationTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Notification.builder().build()).hasAllNullFieldsOrPropertiesExcept("acknowledged");
-		assertThat(new Notification()).hasAllNullFieldsOrPropertiesExcept("acknowledged");
+		assertThat(Notification.builder().build()).hasAllNullFieldsOrPropertiesExcept("acknowledged", "globalAcknowledged");
+		assertThat(new Notification()).hasAllNullFieldsOrPropertiesExcept("acknowledged", "globalAcknowledged");
 	}
 }

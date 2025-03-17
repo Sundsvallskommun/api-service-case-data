@@ -33,7 +33,7 @@ public class MessageResponse {
 	@Schema(description = "The municipality ID", example = "2281")
 	private String municipalityId;
 
-	@Schema(description = "Namespace", example = "my.namespace")
+	@Schema(description = "Namespace", example = "MY_NAMESPACE")
 	private String namespace;
 
 	@Enumerated(STRING)

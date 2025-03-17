@@ -30,7 +30,7 @@ import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
 public class EmailReaderWorker {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EmailReaderWorker.class.getName());
-	private static final String NOTIFICATION_DESCRIPTION = "Meddelande mottaget";
+	private static final String NOTIFICATION_DESCRIPTION = "Nytt meddelande";
 	private static final String NOTIFICATION_TYPE = "UPDATE";
 	private final MessageRepository messageRepository;
 	private final ErrandRepository errandRepository;

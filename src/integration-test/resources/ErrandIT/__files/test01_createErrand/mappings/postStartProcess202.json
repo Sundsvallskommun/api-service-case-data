@@ -1,11 +1,6 @@
 {
 	"request": {
 		"method": "POST",
-		"bodyPatterns": [
-			{
-				"contains": "400000000"
-			}
-		],
 		"urlPathPattern": "/parkingpermit/.*/process/start/.*"
 	},
 	"response": {
@@ -32,7 +27,7 @@
 				""
 			]
 		},
-		"bodyFileName": "postStartProcess400.json",
-		"status": 400
+		"bodyFileName": "common/response/postStartProcess202.json",
+		"status": 202
 	}
 }

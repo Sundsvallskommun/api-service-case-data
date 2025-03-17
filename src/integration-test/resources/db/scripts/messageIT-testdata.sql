@@ -7,11 +7,11 @@ INSERT INTO errand(id, created, updated, version, application_received, case_tit
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
         'ERRAND-NUMBER-1', '', '2281', 'Aktualisering', 'MEDIUM',
-        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'my.namespace'),
+        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE'),
        (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
         'ERRAND-NUMBER-2', '', '2281', 'Aktualisering', 'MEDIUM',
-        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'my.namespace');
+        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE');
 
 
 INSERT INTO message(messageid, errand_id, direction, familyid, external_caseid, subject,
@@ -20,7 +20,7 @@ INSERT INTO message(messageid, errand_id, direction, familyid, external_caseid, 
                     mobile_number, viewed, municipality_id, namespace)
 VALUES ('a8883fb9-60b4-4f38-9f48-642070ff49ee', 1, 'INBOUND', 387, 1234, 'Subject',
         'Message', 'kctest', 'john', 'doe', 'johndoe@email.com', 'userid',
-        '2024-01-01T12:00:00.000000', 'EMAIL', '0701234567', 1, '2281', 'my.namespace');
+        '2024-01-01T12:00:00.000000', 'EMAIL', '0701234567', 1, '2281', 'MY_NAMESPACE');
 
 INSERT INTO email_header(id, header, message_id)
 VALUES (1, 'MESSAGE_ID', 'a8883fb9-60b4-4f38-9f48-642070ff49ee'),
@@ -45,4 +45,4 @@ VALUES (1,
 INSERT INTO message_attachment (message_attachment_data_id, attachmentid, content_type, messageid, name,
                                 municipality_id, namespace)
 VALUES (1, '05b29c30-4512-46c0-9d82-d0f11cb04bae', 'image/png', 'a8883fb9-60b4-4f38-9f48-642070ff49ee',
-        'test_image.png', '2281', 'my.namespace');
+        'test_image.png', '2281', 'MY_NAMESPACE');

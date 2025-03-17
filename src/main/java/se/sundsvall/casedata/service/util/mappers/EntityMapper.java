@@ -1,15 +1,16 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import static java.time.OffsetDateTime.now;
+import static java.time.ZoneId.systemDefault;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
 
-import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Optional;
 import se.sundsvall.casedata.api.model.Address;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -71,6 +72,7 @@ public final class EntityMapper {
 				.withUpdatedBy(errandEntity.getUpdatedBy())
 				.withMunicipalityId(errandEntity.getMunicipalityId())
 				.withNamespace(errandEntity.getNamespace())
+				.withStatus(EntityMapper.toStatus(errandEntity.getStatus()))
 				.withSuspension(Suspension.builder().withSuspendedFrom(errandEntity.getSuspendedFrom()).withSuspendedTo(errandEntity.getSuspendedTo()).build())
 				.withNotes(new ArrayList<>(ofNullable(errandEntity.getNotes()).orElse(emptyList()).stream().map(EntityMapper::toNote).toList()))
 				.withStatuses(new ArrayList<>(ofNullable(errandEntity.getStatuses()).orElse(emptyList()).stream().map(EntityMapper::toStatus).toList()))
@@ -78,6 +80,7 @@ public final class EntityMapper {
 				.withFacilities(new ArrayList<>(ofNullable(errandEntity.getFacilities()).orElse(emptyList()).stream().map(EntityMapper::toFacility).toList()))
 				.withDecisions(new ArrayList<>(ofNullable(errandEntity.getDecisions()).orElse(emptyList()).stream().map(EntityMapper::toDecision).toList()))
 				.withRelatesTo(new ArrayList<>(ofNullable(errandEntity.getRelatesTo()).orElse(emptyList()).stream().map(EntityMapper::toRelatedErrand).toList()))
+				.withNotifications(toNotifications(errandEntity.getNotifications()))
 				.withExtraParameters(toParameterList(errandEntity.getExtraParameters()))
 				.withLabels(errandEntity.getLabels())
 				.build())
@@ -108,11 +111,13 @@ public final class EntityMapper {
 				.withUpdatedBy(errand.getUpdatedBy())
 				.withSuspendedFrom(ofNullable(errand.getSuspension()).map(Suspension::getSuspendedFrom).orElse(null))
 				.withSuspendedTo(ofNullable(errand.getSuspension()).map(Suspension::getSuspendedTo).orElse(null))
+				.withStatus(EntityMapper.toStatusEntity(errand.getStatus()))
 				.withStatuses(new ArrayList<>(ofNullable(errand.getStatuses())
 					.orElse(emptyList())
 					.stream()
 					.map(EntityMapper::toStatusEntity)
 					.toList()))
+
 				.withStakeholders(new ArrayList<>(ofNullable(errand.getStakeholders())
 					.orElse(emptyList())
 					.stream().map(stakeholderDTO -> toStakeholderEntity(stakeholderDTO, municipalityId, namespace))
@@ -315,7 +320,7 @@ public final class EntityMapper {
 			.map(obj -> StatusEntity.builder()
 				.withStatusType(status.getStatusType())
 				.withDescription(status.getDescription())
-				.withDateTime(status.getDateTime())
+				.withCreated(now(systemDefault()))
 				.build())
 			.orElse(null);
 	}
@@ -325,7 +330,7 @@ public final class EntityMapper {
 			.map(obj -> Status.builder()
 				.withStatusType(entity.getStatusType())
 				.withDescription(entity.getDescription())
-				.withDateTime(entity.getDateTime())
+				.withCreated(entity.getCreated())
 				.build())
 			.orElse(null);
 	}
@@ -461,29 +466,37 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace, final ErrandEntity errand, final PortalPersonData creator, final PortalPersonData owner) {
+	public static NotificationEntity toNotificationEntity(final Notification notification, final String municipalityId, final String namespace, final ErrandEntity errand) {
 		return ofNullable(notification)
 			.map(obj -> NotificationEntity.builder()
 				.withAcknowledged(notification.isAcknowledged())
+				.withGlobalAcknowledged(notification.isGlobalAcknowledged())
 				.withContent(notification.getContent())
 				.withCreatedBy(notification.getCreatedBy())
-				.withCreatedByFullName(ofNullable(creator).map(PortalPersonData::getFullname).orElse("unknown"))
 				.withDescription(notification.getDescription())
 				.withExpires(ofNullable(notification.getExpires()).orElse(now().plusDays(DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS)))
 				.withErrand(errand)
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
-				.withOwnerFullName(ofNullable(owner).map(PortalPersonData::getFullname).orElse("unknown"))
 				.withOwnerId(notification.getOwnerId())
 				.withType(notification.getType())
 				.build())
 			.orElse(null);
 	}
 
+	public static List<Notification> toNotifications(final List<NotificationEntity> notificationEntityList) {
+		return new ArrayList<>(Optional.ofNullable(notificationEntityList).orElse(emptyList())
+			.stream()
+			.filter(notification -> !notification.isGlobalAcknowledged() || !notification.isAcknowledged())
+			.map(EntityMapper::toNotification)
+			.toList());
+	}
+
 	public static Notification toNotification(final NotificationEntity notificationEntity) {
 		return ofNullable(notificationEntity)
 			.map(obj -> Notification.builder()
 				.withAcknowledged(notificationEntity.isAcknowledged())
+				.withGlobalAcknowledged(notificationEntity.isGlobalAcknowledged())
 				.withContent(notificationEntity.getContent())
 				.withCreated(notificationEntity.getCreated())
 				.withCreatedBy(notificationEntity.getCreatedBy())

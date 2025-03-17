@@ -17,7 +17,7 @@
 		"version": 0,
 		"firstName": "FIRST-NAME-1",
 		"contactInformation": [],
-		"namespace": "my.namespace",
+		"namespace": "MY_NAMESPACE",
 		"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
 		"id": 2,
 		"updated": "2022-12-02T15:15:01.563+01:00"
@@ -25,7 +25,7 @@
 	"validFrom": "2024-01-01T12:00:00+01:00",
 	"version": 1,
 	"decidedAt": "2024-01-01T12:00:00+01:00",
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"decisionOutcome": "APPROVAL",
 	"decisionType": "RECOMMENDED",
 	"id": 1,

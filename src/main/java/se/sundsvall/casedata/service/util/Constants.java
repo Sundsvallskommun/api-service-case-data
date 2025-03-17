@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.service.util;
 
 public final class Constants {
-
 	public static final String ERRAND_ENTITY_NOT_FOUND = "Errand with id:'%s' not found in namespace:'%s' for municipality with id:'%s'";
 
 	public static final String ATTACHMENT_ENTITY_NOT_FOUND = "Attachment with id:'%s' not found on errand with id:'%s' in namespace:'%s' for municipality with id:'%s'";
@@ -13,8 +12,8 @@ public final class Constants {
 	public static final String NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Note with id:'%s' was not found on errand with id:'%s'";
 	public static final String STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Stakeholder with id:'%s' was not found on errand with id:'%s'";
 
-	public static final String NAMESPACE_REGEXP = "[\\w|\\.|\\-]+";
-	public static final String NAMESPACE_VALIDATION_MESSAGE = "can only contain A-Z, a-z, 0-9, -, _ and .";
+	public static final String NAMESPACE_REGEXP = "[\\w|\\-]+";
+	public static final String NAMESPACE_VALIDATION_MESSAGE = "can only contain A-Z, a-z, 0-9, - and _";
 
 	public static final String PROCESS_ENGINE_PROBLEM_DETAIL = "Unexpected response from ProcessEngine API.";
 
@@ -38,4 +37,5 @@ public final class Constants {
 	private Constants() {
 		// Prevent instantiation
 	}
+
 }

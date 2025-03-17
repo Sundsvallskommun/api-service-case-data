@@ -31,7 +31,7 @@ public class Note {
 	@Schema(description = "The municipality ID", example = "2281", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Namespace", example = "my.namespace", accessMode = READ_ONLY)
+	@Schema(description = "Namespace", example = "MY_NAMESPACE", accessMode = READ_ONLY)
 	private String namespace;
 
 	@Schema(description = "The title of the note", example = "Motivering till bifall", maxLength = 255)

@@ -17,7 +17,6 @@ import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADE
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
@@ -58,7 +57,7 @@ class NoteIT extends AbstractAppTest {
 			.withHttpMethod(PATCH)
 			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, 1L, 1L))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, AD_USER)
+			.withHeader(AD_USER_HEADER_KEY, "user123")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequest();
@@ -67,11 +66,9 @@ class NoteIT extends AbstractAppTest {
 			.withHttpMethod(GET)
 			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, 1L, 1L))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, AD_USER)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
-
 	}
 
 	@Test
@@ -84,5 +81,4 @@ class NoteIT extends AbstractAppTest {
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 	}
-
 }
