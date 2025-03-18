@@ -4,7 +4,6 @@ import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +23,7 @@ public class Notification {
 	@Schema(description = "The municipality ID", example = "2281", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Namespace", example = "my.namespace", accessMode = READ_ONLY)
+	@Schema(description = "Namespace", example = "MY_NAMESPACE", accessMode = READ_ONLY)
 	private String namespace;
 
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -42,7 +41,7 @@ public class Notification {
 	@Schema(description = "Owner id of the notification", example = "AD01")
 	private String ownerId;
 
-	@Schema(description = "User who created the notification", example = "TestUser")
+	@Schema(description = "User who created the notification", example = "TestUser", accessMode = READ_ONLY)
 	private String createdBy;
 
 	@Schema(description = "Full name of the user who created the notification", example = "Test Testorsson", accessMode = READ_ONLY)
@@ -66,11 +65,12 @@ public class Notification {
 	@Schema(description = "Acknowledged status of the notification", example = "true")
 	private boolean acknowledged;
 
-	@NotNull
+	@Schema(description = "Acknowledged status of the notification (global level). I.e. this notification is acknowledged by anyone.", example = "true")
+	private boolean globalAcknowledged;
+
 	@Schema(description = "Errand id of the notification", example = "1234", accessMode = READ_ONLY)
 	private Long errandId;
 
 	@Schema(description = "Errand number of the notification", example = "PRH-2022-000001", accessMode = READ_ONLY)
 	private String errandNumber;
-
 }

@@ -34,7 +34,7 @@ class NotificationListenerTest {
 
 		// Assert
 		assertThat(notificationEntity.getCreated()).isCloseTo(now(), within(1, SECONDS));
-		assertThat(notificationEntity).hasAllNullFieldsOrPropertiesExcept("acknowledged", "errand", "created");
+		assertThat(notificationEntity).hasAllNullFieldsOrPropertiesExcept("acknowledged", "globalAcknowledged", "errand", "created");
 	}
 
 	@Test
@@ -49,6 +49,6 @@ class NotificationListenerTest {
 
 		// Assert
 		assertThat(notificationEntity.getModified()).isCloseTo(now(), within(1, SECONDS));
-		assertThat(notificationEntity).hasAllNullFieldsOrPropertiesExcept("acknowledged", "errand", "modified");
+		assertThat(notificationEntity).hasAllNullFieldsOrPropertiesExcept("acknowledged", "globalAcknowledged", "errand", "modified");
 	}
 }

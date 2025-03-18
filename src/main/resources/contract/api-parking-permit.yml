@@ -31,7 +31,7 @@ paths:
           schema:
             pattern: '[\w|\.|\-]+'
             type: string
-          example: my.namespace
+          example: MY_NAMESPACE
         - name: processInstanceId
           in: path
           required: true
@@ -87,7 +87,7 @@ paths:
           schema:
             pattern: '[\w|\.|\-]+'
             type: string
-          example: my.namespace
+          example: MY_NAMESPACE
         - name: caseNumber
           in: path
           required: true

@@ -38,7 +38,7 @@ public class Stakeholder {
 	@Schema(description = "The municipality ID", example = "2281", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Namespace", example = "my.namespace", accessMode = READ_ONLY)
+	@Schema(description = "Namespace", example = "MY_NAMESPACE", accessMode = READ_ONLY)
 	private String namespace;
 
 	@NotNull

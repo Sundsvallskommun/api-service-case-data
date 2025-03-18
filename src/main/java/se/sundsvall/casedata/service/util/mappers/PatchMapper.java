@@ -6,7 +6,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressE
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 
-import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.ArrayList;
 import java.util.List;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -53,6 +52,12 @@ public final class PatchMapper {
 				errand.setSuspendedFrom(suspension.getSuspendedFrom());
 				errand.setSuspendedTo(suspension.getSuspendedTo());
 			});
+
+		ofNullable(patch.getStatus()).ifPresent(status -> {
+			final var statusEntity = EntityMapper.toStatusEntity(status);
+			errand.setStatus(statusEntity);
+			errand.getStatuses().add(statusEntity);
+		});
 
 		return errand;
 	}
@@ -120,12 +125,12 @@ public final class PatchMapper {
 		return facility;
 	}
 
-	public static NotificationEntity patchNotification(final NotificationEntity notificationEntity, final PatchNotification patch, final PortalPersonData owner) {
+	public static NotificationEntity patchNotification(final NotificationEntity notificationEntity, final PatchNotification patch) {
 		ofNullable(patch.getAcknowledged()).ifPresent(notificationEntity::setAcknowledged);
+		ofNullable(patch.getGlobalAcknowledged()).ifPresent(notificationEntity::setGlobalAcknowledged);
 		ofNullable(patch.getContent()).ifPresent(notificationEntity::setContent);
 		ofNullable(patch.getDescription()).ifPresent(notificationEntity::setDescription);
 		ofNullable(patch.getExpires()).ifPresent(notificationEntity::setExpires);
-		ofNullable(owner).ifPresent(obj -> notificationEntity.setOwnerFullName(obj.getFullname()));
 		ofNullable(patch.getOwnerId()).ifPresent(notificationEntity::setOwnerId);
 		ofNullable(patch.getType()).ifPresent(notificationEntity::setType);
 		return notificationEntity;

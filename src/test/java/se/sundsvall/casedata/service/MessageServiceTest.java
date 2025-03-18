@@ -228,7 +228,7 @@ class MessageServiceTest {
 		assertThat(notificationCaptor.getValue()).satisfies(notification -> {
 			assertThat(notification.getErrandId()).isEqualTo(errandId);
 			assertThat(notification.getType()).isEqualTo("UPDATE");
-			assertThat(notification.getDescription()).isEqualTo("Meddelande mottaget");
+			assertThat(notification.getDescription()).isEqualTo("Meddelande skickat");
 			assertThat(notification.getOwnerId()).isEqualTo("adminAdAccount");
 		});
 		verify(messageMapperMock).toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);

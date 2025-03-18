@@ -6,7 +6,6 @@ import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
-import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
@@ -49,12 +48,12 @@ class DecisionIT extends AbstractAppTest {
 		setupCall()
 			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, DECISION_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, AD_USER)
+			.withHeader(AD_USER_HEADER_KEY, "user123")
 			.withHttpMethod(PATCH)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		setupCall()
 			.withServicePath(format("/{0}/{1}/errands/{2}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
@@ -69,12 +68,12 @@ class DecisionIT extends AbstractAppTest {
 		setupCall()
 			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, DECISION_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, AD_USER)
+			.withHeader(AD_USER_HEADER_KEY, "user123")
 			.withHttpMethod(PUT)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		setupCall()
 			.withServicePath(format("/{0}/{1}/errands/{2}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))

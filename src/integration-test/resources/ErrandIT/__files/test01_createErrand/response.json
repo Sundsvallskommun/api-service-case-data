@@ -1,0 +1,351 @@
+{
+	"municipalityId": "2281",
+	"externalCaseId": "9527464e-c5a0-4971-a253-8b94a79e74c9",
+	"notes": [
+		{
+			"municipalityId": "2281",
+			"noteType": "PUBLIC",
+			"updatedBy": "sRXYGByNYE",
+			"createdBy": "user123",
+			"created": "${json-unit.any-string}",
+			"namespace": "SBK_PARKING_PERMIT",
+			"extraParameters": {
+				"test4": "test4",
+				"test2": "test2",
+				"test3": "test3"
+			},
+			"id": 1,
+			"text": "Test text",
+			"title": "Test note",
+			"version": 0,
+			"updated": "${json-unit.any-string}"
+		},
+		{
+			"municipalityId": "2281",
+			"noteType": "PUBLIC",
+			"updatedBy": "wZLYbWWWfF",
+			"createdBy": "user123",
+			"created": "${json-unit.any-string}",
+			"namespace": "SBK_PARKING_PERMIT",
+			"extraParameters": {
+				"test4": "test4",
+				"test2": "test2",
+				"test3": "test3"
+			},
+			"id": 2,
+			"text": "IHmVWzpAJl",
+			"title": "sRGrJyRKNn",
+			"version": 0,
+			"updated": "${json-unit.any-string}"
+		},
+		{
+			"municipalityId": "2281",
+			"noteType": "PUBLIC",
+			"updatedBy": "UNKNOWN",
+			"createdBy": "user123",
+			"created": "${json-unit.any-string}",
+			"namespace": "SBK_PARKING_PERMIT",
+			"extraParameters": {
+				"test4": "test4",
+				"test2": "test2",
+				"test3": "test3"
+			},
+			"id": 3,
+			"text": "OSOCnSgryb",
+			"title": "EzhsmgQlrP",
+			"version": 0,
+			"updated": "${json-unit.any-string}"
+		}
+	],
+	"notifications": [
+		{
+			"id": "${json-unit.any-string}",
+			"municipalityId": "2281",
+			"namespace": "SBK_PARKING_PERMIT",
+			"created": "${json-unit.any-string}",
+			"createdBy": "user123",
+			"createdByFullName": "Testsson Test",
+			"type": "CREATE",
+			"description": "Ärende skapat",
+			"expires": "${json-unit.any-string}",
+			"acknowledged": false,
+			"globalAcknowledged": false,
+			"errandId": 3,
+			"errandNumber": "PRH-2025-000001"
+		}
+	],
+	"errandNumber": "${json-unit.regex}^PRH-\\d{4}-000001$",
+	"endDate": "2024-05-09",
+	"createdByClient": "UNKNOWN",
+	"channel": "EMAIL",
+	"description": "Case description",
+	"applicationReceived": "2000-09-23T11:04:04.317+02:00",
+	"extraParameters": [
+		{
+			"values": [
+				"test7"
+			],
+			"key": "test7"
+		},
+		{
+			"values": [
+				"test8"
+			],
+			"key": "test8"
+		},
+		{
+			"values": [
+				"test9"
+			],
+			"key": "test9"
+		}
+	],
+	"stakeholders": [
+		{
+			"lastName": "Anka",
+			"municipalityId": "2281",
+			"addresses": [
+				{
+					"country": "Sverige",
+					"city": "Ankeborg",
+					"postalCode": "12345",
+					"houseNumber": "1",
+					"isZoningPlanArea": false,
+					"addressCategory": "VISITING_ADDRESS",
+					"invoiceMarking": "Kalle Anka",
+					"careOf": "Kalle Anka",
+					"street": "Gatan",
+					"attention": "Kalle Anka",
+					"propertyDesignation": "Ankeborg 1:1",
+					"location": {
+						"latitude": 0.8860957171081745,
+						"longitude": 0.4307180458357478
+					},
+					"apartmentNumber": "1"
+				}
+			],
+			"adAccount": "KalleAnka",
+			"created": "${json-unit.any-string}",
+			"roles": [
+				"DELEGATE",
+				"LAND_RIGHT_OWNER"
+			],
+			"extraParameters": {
+				"test2": "test2",
+				"test3": "test3",
+				"test1": "test1"
+			},
+			"type": "PERSON",
+			"version": 0,
+			"firstName": "Kalle",
+			"contactInformation": [
+				{
+					"contactType": "EMAIL",
+					"value": "a.b@c.com"
+				},
+				{
+					"contactType": "PHONE",
+					"value": "1234567890"
+				},
+				{
+					"contactType": "CELLPHONE",
+					"value": "0987654321"
+				}
+			],
+			"namespace": "SBK_PARKING_PERMIT",
+			"personId": "1262f329-e143-428d-9006-997459eb1552",
+			"id": 2,
+			"updated": "${json-unit.any-string}"
+		},
+		{
+			"municipalityId": "2281",
+			"addresses": [
+				{
+					"country": "Sverige",
+					"city": "Ankeborg",
+					"postalCode": "12345",
+					"houseNumber": "2",
+					"isZoningPlanArea": false,
+					"addressCategory": "VISITING_ADDRESS",
+					"invoiceMarking": "Företaget",
+					"careOf": "Företaget",
+					"street": "Gatan",
+					"attention": "Företaget",
+					"propertyDesignation": "Ankeborg 2:2",
+					"location": {
+						"latitude": 0.3246504912367001,
+						"longitude": 0.8625583560198528
+					},
+					"apartmentNumber": "2"
+				}
+			],
+			"organizationName": "Företaget",
+			"adAccount": "Foretaget",
+			"created": "${json-unit.any-string}",
+			"organizationNumber": "699881-3960",
+			"roles": [
+				"SELLER",
+				"LEASEHOLDER"
+			],
+			"extraParameters": {
+				"test4": "test4",
+				"test5": "test5",
+				"test6": "test6"
+			},
+			"type": "ORGANIZATION",
+			"version": 0,
+			"contactInformation": [
+				{
+					"contactType": "EMAIL",
+					"value": "b.c@d.se"
+				},
+				{
+					"contactType": "PHONE",
+					"value": "0987654321"
+				},
+				{
+					"contactType": "CELLPHONE",
+					"value": "1234567890"
+				}
+			],
+			"authorizedSignatory": "Kalle Anka",
+			"namespace": "SBK_PARKING_PERMIT",
+			"id": 3,
+			"updated": "${json-unit.any-string}"
+		}
+	],
+	"caseType": "PARKING_PERMIT",
+	"diaryNumber": "DIARY-123",
+	"processId": "49011dea-ee10-11ec-9505-0242c0a84503",
+	"caseTitleAddition": "Case title addition",
+	"decisions": [
+		{
+			"municipalityId": "2281",
+			"law": [
+				{
+					"sfs": "2000:1",
+					"chapter": "1",
+					"heading": "Kapitel 1",
+					"article": "1"
+				}
+			],
+			"attachments": [],
+			"created": "${json-unit.any-string}",
+			"description": "Cancellation description",
+			"extraParameters": {
+				"test5": "test5",
+				"test6": "test6",
+				"test7": "test7"
+			},
+			"decidedBy": {
+				"lastName": "Anka",
+				"municipalityId": "2281",
+				"addresses": [
+					{
+						"country": "Sverige",
+						"city": "Ankeborg",
+						"postalCode": "12345",
+						"houseNumber": "1",
+						"isZoningPlanArea": false,
+						"addressCategory": "VISITING_ADDRESS",
+						"invoiceMarking": "Kalle Anka",
+						"careOf": "Kalle Anka",
+						"street": "Gatan",
+						"attention": "Kalle Anka",
+						"propertyDesignation": "Ankeborg 1:1",
+						"location": {
+							"latitude": 0.887143922169642,
+							"longitude": 0.16843215444431747
+						},
+						"apartmentNumber": "1"
+					}
+				],
+				"adAccount": "KalleAnka",
+				"created": "${json-unit.any-string}",
+				"roles": [
+					"OPERATOR"
+				],
+				"extraParameters": {
+					"test2": "test2",
+					"test3": "test3",
+					"test1": "test1"
+				},
+				"type": "PERSON",
+				"version": 0,
+				"firstName": "Kalle",
+				"contactInformation": [
+					{
+						"contactType": "EMAIL",
+						"value": "a.b@c.se"
+					},
+					{
+						"contactType": "PHONE",
+						"value": "1234567890"
+					},
+					{
+						"contactType": "CELLPHONE",
+						"value": "0987654321"
+					}
+				],
+				"namespace": "SBK_PARKING_PERMIT",
+				"personId": "4cf41b59-864c-4a47-a3b9-52940a93b498",
+				"id": 1,
+				"updated": "${json-unit.any-string}"
+			},
+			"validFrom": "2012-08-17T11:04:04.33+02:00",
+			"version": 0,
+			"decidedAt": "2002-12-14T10:04:04.33+01:00",
+			"namespace": "SBK_PARKING_PERMIT",
+			"decisionType": "FINAL",
+			"decisionOutcome": "CANCELLATION",
+			"id": 1,
+			"updated": "${json-unit.any-string}",
+			"validTo": "2014-07-27T11:04:04.33+02:00"
+		}
+	],
+	"id": 3,
+	"relatesTo": [],
+	"suspension": {},
+	"phase": "Actualization",
+	"updatedBy": "user123",
+	"created": "${json-unit.any-string}",
+	"updatedByClient": "UNKNOWN",
+	"priority": "HIGH",
+	"version": 3,
+	"labels": [],
+	"createdBy": "user123",
+	"namespace": "SBK_PARKING_PERMIT",
+	"status": {
+		"statusType": "Ärende inkommit",
+		"description": "Ärende inkommit",
+		"created": "${json-unit.any-string}"
+	},
+	"statuses": [
+		{
+			"created": "${json-unit.any-string}",
+			"statusType": "Ärende inkommit",
+			"description": "Ärende inkommit"
+		}
+	],
+	"facilities": [
+		{
+			"municipalityId": "2281",
+			"address": {
+				"addressCategory": "VISITING_ADDRESS",
+				"propertyDesignation": "Test 84:652"
+			},
+			"facilityType": "ONE_FAMILY_HOUSE",
+			"created": "${json-unit.any-string}",
+			"mainFacility": true,
+			"namespace": "SBK_PARKING_PERMIT",
+			"description": "Test facility",
+			"extraParameters": {},
+			"id": 1,
+			"facilityCollectionName": "Test facility collection",
+			"version": 0,
+			"updated": "${json-unit.any-string}"
+		}
+	],
+	"updated": "${json-unit.any-string}",
+	"startDate": "2024-04-26"
+}

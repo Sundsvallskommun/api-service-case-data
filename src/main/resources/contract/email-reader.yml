@@ -391,7 +391,7 @@ components:
         namespace:
           type: string
           description: Namespace
-          example: my.namespace
+          example: MY_NAMESPACE
         action:
           type: string
           description: Action to take for new emails

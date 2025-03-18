@@ -1,9 +1,9 @@
 {
 	"municipalityId": "2281",
-	"updatedBy": "Hi my name is AD_USER",
+	"updatedBy": "user123",
 	"createdBy": "Skaparmannen",
 	"created": "2023-10-02T15:13:45.363+02:00",
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"extraParameters": {},
 	"id": 1,
 	"text": "Det här är en text",

@@ -21,7 +21,7 @@
 	"facilityType": "WORKSHOP_BUILDING",
 	"created": "2024-04-25T15:37:23.52512+02:00",
 	"mainFacility": true,
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"description": "En fritextbeskrivning av facility. (uppdaterad)",
 	"extraParameters": {
 		"additionalProp1": "string (uppdaterad)",

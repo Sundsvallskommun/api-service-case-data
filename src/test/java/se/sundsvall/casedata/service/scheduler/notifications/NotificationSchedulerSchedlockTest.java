@@ -56,7 +56,7 @@ class NotificationSchedulerSchedlockTest {
 			.untilAsserted(() -> assertThat(getLockedAt("process_notifications"))
 				.isCloseTo(LocalDateTime.now(systemUTC()), within(10, ChronoUnit.SECONDS)));
 
-		verify(notificationWorkerMock).processExpiredNotifications();
+		verify(notificationWorkerMock).cleanUpNotifications();
 		verifyNoMoreInteractions(notificationWorkerMock);
 	}
 
@@ -86,7 +86,7 @@ class NotificationSchedulerSchedlockTest {
 				await().forever()
 					.until(() -> false);
 				return null;
-			}).when(mockBean).processExpiredNotifications();
+			}).when(mockBean).cleanUpNotifications();
 
 			return mockBean;
 		}

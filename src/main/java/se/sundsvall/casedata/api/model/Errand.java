@@ -38,7 +38,7 @@ public class Errand {
 	@Schema(description = "The municipality ID", example = "2281", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Namespace", example = "my.namespace", accessMode = READ_ONLY)
+	@Schema(description = "Namespace", example = "MY_NAMESPACE", accessMode = READ_ONLY)
 	private String namespace;
 
 	@Schema(description = "Case ID from the client", example = "caa230c6-abb4-4592-ad9a-34e263c2787b", maxLength = 255)
@@ -71,7 +71,10 @@ public class Errand {
 	@Size(max = 255)
 	private String phase;
 
-	@Schema(description = "The statuses connected to the errand")
+	@Schema(description = "The current status of the errand", maxLength = 255, nullable = true)
+	private Status status;
+
+	@Schema(description = "The statuses connected to the errand", accessMode = READ_ONLY)
 	private List<Status> statuses;
 
 	@Schema(description = "Start date for the business", format = "date", example = "2022-01-01")
@@ -96,6 +99,9 @@ public class Errand {
 	@Schema(description = "The facilities connected to the errand")
 	@Valid
 	private List<Facility> facilities;
+
+	@Schema(description = "List of notifications connected to this errand", accessMode = READ_ONLY)
+	private List<Notification> notifications;
 
 	@Valid
 	@UniqueDecisionType

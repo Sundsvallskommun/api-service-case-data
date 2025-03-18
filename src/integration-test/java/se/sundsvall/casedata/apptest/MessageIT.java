@@ -15,6 +15,7 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
+import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ class MessageIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
-	
+
 	@Test
 	void test02_getMessage() {
 		setupCall()
@@ -67,6 +68,7 @@ class MessageIT extends AbstractAppTest {
 		final var location = setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(POST)
+			.withHeader(AD_USER_HEADER_KEY, "user123")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseBodyIsNull()

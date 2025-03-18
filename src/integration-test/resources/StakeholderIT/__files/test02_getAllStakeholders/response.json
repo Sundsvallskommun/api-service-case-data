@@ -13,7 +13,7 @@
 		"version": 0,
 		"firstName": "John",
 		"contactInformation": [],
-		"namespace": "my.namespace",
+		"namespace": "MY_NAMESPACE",
 		"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
 		"id": 1,
 		"updated": "2022-12-02T15:15:01.563+01:00"
@@ -32,7 +32,7 @@
 		"version": 0,
 		"firstName": "Kalle",
 		"contactInformation": [],
-		"namespace": "my.namespace",
+		"namespace": "MY_NAMESPACE",
 		"personId": "d1af5f83-166a-468b-ab86-da8ca30ea97c",
 		"id": 2,
 		"updated": "2022-12-02T15:15:01.563+01:00"
@@ -51,7 +51,7 @@
 		"version": 0,
 		"firstName": "Kajsa",
 		"contactInformation": [],
-		"namespace": "my.namespace",
+		"namespace": "MY_NAMESPACE",
 		"personId": "d2af5f83-166a-468b-ab86-da8ca30ea97c",
 		"id": 3,
 		"updated": "2022-12-02T15:15:01.563+01:00"

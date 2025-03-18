@@ -4,6 +4,7 @@
 	"errandId": 1,
 	"ownerFullName": "Ownerson Owner",
 	"acknowledged": false,
+	"globalAcknowledged": false,
 	"errandNumber": "BUILD-2024-000001",
 	"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
 	"description": "Test description",
@@ -11,7 +12,7 @@
 	"type": "CREATE",
 	"content": "Test content",
 	"createdBy": "creator123",
-	"namespace": "my.namespace",
+	"namespace": "MY_NAMESPACE",
 	"createdByFullName": "Creatorson Creator",
 	"id": "${json-unit.any-string}"
 }
