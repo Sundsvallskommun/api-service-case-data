@@ -4,6 +4,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -74,7 +75,7 @@ public class Errand {
 	@Schema(description = "The current status of the errand", maxLength = 255, nullable = true)
 	private Status status;
 
-	@Schema(description = "The statuses connected to the errand", accessMode = READ_ONLY)
+	@ArraySchema(schema = @Schema(implementation = Status.class, accessMode = READ_ONLY))
 	private List<Status> statuses;
 
 	@Schema(description = "Start date for the business", format = "date", example = "2022-01-01")
