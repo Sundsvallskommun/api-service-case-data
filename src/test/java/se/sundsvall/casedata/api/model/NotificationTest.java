@@ -45,6 +45,7 @@ class NotificationTest {
 		final var createdBy = "TestUser";
 		final var createdByFullName = "Test Testorsson";
 		final var type = "SomeType";
+		final var subType = "SomeSubType";
 		final var description = "Some description of the notification";
 		final var content = "Some content of the notification";
 		final var expires = now();
@@ -65,6 +66,7 @@ class NotificationTest {
 			.withCreatedBy(createdBy)
 			.withCreatedByFullName(createdByFullName)
 			.withType(type)
+			.withSubType(subType)
 			.withDescription(description)
 			.withContent(content)
 			.withExpires(expires)
@@ -85,6 +87,7 @@ class NotificationTest {
 		assertThat(bean.getCreatedBy()).isEqualTo(createdBy);
 		assertThat(bean.getCreatedByFullName()).isEqualTo(createdByFullName);
 		assertThat(bean.getType()).isEqualTo(type);
+		assertThat(bean.getSubType()).isEqualTo(subType);
 		assertThat(bean.getDescription()).isEqualTo(description);
 		assertThat(bean.getContent()).isEqualTo(content);
 		assertThat(bean.getExpires()).isEqualTo(expires);

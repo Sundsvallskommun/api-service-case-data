@@ -77,6 +77,7 @@ class NotificationResourceFailuresTest {
 			.withOwnerFullName("SomeOwnerFullName")
 			.withCreatedBy("SomeUser")
 			.withType("SomeType")
+			.withSubType("SomeSubType")
 			.withDescription("Some description")
 			.withErrandId(12345L)
 			.withAcknowledged(false)
@@ -132,7 +133,8 @@ class NotificationResourceFailuresTest {
 			.containsExactlyInAnyOrder(
 				tuple("description", "must not be blank"),
 				tuple("ownerId", "must not be blank"),
-				tuple("type", "must not be blank"));
+				tuple("type", "must not be blank"),
+				tuple("subType", "must not be blank"));
 
 		verifyNoInteractions(notificationServiceMock);
 	}
