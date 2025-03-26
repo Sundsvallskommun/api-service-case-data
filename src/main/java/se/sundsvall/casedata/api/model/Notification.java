@@ -51,8 +51,7 @@ public class Notification {
 	@Schema(description = "Type of the notification", example = "CREATE")
 	private String type;
 
-	@NotBlank
-	@Schema(description = "Sub type of the notification", example = "PHASE_CHANGE")
+	@Schema(description = "Sub type of the notification", example = "PHASE_CHANGE", accessMode = READ_ONLY)
 	private String subType;
 
 	@NotBlank

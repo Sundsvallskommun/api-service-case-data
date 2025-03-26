@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "11.1"
 servers:
-  - url: http://localhost:60444
+  - url: http://localhost:61169
     description: Generated server url
 tags:
   - name: Notes
@@ -4335,7 +4335,6 @@ components:
       required:
         - description
         - ownerId
-        - subType
         - type
       type: object
       properties:
@@ -4392,6 +4391,7 @@ components:
         subType:
           type: string
           description: Sub type of the notification
+          readOnly: true
           example: PHASE_CHANGE
         description:
           type: string
@@ -4886,14 +4886,14 @@ components:
           format: int64
         sort:
           $ref: "#/components/schemas/SortObject"
+        paged:
+          type: boolean
         pageNumber:
           type: integer
           format: int32
         pageSize:
           type: integer
           format: int32
-        paged:
-          type: boolean
         unpaged:
           type: boolean
     SortObject:
