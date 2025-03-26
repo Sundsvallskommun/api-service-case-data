@@ -39,7 +39,6 @@ class PatchNotificationTest {
 		// Arrange
 		final var ownerId = "cb20c51f-fcf3-42c0-b613-de563634a8ec";
 		final var type = "SomeType";
-		final var subType = "SomeSubType";
 		final var description = "Some description of the notification";
 		final var content = "Some content of the notification";
 		final var expires = now();
@@ -50,7 +49,6 @@ class PatchNotificationTest {
 		final var bean = PatchNotification.builder()
 			.withOwnerId(ownerId)
 			.withType(type)
-			.withSubType(subType)
 			.withDescription(description)
 			.withContent(content)
 			.withExpires(expires)
@@ -61,7 +59,6 @@ class PatchNotificationTest {
 		// Assert
 		assertThat(bean.getOwnerId()).isEqualTo(ownerId);
 		assertThat(bean.getType()).isEqualTo(type);
-		assertThat(bean.getSubType()).isEqualTo(subType);
 		assertThat(bean.getDescription()).isEqualTo(description);
 		assertThat(bean.getContent()).isEqualTo(content);
 		assertThat(bean.getExpires()).isEqualTo(expires);

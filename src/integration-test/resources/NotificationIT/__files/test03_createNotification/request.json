@@ -5,6 +5,5 @@
 	"description": "Test description",
 	"ownerId": "owner123",
 	"type": "CREATE",
-	"subType": "PHASE_CHANGE",
 	"content": "Test content"
 }

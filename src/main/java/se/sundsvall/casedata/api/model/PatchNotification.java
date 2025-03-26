@@ -32,9 +32,6 @@ public class PatchNotification {
 	@Schema(description = "Type of the notification", example = "CREATE")
 	private String type;
 
-	@Schema(description = "Sub type of the notification", example = "PHASE_CHANGE")
-	private String subType;
-
 	@Schema(description = "Description of the notification", example = "Some description of the notification")
 	private String description;
 
