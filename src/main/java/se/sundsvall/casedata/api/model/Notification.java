@@ -51,6 +51,9 @@ public class Notification {
 	@Schema(description = "Type of the notification", example = "CREATE")
 	private String type;
 
+	@Schema(description = "Sub type of the notification", example = "PHASE_CHANGE", accessMode = READ_ONLY)
+	private String subType;
+
 	@NotBlank
 	@Schema(description = "Description of the notification", example = "Some description of the notification")
 	private String description;
@@ -73,4 +76,5 @@ public class Notification {
 
 	@Schema(description = "Errand number of the notification", example = "PRH-2022-000001", accessMode = READ_ONLY)
 	private String errandNumber;
+
 }

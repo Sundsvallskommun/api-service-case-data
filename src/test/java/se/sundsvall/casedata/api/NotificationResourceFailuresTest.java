@@ -77,6 +77,7 @@ class NotificationResourceFailuresTest {
 			.withOwnerFullName("SomeOwnerFullName")
 			.withCreatedBy("SomeUser")
 			.withType("SomeType")
+			.withSubType("SomeSubType")
 			.withDescription("Some description")
 			.withErrandId(12345L)
 			.withAcknowledged(false)

@@ -120,6 +120,7 @@ class NotificationsResourceTest {
 			.withOwnerFullName("SomeOwnerFullName")
 			.withCreatedBy("SomeUser")
 			.withType("SomeType")
+			.withSubType("SomeSubType")
 			.withDescription("Some description")
 			.withErrandId(errandId)
 			.withAcknowledged(false)
