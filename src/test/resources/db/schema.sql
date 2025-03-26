@@ -254,6 +254,7 @@
         namespace varchar(255) not null,
         owner_full_name varchar(255),
         owner_id varchar(255),
+        sub_type varchar(255),
         type varchar(255),
         primary key (id)
     ) engine=InnoDB;
