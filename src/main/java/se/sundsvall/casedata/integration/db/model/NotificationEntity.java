@@ -64,6 +64,9 @@ public class NotificationEntity {
 	@Column(name = "type")
 	private String type;
 
+	@Column(name = "sub_type")
+	private String subType;
+
 	@Column(name = "description")
 	private String description;
 
