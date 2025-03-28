@@ -11,6 +11,7 @@
 			"createdBy": "user123",
 			"createdByFullName": "Usersson User",
 			"type": "UPDATE",
+			"subType": "DECISION",
 			"description": "Beslut uppdaterat",
 			"expires": "${json-unit.any-string}",
 			"acknowledged": false,

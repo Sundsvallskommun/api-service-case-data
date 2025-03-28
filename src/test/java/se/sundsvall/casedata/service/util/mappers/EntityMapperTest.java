@@ -808,10 +808,11 @@ class EntityMapperTest {
 			.build();
 
 		final var type = "type";
+		final var subType = "subType";
 		final var description = "description";
 
 		// Act
-		final var notification = toNotification(errandEntity, type, description);
+		final var notification = toNotification(errandEntity, type, description, subType);
 
 		// Assert
 		assertThat(notification).isNotNull();
@@ -821,6 +822,7 @@ class EntityMapperTest {
 		assertThat(notification.getErrandId()).isEqualTo(1L);
 		assertThat(notification.getMunicipalityId()).isEqualTo("municipalityId");
 		assertThat(notification.getNamespace()).isEqualTo("namespace");
+		assertThat(notification.getSubType()).isEqualTo(subType);
 	}
 
 	@Test
@@ -834,10 +836,11 @@ class EntityMapperTest {
 			.build();
 
 		final var type = "type";
+		final var subType = "subType";
 		final var description = "description";
 
 		// Act
-		final var notification = toNotification(errandEntity, type, description);
+		final var notification = toNotification(errandEntity, type, description, subType);
 
 		// Assert
 		assertThat(notification).isNotNull();
@@ -847,5 +850,6 @@ class EntityMapperTest {
 		assertThat(notification.getErrandId()).isEqualTo(1L);
 		assertThat(notification.getMunicipalityId()).isEqualTo("municipalityId");
 		assertThat(notification.getNamespace()).isEqualTo("namespace");
+		assertThat(notification.getSubType()).isEqualTo(subType);
 	}
 }

@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service.scheduler.emailreader;
 
 import static java.util.Collections.emptyList;
 import static se.sundsvall.casedata.service.scheduler.emailreader.ErrandNumberParser.parseSubject;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_SUBTYPE_MESSAGE;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 import generated.se.sundsvall.emailreader.Email;
@@ -79,7 +80,7 @@ public class EmailReaderWorker {
 				.filter(errand -> !messageRepository.existsById(email.getId()))
 				.ifPresent(errand -> {
 					messageRepository.save(messageMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace(), errand.getId()));
-					notificationService.create(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION));
+					notificationService.create(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, NOTIFICATION_SUBTYPE_MESSAGE));
 
 					email.getAttachments()
 						.forEach(emailAttachment -> processAttachment(emailAttachment, email.getId(), errand.getId(), errand.getMunicipalityId(), errand.getNamespace()));

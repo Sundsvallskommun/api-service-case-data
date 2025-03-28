@@ -6,6 +6,7 @@ import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_CREATED;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_UPDATED;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_SUBTYPE_DECISION;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecision;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecisionEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
@@ -76,6 +77,7 @@ public class DecisionService {
 			.withDescription(NOTIFICATION_DECISION_UPDATED)
 			.withErrandId(entity.getErrand().getId())
 			.withType(UPDATE.toString())
+			.withSubType(NOTIFICATION_SUBTYPE_DECISION)
 			.withOwnerId(toOwnerId(entity.getErrand()))
 			.build());
 	}
@@ -103,6 +105,7 @@ public class DecisionService {
 			.withDescription(NOTIFICATION_DECISION_UPDATED)
 			.withErrandId(errand.getId())
 			.withType(UPDATE.toString())
+			.withSubType(NOTIFICATION_SUBTYPE_DECISION)
 			.withOwnerId(toOwnerId(errand))
 			.build());
 	}
@@ -122,6 +125,7 @@ public class DecisionService {
 			.withDescription(NOTIFICATION_DECISION_CREATED)
 			.withErrandId(errandEntity.getId())
 			.withType(UPDATE.toString())
+			.withSubType(NOTIFICATION_SUBTYPE_DECISION)
 			.withOwnerId(toOwnerId(errandEntity))
 			.build());
 

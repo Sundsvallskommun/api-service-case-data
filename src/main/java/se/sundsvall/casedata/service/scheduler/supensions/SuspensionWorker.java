@@ -3,6 +3,7 @@ package se.sundsvall.casedata.service.scheduler.supensions;
 import static java.time.OffsetDateTime.now;
 import static java.util.Collections.emptyList;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_SUBTYPE_SUSPENSION;
 
 import java.util.Optional;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,6 @@ import se.sundsvall.casedata.service.NotificationService;
 
 @Component
 public class SuspensionWorker {
-
 	private static final String NOTIFICATION_MESSAGE = "Parkering av ärendet har upphört";
 	private static final String NOTIFICATION_TYPE = "UPDATE";
 
@@ -34,7 +34,7 @@ public class SuspensionWorker {
 			.forEach(this::processSuspension);
 	}
 
-	private void processSuspension(ErrandEntity errandEntity) {
+	private void processSuspension(final ErrandEntity errandEntity) {
 
 		// Create notification
 		notificationService.create(errandEntity.getMunicipalityId(), errandEntity.getNamespace(), createNotification(errandEntity));
@@ -45,11 +45,12 @@ public class SuspensionWorker {
 		errandRepository.save(errandEntity);
 	}
 
-	private Notification createNotification(ErrandEntity errandEntity) {
+	private Notification createNotification(final ErrandEntity errandEntity) {
 		return Notification.builder()
 			.withOwnerFullName(findAdministratorStakeholderFullName(errandEntity))
 			.withOwnerId(findAdministratorStakeholderUserId(errandEntity))
 			.withType(NOTIFICATION_TYPE)
+			.withSubType(NOTIFICATION_SUBTYPE_SUSPENSION)
 			.withDescription(NOTIFICATION_MESSAGE)
 			.withErrandId(errandEntity.getId())
 			.withErrandNumber(errandEntity.getErrandNumber())

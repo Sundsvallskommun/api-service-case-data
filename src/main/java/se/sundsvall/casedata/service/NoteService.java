@@ -8,6 +8,7 @@ import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOU
 import static se.sundsvall.casedata.service.util.Constants.NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_NOTE_CREATED;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_NOTE_UPDATED;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_SUBTYPE_NOTE;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
@@ -66,6 +67,7 @@ public class NoteService {
 			.withDescription(NOTIFICATION_NOTE_UPDATED)
 			.withErrandId(errandEntity.getId())
 			.withType(UPDATE.toString())
+			.withSubType(NOTIFICATION_SUBTYPE_NOTE)
 			.withOwnerId(toOwnerId(errandEntity))
 			.build());
 	}
@@ -120,6 +122,7 @@ public class NoteService {
 			.withDescription(NOTIFICATION_NOTE_CREATED)
 			.withErrandId(oldErrand.getId())
 			.withType(CREATE.toString())
+			.withSubType(NOTIFICATION_SUBTYPE_NOTE)
 			.withOwnerId(toOwnerId(oldErrand))
 			.build());
 
