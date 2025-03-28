@@ -112,9 +112,6 @@ resilience4j:
   #----------------------------------------
   retry:
     instances:
-      OptimisticLocking:
-        max-attempts: 5
-        retry-exceptions: org.springframework.dao.OptimisticLockingFailureException
       parkingpermit:
         max-attempts: 5
         wait-duration: 1s

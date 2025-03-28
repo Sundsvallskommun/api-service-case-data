@@ -37,7 +37,7 @@ public class SuspensionWorker {
 	private void processSuspension(final ErrandEntity errandEntity) {
 
 		// Create notification
-		notificationService.create(errandEntity.getMunicipalityId(), errandEntity.getNamespace(), createNotification(errandEntity));
+		notificationService.create(errandEntity.getMunicipalityId(), errandEntity.getNamespace(), createNotification(errandEntity), errandEntity);
 
 		// Remove suspension date.
 		errandEntity.setSuspendedFrom(null);

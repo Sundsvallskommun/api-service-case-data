@@ -296,7 +296,7 @@
 	"created": "${json-unit.any-string}",
 	"updatedByClient": "UNKNOWN",
 	"priority": "HIGH",
-	"version": 3,
+	"version": 1,
 	"labels": [],
 	"createdBy": "UNKNOWN",
 	"namespace": "SBK_PARKING_PERMIT",

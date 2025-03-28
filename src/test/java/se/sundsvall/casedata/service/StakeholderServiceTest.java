@@ -192,7 +192,7 @@ class StakeholderServiceTest {
 		final var stakeholderDto = createStakeholder(PERSON, List.of(StakeholderRole.APPLICANT.name()));
 		final var errand = createErrandEntity();
 		errand.setStakeholders(List.of(stakeholder));
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
 		// Act
 		stakeholderService.replaceOnErrand(1L, stakeholder.getId(), MUNICIPALITY_ID, NAMESPACE, stakeholderDto);
@@ -213,7 +213,7 @@ class StakeholderServiceTest {
 			assertThat(s.getContactInformation()).isEqualTo(stakeholderDto.getContactInformation().stream().map(EntityMapper::toContactInformationEntity).toList());
 		});
 
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verify(stakeholderRepositoryMock).save(stakeholder);
 		verifyNoMoreInteractions(stakeholderRepositoryMock);
 	}
@@ -229,13 +229,13 @@ class StakeholderServiceTest {
 		entity.setId(stakeholderId);
 		final var errand = createErrandEntity();
 		errand.setStakeholders(List.of(entity));
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(anyLong(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
 		// Act
 		stakeholderService.update(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
 
 		// Assert
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(stakeholderRepositoryMock).save(entity);
 		verifyNoMoreInteractions(stakeholderRepositoryMock, errandRepositoryMock);
 	}
@@ -248,13 +248,14 @@ class StakeholderServiceTest {
 		final var stakeholders = List.of(createStakeholder(getRandomStakeholderType(), List.of(getRandomStakeholderRole())));
 		final var stakeholderEntities = stakeholders.stream().map(s -> toStakeholderEntity(s, MUNICIPALITY_ID, NAMESPACE)).toList();
 		errand.getStakeholders().addAll(stakeholderEntities);
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
 		stakeholderService.replaceOnErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, stakeholders);
 
 		// Assert
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errandCaptor.capture());
 		assertThat(errandCaptor.getValue().getStakeholders()).isNotEmpty().hasSize(1);
 		assertThat(errandCaptor.getValue().getStakeholders().getFirst())
@@ -275,7 +276,7 @@ class StakeholderServiceTest {
 		errand.getStakeholders().forEach(s -> s.setId(new Random().nextLong(1, 1000)));
 
 		final var errandId = new Random().nextLong(1, 1000);
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		final var stakeholder = errand.getStakeholders().getFirst();
 
@@ -283,7 +284,7 @@ class StakeholderServiceTest {
 		stakeholderService.delete(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholder.getId());
 
 		// Assert
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(processServiceMock).updateProcess(errand);
 		verify(errandRepositoryMock).save(errand);
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
@@ -307,7 +308,7 @@ class StakeholderServiceTest {
 			.withAddresses(List.of(createAddress(AddressCategory.VISITING_ADDRESS)))
 			.withExtraParameters(createExtraParameters())
 			.build();
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
@@ -317,7 +318,7 @@ class StakeholderServiceTest {
 		assertThat(stakeholder).isEqualTo(newStakeholder);
 		assertThat(errand.getStakeholders()).isNotEmpty().hasSize(2);
 
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
 	}

@@ -3,6 +3,7 @@ package se.sundsvall.casedata.service.scheduler.emailreader;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -145,14 +146,14 @@ class EmailReaderWorkerTest {
 
 		final var messageAttachmentEntity = MessageAttachmentEntity.builder().withAttachmentData(MessageAttachmentDataEntity.builder().build()).build();
 		final var attachmentEntity = AttachmentEntity.builder().build();
+		final var errandEntity = ErrandEntity.builder()
+			.withId(errandId)
+			.withStakeholders(List.of(stakeholder))
+			.withNamespace(namespace)
+			.withMunicipalityId(municipalityId)
+			.build();
 
-		when(errandRepositoryMock.findByErrandNumber(errandNumber))
-			.thenReturn(Optional.of(ErrandEntity.builder()
-				.withId(errandId)
-				.withStakeholders(List.of(stakeholder))
-				.withNamespace(namespace)
-				.withMunicipalityId(municipalityId)
-				.build()));
+		when(errandRepositoryMock.findWithPessimisticLockingByErrandNumber(errandNumber)).thenReturn(Optional.of(errandEntity));
 		when(messageRepositoryMock.existsById(email.getId())).thenReturn(false);
 		when(messageMapperMock.toMessage(email, municipalityId, namespace, errandId)).thenReturn(MessageEntity.builder().build());
 
@@ -164,10 +165,10 @@ class EmailReaderWorkerTest {
 
 		// Assert
 		assertThat(result).isTrue();
-		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
+		verify(errandRepositoryMock).findWithPessimisticLockingByErrandNumber(errandNumber);
 		verify(messageRepositoryMock).existsById(email.getId());
 		verify(messageRepositoryMock).save(any(MessageEntity.class));
-		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), notificationCaptor.capture());
+		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), notificationCaptor.capture(), same(errandEntity));
 		verify(messageAttachmentRepositoryMock).save(any());
 		verify(messageAttachmentRepositoryMock).saveAndFlush(any());
 		verify(attachmentRepositoryMock).save(any());
@@ -197,7 +198,7 @@ class EmailReaderWorkerTest {
 			.withAdAccount("adminAdAccount")
 			.withRoles(List.of("ADMINISTRATOR")).build();
 
-		when(errandRepositoryMock.findByErrandNumber(errandNumber))
+		when(errandRepositoryMock.findWithPessimisticLockingByErrandNumber(errandNumber))
 			.thenReturn(Optional.of(ErrandEntity.builder()
 				.withId(errandId)
 				.withStakeholders(List.of(stakeholder))
@@ -211,7 +212,7 @@ class EmailReaderWorkerTest {
 
 		// Assert
 		assertThat(result).isTrue();
-		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
+		verify(errandRepositoryMock).findWithPessimisticLockingByErrandNumber(errandNumber);
 		verify(messageRepositoryMock).existsById(email.getId());
 		verifyNoMoreInteractions(messageRepositoryMock, notificationServiceMock, attachmentRepositoryMock);
 		verifyNoInteractions(dept44HealthUtilityMock);
@@ -233,7 +234,7 @@ class EmailReaderWorkerTest {
 				.contentType("someContentType")));
 		final var errandNumber = "PRH-2022-01";
 
-		when(errandRepositoryMock.findByErrandNumber(errandNumber))
+		when(errandRepositoryMock.findWithPessimisticLockingByErrandNumber(errandNumber))
 			.thenReturn(Optional.empty());
 
 		// Act
@@ -241,7 +242,7 @@ class EmailReaderWorkerTest {
 
 		// Assert
 		assertThat(result).isTrue();
-		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
+		verify(errandRepositoryMock).findWithPessimisticLockingByErrandNumber(errandNumber);
 		verifyNoMoreInteractions(messageRepositoryMock, notificationServiceMock, attachmentRepositoryMock);
 		verifyNoInteractions(dept44HealthUtilityMock);
 
@@ -263,7 +264,7 @@ class EmailReaderWorkerTest {
 
 		final var errandNumber = "PRH-2022-01";
 
-		when(errandRepositoryMock.findByErrandNumber(errandNumber))
+		when(errandRepositoryMock.findWithPessimisticLockingByErrandNumber(errandNumber))
 			.thenThrow(new RuntimeException("Database error"));
 
 		// Act
@@ -271,7 +272,7 @@ class EmailReaderWorkerTest {
 
 		// Assert
 		assertThat(result).isFalse();
-		verify(errandRepositoryMock).findByErrandNumber(errandNumber);
+		verify(errandRepositoryMock).findWithPessimisticLockingByErrandNumber(errandNumber);
 
 		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy(null, "Error when processing email");
 		verifyNoMoreInteractions(dept44HealthUtilityMock);

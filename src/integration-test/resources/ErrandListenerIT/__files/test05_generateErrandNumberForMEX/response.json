@@ -312,7 +312,7 @@
 	"created": "${json-unit.any-string}",
 	"updatedByClient": "UNKNOWN",
 	"priority": "HIGH",
-	"version": 3,
+	"version": 1,
 	"labels": [],
 	"createdBy": "user123",
 	"namespace": "SBK_MEX",

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.MessageRequest;
@@ -25,6 +26,7 @@ import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 
 @Service
+@Transactional
 public class MessageService {
 
 	private static final String NOTIFICATION_TYPE = "UPDATE";
@@ -58,11 +60,11 @@ public class MessageService {
 	}
 
 	public MessageResponse create(final Long errandId, final MessageRequest request, final String municipalityId, final String namespace) {
-		final var errand = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+		final var errand = errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 
 		final var messageEntity = messageRepository.save(mapper.toMessageEntity(request, errandId, municipalityId, namespace));
-		notificationService.create(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE));
+		notificationService.create(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errand);
 
 		return mapper.toMessageResponse(messageEntity);
 	}

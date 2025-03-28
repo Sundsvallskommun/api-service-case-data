@@ -35,7 +35,7 @@ class StatusServiceTest {
 		// Arrange
 		final var errand = createErrandEntity();
 		final var newStatus = createStatus();
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
@@ -43,7 +43,7 @@ class StatusServiceTest {
 
 		// Assert
 		assertThat(errand.getStatuses()).isNotEmpty().hasSize(2);
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
