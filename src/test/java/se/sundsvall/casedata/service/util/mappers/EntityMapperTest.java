@@ -32,6 +32,8 @@ import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
 import static se.sundsvall.casedata.TestUtil.createStatus;
 import static se.sundsvall.casedata.TestUtil.createStatusEntity;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ATTACHMENT;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddress;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
@@ -808,10 +810,11 @@ class EntityMapperTest {
 			.build();
 
 		final var type = "type";
+		final var subType = ERRAND;
 		final var description = "description";
 
 		// Act
-		final var notification = toNotification(errandEntity, type, description);
+		final var notification = toNotification(errandEntity, type, description, subType);
 
 		// Assert
 		assertThat(notification).isNotNull();
@@ -821,6 +824,7 @@ class EntityMapperTest {
 		assertThat(notification.getErrandId()).isEqualTo(1L);
 		assertThat(notification.getMunicipalityId()).isEqualTo("municipalityId");
 		assertThat(notification.getNamespace()).isEqualTo("namespace");
+		assertThat(notification.getSubType()).isEqualTo(subType.toString());
 	}
 
 	@Test
@@ -834,10 +838,11 @@ class EntityMapperTest {
 			.build();
 
 		final var type = "type";
+		final var subType = ATTACHMENT;
 		final var description = "description";
 
 		// Act
-		final var notification = toNotification(errandEntity, type, description);
+		final var notification = toNotification(errandEntity, type, description, subType);
 
 		// Assert
 		assertThat(notification).isNotNull();
@@ -847,5 +852,6 @@ class EntityMapperTest {
 		assertThat(notification.getErrandId()).isEqualTo(1L);
 		assertThat(notification.getMunicipalityId()).isEqualTo("municipalityId");
 		assertThat(notification.getNamespace()).isEqualTo("namespace");
+		assertThat(notification.getSubType()).isEqualTo(subType.toString());
 	}
 }

@@ -11,6 +11,7 @@
 			"createdBy": "PatchUser",
 			"createdByFullName": "Usersson User",
 			"type": "UPDATE",
+			"subType": "ERRAND",
 			"description": "Ärende uppdaterat",
 			"expires": "${json-unit.any-string}",
 			"acknowledged": false,

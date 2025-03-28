@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service;
 
 import static java.util.Collections.emptyList;
 import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.NOTE;
 import static se.sundsvall.casedata.service.NotificationService.EventType.CREATE;
 import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
@@ -66,6 +67,7 @@ public class NoteService {
 			.withDescription(NOTIFICATION_NOTE_UPDATED)
 			.withErrandId(errandEntity.getId())
 			.withType(UPDATE.toString())
+			.withSubType(NOTE.toString())
 			.withOwnerId(toOwnerId(errandEntity))
 			.build());
 	}
@@ -120,6 +122,7 @@ public class NoteService {
 			.withDescription(NOTIFICATION_NOTE_CREATED)
 			.withErrandId(oldErrand.getId())
 			.withType(CREATE.toString())
+			.withSubType(NOTE.toString())
 			.withOwnerId(toOwnerId(oldErrand))
 			.build());
 

@@ -19,6 +19,7 @@ import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.enums.NotificationSubType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @Service
@@ -53,28 +54,28 @@ public class AttachmentService {
 	@Retry(name = "OptimisticLocking")
 	public AttachmentEntity create(final Long errandId, final Attachment attachment, final String municipalityId, final String namespace) {
 		final var attachmentEntity = toAttachmentEntity(errandId, attachment, municipalityId, namespace);
-		notificationService.create(municipalityId, namespace, toNotification(findErrandEntity(errandId, municipalityId, namespace), NOTIFICATION_UPDATE_TYPE, NOTIFICATION_ADD_ATTACHMENT));
+		notificationService.create(municipalityId, namespace, toNotification(findErrandEntity(errandId, municipalityId, namespace), NOTIFICATION_UPDATE_TYPE, NOTIFICATION_ADD_ATTACHMENT, NotificationSubType.ATTACHMENT));
 		return attachmentRepository.save(attachmentEntity);
 	}
 
 	@Retry(name = "OptimisticLocking")
 	public void replace(final Long errandId, final Long attachmentId, final String municipalityId, final String namespace, final Attachment attachment) {
 		final var attachmentEntity = findAttachmentEntity(attachmentId, errandId, municipalityId, namespace);
-		notificationService.create(municipalityId, namespace, toNotification(findErrandEntity(errandId, municipalityId, namespace), NOTIFICATION_UPDATE_TYPE, NOTIFICATION_REPLACE_ATTACHMENT));
+		notificationService.create(municipalityId, namespace, toNotification(findErrandEntity(errandId, municipalityId, namespace), NOTIFICATION_UPDATE_TYPE, NOTIFICATION_REPLACE_ATTACHMENT, NotificationSubType.ATTACHMENT));
 		attachmentRepository.save(putAttachment(attachmentEntity, attachment));
 	}
 
 	@Retry(name = "OptimisticLocking")
 	public void update(final Long errandId, final Long attachmentId, final String municipalityId, final String namespace, final Attachment attachment) {
 		final var attachmentEntity = findAttachmentEntity(attachmentId, errandId, municipalityId, namespace);
-		notificationService.create(municipalityId, namespace, toNotification(findErrandEntity(errandId, municipalityId, namespace), NOTIFICATION_UPDATE_TYPE, NOTIFICATION_UPDATE_ATTACHMENT));
+		notificationService.create(municipalityId, namespace, toNotification(findErrandEntity(errandId, municipalityId, namespace), NOTIFICATION_UPDATE_TYPE, NOTIFICATION_UPDATE_ATTACHMENT, NotificationSubType.ATTACHMENT));
 		attachmentRepository.save(patchAttachment(attachmentEntity, attachment));
 	}
 
 	@Retry(name = "OptimisticLocking")
 	public void delete(final Long errandId, final Long attachmentId, final String municipalityId, final String namespace) {
 		final var attachmentEntity = findAttachmentEntity(attachmentId, errandId, municipalityId, namespace);
-		notificationService.create(municipalityId, namespace, toNotification(findErrandEntity(errandId, municipalityId, namespace), NOTIFICATION_UPDATE_TYPE, NOTIFICATION_REMOVE_ATTACHMENT));
+		notificationService.create(municipalityId, namespace, toNotification(findErrandEntity(errandId, municipalityId, namespace), NOTIFICATION_UPDATE_TYPE, NOTIFICATION_REMOVE_ATTACHMENT, NotificationSubType.ATTACHMENT));
 		attachmentRepository.delete(attachmentEntity);
 	}
 
