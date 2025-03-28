@@ -116,4 +116,14 @@ class MessageIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
+
+	@Test
+	void test07_getExternalMessages() {
+		setupCall()
+			.withHttpMethod(GET)
+			.withServicePath(PATH + "/external")
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
 }

@@ -47,6 +47,7 @@ class MessageRequestTest {
 		final var classification = Classification.INFORMATION;
 		final var attachments = List.of(MessageRequest.AttachmentRequest.builder().build());
 		final var emailHeaders = List.of(EmailHeader.builder().build());
+		final var internal = true;
 		// Act
 		final var result = MessageRequest.builder()
 			.withMessageId(messageId)
@@ -67,6 +68,7 @@ class MessageRequestTest {
 			.withClassification(classification)
 			.withAttachments(attachments)
 			.withEmailHeaders(emailHeaders)
+			.withInternal(internal)
 			.build();
 		// Assert
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
@@ -88,6 +90,7 @@ class MessageRequestTest {
 		assertThat(result.getClassification()).isEqualTo(classification);
 		assertThat(result.getAttachments()).isEqualTo(attachments);
 		assertThat(result.getEmailHeaders()).isEqualTo(emailHeaders);
+		assertThat(result.getInternal()).isEqualTo(internal);
 
 	}
 

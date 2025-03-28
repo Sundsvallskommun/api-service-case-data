@@ -56,6 +56,7 @@ class MessageEntityTest {
 			.withHeader(Header.MESSAGE_ID)
 			.withValues(List.of("<messageID@test.com>"))
 			.build());
+		final var internal = true;
 
 		// Act
 		final var bean = MessageEntity.builder()
@@ -81,6 +82,7 @@ class MessageEntityTest {
 			.withClassification(classification)
 			.withRecipients(recipients)
 			.withHeaders(headers)
+			.withInternal(internal)
 			.build();
 
 		// Assert
@@ -107,6 +109,7 @@ class MessageEntityTest {
 		assertThat(bean.getClassification()).isEqualTo(classification);
 		assertThat(bean.getHeaders()).isEqualTo(headers);
 		assertThat(bean.getRecipients()).isEqualTo(recipients);
+		assertThat(bean.getInternal()).isEqualTo(internal);
 	}
 
 	@Test

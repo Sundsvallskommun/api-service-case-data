@@ -80,11 +80,19 @@ VALUES (1, '05b29c30-4512-46c0-9d82-d0f11cb04bae', 'image/png',
 
 INSERT INTO message (viewed, email, errand_id, external_caseid, familyid, first_name, last_name,
                      message, messageId, sent, subject, userid, username, direction, message_type,
-                     municipality_id, namespace)
+                     municipality_id, namespace, internal)
 VALUES (1, 'test.testorsson@noreply.com', 456, '123456', '123', 'Test', 'Testorsson',
         'Some message', '02485d15-fa8b-488a-a907-fa4de5d6e5c9', '2023-10-02 15:13:45.363',
         'Some subject', 'aba01cal', 'Abacus Calculator', 'INBOUND', 'EMAIL', '2281',
-        'MY_NAMESPACE');
+        'MY_NAMESPACE', null),
+        (1, 'test.testorsson@noreply.com', 456, '123456', '123', 'Test', 'Testorsson',
+        'Some internal message', '02485d15-fa8b-488a-a907-fa4de5d6e5c8', '2023-10-02 15:13:45.363',
+        'Some subject', 'aba01cal', 'Abacus Calculator', 'INBOUND', 'EMAIL', '2281',
+        'MY_NAMESPACE', 1),
+        (1, 'test.testorsson@noreply.com', 456, '123456', '123', 'Test', 'Testorsson',
+        'Some external message', '02485d15-fa8b-488a-a907-fa4de5d6e5c7', '2023-10-02 15:13:45.363',
+        'Some subject', 'aba01cal', 'Abacus Calculator', 'INBOUND', 'EMAIL', '2281',
+        'MY_NAMESPACE', 0);
 
 INSERT INTO facility (id, created, updated, version, address_category, apartment_number, attention,
                       care_of, city, country, house_number, invoice_marking, is_zoning_plan_area,

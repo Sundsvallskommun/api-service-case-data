@@ -17,6 +17,8 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mariadb.jdbc.MariaDbBlob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,24 +55,27 @@ class MessageMapperTest {
 
 	@Test
 	void testToMessageResponseFromNull() {
-		assertThat(messageMapper.toMessageResponse(null)).isNull();
+		assertThat(messageMapper.toMessageResponse(null, true)).isNull();
 	}
 
 	@Test
 	void testToMessageResponseFromEmptyBean() {
-		assertThat(messageMapper.toMessageResponse(MessageEntity.builder().build()))
+		assertThat(messageMapper.toMessageResponse(MessageEntity.builder().build(), true))
 			.hasAllNullFieldsOrPropertiesExcept("viewed")
-			.extracting(MessageResponse::isViewed).isEqualTo(false);
+			.extracting(MessageResponse::getViewed).isEqualTo(false);
 	}
 
-	@Test
-	void testToMessageResponses() {
+	@ParameterizedTest
+	@ValueSource(booleans = {
+		true, false
+	})
+	void testToMessageResponses(boolean includeViewed) {
 		// Arrange
 		final var bean = createMessage();
 		final var list = List.of(bean);
 
 		// Act
-		final var dto = messageMapper.toMessageResponses(list);
+		final var dto = messageMapper.toMessageResponses(list, includeViewed);
 
 		// Assert
 		assertThat(dto).isNotNull()
@@ -113,6 +118,12 @@ class MessageMapperTest {
 			assertThat(s.getHeader()).isNotNull().isInstanceOf(Header.class);
 			assertThat(s.getValues()).isNotNull().isNotEmpty();
 		});
+
+		if (includeViewed) {
+			assertThat(dto.getFirst().getViewed()).isEqualTo(bean.isViewed());
+		} else {
+			assertThat(dto.getFirst().getViewed()).isNull();
+		}
 	}
 
 	@Test
@@ -121,7 +132,7 @@ class MessageMapperTest {
 		final var bean = createMessage();
 
 		// Act
-		final var dto = messageMapper.toMessageResponse(bean);
+		final var dto = messageMapper.toMessageResponse(bean, true);
 
 		// Assert
 		assertThat(dto).isNotNull()
