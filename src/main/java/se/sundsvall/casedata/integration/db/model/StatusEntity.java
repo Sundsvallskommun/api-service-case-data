@@ -28,7 +28,7 @@ public class StatusEntity {
 	@Column(name = "description")
 	private String description;
 
-	@Column(name = "date_time") // TODO: rename to created when CD 10 is retired (UF-14476)
+	@Column(name = "created")
 	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)
 	private OffsetDateTime created;
 

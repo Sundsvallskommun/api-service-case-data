@@ -21,7 +21,7 @@ values (1, '123e4567-e89b-12d3-a456-426614174000', 'test', 'test-value');
 INSERT INTO errand_extra_parameter_values (extra_parameter_id, value)
 VALUES ('123e4567-e89b-12d3-a456-426614174000', 'test');
 
-INSERT INTO errand_statuses (errand_id, date_time, description, status_type, status_order)
+INSERT INTO errand_statuses (errand_id, created, description, status_type, status_order)
 VALUES (1, '2022-12-02 15:13:45.363', 'Beslut verkställt', 'Beslut verkställt', 0);
 
 INSERT INTO decision (id, created, updated, version, decided_at, decision_outcome, decision_type,
