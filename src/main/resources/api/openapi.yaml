@@ -1,13 +1,13 @@
 openapi: 3.0.1
 info:
   title: api-service-case-data
-  contact: { }
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
   version: "11.1"
 servers:
-  - url: http://localhost:65207
+  - url: http://localhost:62836
     description: Generated server url
 tags:
   - name: Notes
@@ -3068,6 +3068,65 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/messages/external:
+    get:
+      tags:
+        - Messages
+      description: Get non internal messages
+      operationId: getExternalMessagesByErrand
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            pattern: "[\\w|\\-]+"
+            type: string
+          example: MY_NAMESPACE
+        - name: errandId
+          in: path
+          description: Errand ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 123
+      responses:
+        "200":
+          description: OK - Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/history:
     get:
       tags:
@@ -3592,11 +3651,11 @@ components:
     StatusType:
       type: object
       properties:
-        reasonPhrase:
-          type: string
         statusCode:
           type: integer
           format: int32
+        reasonPhrase:
+          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -4621,6 +4680,10 @@ components:
           description: List of email headers on the message
           items:
             $ref: "#/components/schemas/EmailHeader"
+        internal:
+          type: boolean
+          description: Is message internal
+          example: true
     PatchNotification:
       required:
         - errandId
@@ -4845,16 +4908,12 @@ components:
     PageErrand:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -4867,6 +4926,10 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
@@ -4882,14 +4945,14 @@ components:
           format: int64
         sort:
           $ref: "#/components/schemas/SortObject"
-        paged:
-          type: boolean
         pageNumber:
           type: integer
           format: int32
         pageSize:
           type: integer
           format: int32
+        paged:
+          type: boolean
         unpaged:
           type: boolean
     SortObject:
@@ -5103,4 +5166,8 @@ components:
           description: List of email headers on the message
           items:
             $ref: "#/components/schemas/EmailHeader"
-  securitySchemes: { }
+        internal:
+          type: boolean
+          description: Is message internal
+          example: true
+  securitySchemes: {}
