@@ -84,7 +84,7 @@ INSERT INTO message (viewed, email, errand_id, external_caseid, familyid, first_
 VALUES (1, 'test.testorsson@noreply.com', 456, '123456', '123', 'Test', 'Testorsson',
         'Some message', '02485d15-fa8b-488a-a907-fa4de5d6e5c9', '2023-10-02 15:13:45.363',
         'Some subject', 'aba01cal', 'Abacus Calculator', 'INBOUND', 'EMAIL', '2281',
-        'MY_NAMESPACE', null);
+        'MY_NAMESPACE', null),
         (1, 'test.testorsson@noreply.com', 456, '123456', '123', 'Test', 'Testorsson',
         'Some internal message', '02485d15-fa8b-488a-a907-fa4de5d6e5c8', '2023-10-02 15:13:45.363',
         'Some subject', 'aba01cal', 'Abacus Calculator', 'INBOUND', 'EMAIL', '2281',
