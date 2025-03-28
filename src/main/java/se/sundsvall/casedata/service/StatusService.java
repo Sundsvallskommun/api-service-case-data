@@ -4,14 +4,15 @@ import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatusEntity;
 
-import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Status;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 
 @Service
+@Transactional
 public class StatusService {
 
 	private final ErrandRepository errandRepository;
@@ -22,7 +23,6 @@ public class StatusService {
 		this.processService = processService;
 	}
 
-	@Retry(name = "OptimisticLocking")
 	public void addToErrand(final Long errandId, final String municipalityId, final String namespace, final Status status) {
 		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace);
 		final var statusEntity = toStatusEntity(status);
@@ -33,7 +33,7 @@ public class StatusService {
 	}
 
 	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace) {
-		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+		return errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 	}
 }

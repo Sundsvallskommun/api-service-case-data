@@ -9,7 +9,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakehol
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putStakeholder;
 
-import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +36,7 @@ public class StakeholderService {
 	}
 
 	public List<Stakeholder> findStakeholders(final Long errandId, final String municipalityId, final String namespace) {
-		final var errand = findErrandEntity(errandId, municipalityId, namespace);
+		final var errand = findErrandEntity(errandId, municipalityId, namespace, false);
 
 		final List<StakeholderEntity> stakeholderList = Optional.ofNullable(errand.getStakeholders()).orElse(emptyList());
 		if (stakeholderList.isEmpty()) {
@@ -48,7 +47,7 @@ public class StakeholderService {
 
 	public List<Stakeholder> findStakeholdersByRole(final Long errandId, final String stakeholderRole, final String municipalityId, final String namespace) {
 
-		final var errand = findErrandEntity(errandId, municipalityId, namespace);
+		final var errand = findErrandEntity(errandId, municipalityId, namespace, false);
 
 		final List<StakeholderEntity> stakeholderList = Optional.ofNullable(errand.getStakeholders())
 			.orElse(emptyList())
@@ -64,7 +63,7 @@ public class StakeholderService {
 	}
 
 	public Stakeholder findStakeholder(final Long errandId, final Long id, final String municipalityId, final String namespace) {
-		final var errand = findErrandEntity(errandId, municipalityId, namespace);
+		final var errand = findErrandEntity(errandId, municipalityId, namespace, false);
 
 		return toStakeholder(Optional.ofNullable(errand.getStakeholders())
 			.orElse(emptyList()).stream()
@@ -73,9 +72,8 @@ public class StakeholderService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(id, errandId))));
 	}
 
-	@Retry(name = "OptimisticLocking")
 	public void update(final Long errandId, final Long stakeholderId, final String municipalityId, final String namespace, final Stakeholder stakeholder) {
-		final var errand = findErrandEntity(errandId, municipalityId, namespace);
+		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var entity = Optional.ofNullable(errand.getStakeholders())
 			.orElse(emptyList()).stream()
 			.filter(stakeholderEntity -> stakeholderEntity.getId().equals(stakeholderId))
@@ -86,9 +84,8 @@ public class StakeholderService {
 		stakeholderRepository.save(entity);
 	}
 
-	@Retry(name = "OptimisticLocking")
 	public void replaceOnErrand(final Long errandId, final Long id, final String municipalityId, final String namespace, final Stakeholder stakeholder) {
-		final var errand = findErrandEntity(errandId, municipalityId, namespace);
+		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 
 		final var entity = Optional.ofNullable(errand.getStakeholders())
 			.orElse(emptyList()).stream()
@@ -100,9 +97,8 @@ public class StakeholderService {
 		stakeholderRepository.save(entity);
 	}
 
-	@Retry(name = "OptimisticLocking")
 	public void delete(final Long errandId, final String municipalityId, final String namespace, final Long stakeholderId) {
-		final var errand = findErrandEntity(errandId, municipalityId, namespace);
+		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 
 		final var stakeholderToRemove = Optional.ofNullable(errand.getStakeholders())
 			.orElse(emptyList()).stream()
@@ -114,9 +110,8 @@ public class StakeholderService {
 		processService.updateProcess(errand);
 	}
 
-	@Retry(name = "OptimisticLocking")
 	public Stakeholder addToErrand(final Long errandId, final String municipalityId, final String namespace, final Stakeholder stakeholder) {
-		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace);
+		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var stakeholderEntity = toStakeholderEntity(stakeholder, municipalityId, namespace);
 
 		stakeholderEntity.setErrand(oldErrand);
@@ -126,9 +121,8 @@ public class StakeholderService {
 		return toStakeholder(stakeholderEntity);
 	}
 
-	@Retry(name = "OptimisticLocking")
 	public void replaceOnErrand(final Long errandId, final String municipalityId, final String namespace, final List<Stakeholder> stakeholders) {
-		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace);
+		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace, true);
 		oldErrand.getStakeholders().clear();
 
 		stakeholders.stream()
@@ -143,8 +137,13 @@ public class StakeholderService {
 		processService.updateProcess(updatedErrand);
 	}
 
-	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace) {
-		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace, boolean locking) {
+		if (locking) {
+			return errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+				.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+		} else {
+			return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+				.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+		}
 	}
 }

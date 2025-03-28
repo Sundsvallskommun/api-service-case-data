@@ -13,8 +13,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 
-import io.github.resilience4j.retry.annotation.Retry;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import org.hibernate.query.sqm.PathElementException;
@@ -24,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Errand;
 import se.sundsvall.casedata.api.model.Notification;
@@ -34,6 +33,7 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
 
 @Service
+@Transactional
 public class ErrandService {
 
 	private final ErrandRepository errandRepository;
@@ -47,7 +47,9 @@ public class ErrandService {
 	}
 
 	public Errand findByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
-		return toErrand(findErrandEntity(errandId, municipalityId, namespace));
+		final var errandEntity = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+		return toErrand(errandEntity);
 	}
 
 	/**
@@ -93,16 +95,16 @@ public class ErrandService {
 			.withErrandId(resultErrand.getId())
 			.withType(CREATE.toString())
 			.withOwnerId(toOwnerId(resultErrand))
-			.build());
+			.build(), resultErrand);
 
 		return toErrand(resultErrand);
 	}
 
 	public void update(final Long errandId, final String municipalityId, final String namespace, final PatchErrand patchErrand) {
 		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace);
-		final var updatedErrand = PatchMapper.patchErrand(oldErrand, patchErrand);
+		final var updatedErrand = errandRepository.save(PatchMapper.patchErrand(oldErrand, patchErrand));
 
-		processService.updateProcess(errandRepository.save(updatedErrand));
+		processService.updateProcess(updatedErrand);
 
 		// Create notification
 		notificationService.create(municipalityId, namespace, Notification.builder()
@@ -111,23 +113,18 @@ public class ErrandService {
 			.withErrandId(updatedErrand.getId())
 			.withType(UPDATE.toString())
 			.withOwnerId(toOwnerId(updatedErrand))
-			.build());
+			.build(), updatedErrand);
 	}
 
-	@Transactional
 	public void delete(final Long errandId, final String municipalityId, final String namespace) {
-		final var entity = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
-
-		errandRepository.delete(entity);
+		errandRepository.delete(findErrandEntity(errandId, municipalityId, namespace));
 	}
 
 	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace) {
-		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+		return errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 	}
 
-	@Retry(name = "OptimisticLocking")
 	private void startProcess(final ErrandEntity errand) {
 		try {
 			final var startProcessId = processService.startProcess(errand);

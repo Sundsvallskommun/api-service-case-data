@@ -77,7 +77,7 @@ class FacilityServiceTest {
 
 		final var facilityEntity = toFacilityEntity(facility, MUNICIPALITY_ID, NAMESPACE);
 
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(facilityRepositoryMock.save(any())).thenReturn(facilityEntity);
 
 		// Act
@@ -86,7 +86,7 @@ class FacilityServiceTest {
 		// Assert
 		assertThat(result).isEqualTo(facility);
 		verify(processServiceMock).updateProcess(errand);
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(facilityRepositoryMock).save(any());
 		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
 	}
@@ -143,7 +143,7 @@ class FacilityServiceTest {
 
 		final var facilities = List.of(facility1, facility2, createFacility());
 
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(any(Long.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
@@ -160,7 +160,7 @@ class FacilityServiceTest {
 			assertThat(facility.getVersion()).isInstanceOf(Integer.class).isNotNull();
 		});
 
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(any());
 		verify(processServiceMock).updateProcess(errand);
 	}
@@ -174,13 +174,13 @@ class FacilityServiceTest {
 		final var facility = createFacilityEntity();
 		final var facilityId = facility.getId();
 
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act
 		facilityService.delete(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId);
 
 		// Assert
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(errand);
 	}
@@ -195,7 +195,7 @@ class FacilityServiceTest {
 		final var facilityId = facility.getId();
 		final var patch = createFacility();
 
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(facilityRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(facility));
 		when(facilityRepositoryMock.save(facility)).thenReturn(facility);
 
@@ -212,7 +212,7 @@ class FacilityServiceTest {
 			assertThat(f.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
 		});
 
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(facilityRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(facilityRepositoryMock).save(facility);
 		verify(processServiceMock).updateProcess(errand);

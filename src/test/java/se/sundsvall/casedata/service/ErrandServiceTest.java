@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -100,7 +101,7 @@ class ErrandServiceTest {
 
 		// Assert
 		verify(processServiceMock).startProcess(inputErrand);
-		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(inputErrand));
 		verify(errandRepositoryMock, times(2)).save(any());
 		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
 
@@ -148,13 +149,13 @@ class ErrandServiceTest {
 		// Arrange
 		final var id = 1L;
 		final var entity = createErrandEntity();
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
 
 		// Act
 		errandService.delete(id, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).delete(entity);
 	}
 
@@ -163,7 +164,7 @@ class ErrandServiceTest {
 
 		// Arrange
 		final var id = 1L;
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(empty());
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(empty());
 
 		// Act
 		final var exception = assertThrows(ThrowableProblem.class, () -> errandService.delete(id, MUNICIPALITY_ID, NAMESPACE));
@@ -172,7 +173,7 @@ class ErrandServiceTest {
 		assertThat(exception.getMessage()).isEqualTo("Not Found: Errand with id:'1' not found in namespace:'MY_NAMESPACE' for municipality with id:'2281'");
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock, never()).delete(any(ErrandEntity.class));
 	}
 
@@ -183,7 +184,7 @@ class ErrandServiceTest {
 		final var errand = createErrandEntity();
 		final var updatedErrand = createErrandEntity();
 		final var patch = createPatchErrand();
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(errand)).thenReturn(updatedErrand);
 
 		// Act
@@ -207,10 +208,10 @@ class ErrandServiceTest {
 					.toList());
 		});
 
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
 		verify(processServiceMock).updateProcess(updatedErrand);
-		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture());
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(updatedErrand));
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
 		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
@@ -281,16 +282,22 @@ class ErrandServiceTest {
 		final var dto = new PatchErrand();
 		final var entity = new ErrandEntity();
 		entity.setCaseType(PARKING_PERMIT_RENEWAL.name());
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
 		when(errandRepositoryMock.save(entity)).thenReturn(entity);
 
 		// Act
 		errandService.update(1L, MUNICIPALITY_ID, NAMESPACE, dto);
 
 		// Assert
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(entity);
 		verify(processServiceMock).updateProcess(entity);
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(entity));
+
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(entity.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(entity.getId());
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
 	}
 

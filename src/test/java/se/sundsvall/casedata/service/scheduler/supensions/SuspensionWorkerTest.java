@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service.scheduler.supensions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -70,7 +71,7 @@ class SuspensionWorkerTest {
 		// Assert
 		verify(errandsRepositoryMock).findAllBySuspendedToBefore(any(OffsetDateTime.class));
 		verify(errandsRepositoryMock).save(errandEntityCaptor.capture());
-		verify(notificationServiceMock).create(any(), any(), notificationCaptor.capture());
+		verify(notificationServiceMock).create(any(), any(), notificationCaptor.capture(), same(errandEntity));
 
 		final var notification = notificationCaptor.getValue();
 		assertThat(notification).isNotNull();
