@@ -127,7 +127,7 @@
 
     create table errand_statuses (
         status_order integer not null,
-        date_time datetime(6),
+        created datetime(6),
         errand_id bigint not null,
         description varchar(255),
         status_type varchar(255),
