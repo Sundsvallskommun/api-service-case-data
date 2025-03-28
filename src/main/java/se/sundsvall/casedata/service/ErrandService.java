@@ -4,14 +4,14 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.SYSTEM;
 import static se.sundsvall.casedata.service.NotificationService.EventType.CREATE;
 import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
 import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_CREATED;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_SUBTYPE_ERRAND;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_SUBTYPE_SYSTEM;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
@@ -50,11 +50,11 @@ public class ErrandService {
 	}
 
 	private String determineSubType(final ErrandEntity updatedErrand) {
-		var subtype = NOTIFICATION_SUBTYPE_ERRAND;
+		var subtype = ERRAND;
 		if (CAMUNDA_USER.equals(updatedErrand.getUpdatedByClient())) {
-			subtype = NOTIFICATION_SUBTYPE_SYSTEM;
+			subtype = SYSTEM;
 		}
-		return subtype;
+		return subtype.toString();
 	}
 
 	public Errand findByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
@@ -103,7 +103,7 @@ public class ErrandService {
 			.withDescription(NOTIFICATION_ERRAND_CREATED)
 			.withErrandId(resultErrand.getId())
 			.withType(CREATE.toString())
-			.withSubType(NOTIFICATION_SUBTYPE_ERRAND)
+			.withSubType(ERRAND.toString())
 			.withOwnerId(toOwnerId(resultErrand))
 			.build());
 

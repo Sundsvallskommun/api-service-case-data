@@ -34,14 +34,6 @@ public final class Constants {
 	public static final String NOTIFICATION_DECISION_CREATED = "Beslut skapat";
 	public static final String NOTIFICATION_DECISION_UPDATED = "Beslut uppdaterat";
 
-	public static final String NOTIFICATION_SUBTYPE_ATTACHMENT = "ATTACHMENT";
-	public static final String NOTIFICATION_SUBTYPE_DECISION = "DECISION";
-	public static final String NOTIFICATION_SUBTYPE_ERRAND = "ERRAND";
-	public static final String NOTIFICATION_SUBTYPE_MESSAGE = "MESSAGE";
-	public static final String NOTIFICATION_SUBTYPE_NOTE = "NOTE";
-	public static final String NOTIFICATION_SUBTYPE_SYSTEM = "SYSTEM";
-	public static final String NOTIFICATION_SUBTYPE_SUSPENSION = "SUSPENSION";
-
 	private Constants() {
 		// Prevent instantiation
 	}

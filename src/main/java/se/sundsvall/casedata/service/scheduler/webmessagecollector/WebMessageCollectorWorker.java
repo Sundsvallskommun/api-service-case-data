@@ -1,7 +1,7 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
 import static java.util.Collections.emptyMap;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_SUBTYPE_MESSAGE;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
@@ -85,7 +85,7 @@ public class WebMessageCollectorWorker {
 				final var namespace = errand.getNamespace();
 				final var entity = messageMapper.toMessageEntity(errandId, message, municipalityId, namespace);
 
-				notificationService.create(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, NOTIFICATION_SUBTYPE_MESSAGE));
+				notificationService.create(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE));
 				return messageRepository.saveAndFlush(entity);
 			});
 	}

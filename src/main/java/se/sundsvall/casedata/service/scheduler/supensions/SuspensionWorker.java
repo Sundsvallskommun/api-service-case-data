@@ -3,7 +3,7 @@ package se.sundsvall.casedata.service.scheduler.supensions;
 import static java.time.OffsetDateTime.now;
 import static java.util.Collections.emptyList;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_SUBTYPE_SUSPENSION;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.SUSPENSION;
 
 import java.util.Optional;
 import org.springframework.stereotype.Component;
@@ -50,7 +50,7 @@ public class SuspensionWorker {
 			.withOwnerFullName(findAdministratorStakeholderFullName(errandEntity))
 			.withOwnerId(findAdministratorStakeholderUserId(errandEntity))
 			.withType(NOTIFICATION_TYPE)
-			.withSubType(NOTIFICATION_SUBTYPE_SUSPENSION)
+			.withSubType(SUSPENSION.toString())
 			.withDescription(NOTIFICATION_MESSAGE)
 			.withErrandId(errandEntity.getId())
 			.withErrandNumber(errandEntity.getErrandNumber())

@@ -39,6 +39,7 @@ import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.integration.db.model.RelatedErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.StatusEntity;
+import se.sundsvall.casedata.integration.db.model.enums.NotificationSubType;
 
 public final class EntityMapper {
 
@@ -547,7 +548,7 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static Notification toNotification(final ErrandEntity errand, final String type, final String description, final String subType) {
+	public static Notification toNotification(final ErrandEntity errand, final String type, final String description, final NotificationSubType subType) {
 
 		final var stakeholder = errand.getStakeholders().stream()
 			.filter(stakeholderEntity -> stakeholderEntity.getRoles().contains(ADMINISTRATOR.name()))
@@ -557,7 +558,7 @@ public final class EntityMapper {
 		return Notification.builder()
 			.withOwnerId(stakeholder.getAdAccount())
 			.withType(type)
-			.withSubType(subType)
+			.withSubType(subType.name())
 			.withDescription(description)
 			.withErrandId(errand.getId())
 			.withMunicipalityId(errand.getMunicipalityId())
