@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
@@ -28,6 +29,7 @@ import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @Service
+@Transactional
 public class NotificationService {
 
 	private final IncomingRequestFilter incomingRequestFilter;

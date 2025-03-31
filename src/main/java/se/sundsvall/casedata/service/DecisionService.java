@@ -26,6 +26,7 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @Service
+@Transactional
 public class DecisionService {
 
 	private static final String DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID = "Decision was not found on errand with id: %s";
@@ -61,7 +62,6 @@ public class DecisionService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(id, errandId))));
 	}
 
-	@Transactional
 	public void replaceOnErrand(final Long errandId, final Long id, final String municipalityId, final String namespace, final Decision decision) {
 		final var errandEntity = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var decisionList = errandEntity.getDecisions();
@@ -83,7 +83,6 @@ public class DecisionService {
 			.build(), errandEntity);
 	}
 
-	@Transactional
 	public void update(final Long errandId, final Long id, final String municipalityId, final String namespace, final PatchDecision decision) {
 		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var decisionList = errand.getDecisions();
