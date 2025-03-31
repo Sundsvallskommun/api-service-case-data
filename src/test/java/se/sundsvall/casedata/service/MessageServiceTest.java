@@ -243,7 +243,7 @@ class MessageServiceTest {
 
 		// Assert
 		verify(messageMapperMock).toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(messageMapperMock).toMessageResponse(any(MessageEntity.class));
+		verify(messageMapperMock).toMessageResponse(any(MessageEntity.class), eq(true));
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(errand));
 		assertThat(notificationCaptor.getValue()).satisfies(notification -> {
