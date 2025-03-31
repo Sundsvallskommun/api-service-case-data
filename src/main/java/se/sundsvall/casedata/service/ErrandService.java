@@ -4,8 +4,11 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.SYSTEM;
 import static se.sundsvall.casedata.service.NotificationService.EventType.CREATE;
 import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
+import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_CREATED;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;
@@ -44,6 +47,14 @@ public class ErrandService {
 		this.errandRepository = errandRepository;
 		this.processService = processService;
 		this.notificationService = notificationService;
+	}
+
+	private String determineSubType(final ErrandEntity updatedErrand) {
+		var subtype = ERRAND;
+		if (CAMUNDA_USER.equals(updatedErrand.getUpdatedByClient())) {
+			subtype = SYSTEM;
+		}
+		return subtype.toString();
 	}
 
 	public Errand findByIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace) {
@@ -92,6 +103,7 @@ public class ErrandService {
 			.withDescription(NOTIFICATION_ERRAND_CREATED)
 			.withErrandId(resultErrand.getId())
 			.withType(CREATE.toString())
+			.withSubType(ERRAND.toString())
 			.withOwnerId(toOwnerId(resultErrand))
 			.build());
 
@@ -110,6 +122,7 @@ public class ErrandService {
 			.withDescription(NOTIFICATION_ERRAND_UPDATED)
 			.withErrandId(updatedErrand.getId())
 			.withType(UPDATE.toString())
+			.withSubType(determineSubType(updatedErrand))
 			.withOwnerId(toOwnerId(updatedErrand))
 			.build());
 	}

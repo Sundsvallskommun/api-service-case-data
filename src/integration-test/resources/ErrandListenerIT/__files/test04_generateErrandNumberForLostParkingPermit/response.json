@@ -66,6 +66,7 @@
 			"createdBy": "user123",
 			"createdByFullName": "Usersson User",
 			"type": "CREATE",
+			"subType": "ERRAND",
 			"description": "Ärende skapat",
 			"expires": "${json-unit.any-string}",
 			"acknowledged": false,
