@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.integration.db;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import jakarta.persistence.LockModeType;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Lock;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 
 @JaversSpringDataAuditable
@@ -25,10 +27,17 @@ public interface ErrandRepository extends JpaRepository<ErrandEntity, Long>, Jpa
 
 	Optional<ErrandEntity> findByErrandNumber(final String errandNumber);
 
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	Optional<ErrandEntity> findWithPessimisticLockingByErrandNumber(final String errandNumber);
+
 	Optional<ErrandEntity> findByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
+
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	Optional<ErrandEntity> findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
 
 	boolean existsByIdAndMunicipalityIdAndNamespace(final Long id, final String municipalityId, final String namespace);
 
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	List<ErrandEntity> findAllBySuspendedToBefore(OffsetDateTime now);
 
 }

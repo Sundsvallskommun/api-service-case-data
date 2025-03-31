@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
@@ -23,10 +24,12 @@ import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchNotification;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.NotificationRepository;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @Service
+@Transactional
 public class NotificationService {
 
 	private final IncomingRequestFilter incomingRequestFilter;
@@ -77,15 +80,20 @@ public class NotificationService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTIFICATION_ENTITY_NOT_FOUND.formatted(notificationId, namespace, municipalityId, errandId)));
 	}
 
-	public String create(final String municipalityId, final String namespace, final Notification notification) {
-		final var errandEntity = errandRepository.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(notification.getErrandId(), namespace, municipalityId)));
+	public String create(final String municipalityId, final String namespace, final Notification notification, ErrandEntity errandEntity) {
 
 		final var notificationEntity = toNotificationEntity(notification, municipalityId, namespace, errandEntity);
 
 		applyBusinessLogicForCreate(municipalityId, notificationEntity);
 
 		return toNotification(notificationRepository.save(notificationEntity)).getId();
+	}
+
+	public String create(final String municipalityId, final String namespace, final Notification notification) {
+		final var errandEntity = errandRepository.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(notification.getErrandId(), namespace, municipalityId)));
+
+		return create(municipalityId, namespace, notification, errandEntity);
 	}
 
 	public void update(final String municipalityId, final String namespace, final List<PatchNotification> notifications) {

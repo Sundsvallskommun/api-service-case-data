@@ -141,7 +141,7 @@
 	"updatedByClient": "WSO2_MS_caseManagement",
 	"created": "2022-12-02T15:13:45.363+01:00",
 	"priority": "MEDIUM",
-	"version": 3,
+	"version": 2,
 	"labels": [],
 	"createdBy": "UNKNOWN",
 	"namespace": "MY_NAMESPACE",

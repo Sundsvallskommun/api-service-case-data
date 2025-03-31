@@ -76,11 +76,11 @@ public class EmailReaderWorker {
 		try {
 			final var errandNumber = parseSubject(email.getSubject());
 
-			errandRepository.findByErrandNumber(errandNumber)
+			errandRepository.findWithPessimisticLockingByErrandNumber(errandNumber)
 				.filter(errand -> !messageRepository.existsById(email.getId()))
 				.ifPresent(errand -> {
 					messageRepository.save(messageMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace(), errand.getId()));
-					notificationService.create(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE));
+					notificationService.create(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errand);
 
 					email.getAttachments()
 						.forEach(emailAttachment -> processAttachment(emailAttachment, email.getId(), errand.getId(), errand.getMunicipalityId(), errand.getNamespace()));

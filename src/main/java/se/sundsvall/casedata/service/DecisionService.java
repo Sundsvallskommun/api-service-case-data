@@ -13,9 +13,9 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecision;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 
-import io.github.resilience4j.retry.annotation.Retry;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Notification;
@@ -26,10 +26,11 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 
 @Service
+@Transactional
 public class DecisionService {
 
-	private static final String DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID = "Decision was not found on errand with id: {0}";
-	private static final String DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Decision with id: {0} was not found on errand with id: {1}";
+	private static final String DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID = "Decision was not found on errand with id: %s";
+	private static final String DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Decision with id: %s was not found on errand with id: %s";
 
 	private final DecisionRepository decisionRepository;
 	private final ErrandRepository errandRepository;
@@ -44,7 +45,7 @@ public class DecisionService {
 	}
 
 	public List<Decision> findDecisions(final Long errandId, final String municipalityId, final String namespace) {
-		final var decisionList = findErrandEntity(errandId, municipalityId, namespace).getDecisions();
+		final var decisionList = findErrandEntity(errandId, municipalityId, namespace, false).getDecisions();
 		if ((decisionList == null) || decisionList.isEmpty()) {
 			throw Problem.valueOf(NOT_FOUND, DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID.formatted(errandId));
 		}
@@ -53,7 +54,7 @@ public class DecisionService {
 	}
 
 	public Decision findDecision(final Long errandId, final Long id, final String municipalityId, final String namespace) {
-		final var decisionList = findErrandEntity(errandId, municipalityId, namespace).getDecisions();
+		final var decisionList = findErrandEntity(errandId, municipalityId, namespace, false).getDecisions();
 
 		return toDecision(decisionList.stream()
 			.filter(decision -> decision.getId().equals(id))
@@ -61,9 +62,9 @@ public class DecisionService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(id, errandId))));
 	}
 
-	@Retry(name = "OptimisticLocking")
 	public void replaceOnErrand(final Long errandId, final Long id, final String municipalityId, final String namespace, final Decision decision) {
-		final var decisionList = findErrandEntity(errandId, municipalityId, namespace).getDecisions();
+		final var errandEntity = findErrandEntity(errandId, municipalityId, namespace, true);
+		final var decisionList = errandEntity.getDecisions();
 		final var entity = decisionList.stream()
 			.filter(decisionEntity -> decisionEntity.getId().equals(id))
 			.findFirst()
@@ -79,12 +80,11 @@ public class DecisionService {
 			.withType(UPDATE.toString())
 			.withSubType(DECISION.toString())
 			.withOwnerId(toOwnerId(entity.getErrand()))
-			.build());
+			.build(), errandEntity);
 	}
 
-	@Retry(name = "OptimisticLocking")
 	public void update(final Long errandId, final Long id, final String municipalityId, final String namespace, final PatchDecision decision) {
-		final var errand = findErrandEntity(errandId, municipalityId, namespace);
+		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var decisionList = errand.getDecisions();
 
 		final var entity = decisionList.stream()
@@ -107,13 +107,12 @@ public class DecisionService {
 			.withType(UPDATE.toString())
 			.withSubType(DECISION.toString())
 			.withOwnerId(toOwnerId(errand))
-			.build());
+			.build(), errand);
 	}
 
-	@Retry(name = "OptimisticLocking")
 	public Decision addToErrand(final Long errandId, final String municipalityId, final String namespace, final Decision decision) {
 
-		final var errandEntity = findErrandEntity(errandId, municipalityId, namespace);
+		final var errandEntity = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var decisionEntity = toDecisionEntity(decision, errandEntity, municipalityId, namespace);
 		errandEntity.getDecisions().add(decisionEntity);
 		final var updatedErrand = errandRepository.save(errandEntity);
@@ -127,14 +126,13 @@ public class DecisionService {
 			.withType(UPDATE.toString())
 			.withSubType(DECISION.toString())
 			.withOwnerId(toOwnerId(errandEntity))
-			.build());
+			.build(), errandEntity);
 
 		return toDecision(decisionEntity);
 	}
 
-	@Retry(name = "OptimisticLocking")
 	public void delete(final Long errandId, final String municipalityId, final String namespace, final Long decisionId) {
-		final var errand = findErrandEntity(errandId, municipalityId, namespace);
+		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var decisionToRemove = errand.getDecisions().stream()
 			.filter(decision -> decision.getId().equals(decisionId))
 			.findAny()
@@ -144,8 +142,13 @@ public class DecisionService {
 		processService.updateProcess(errand);
 	}
 
-	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace) {
-		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace, boolean locking) {
+		if (locking) {
+			return errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+				.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+		} else {
+			return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+				.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+		}
 	}
 }

@@ -38,7 +38,7 @@
 	"created": "2022-12-02T15:13:45.363+01:00",
 	"updatedByClient": "WSO2_MS_caseManagement",
 	"priority": "HIGH",
-	"version": 3,
+	"version": 2,
 	"labels": [
 		"updated-label-1",
 		"updated-label-2"
