@@ -65,6 +65,7 @@ class MessageResponseTest {
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
 		final var recipients = List.of("recipient");
+		final var internal = true;
 
 		// Act
 		final var bean = MessageResponse.builder()
@@ -90,6 +91,7 @@ class MessageResponseTest {
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.withRecipients(recipients)
+			.withInternal(internal)
 			.build();
 
 		// Assert
@@ -110,12 +112,13 @@ class MessageResponseTest {
 		assertThat(bean.getSubject()).isEqualTo(subject);
 		assertThat(bean.getUserId()).isEqualTo(userId);
 		assertThat(bean.getUsername()).isEqualTo(userName);
-		assertThat(bean.isViewed()).isEqualTo(viewed);
+		assertThat(bean.getViewed()).isEqualTo(viewed);
 		assertThat(bean.getClassification()).isEqualTo(classification);
 		assertThat(bean.getEmailHeaders()).isEqualTo(headers);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getNamespace()).isEqualTo(namespace);
 		assertThat(bean.getRecipients()).isEqualTo(recipients);
+		assertThat(bean.getInternal()).isEqualTo(internal);
 	}
 
 	@Test
@@ -141,8 +144,8 @@ class MessageResponseTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(MessageResponse.builder().build()).hasAllNullFieldsOrPropertiesExcept("viewed").extracting(MessageResponse::isViewed).isEqualTo(false);
-		assertThat(new MessageResponse()).hasAllNullFieldsOrPropertiesExcept("viewed").extracting(MessageResponse::isViewed).isEqualTo(false);
+		assertThat(MessageResponse.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new MessageResponse()).hasAllNullFieldsOrProperties();
 
 		assertThat(AttachmentResponse.builder().build()).hasAllNullFieldsOrProperties();
 		assertThat(new AttachmentResponse()).hasAllNullFieldsOrProperties();

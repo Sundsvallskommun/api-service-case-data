@@ -1,0 +1,23 @@
+[
+	{
+		"messageId": "a8883fb9-60b4-4f38-9f48-642070ff49e1",
+		"errandId": 1,
+		"direction": "INBOUND",
+		"familyId": "387",
+		"externalCaseId": "1234",
+		"message": "External message",
+		"sent": "2024-01-01T12:00:00.000000",
+		"subject": "Subject",
+		"username": "kctest",
+		"firstName": "john",
+		"lastName": "doe",
+		"messageType": "MYPAGES",
+		"mobileNumber": "0701234567",
+		"recipients": [],
+		"email": "johndoe@email.com",
+		"userId": "userid",
+		"attachments": [],
+		"emailHeaders": [],
+		"internal": false
+	}
+]
