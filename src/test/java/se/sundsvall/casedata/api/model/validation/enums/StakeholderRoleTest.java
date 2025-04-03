@@ -27,6 +27,7 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.P
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.PAYMENT_PERSON;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.PERSON;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.PROPERTY_OWNER;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.RIGHTS_HOLDER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.SECRETARY;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.SECTION_HEAD;
@@ -41,7 +42,7 @@ class StakeholderRoleTest {
 	@Test
 	void enumValues() {
 
-		assertThat(values()).hasSize(31);
+		assertThat(values()).hasSize(32);
 
 		assertThat(values()).containsExactlyInAnyOrder(
 			CONTROL_OFFICIAL,
@@ -74,6 +75,7 @@ class StakeholderRoleTest {
 			DEVELOPER,
 			SECTION_HEAD,
 			ALTERNATE,
-			SECRETARY);
+			SECRETARY,
+			REPORTER);
 	}
 }

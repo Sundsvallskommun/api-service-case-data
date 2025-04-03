@@ -62,5 +62,7 @@ public enum StakeholderRole {
 	// Suppleant
 	ALTERNATE,
 	// Sekreterare
-	SECRETARY
+	SECRETARY,
+	// Anmälare
+	REPORTER
 }
