@@ -35,6 +35,7 @@ public enum AttachmentCategory {
 
 	SITUATION_PLAN, // Situationsplan
 	EMAIL, // E-post
-	LETTER // Brev
+	LETTER, // Brev
+	MEDICAL_OPINION// Medicinskt utlåtande
 
 }
