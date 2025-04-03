@@ -14,7 +14,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.TimeZoneStorage;
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+import se.sundsvall.casedata.api.model.validation.ValidCaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 @Data
@@ -28,7 +28,8 @@ public class PatchErrand {
 	private String externalCaseId;
 
 	@Schema(description = "The type of case", example = "NYBYGGNAD_ANSOKAN_OM_BYGGLOV")
-	private CaseType caseType;
+	@ValidCaseType(nullable = true)
+	private String caseType;
 
 	@Schema(description = "The priority of the case", example = "MEDIUM")
 	private Priority priority;

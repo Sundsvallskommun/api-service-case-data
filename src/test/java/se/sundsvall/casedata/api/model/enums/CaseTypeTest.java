@@ -36,6 +36,20 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_STOR
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_TERMINATION_OF_LEASE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_TREES_FORESTS;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_UNAUTHORIZED_RESIDENCE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_BUS_CARD;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_CHANGE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_NATIONAL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_NATIONAL_RENEWAL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_NOTIFICATION;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_NOTIFICATION_BUS_CARD;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_NOTIFICATION_CHANGE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_NOTIFICATION_NATIONAL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_NOTIFICATION_NATIONAL_RENEWAL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_NOTIFICATION_RENEWAL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_NOTIFICATION_RIAK;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_RENEWAL;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT_RIAK;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 
@@ -83,7 +97,21 @@ class CaseTypeTest {
 			MEX_SMALL_BOAT_HARBOR_DOCK_PORT,
 			MEX_SELL_LAND_TO_THE_MUNICIPALITY_PRIVATE,
 			MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS,
-			APPEAL);
+			APPEAL,
+			PARATRANSIT,
+			PARATRANSIT_RENEWAL,
+			PARATRANSIT_CHANGE,
+			PARATRANSIT_NATIONAL,
+			PARATRANSIT_NATIONAL_RENEWAL,
+			PARATRANSIT_RIAK,
+			PARATRANSIT_BUS_CARD,
+			PARATRANSIT_NOTIFICATION,
+			PARATRANSIT_NOTIFICATION_CHANGE,
+			PARATRANSIT_NOTIFICATION_RENEWAL,
+			PARATRANSIT_NOTIFICATION_NATIONAL,
+			PARATRANSIT_NOTIFICATION_NATIONAL_RENEWAL,
+			PARATRANSIT_NOTIFICATION_RIAK,
+			PARATRANSIT_NOTIFICATION_BUS_CARD);
 	}
 
 	@Test
@@ -91,6 +119,21 @@ class CaseTypeTest {
 		assertThat(PARKING_PERMIT).hasToString("PARKING_PERMIT");
 		assertThat(PARKING_PERMIT_RENEWAL).hasToString("PARKING_PERMIT_RENEWAL");
 		assertThat(LOST_PARKING_PERMIT).hasToString("LOST_PARKING_PERMIT");
+		assertThat(APPEAL).hasToString("APPEAL");
+		assertThat(PARATRANSIT).hasToString("PARATRANSIT");
+		assertThat(PARATRANSIT_RENEWAL).hasToString("PARATRANSIT_RENEWAL");
+		assertThat(PARATRANSIT_CHANGE).hasToString("PARATRANSIT_CHANGE");
+		assertThat(PARATRANSIT_NATIONAL).hasToString("PARATRANSIT_NATIONAL");
+		assertThat(PARATRANSIT_NATIONAL_RENEWAL).hasToString("PARATRANSIT_NATIONAL_RENEWAL");
+		assertThat(PARATRANSIT_RIAK).hasToString("PARATRANSIT_RIAK");
+		assertThat(PARATRANSIT_BUS_CARD).hasToString("PARATRANSIT_BUS_CARD");
+		assertThat(PARATRANSIT_NOTIFICATION).hasToString("PARATRANSIT_NOTIFICATION");
+		assertThat(PARATRANSIT_NOTIFICATION_CHANGE).hasToString("PARATRANSIT_NOTIFICATION_CHANGE");
+		assertThat(PARATRANSIT_NOTIFICATION_RENEWAL).hasToString("PARATRANSIT_NOTIFICATION_RENEWAL");
+		assertThat(PARATRANSIT_NOTIFICATION_NATIONAL).hasToString("PARATRANSIT_NOTIFICATION_NATIONAL");
+		assertThat(PARATRANSIT_NOTIFICATION_NATIONAL_RENEWAL).hasToString("PARATRANSIT_NOTIFICATION_NATIONAL_RENEWAL");
+		assertThat(PARATRANSIT_NOTIFICATION_RIAK).hasToString("PARATRANSIT_NOTIFICATION_RIAK");
+		assertThat(PARATRANSIT_NOTIFICATION_BUS_CARD).hasToString("PARATRANSIT_NOTIFICATION_BUS_CARD");
 	}
 
 	@Test
@@ -141,7 +184,21 @@ class CaseTypeTest {
 			PARKING_PERMIT,
 			PARKING_PERMIT_RENEWAL,
 			LOST_PARKING_PERMIT,
-			APPEAL);
+			APPEAL,
+			PARATRANSIT,
+			PARATRANSIT_RENEWAL,
+			PARATRANSIT_CHANGE,
+			PARATRANSIT_NATIONAL,
+			PARATRANSIT_NATIONAL_RENEWAL,
+			PARATRANSIT_RIAK,
+			PARATRANSIT_BUS_CARD,
+			PARATRANSIT_NOTIFICATION,
+			PARATRANSIT_NOTIFICATION_CHANGE,
+			PARATRANSIT_NOTIFICATION_RENEWAL,
+			PARATRANSIT_NOTIFICATION_NATIONAL,
+			PARATRANSIT_NOTIFICATION_NATIONAL_RENEWAL,
+			PARATRANSIT_NOTIFICATION_RIAK,
+			PARATRANSIT_NOTIFICATION_BUS_CARD);
 	}
 
 	@Test

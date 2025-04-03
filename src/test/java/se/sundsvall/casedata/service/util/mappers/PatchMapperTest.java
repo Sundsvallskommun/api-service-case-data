@@ -42,7 +42,7 @@ class PatchMapperTest {
 		final var patchedErrand = patchErrand(errand, patch);
 
 		assertThat(patchedErrand).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "notifications").satisfies(e -> {
-			assertThat(e.getCaseType()).isEqualTo(patch.getCaseType().name());
+			assertThat(e.getCaseType()).isEqualTo(patch.getCaseType());
 			assertThat(e.getDescription()).isEqualTo(patch.getDescription());
 			assertThat(e.getExternalCaseId()).isEqualTo(patch.getExternalCaseId());
 			assertThat(e.getPriority()).isEqualTo(patch.getPriority());

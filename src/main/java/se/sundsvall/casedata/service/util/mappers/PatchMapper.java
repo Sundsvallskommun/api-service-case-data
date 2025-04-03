@@ -34,7 +34,7 @@ public final class PatchMapper {
 			errand.getExtraParameters().addAll(toErrandParameterEntityList(extraParameters, errand));
 		});
 
-		ofNullable(patch.getCaseType()).ifPresent(caseType -> errand.setCaseType(caseType.name()));
+		ofNullable(patch.getCaseType()).ifPresent(errand::setCaseType);
 		ofNullable(patch.getExternalCaseId()).ifPresent(errand::setExternalCaseId);
 		ofNullable(patch.getPriority()).ifPresent(errand::setPriority);
 		ofNullable(patch.getDescription()).ifPresent(errand::setDescription);

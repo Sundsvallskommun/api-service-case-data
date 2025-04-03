@@ -321,7 +321,7 @@ public final class TestUtil {
 	public static PatchErrand createPatchErrand() {
 		return PatchErrand.builder()
 			.withExternalCaseId("externalCaseId")
-			.withCaseType(MEX_BUY_LAND_FROM_THE_MUNICIPALITY)
+			.withCaseType(MEX_BUY_LAND_FROM_THE_MUNICIPALITY.name())
 			.withPriority(HIGH)
 			.withDescription("description")
 			.withCaseTitleAddition("caseTitleAddition")
