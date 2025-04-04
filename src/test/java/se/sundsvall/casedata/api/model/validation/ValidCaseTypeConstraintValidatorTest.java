@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.api.model.validation.impl.ValidCaseTypeConstraintValidator;
 
@@ -27,13 +28,13 @@ class ValidCaseTypeConstraintValidatorTest {
 
 	@ParameterizedTest
 	@EnumSource(CaseType.class)
-	void isValid_withValidCaseType(final CaseType type) {
+	void isValidWithValidCaseType(final CaseType type) {
 		final var validCaseType = type.name();
 		assertThat(validator.isValid(validCaseType, context)).isTrue();
 	}
 
 	@Test
-	void isValid_withInvalidCaseType() {
+	void isValidWithInvalidCaseType() {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
 
@@ -41,16 +42,19 @@ class ValidCaseTypeConstraintValidatorTest {
 		assertThat(validator.isValid(invalidCaseType, context)).isFalse();
 	}
 
-	@Test
-	void isValid_withNullCaseType() {
+	@ParameterizedTest
+	@ValueSource(booleans = {
+		true, false
+	})
+	void isValidNullable(final Boolean nullable) {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
-
-		assertThat(validator.isValid(null, context)).isFalse();
+		validator.setNullable(nullable);
+		assertThat(validator.isValid(null, context)).isEqualTo(nullable);
 	}
 
 	@Test
-	void isValid_withEmptyCaseType() {
+	void isValidWthEmptyCaseType() {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
 

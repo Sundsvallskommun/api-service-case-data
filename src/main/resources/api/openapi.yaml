@@ -1,13 +1,13 @@
 openapi: 3.0.1
 info:
   title: api-service-case-data
-  contact: {}
+  contact: { }
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
   version: "11.1"
 servers:
-  - url: http://localhost:62836
+  - url: http://localhost:51921
     description: Generated server url
 tags:
   - name: Notes
@@ -3642,12 +3642,12 @@ components:
           type: object
           additionalProperties:
             type: object
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
     StatusType:
       type: object
       properties:
@@ -3777,12 +3777,12 @@ components:
           type: object
           additionalProperties:
             type: object
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
         suppressed:
           type: array
           items:
@@ -4740,45 +4740,7 @@ components:
         caseType:
           type: string
           description: The type of case
-          example: PARKING_PERMIT
-          enum:
-            - PARKING_PERMIT
-            - PARKING_PERMIT_RENEWAL
-            - LOST_PARKING_PERMIT
-            - MEX_LEASE_REQUEST
-            - MEX_BUY_LAND_FROM_THE_MUNICIPALITY
-            - MEX_SELL_LAND_TO_THE_MUNICIPALITY
-            - MEX_SQUARE_PLACE
-            - MEX_BUY_SMALL_HOUSE_PLOT
-            - MEX_APPLICATION_FOR_ROAD_ALLOWANCE
-            - MEX_UNAUTHORIZED_RESIDENCE
-            - MEX_LAND_RIGHT
-            - MEX_EARLY_DIALOG_PLAN_NOTIFICATION
-            - MEX_PROTECTIVE_HUNTING
-            - MEX_LAND_INSTRUCTION
-            - MEX_OTHER
-            - MEX_LAND_SURVEYING_OFFICE
-            - MEX_REFERRAL_BUILDING_PERMIT_EARLY_DIALOGUE_PLANNING_NOTICE
-            - MEX_INVOICE
-            - MEX_REQUEST_FOR_PUBLIC_DOCUMENT
-            - MEX_TERMINATION_OF_LEASE
-            - MEX_HUNTING_LEASE
-            - MEX_FORWARDED_FROM_CONTACTSUNDSVALL
-            - MEX_BUILDING_PERMIT
-            - MEX_STORMWATER
-            - MEX_INVASIVE_SPECIES
-            - MEX_LAND_USE_AGREEMENT_VALUATION_PROTOCOL
-            - MEX_LITTERING
-            - MEX_REFERRAL_CONSULTATION
-            - MEX_PUBLIC_SPACE_LEASE
-            - MEX_EASEMENT
-            - MEX_TREES_FORESTS
-            - MEX_ROAD_ASSOCIATION
-            - MEX_RETURNED_TO_CONTACT_SUNDSVALL
-            - MEX_SMALL_BOAT_HARBOR_DOCK_PORT
-            - MEX_SELL_LAND_TO_THE_MUNICIPALITY_PRIVATE
-            - MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS
-            - APPEAL
+          example: NYBYGGNAD_ANSOKAN_OM_BYGGLOV
         priority:
           type: string
           description: The priority of the case
@@ -4914,6 +4876,10 @@ components:
         totalElements:
           type: integer
           format: int64
+        first:
+          type: boolean
+        last:
+          type: boolean
         size:
           type: integer
           format: int32
@@ -4926,15 +4892,11 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         numberOfElements:
           type: integer
           format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageableObject:
@@ -4945,14 +4907,14 @@ components:
           format: int64
         sort:
           $ref: "#/components/schemas/SortObject"
+        paged:
+          type: boolean
         pageNumber:
           type: integer
           format: int32
         pageSize:
           type: integer
           format: int32
-        paged:
-          type: boolean
         unpaged:
           type: boolean
     SortObject:
@@ -5170,4 +5132,4 @@ components:
           type: boolean
           description: Is message internal
           example: true
-  securitySchemes: {}
+  securitySchemes: { }

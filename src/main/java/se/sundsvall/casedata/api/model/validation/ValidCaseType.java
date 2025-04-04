@@ -14,8 +14,7 @@ import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.api.model.validation.impl.ValidCaseTypeConstraintValidator;
 
 /**
- * The annotated element must be a valid {@link CaseType}.
- * Not allowed to be null or empty.
+ * The annotated element must be a valid {@link CaseType}. Not allowed to be null or empty.
  */
 @Documented
 @Target({
@@ -26,6 +25,8 @@ import se.sundsvall.casedata.api.model.validation.impl.ValidCaseTypeConstraintVa
 public @interface ValidCaseType {
 
 	String message() default "Invalid case type";
+
+	boolean nullable() default false;
 
 	Class<?>[] groups() default {};
 

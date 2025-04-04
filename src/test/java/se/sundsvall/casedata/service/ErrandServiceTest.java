@@ -192,7 +192,7 @@ class ErrandServiceTest {
 
 		// Assert
 		assertThat(errand).satisfies(e -> {
-			assertThat(e.getCaseType()).isEqualTo(patch.getCaseType().name());
+			assertThat(e.getCaseType()).isEqualTo(patch.getCaseType());
 			assertThat(e.getExternalCaseId()).isEqualTo(patch.getExternalCaseId());
 			assertThat(e.getPriority()).isEqualTo(patch.getPriority());
 			assertThat(e.getDescription()).isEqualTo(patch.getDescription());

@@ -44,7 +44,7 @@ class PatchErrandTest {
 	void builderMethods() {
 		// Arrange
 		final var externalCaseId = UUID.randomUUID().toString();
-		final var caseType = CaseType.PARKING_PERMIT;
+		final var caseType = CaseType.PARKING_PERMIT.name();
 		final var priority = Priority.HIGH;
 		final var description = "abc";
 		final var caseTitleAddition = "abc";
