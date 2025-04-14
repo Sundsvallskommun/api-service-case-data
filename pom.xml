@@ -17,7 +17,7 @@
 		<generated-sources-path>${project.build.directory}/generated-sources</generated-sources-path>
 		<generated-sources-java-path>src/main/java</generated-sources-java-path>
 		<javers.version>7.8.0</javers.version>
-		<spring-filter.version>3.1.9</spring-filter.version>
+		<spring-filter.version>3.2.0</spring-filter.version>
 	</properties>
 	<dependencies>
 		<!-- Dept44-->
