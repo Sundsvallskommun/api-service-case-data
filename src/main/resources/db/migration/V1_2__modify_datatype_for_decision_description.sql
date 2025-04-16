@@ -1,1 +1,0 @@
-ALTER TABLE decision MODIFY description longtext;

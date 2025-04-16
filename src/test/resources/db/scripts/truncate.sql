@@ -7,7 +7,6 @@ truncate table decision_extra_parameters;
 truncate table decision_laws;
 truncate table errand;
 truncate table errand_extra_parameters;
-truncate table errand_message_ids;
 truncate table errand_statuses;
 truncate table errand_labels;
 truncate table facility;

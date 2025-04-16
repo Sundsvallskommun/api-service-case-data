@@ -1,1 +1,0 @@
-ALTER TABLE IF EXISTS errand MODIFY COLUMN description longtext;
