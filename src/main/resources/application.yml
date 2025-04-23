@@ -10,7 +10,6 @@ spring:
     url: ${config.datasource.url}
     username: ${config.datasource.username}
   flyway:
-    baseline-on-migrate: true
     enabled: true
   jpa:
     hibernate:
