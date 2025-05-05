@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.apptest;
 
 import static java.text.MessageFormat.format;
-import org.junit.jupiter.api.Test;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.DELETE;
@@ -13,17 +12,17 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
-import se.sundsvall.casedata.Application;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
-import se.sundsvall.casedata.service.util.Constants;
-import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -37,6 +36,7 @@ class AttachmentIT extends AbstractAppTest {
 	private static final Long ERRAND_ID = 1L;
 	private static final String ATTACHMENTS_PATH = "/{0}/{1}/errands/{2}/attachments";
 	private static final String ATTACHMENT_BY_ID_PATH = "/{0}/{1}/errands/{2}/attachments/{3}";
+	private static final String AD_USER_HEADER_KEY = "sentbyuser";
 
 	@Test
 	void test01_getAttachment() {
@@ -65,7 +65,7 @@ class AttachmentIT extends AbstractAppTest {
 			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withRequest(REQUEST_FILE)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(Constants.AD_USER_HEADER_KEY, "someUser123")
+			.withHeader(AD_USER_HEADER_KEY, "someUser123")
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequest();
 
@@ -102,7 +102,7 @@ class AttachmentIT extends AbstractAppTest {
 			.withHttpMethod(DELETE)
 			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(Constants.AD_USER_HEADER_KEY, "user123")
+			.withHeader(AD_USER_HEADER_KEY, "user123")
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequest();
 

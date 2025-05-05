@@ -12,12 +12,10 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
-import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
@@ -30,8 +28,8 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 class StakeholderIT extends AbstractAppTest {
 
 	private static final Long ERRAND_ID = 1L;
-
 	private static final String PATH = "/{0}/{1}/errands/{2}/stakeholders";
+	private static final String AD_USER_HEADER_KEY = "sentbyuser";
 
 	@Test
 	void test01_getStakeholderById() {

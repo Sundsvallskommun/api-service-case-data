@@ -23,7 +23,6 @@ public final class Constants {
 	public static final String UNKNOWN = "UNKNOWN";
 	public static final String PERMIT_NUMBER_EXTRA_PARAMETER_KEY = "artefact.permit.number";
 	public static final String PERMIT_STATUS_EXTRA_PARAMETER_KEY = "artefact.permit.status";
-	public static final String AD_USER_HEADER_KEY = "sentbyuser";
 	public static final String X_JWT_ASSERTION_HEADER_KEY = "x-jwt-assertion";
 	public static final String CAMUNDA_USER = "WSO2_Camunda";
 
