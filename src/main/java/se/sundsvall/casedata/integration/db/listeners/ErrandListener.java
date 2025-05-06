@@ -3,6 +3,7 @@ package se.sundsvall.casedata.integration.db.listeners;
 import static java.time.OffsetDateTime.now;
 import static java.time.ZoneId.systemDefault;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
 
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PrePersist;
@@ -27,7 +28,6 @@ public class ErrandListener {
 	private static final String DELIMITER = "-";
 
 	private final IncomingRequestFilter incomingRequestFilter;
-
 	private final ErrandRepository errandRepository;
 
 	public ErrandListener(final IncomingRequestFilter incomingRequestFilter, @Lazy final ErrandRepository errandRepository) {
@@ -43,16 +43,15 @@ public class ErrandListener {
 	@PostPersist
 	private void postPersist(final ErrandEntity errand) {
 		errand.setCreatedByClient(incomingRequestFilter.getSubscriber());
-		errand.setCreatedBy(incomingRequestFilter.getAdUser());
-		LOG.info("Created errand with errandNumber: {}. Subscriber: {}. AD-user: {}", errand.getErrandNumber(), incomingRequestFilter.getSubscriber(),
-			incomingRequestFilter.getAdUser());
+		errand.setCreatedBy(getAdUser());
+		LOG.info("Created errand with errandNumber: {}. Subscriber: {}. AD-user: {}", errand.getErrandNumber(), incomingRequestFilter.getSubscriber(), getAdUser());
 	}
 
 	@PreUpdate
 	private void preUpdate(final ErrandEntity errand) {
 		updateErrandFields(errand);
 		LOG.info("Updated errand with updated: {}. errandNumber: {}. Subscriber: {}. AD-user: {}", errand.getUpdated(), errand.getErrandNumber(),
-			incomingRequestFilter.getSubscriber(), incomingRequestFilter.getAdUser());
+			incomingRequestFilter.getSubscriber(), getAdUser());
 	}
 
 	void updateErrandFields(final ErrandEntity errand) {
@@ -60,7 +59,7 @@ public class ErrandListener {
 			// Behöver sätta datum för att errand-objektet ska uppdateras med ny version o.s.v.
 			errand.setUpdated(now(systemDefault()));
 			errand.setUpdatedByClient(incomingRequestFilter.getSubscriber());
-			errand.setUpdatedBy(incomingRequestFilter.getAdUser());
+			errand.setUpdatedBy(getAdUser());
 		}
 	}
 
@@ -90,5 +89,4 @@ public class ErrandListener {
 	private int extractYearFromErrandNumber(final ErrandEntity errand) {
 		return Integer.parseInt(errand.getErrandNumber().substring(errand.getErrandNumber().lastIndexOf(DELIMITER) - 4, errand.getErrandNumber().lastIndexOf(DELIMITER)));
 	}
-
 }

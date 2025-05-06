@@ -33,5 +33,4 @@ public class BlobBuilder {
 		final var session = entityManager.unwrap(Session.class);
 		return session.getLobHelper().createBlob(content);
 	}
-
 }
