@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "11.1"
 servers:
-  - url: http://localhost:51921
+  - url: http://localhost:56527
     description: Generated server url
 tags:
   - name: Notes
@@ -3642,12 +3642,12 @@ components:
           type: object
           additionalProperties:
             type: object
+        status:
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
     StatusType:
       type: object
       properties:
@@ -3777,12 +3777,12 @@ components:
           type: object
           additionalProperties:
             type: object
+        status:
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
         suppressed:
           type: array
           items:
@@ -4293,11 +4293,10 @@ components:
           readOnly: true
           example: 2023-10-02T12:00:00Z
     ExtraParameter:
-      required:
-        - key
       type: object
       properties:
         key:
+          minLength: 1
           type: string
           description: Parameter key
         displayName:
@@ -4391,10 +4390,6 @@ components:
         - INTERNAL
         - PUBLIC
     Notification:
-      required:
-        - description
-        - ownerId
-        - type
       type: object
       properties:
         id:
@@ -4430,6 +4425,7 @@ components:
           readOnly: true
           example: Test Testorsson
         ownerId:
+          minLength: 1
           type: string
           description: Owner id of the notification
           example: AD01
@@ -4444,6 +4440,7 @@ components:
           readOnly: true
           example: Test Testorsson
         type:
+          minLength: 1
           type: string
           description: Type of the notification
           example: CREATE
@@ -4453,6 +4450,7 @@ components:
           readOnly: true
           example: PHASE_CHANGE
         description:
+          minLength: 1
           type: string
           description: Description of the notification
           example: Some description of the notification
@@ -4584,10 +4582,12 @@ components:
       type: object
       properties:
         content:
+          minLength: 1
           type: string
           description: The attachment (file) content as a BASE64-encoded string
           example: aGVsbG8gd29ybGQK
         name:
+          minLength: 1
           type: string
           description: The attachment filename
           example: test.txt
