@@ -15,7 +15,6 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
-import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -37,6 +36,7 @@ class MessageIT extends AbstractAppTest {
 
 	private static final String MESSAGE_ID = "a8883fb9-60b4-4f38-9f48-642070ff49ee";
 	private static final String MESSAGE_ATTACHMENT_ID = "05b29c30-4512-46c0-9d82-d0f11cb04bae";
+	private static final String AD_USER_HEADER_KEY = "sentbyuser";
 	private static final Long ERRAND_ID = 1L;
 	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + ERRAND_ID + "/messages";
 

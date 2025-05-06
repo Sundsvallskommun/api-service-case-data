@@ -12,7 +12,6 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
-import static se.sundsvall.casedata.service.util.Constants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
 import org.junit.jupiter.api.Test;
@@ -29,6 +28,7 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 class NoteIT extends AbstractAppTest {
 
 	private static final String PATH = "/{0}/{1}/errands/{2}/notes";
+	private static final String AD_USER_HEADER_KEY = "sentbyuser";
 
 	@Test
 	void test01_getNoteById() {

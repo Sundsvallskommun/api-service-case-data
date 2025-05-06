@@ -1,35 +1,32 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
+import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
+
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
 import org.springframework.stereotype.Component;
-import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 
 @Component
 public class NoteListener {
 
-	private final IncomingRequestFilter incomingRequestFilter;
-
 	private final ErrandListener errandListener;
 
-	public NoteListener(final IncomingRequestFilter incomingRequestFilter, final ErrandListener errandListener) {
-		this.incomingRequestFilter = incomingRequestFilter;
+	public NoteListener(final ErrandListener errandListener) {
 		this.errandListener = errandListener;
 	}
 
 	@PrePersist
 	private void postPersist(final NoteEntity noteEntity) {
-		noteEntity.setCreatedBy(incomingRequestFilter.getAdUser());
+		noteEntity.setCreatedBy(getAdUser());
 		errandListener.updateErrandFields(noteEntity.getErrand());
 	}
 
 	@PreUpdate
 	@PreRemove
 	private void preUpdate(final NoteEntity noteEntity) {
-		noteEntity.setUpdatedBy(incomingRequestFilter.getAdUser());
+		noteEntity.setUpdatedBy(getAdUser());
 		errandListener.updateErrandFields(noteEntity.getErrand());
 	}
-
 }

@@ -27,10 +27,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.NotificationRepository;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
+import se.sundsvall.dept44.support.Identifier;
+import se.sundsvall.dept44.support.Identifier.Type;
 
 @ExtendWith(MockitoExtension.class)
 class NotificationServiceTest {
@@ -40,9 +41,6 @@ class NotificationServiceTest {
 
 	@Mock
 	private ErrandRepository errandRepositoryMock;
-
-	@Mock
-	private IncomingRequestFilter incomingRequestFilterMock;
 
 	@Mock
 	private NotificationRepository notificationRepositoryMock;
@@ -141,9 +139,9 @@ class NotificationServiceTest {
 		final var fullName = "Full Name";
 		final var personalPortalData = new PortalPersonData().fullname(fullName);
 
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)).thenReturn(Optional.of(notificationEntity.getErrand()));
-		when(incomingRequestFilterMock.getAdUser()).thenReturn("otherAD");
+		Identifier.set(Identifier.create().withType(Type.AD_ACCOUNT).withValue("otherAD"));
 
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)).thenReturn(Optional.of(notificationEntity.getErrand()));
 		when(notificationRepositoryMock.save(any())).thenReturn(createNotificationEntity(n -> n.setId(id)));
 		when(employeeServiceMock.getEmployeeByLoginName(any(), any())).thenReturn(personalPortalData);
 
@@ -170,11 +168,12 @@ class NotificationServiceTest {
 		final var createdByFullName = "createdByFullName";
 		final var ownerFullName = "ownerFullName";
 
+		Identifier.set(Identifier.create().withType(Type.AD_ACCOUNT).withValue("executingUserId"));
+
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)).thenReturn(Optional.of(notificationEntity.getErrand()));
 		when(notificationRepositoryMock.save(any())).thenReturn(createNotificationEntity(n -> n.setId(id)));
 		when(employeeServiceMock.getEmployeeByLoginName(municipalityId, notification.getOwnerId())).thenReturn(new PortalPersonData().loginName(notification.getOwnerId()).fullname(ownerFullName));
 		when(employeeServiceMock.getEmployeeByLoginName(municipalityId, executingUserId)).thenReturn(new PortalPersonData().loginName(executingUserId).fullname(createdByFullName));
-		when(incomingRequestFilterMock.getAdUser()).thenReturn("executingUserId");
 
 		// Act
 		final var result = notificationService.create(municipalityId, namespace, notification);
@@ -202,10 +201,11 @@ class NotificationServiceTest {
 		final var executingUserId = notification.getOwnerId();
 		final var fullName = "fullName";
 
+		Identifier.set(Identifier.create().withType(Type.AD_ACCOUNT).withValue(executingUserId));
+
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(notification.getErrandId(), municipalityId, namespace)).thenReturn(Optional.of(errandEntity));
 		when(notificationRepositoryMock.save(any())).thenReturn(createNotificationEntity(n -> n.setId(id)));
 		when(employeeServiceMock.getEmployeeByLoginName(municipalityId, executingUserId)).thenReturn(new PortalPersonData().loginName(executingUserId).fullname(fullName));
-		when(incomingRequestFilterMock.getAdUser()).thenReturn(executingUserId);
 
 		// Act
 		final var result = notificationService.create(municipalityId, namespace, notification);

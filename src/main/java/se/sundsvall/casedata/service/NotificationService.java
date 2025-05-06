@@ -7,6 +7,7 @@ import static org.springframework.util.StringUtils.hasText;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotificationEntity;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNotification;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.zalando.problem.Problem;
-import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchNotification;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -32,7 +32,6 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 @Transactional
 public class NotificationService {
 
-	private final IncomingRequestFilter incomingRequestFilter;
 	private final NotificationRepository notificationRepository;
 	private final ErrandRepository errandRepository;
 	private final EmployeeService employeeService;
@@ -50,12 +49,10 @@ public class NotificationService {
 
 	public NotificationService(
 		final NotificationRepository notificationRepository,
-		final IncomingRequestFilter incomingRequestFilter,
 		final ErrandRepository errandRepository,
 		final EmployeeService employeeService) {
 
 		this.notificationRepository = notificationRepository;
-		this.incomingRequestFilter = incomingRequestFilter;
 		this.errandRepository = errandRepository;
 		this.employeeService = employeeService;
 	}
@@ -135,7 +132,7 @@ public class NotificationService {
 
 	private void applyBusinessLogicForCreate(final String municipalityId, final NotificationEntity notificationEntity) {
 
-		final var executingUser = incomingRequestFilter.getAdUser();
+		final var executingUser = getAdUser();
 
 		// If notification is created by the user that owns the notification (ownnerId) it should be acknowledged from start.
 		if (equalsIgnoreCase(notificationEntity.getOwnerId(), executingUser)) {
