@@ -26,7 +26,6 @@ public final class Constants {
 	public static final String X_JWT_ASSERTION_HEADER_KEY = "x-jwt-assertion";
 	public static final String CAMUNDA_USER = "WSO2_Camunda";
 
-	public static final String NOTIFICATION_ERRAND_CREATED = "Ärende skapat";
 	public static final String NOTIFICATION_ERRAND_UPDATED = "Ärende uppdaterat";
 	public static final String NOTIFICATION_NOTE_CREATED = "Notering skapad";
 	public static final String NOTIFICATION_NOTE_UPDATED = "Notering uppdaterad";

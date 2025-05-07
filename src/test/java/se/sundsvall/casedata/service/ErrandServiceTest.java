@@ -101,14 +101,8 @@ class ErrandServiceTest {
 
 		// Assert
 		verify(processServiceMock).startProcess(inputErrand);
-		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(inputErrand));
 		verify(errandRepositoryMock, times(2)).save(any());
 		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
-
-		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende skapat");
-		assertThat(notificationCaptor.getValue().getType()).isEqualTo("CREATE");
-		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(inputErrand.getCreatedBy());
-		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(inputErrand.getId());
 	}
 
 	@Test

@@ -57,24 +57,7 @@
 			"updated": "${json-unit.any-string}"
 		}
 	],
-	"notifications": [
-		{
-			"id": "${json-unit.any-string}",
-			"municipalityId": "2281",
-			"namespace": "SBK_MEX",
-			"created": "${json-unit.any-string}",
-			"createdBy": "user123",
-			"createdByFullName": "Usersson User",
-			"type": "CREATE",
-			"subType": "ERRAND",
-			"description": "Ärende skapat",
-			"expires": "${json-unit.any-string}",
-			"acknowledged": false,
-			"globalAcknowledged": false,
-			"errandId": 3,
-			"errandNumber": "MEX-2025-000001"
-		}
-	],
+	"notifications": [],
 	"errandNumber": "${json-unit.regex}^MEX-\\d{4}-000001$",
 	"endDate": "2024-05-09",
 	"createdByClient": "UNKNOWN",

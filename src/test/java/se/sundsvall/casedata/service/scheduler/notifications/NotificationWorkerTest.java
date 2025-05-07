@@ -48,13 +48,13 @@ class NotificationWorkerTest {
 		final var entity4 = NotificationEntity.builder()
 			.withOwnerId("user123")
 			.withAcknowledged(false)
-			.withGlobalAcknowledged(true) // Will be deleted: NO
+			.withGlobalAcknowledged(true) // Will be deleted: YES
 			.build();
 
 		final var entity5 = NotificationEntity.builder()
 			.withOwnerId("user123")
 			.withAcknowledged(false)
-			.withGlobalAcknowledged(true) // Will be deleted: NO
+			.withGlobalAcknowledged(true) // Will be deleted: YES
 			.build();
 
 		when(notificationRepositoryMock.findByExpiresBefore(any())).thenReturn(List.of(entity1, entity2, entity3, entity4, entity5));
@@ -64,7 +64,7 @@ class NotificationWorkerTest {
 
 		// Assert
 		verify(notificationRepositoryMock).findByExpiresBefore(any());
-		verify(notificationRepositoryMock).deleteAllInBatch(List.of(entity1, entity2, entity3));
+		verify(notificationRepositoryMock).deleteAllInBatch(List.of(entity1, entity2, entity3, entity4, entity5));
 	}
 
 	@Test
