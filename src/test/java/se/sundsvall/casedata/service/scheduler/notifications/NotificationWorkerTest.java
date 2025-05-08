@@ -25,6 +25,6 @@ class NotificationWorkerTest {
 		notificationWorker.cleanUpNotifications();
 
 		// Assert
-		verify(notificationRepositoryMock).deleteAllByExpiresBefore(any());
+		verify(notificationRepositoryMock).deleteByExpiresBefore(any());
 	}
 }

@@ -19,6 +19,6 @@ public class NotificationWorker {
 	@Transactional
 	public void cleanUpNotifications() {
 
-		notificationRepository.deleteAllByExpiresBefore(now(systemDefault()));
+		notificationRepository.deleteByExpiresBefore(now(systemDefault()));
 	}
 }

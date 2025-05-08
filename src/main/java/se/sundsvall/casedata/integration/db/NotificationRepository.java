@@ -30,5 +30,5 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 		String municipalityId,
 		Long errandId);
 
-	void deleteAllByExpiresBefore(OffsetDateTime dateTime);
+	void deleteByExpiresBefore(OffsetDateTime dateTime);
 }
