@@ -19,9 +19,6 @@ public class NotificationWorker {
 	@Transactional
 	public void cleanUpNotifications() {
 
-		final var entitiesToDelete = notificationRepository.findByExpiresBefore(now(systemDefault())).stream()
-			.toList();
-
-		notificationRepository.deleteAllInBatch(entitiesToDelete);
+		notificationRepository.deleteAllByExpiresBefore(now(systemDefault()));
 	}
 }
