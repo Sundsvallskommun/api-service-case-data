@@ -6,11 +6,9 @@ import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.SYSTEM;
-import static se.sundsvall.casedata.service.NotificationService.EventType.CREATE;
 import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
 import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_CREATED;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
@@ -98,16 +96,6 @@ public class ErrandService {
 
 		// Will not start a process if it's not a parking permit or mex errand
 		startProcess(resultErrand);
-
-		// Create notification
-		notificationService.create(municipalityId, namespace, Notification.builder()
-			.withCreatedBy(errand.getCreatedBy())
-			.withDescription(NOTIFICATION_ERRAND_CREATED)
-			.withErrandId(resultErrand.getId())
-			.withType(CREATE.toString())
-			.withSubType(ERRAND.toString())
-			.withOwnerId(toOwnerId(resultErrand))
-			.build(), resultErrand);
 
 		return toErrand(resultErrand);
 	}

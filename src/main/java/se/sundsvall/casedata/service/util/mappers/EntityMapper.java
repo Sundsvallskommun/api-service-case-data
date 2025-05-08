@@ -43,7 +43,7 @@ import se.sundsvall.casedata.integration.db.model.enums.NotificationSubType;
 
 public final class EntityMapper {
 
-	private static final int DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS = 30;
+	private static final int DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS = 40;
 
 	private EntityMapper() {}
 

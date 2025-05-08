@@ -706,7 +706,7 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void toNotificationEntityWhenExpriresIsNullTest() {
+	void toNotificationEntityWhenExpiresIsNullTest() {
 		// Arrange
 		final var notification = createNotification(null);
 		final var errand = createErrandEntity();
@@ -725,7 +725,7 @@ class EntityMapperTest {
 			assertThat(entity.getCreatedBy()).isEqualTo(notification.getCreatedBy());
 			assertThat(entity.getCreatedByFullName()).isNull();
 			assertThat(entity.getDescription()).isEqualTo(notification.getDescription());
-			assertThat(entity.getExpires()).isCloseTo(now().plusDays(30), within(1, SECONDS)); // Should be 30 days from now
+			assertThat(entity.getExpires()).isCloseTo(now().plusDays(40), within(1, SECONDS)); // Should be 40 days from now
 			assertThat(entity.getErrand()).isEqualTo(errand);
 			assertThat(entity.getId()).isNull();
 			assertThat(entity.getModified()).isNull();
