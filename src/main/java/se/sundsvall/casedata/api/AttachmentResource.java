@@ -70,7 +70,7 @@ class AttachmentResource {
 	}
 
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get attachments by errand number.", responses = {
+	@Operation(description = "Get attachments by errand id.", responses = {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<List<Attachment>> getAttachmentsByErrandId(
