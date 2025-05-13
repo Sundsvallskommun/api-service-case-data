@@ -50,8 +50,8 @@ import se.sundsvall.casedata.integration.db.model.enums.Priority;
 		@Index(name = "idx_errand_namespace", columnList = "namespace")
 	},
 	uniqueConstraints = {
-		@UniqueConstraint(name = "UK_errand_errand_number", columnNames = {
-			"errand_number"
+		@UniqueConstraint(name = "UK_errand_errand_number_municipality_id", columnNames = {
+			"errand_number", "municipality_id"
 		})
 	})
 @EntityListeners(ErrandListener.class)

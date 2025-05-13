@@ -355,7 +355,7 @@
        on errand (namespace);
 
     alter table if exists errand 
-       add constraint UK_errand_errand_number unique (errand_number);
+       add constraint UK_errand_errand_number_municipality_id unique (errand_number, municipality_id);
 
     create index idx_facility_municipality_id 
        on facility (municipality_id);
