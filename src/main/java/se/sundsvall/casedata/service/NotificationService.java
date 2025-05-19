@@ -126,6 +126,7 @@ public class NotificationService {
 
 	private PortalPersonData getPortalPersonData(final String municipalityId, final String adAccountId) {
 		return Optional.ofNullable(adAccountId)
+			.filter(StringUtils::hasText)
 			.map(userId -> employeeService.getEmployeeByLoginName(municipalityId, userId))
 			.orElse(null);
 	}

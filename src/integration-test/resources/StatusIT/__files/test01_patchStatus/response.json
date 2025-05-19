@@ -36,7 +36,7 @@
 	],
 	"suspension": {},
 	"updated": "${json-unit.any-string}",
-	"updatedBy": "UNKNOWN",
+	"updatedBy": "",
 	"updatedByClient": "UNKNOWN",
 	"version": 2
 }
