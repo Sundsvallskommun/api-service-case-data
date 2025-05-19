@@ -13,6 +13,6 @@ public final class ServiceUtil {
 		return Optional.ofNullable(Identifier.get())
 			.filter(identifier -> AD_ACCOUNT.equals(identifier.getType()))
 			.map(Identifier::getValue)
-			.orElse("UNKNOWN");
+			.orElse("");
 	}
 }
