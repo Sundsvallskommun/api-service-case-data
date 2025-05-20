@@ -14,6 +14,7 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_HUNT
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_INVASIVE_SPECIES;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_INVOICE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_INSTRUCTION;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_RESERVATION;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_RIGHT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_SURVEYING_OFFICE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_USE_AGREEMENT_VALUATION_PROTOCOL;
@@ -34,6 +35,7 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_SMAL
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_SQUARE_PLACE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_STORMWATER;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_TERMINATION_OF_LEASE;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_TRAINING_SEMINAR;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_TREES_FORESTS;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_UNAUTHORIZED_RESIDENCE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARATRANSIT;
@@ -99,6 +101,8 @@ class CaseTypeTest {
 			MEX_SMALL_BOAT_HARBOR_DOCK_PORT,
 			MEX_SELL_LAND_TO_THE_MUNICIPALITY_PRIVATE,
 			MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS,
+			MEX_TRAINING_SEMINAR,
+			MEX_LAND_RESERVATION,
 			APPEAL,
 			PARATRANSIT,
 			PARATRANSIT_RENEWAL,
@@ -118,7 +122,7 @@ class CaseTypeTest {
 
 	@ParameterizedTest
 	@EnumSource(CaseType.class)
-	void enumToString(CaseType enumValue) {
+	void enumToString(final CaseType enumValue) {
 		assertThat(enumValue).hasToString(enumValue.name());
 	}
 
@@ -180,6 +184,8 @@ class CaseTypeTest {
 			MEX_RETURNED_TO_CONTACT_SUNDSVALL,
 			MEX_SMALL_BOAT_HARBOR_DOCK_PORT,
 			MEX_SELL_LAND_TO_THE_MUNICIPALITY_PRIVATE,
-			MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS);
+			MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS,
+			MEX_TRAINING_SEMINAR,
+			MEX_LAND_RESERVATION);
 	}
 }
