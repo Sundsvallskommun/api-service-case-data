@@ -10,6 +10,7 @@ import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createFacility;
+import static se.sundsvall.casedata.TestUtil.createPatchErrand;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.ErrandService;
+import se.sundsvall.casedata.service.ProcessService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -33,6 +36,9 @@ class ErrandResourceTest {
 
 	@MockitoBean
 	private ErrandService errandServiceMock;
+
+	@MockitoBean
+	private ProcessService processServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -52,6 +58,29 @@ class ErrandResourceTest {
 		// Assert
 		verify(errandServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@Test
+	void updateErrand() {
+		// Arrange
+		final var errandId = 123L;
+		final var patchErrand = createPatchErrand();
+		final var updatedErrand = new ErrandEntity();
+
+		when(errandServiceMock.update(errandId, MUNICIPALITY_ID, NAMESPACE, patchErrand)).thenReturn(updatedErrand);
+
+		// Act
+		webTestClient.patch()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId)))
+			.bodyValue(patchErrand)
+			.exchange()
+			.expectStatus().isNoContent();
+
+		// Assert
+		verify(errandServiceMock).update(errandId, MUNICIPALITY_ID, NAMESPACE, patchErrand);
+		verify(processServiceMock).updateProcess(updatedErrand);
+		verifyNoMoreInteractions(errandServiceMock, processServiceMock);
 	}
 
 	@ParameterizedTest

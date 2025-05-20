@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Errand;
@@ -100,11 +101,10 @@ public class ErrandService {
 		return toErrand(resultErrand);
 	}
 
-	public void update(final Long errandId, final String municipalityId, final String namespace, final PatchErrand patchErrand) {
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public ErrandEntity update(final Long errandId, final String municipalityId, final String namespace, final PatchErrand patchErrand) {
 		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace);
 		final var updatedErrand = errandRepository.save(PatchMapper.patchErrand(oldErrand, patchErrand));
-
-		processService.updateProcess(updatedErrand);
 
 		// Create notification
 		notificationService.create(municipalityId, namespace, Notification.builder()
@@ -115,6 +115,8 @@ public class ErrandService {
 			.withSubType(determineSubType(updatedErrand))
 			.withOwnerId(toOwnerId(updatedErrand))
 			.build(), updatedErrand);
+
+		return updatedErrand;
 	}
 
 	public void delete(final Long errandId, final String municipalityId, final String namespace) {

@@ -204,7 +204,6 @@ class ErrandServiceTest {
 
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(updatedErrand);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(updatedErrand));
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
@@ -285,7 +284,6 @@ class ErrandServiceTest {
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(entity);
-		verify(processServiceMock).updateProcess(entity);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(entity));
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");

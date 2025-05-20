@@ -333,7 +333,11 @@ public final class TestUtil {
 			.withExtraParameters(createExtraParametersList())
 			.withFacilities(new ArrayList<>(List.of(createFacility())))
 			.withSuspension(Suspension.builder().withSuspendedFrom(now()).withSuspendedTo(now().plusDays(5)).build())
-			.withRelatesTo(new ArrayList<>(List.of(new RelatedErrand())))
+			.withRelatesTo(new ArrayList<>(List.of(new RelatedErrand().builder()
+				.withErrandId(new Random().nextLong())
+				.withErrandNumber("ErrandNumber")
+				.withRelationReason("Relation reason")
+				.build())))
 			.withLabels(new ArrayList<>(List.of("label-xxx", "label-yyy")))
 			.build();
 	}
