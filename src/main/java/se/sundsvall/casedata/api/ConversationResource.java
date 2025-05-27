@@ -40,9 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
-import se.sundsvall.casedata.api.model.conversation.ConversationRequest;
 import se.sundsvall.casedata.api.model.conversation.Message;
-import se.sundsvall.casedata.api.model.conversation.MessageRequest;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 
@@ -65,7 +63,7 @@ class ConversationResource {
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "errandId", description = "Errand ID", example = "1") @PathVariable("errandId") final Long errandId,
-		@Valid @NotNull @RequestBody final ConversationRequest request) {
+		@Valid @NotNull @RequestBody final Conversation request) {
 
 		final var conversationId = 0; // TODO: call service layer
 
@@ -115,7 +113,7 @@ class ConversationResource {
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "errandId", description = "Errand ID", example = "1") @PathVariable("errandId") final Long errandId,
 		@Parameter(name = "conversationId", description = "Conversation ID", example = "1aefbbb8-de82-414b-b5d7-ba7c5bbe4506") @ValidUuid @PathVariable("conversationId") final String conversationId,
-		@Valid @NotNull @RequestBody final ConversationRequest request) {
+		@Valid @NotNull @RequestBody final Conversation request) {
 
 		// TODO: call service layer
 		return ok(Conversation.builder().build());
@@ -131,7 +129,7 @@ class ConversationResource {
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "errandId", description = "Errand ID", example = "1") @PathVariable("errandId") final Long errandId,
 		@Parameter(name = "conversationId", description = "Conversation ID", example = "1aefbbb8-de82-414b-b5d7-ba7c5bbe4506") @ValidUuid @PathVariable("conversationId") final String conversationId,
-		@RequestPart("message") @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Message to be posted") @Valid final MessageRequest messageRequest,
+		@RequestPart("message") @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Message to be posted") @Valid final Message messageRequest,
 		@RequestPart(value = "attachments", required = false) final List<MultipartFile> attachments) {
 
 		return noContent()

@@ -20,11 +20,11 @@ import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
-import se.sundsvall.casedata.api.model.conversation.ConversationRequest;
 import se.sundsvall.casedata.api.model.conversation.Identifier;
 import se.sundsvall.casedata.api.model.conversation.KeyValues;
-import se.sundsvall.casedata.api.model.conversation.MessageRequest;
+import se.sundsvall.casedata.api.model.conversation.Message;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -39,8 +39,8 @@ class ConversationResourceTest {
 	@Autowired
 	private WebTestClient webTestClient;
 
-	private static ConversationRequest conversationRequest() {
-		return ConversationRequest.builder()
+	private static Conversation conversation() {
+		return Conversation.builder()
 			.withExternalReferences(List.of(KeyValues.builder()
 				.withKey("theKey")
 				.withValues(List.of("externalReferenceValue"))
@@ -61,7 +61,7 @@ class ConversationResourceTest {
 	@Test
 	void createConversation() {
 
-		final var request = conversationRequest();
+		final var request = conversation();
 
 		webTestClient.post()
 			.uri(builder -> builder.path(BASE_URL)
@@ -132,7 +132,7 @@ class ConversationResourceTest {
 
 		// Arrange
 		final var conversationId = randomUUID().toString();
-		final var request = conversationRequest();
+		final var request = conversation();
 		// TODO: Mock service.
 
 		// Act
@@ -159,7 +159,7 @@ class ConversationResourceTest {
 	void createMessage() {
 
 		// Arrange
-		final var messageRequest = MessageRequest.builder()
+		final var messageRequest = Message.builder()
 			.withContent("content")
 			.build();
 

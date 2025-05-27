@@ -20,9 +20,9 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import org.zalando.problem.violations.Violation;
 import se.sundsvall.casedata.Application;
-import se.sundsvall.casedata.api.model.conversation.ConversationRequest;
+import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.ConversationType;
-import se.sundsvall.casedata.api.model.conversation.MessageRequest;
+import se.sundsvall.casedata.api.model.conversation.Message;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -55,7 +55,7 @@ class ConversationResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getDetail()).isEqualTo(
-			"Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.ConversationResource.createConversation(java.lang.String,java.lang.String,java.lang.Long,se.sundsvall.casedata.api.model.conversation.ConversationRequest)");
+			"Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.ConversationResource.createConversation(java.lang.String,java.lang.String,java.lang.Long,se.sundsvall.casedata.api.model.conversation.Conversation)");
 		// Verification
 		// TODO: Add verification on service (conversationService??)
 		// verifyNoInteractions(serviceMock);
@@ -65,7 +65,7 @@ class ConversationResourceFailureTest {
 	void createConversationWithNoType() {
 
 		// Arrange
-		final var request = ConversationRequest.builder()
+		final var request = Conversation.builder()
 			.withType(null)
 			.withTopic("The topic")
 			.build();
@@ -97,7 +97,7 @@ class ConversationResourceFailureTest {
 	void createConversationWithBlankTopic() {
 
 		// Arrange
-		final var request = ConversationRequest.builder()
+		final var request = Conversation.builder()
 			.withType(ConversationType.EXTERNAL)
 			.withTopic(" ")
 			.build();
@@ -205,7 +205,7 @@ class ConversationResourceFailureTest {
 	void updateConversationWithInvalidConversationId() {
 
 		// Arrange
-		final var request = ConversationRequest.builder()
+		final var request = Conversation.builder()
 			.withType(ConversationType.INTERNAL)
 			.withTopic("The topic")
 			.build();
@@ -238,7 +238,7 @@ class ConversationResourceFailureTest {
 	void updateConversationWithInvalidBody() {
 
 		// Arrange
-		final var request = ConversationRequest.builder().build();
+		final var request = Conversation.builder().build();
 
 		// Call
 		final var response = webTestClient.patch()
@@ -284,7 +284,7 @@ class ConversationResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getDetail()).isEqualTo(
-			"Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.casedata.api.model.conversation.Conversation> se.sundsvall.casedata.api.ConversationResource.updateConversation(java.lang.String,java.lang.String,java.lang.Long,java.lang.String,se.sundsvall.casedata.api.model.conversation.ConversationRequest)");
+			"Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.casedata.api.model.conversation.Conversation> se.sundsvall.casedata.api.ConversationResource.updateConversation(java.lang.String,java.lang.String,java.lang.Long,java.lang.String,se.sundsvall.casedata.api.model.conversation.Conversation)");
 		// Verification
 		// TODO: Add verification on service (conversationService??)
 		// verifyNoInteractions(serviceMock);
@@ -319,7 +319,7 @@ class ConversationResourceFailureTest {
 	void createMessageInvalidMessageAttributes() {
 
 		// Arrange
-		final var messageRequest = MessageRequest.builder()
+		final var messageRequest = Message.builder()
 			.withContent(" ")
 			.withInReplyToMessageId("invalid")
 			.build();

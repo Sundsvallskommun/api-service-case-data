@@ -3,6 +3,8 @@ package se.sundsvall.casedata.api.model.conversation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,12 +19,14 @@ import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 @Schema(description = "Conversation model")
 public class Conversation {
 
-	@Schema(description = "Conversation ID", example = "1aefbbb8-de82-414b-b5d7-ba7c5bbe4506")
+	@Schema(description = "Conversation ID", example = "1aefbbb8-de82-414b-b5d7-ba7c5bbe4506", accessMode = Schema.AccessMode.READ_ONLY)
 	private String id;
 
+	@NotBlank
 	@Schema(description = "The message-exchange topic", example = "The conversation topic")
 	private String topic;
 
+	@NotNull
 	@Schema(description = "The conversation type", example = "INTERNAL")
 	private ConversationType type;
 
