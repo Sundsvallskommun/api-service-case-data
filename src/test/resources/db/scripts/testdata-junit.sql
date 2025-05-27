@@ -102,3 +102,18 @@ INSERT INTO facility (id, created, updated, version, address_category, apartment
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 0, NULL, NULL, NULL, NULL, NULL,
         NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'SUNDSVALL 666:1', NULL, NULL, NULL, 1, 1, NULL,
         '2281', 'MY_NAMESPACE');
+
+-------------------------------------
+-- Conversation
+-------------------------------------
+
+INSERT INTO conversation(id, message_exchange_id, errand_id, namespace, municipality_id, topic, type, latest_synced_sequence_number)
+VALUES ('1', 'message_exchange_id-1', 'errand_id-1', 'namespace-1', '2281', 'topic-1', 'type-1', 1),
+       ('2', 'message_exchange_id-2', 'errand_id-1', 'namespace-1', '2281', 'topic-2', 'type-2', 2),
+       ('3', 'message_exchange_id-3', 'errand_id-3', 'namespace-1', '2281', 'topic-3', 'type-3', 4);
+
+INSERT INTO conversation_relation_id(conversation_id, relation_id)
+VALUES ('1', 'relation_id-1-1'),
+       ('1', 'relation_id-1-2'),
+       ('2', 'relation_id-2-1'),
+       ('2', 'relation_id-2-2');
