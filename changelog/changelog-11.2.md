@@ -2,7 +2,7 @@
 
 ## API-endpoints
 
-### Messages:
+### Conversations:
 
 #### New endpoints:
 
