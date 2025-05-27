@@ -71,10 +71,11 @@ class ConversationRepositoryTest {
 	void findByMunicipalityIdAndNamespaceAndErrandId() {
 		var conversations = repository.findByMunicipalityIdAndNamespaceAndErrandId("2281", "namespace-1", "errand_id-1");
 
-		assertThat(conversations).hasSize(2);
-		assertThat(conversations).extracting(ConversationEntity::getId, ConversationEntity::getMunicipalityId, ConversationEntity::getNamespace, ConversationEntity::getErrandId).containsExactly(
-			tuple("1", "2281", "namespace-1", "errand_id-1"),
-			tuple("2", "2281", "namespace-1", "errand_id-1"));
+		assertThat(conversations)
+			.hasSize(2)
+			.extracting(ConversationEntity::getId, ConversationEntity::getMunicipalityId, ConversationEntity::getNamespace, ConversationEntity::getErrandId).containsExactly(
+				tuple("1", "2281", "namespace-1", "errand_id-1"),
+				tuple("2", "2281", "namespace-1", "errand_id-1"));
 	}
 
 	@Test
