@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "11.2"
 servers:
-  - url: http://localhost:58371
+  - url: http://localhost:49656
     description: Generated server url
 tags:
   - name: Notes
@@ -22,14 +22,14 @@ tags:
     description: History operations
   - name: Decisions
     description: Decision operations
+  - name: Conversations
+    description: Conversation operations
   - name: Stakeholders
     description: Stakeholder operations
   - name: Errands
     description: Errand operations
   - name: Attachments
     description: Attachment operations
-  - name: Messages
-    description: Conversation operations
   - name: Facilities
     description: Errand facilities operations
 paths:
@@ -1661,7 +1661,7 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/communication/conversations:
     get:
       tags:
-        - Messages
+        - Conversations
       summary: Get conversations
       description: Get existing conversations
       operationId: getConversations
@@ -1720,7 +1720,7 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Messages
+        - Conversations
       summary: Create conversation
       description: Create new conversation
       operationId: createConversation
@@ -1785,7 +1785,7 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/communication/conversations/{conversationId}/messages:
     get:
       tags:
-        - Messages
+        - Conversations
       summary: Get message list
       description: Get message list
       operationId: getMessages
@@ -1876,7 +1876,7 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Messages
+        - Conversations
       summary: Create new message
       description: Create new message
       operationId: createMessage_1
@@ -2984,7 +2984,7 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/communication/conversations/{conversationId}:
     get:
       tags:
-        - Messages
+        - Conversations
       summary: Get conversation
       description: Get existing conversation
       operationId: getConversation
@@ -3048,7 +3048,7 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Messages
+        - Conversations
       summary: Update conversation
       description: Update existing conversation
       operationId: updateConversation
@@ -4080,11 +4080,11 @@ components:
     StatusType:
       type: object
       properties:
-        reasonPhrase:
-          type: string
         statusCode:
           type: integer
           format: int32
+        reasonPhrase:
+          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -5424,21 +5424,21 @@ components:
     PageErrand:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         first:
           type: boolean
         last:
           type: boolean
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         numberOfElements:
           type: integer
           format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         size:
           type: integer
           format: int32

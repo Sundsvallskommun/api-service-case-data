@@ -47,7 +47,7 @@ import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 @RestController
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/communication/conversations")
-@Tag(name = "Messages", description = "Conversation operations")
+@Tag(name = "Conversations", description = "Conversation operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 	Problem.class, ConstraintViolationProblem.class
 })))
