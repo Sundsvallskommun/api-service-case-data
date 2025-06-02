@@ -2,6 +2,11 @@ package se.sundsvall.casedata.api;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.ALL;
 import static org.springframework.http.MediaType.ALL_VALUE;
@@ -16,8 +21,10 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.MessageRequest;
@@ -25,6 +32,7 @@ import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.Identifier;
 import se.sundsvall.casedata.api.model.conversation.KeyValues;
 import se.sundsvall.casedata.api.model.conversation.Message;
+import se.sundsvall.casedata.service.ConversationService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -33,8 +41,11 @@ class ConversationResourceTest {
 	private static final String NAMESPACE = "namespace";
 	private static final String MUNICIPALITY_ID = "2281";
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands/{errandId}/communication/conversations";
-	private static final String ERRAND_ID = "123";
+	private static final Long ERRAND_ID = 123L;
 	private static final String CONVERSATION_ID = randomUUID().toString();
+
+	@MockitoBean
+	private ConversationService conversationServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -62,6 +73,10 @@ class ConversationResourceTest {
 	void createConversation() {
 
 		final var request = conversation();
+		final var conversationId = "0";
+
+		when(conversationServiceMock.createConversation(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, request))
+			.thenReturn(conversationId);
 
 		webTestClient.post()
 			.uri(builder -> builder.path(BASE_URL)
@@ -71,18 +86,20 @@ class ConversationResourceTest {
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL)
-			.expectHeader().location("/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + ERRAND_ID + "/communication/conversations/0")
+			.expectHeader().location("/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + ERRAND_ID + "/communication/conversations/" + conversationId)
 			.expectHeader().contentType(ALL_VALUE)
 			.expectBody().isEmpty();
 
-		// TODO: Verify service call
+		verify(conversationServiceMock).createConversation(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, request);
+		verifyNoMoreInteractions(conversationServiceMock);
 	}
 
 	@Test
 	void getConversation() {
 
 		// Arrange
-		// TODO: Mock service call to return a conversation
+		when(conversationServiceMock.getConversation(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID))
+			.thenReturn(conversation());
 
 		// Act
 		final var response = webTestClient.get()
@@ -99,7 +116,8 @@ class ConversationResourceTest {
 		assertThat(response).isNotNull();
 		assertThat(response.getResponseBody()).isNotNull();
 
-		// TODO: Verify service call
+		verify(conversationServiceMock).getConversation(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID);
+		verifyNoMoreInteractions(conversationServiceMock);
 
 	}
 
@@ -107,7 +125,8 @@ class ConversationResourceTest {
 	void getConversations() {
 
 		// Arrange
-		// TODO: Mock service call to return a list of conversations
+		when(conversationServiceMock.getConversations(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
+			.thenReturn(List.of(conversation()));
 
 		// Act
 		final var response = webTestClient.get()
@@ -124,7 +143,8 @@ class ConversationResourceTest {
 		assertThat(response).isNotNull();
 		assertThat(response.getResponseBody()).isNotNull().hasSize(1);
 
-		// TODO: Verify service call
+		verify(conversationServiceMock).getConversations(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID);
+		verifyNoMoreInteractions(conversationServiceMock);
 	}
 
 	@Test
@@ -133,8 +153,9 @@ class ConversationResourceTest {
 		// Arrange
 		final var conversationId = randomUUID().toString();
 		final var request = conversation();
-		// TODO: Mock service.
 
+		when(conversationServiceMock.updateConversation(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, conversationId, request))
+			.thenReturn(request);
 		// Act
 		final var response = webTestClient.patch()
 			.uri(builder -> builder.path(BASE_URL + "/{conversationId}")
@@ -151,8 +172,8 @@ class ConversationResourceTest {
 		assertThat(response).isNotNull();
 		assertThat(response.getResponseBody()).isNotNull();
 
-		// TODO: Verify service call
-
+		verify(conversationServiceMock).updateConversation(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, conversationId, request);
+		verifyNoMoreInteractions(conversationServiceMock);
 	}
 
 	@Test
@@ -163,14 +184,10 @@ class ConversationResourceTest {
 			.withContent("content")
 			.build();
 
-		// TODO: Mock service.
-
 		final var multipartBodyBuilder = new MultipartBodyBuilder();
 		multipartBodyBuilder.part("attachments", "file-content").filename("test1.txt").contentType(TEXT_PLAIN);
 		multipartBodyBuilder.part("attachments", "file-content").filename("tesst2.txt").contentType(TEXT_PLAIN);
 		multipartBodyBuilder.part("message", messageRequest);
-
-		// TODO: Mock service.
 
 		// Act
 		final var response = webTestClient.post()
@@ -186,15 +203,20 @@ class ConversationResourceTest {
 		// Assert
 		assertThat(response).isNotNull();
 
-		// TODO: Verification of service call.
-
+		verify(conversationServiceMock).createMessage(eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(ERRAND_ID), eq(CONVERSATION_ID), eq(messageRequest), any());
+		verifyNoMoreInteractions(conversationServiceMock);
 	}
 
 	@Test
 	void getMessages() {
 
 		// Arrange
-		// TODO: Mock service call to return a list of messages
+		final var messageRequest = Message.builder()
+			.build();
+		final var page = new PageImpl<>(List.of(messageRequest));
+
+		when(conversationServiceMock.getMessages(eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(ERRAND_ID), eq(CONVERSATION_ID), any()))
+			.thenReturn(page);
 
 		// Act
 		final var response = webTestClient.get()
@@ -210,5 +232,8 @@ class ConversationResourceTest {
 		// Assert
 		assertThat(response).isNotNull();
 		assertThat(response.getResponseBody()).isNotNull().hasSize(1);
+
+		verify(conversationServiceMock).getMessages(eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(ERRAND_ID), eq(CONVERSATION_ID), any());
+		verifyNoMoreInteractions(conversationServiceMock);
 	}
 }
