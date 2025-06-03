@@ -4,11 +4,17 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
+import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.ConversationType;
 import se.sundsvall.casedata.api.model.conversation.Identifier;
@@ -450,6 +456,43 @@ class ConversationMapperTest {
 
 		// Assert
 		assertThat(conversation).isNull();
+	}
+
+	@Test
+	void toAttachment() {
+		// Arrange
+		final var fileName = "attachment-name";
+		final var mimeType = "application/pdf";
+		final var fileSize = 123;
+		final var errandId = 12345L;
+		final var municipalityId = "2281";
+		final var namespace = "namespace";
+
+		final var attachment = new MockMultipartFile("attachment", fileName, mimeType, new byte[fileSize]);
+
+		// Act
+		final var result = ConversationMapper.toAttachment(attachment, errandId, municipalityId, namespace);
+
+		// Assert
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "category", "note", "extension");
+		assertThat(result.getName()).isEqualTo(fileName);
+		assertThat(result.getMimeType()).isEqualTo(mimeType);
+	}
+
+	@Test
+	void toAttachmentThrowsIOException() throws IOException {
+		// Arrange
+		final var attachment = spy(new MockMultipartFile("attachment", "attachment-name", "application/pdf", new byte[0]));
+		final var errandId = 12345L;
+		final var municipalityId = "2281";
+		final var namespace = "namespace";
+
+		when(attachment.getBytes()).thenThrow(new IOException("Failed to read attachment content"));
+
+		// Act & Assert
+		assertThatThrownBy(() -> ConversationMapper.toAttachment(attachment, errandId, municipalityId, namespace))
+			.isInstanceOf(Problem.class)
+			.hasMessageContaining("Failed to read attachment content");
 	}
 
 }

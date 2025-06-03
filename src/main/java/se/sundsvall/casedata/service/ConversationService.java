@@ -1,7 +1,9 @@
 package se.sundsvall.casedata.service;
 
+import static java.util.Collections.emptyList;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toAttachment;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversation;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationEntity;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationList;
@@ -29,12 +31,15 @@ public class ConversationService {
 
 	private final ConversationRepository conversationRepository;
 	private final MessageExchangeClient messageExchangeClient;
+	private final AttachmentService attachmentService;
+
 	@Value("${integration.message-exchange.namespace:casedata}")
 	private String messageExchangeNamespace;
 
-	public ConversationService(final ConversationRepository conversationRepository, final MessageExchangeClient messageExchangeClient) {
+	public ConversationService(final ConversationRepository conversationRepository, final MessageExchangeClient messageExchangeClient, final AttachmentService attachmentService) {
 		this.conversationRepository = conversationRepository;
 		this.messageExchangeClient = messageExchangeClient;
+		this.attachmentService = attachmentService;
 	}
 
 	public String createConversation(final String municipalityId, final String namespace, final Long errandId, final Conversation conversation) {
@@ -98,10 +103,10 @@ public class ConversationService {
 
 		final var response = messageExchangeClient.createMessage(municipalityId, messageExchangeNamespace, entity.getMessageExchangeId(), toMessageRequest(messageRequest), attachments);
 
-		// TODO: Save attachments on errand
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message in Message Exchange");
 		}
+		Optional.ofNullable(attachments).orElse(emptyList()).forEach(attachment -> saveAttachment(errandId, municipalityId, namespace, attachment));
 	}
 
 	public Page<Message> getMessages(final String municipalityId, final String namespace, final Long errandId, final String conversationId, final Pageable pageable) {
@@ -119,4 +124,10 @@ public class ConversationService {
 		return conversationRepository.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, errandId.toString(), conversationId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Conversation not found in local database"));
 	}
+
+	private void saveAttachment(final Long errandId, final String municipalityId, final String namespace, final MultipartFile attachment) {
+
+		attachmentService.create(errandId, toAttachment(attachment, errandId, municipalityId, namespace), municipalityId, namespace);
+	}
+
 }

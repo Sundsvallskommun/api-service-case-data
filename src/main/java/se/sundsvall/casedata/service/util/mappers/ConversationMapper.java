@@ -1,14 +1,20 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
+import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.conversation.Attachment;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.ConversationType;
@@ -189,6 +195,31 @@ public final class ConversationMapper {
 			.filter(keyValues -> equalsIgnoreCase(keyValues.getKey(), key))
 			.flatMap(keyValues -> keyValues.getValues().stream())
 			.toList());
+	}
+
+	public static se.sundsvall.casedata.api.model.Attachment toAttachment(final MultipartFile attachment, final Long errandId, final String municipalityId, final String namespace) {
+
+		final String contentString;
+		try {
+			contentString = Optional.of(attachment.getBytes())
+				.map(ConversationMapper::toContentString)
+				.orElse(null);
+		} catch (final IOException e) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to read attachment content");
+		}
+
+		return se.sundsvall.casedata.api.model.Attachment.builder()
+			.withErrandId(errandId)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.withFile(contentString)
+			.withName(attachment.getOriginalFilename())
+			.withMimeType(attachment.getContentType())
+			.build();
+	}
+
+	private static String toContentString(final byte[] result) {
+		return new String(Base64.getEncoder().encode(result), UTF_8);
 	}
 
 }
