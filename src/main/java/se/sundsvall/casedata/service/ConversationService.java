@@ -11,6 +11,7 @@ import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.upda
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ public class ConversationService {
 
 	private final ConversationRepository conversationRepository;
 	private final MessageExchangeClient messageExchangeClient;
+	@Value("${integration.message-exchange.namespace:casedata}")
+	private String messageExchangeNamespace;
 
 	public ConversationService(final ConversationRepository conversationRepository, final MessageExchangeClient messageExchangeClient) {
 		this.conversationRepository = conversationRepository;
@@ -35,7 +38,7 @@ public class ConversationService {
 
 	public String createConversation(final String municipalityId, final String namespace, final Long errandId, final Conversation conversation) {
 
-		final var response = messageExchangeClient.createConversation(municipalityId, namespace, toMessageExchangeConversation(conversation));
+		final var response = messageExchangeClient.createConversation(municipalityId, messageExchangeNamespace, toMessageExchangeConversation(conversation));
 
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create conversation in Message Exchange");
@@ -53,7 +56,7 @@ public class ConversationService {
 
 		final var entity = getConversationEntity(municipalityId, namespace, errandId, conversationId);
 
-		final var response = messageExchangeClient.getConversation(municipalityId, namespace, entity.getMessageExchangeId());
+		final var response = messageExchangeClient.getConversation(municipalityId, messageExchangeNamespace, entity.getMessageExchangeId());
 
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve conversation from Message Exchange");
@@ -63,7 +66,9 @@ public class ConversationService {
 			throw Problem.valueOf(NOT_FOUND, "Conversation not found in Message Exchange");
 		}
 
-		return toConversation(entity, response.getBody());
+		final var updatedConversation = toConversation(entity, response.getBody());
+		conversationRepository.save(updateConversationEntity(entity, response.getBody()));
+		return updatedConversation;
 	}
 
 	public List<Conversation> getConversations(final String municipalityId, final String namespace, final Long errandId) {
@@ -77,28 +82,28 @@ public class ConversationService {
 		return conversations.stream()
 			.map(conversationEntity -> {
 
-				final var response = messageExchangeClient.getConversation(municipalityId, namespace, conversationEntity.getMessageExchangeId());
+				final var response = messageExchangeClient.getConversation(municipalityId, messageExchangeNamespace, conversationEntity.getMessageExchangeId());
 
 				if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
 					throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve conversation from Message Exchange");
 				}
-				return toConversation(conversationEntity, response.getBody());
+				final var updatedConversation = toConversation(conversationEntity, response.getBody());
+				conversationRepository.save(updateConversationEntity(conversationEntity, response.getBody()));
+				return updatedConversation;
 			})
 			.toList();
-
 	}
 
 	public Conversation updateConversation(final String municipalityId, final String namespace, final Long errandId, final String conversationId, final Conversation request) {
 
 		final var entity = getConversationEntity(municipalityId, namespace, errandId, conversationId);
 
-		final var response = messageExchangeClient.updateConversation(municipalityId, namespace, entity.getMessageExchangeId(), toMessageExchangeConversation(request));
+		final var response = messageExchangeClient.updateConversation(municipalityId, messageExchangeNamespace, entity.getMessageExchangeId(), toMessageExchangeConversation(request));
 
 		if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to update conversation in Message Exchange");
 		}
 
-		updateConversationEntity(entity, request);
 		conversationRepository.save(entity);
 		return toConversation(entity, response.getBody());
 	}
@@ -106,8 +111,9 @@ public class ConversationService {
 	public void createMessage(final String municipalityId, final String namespace, final long errandId, final String conversationId, final Message messageRequest, final List<MultipartFile> attachments) {
 		final var entity = getConversationEntity(municipalityId, namespace, errandId, conversationId);
 
-		final var response = messageExchangeClient.createMessage(municipalityId, namespace, entity.getMessageExchangeId(), toMessageRequest(messageRequest), attachments);
+		final var response = messageExchangeClient.createMessage(municipalityId, messageExchangeNamespace, entity.getMessageExchangeId(), toMessageRequest(messageRequest), attachments);
 
+		// TODO: Save attachments on errand
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message in Message Exchange");
 		}
@@ -115,7 +121,7 @@ public class ConversationService {
 
 	public Page<Message> getMessages(final String municipalityId, final String namespace, final Long errandId, final String conversationId, final Pageable pageable) {
 		final var conversationEntity = getConversationEntity(municipalityId, namespace, errandId, conversationId);
-		final var response = messageExchangeClient.getMessages(municipalityId, namespace, conversationEntity.getMessageExchangeId(), pageable);
+		final var response = messageExchangeClient.getMessages(municipalityId, messageExchangeNamespace, conversationEntity.getMessageExchangeId(), pageable);
 
 		if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve messages from Message Exchange");

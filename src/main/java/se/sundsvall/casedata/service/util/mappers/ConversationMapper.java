@@ -1,8 +1,11 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import static java.util.Collections.emptyList;
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -17,6 +20,8 @@ import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 
 public final class ConversationMapper {
 
+	public static final String RELATION_ID_KEY = "relationIds";
+
 	private ConversationMapper() {
 		// Private constructor to prevent instantiation
 	}
@@ -28,7 +33,7 @@ public final class ConversationMapper {
 			.withNamespace(namespace)
 			.withMunicipalityId(municipalityId)
 			.withTopic(request.getTopic())
-			.withType(request.getType() != null ? request.getType().name() : null)
+			.withType(Optional.ofNullable(request.getType()).map(ConversationType::name).orElse(null))
 			.withRelationIds(request.getRelationIds())
 			.build();
 	}
@@ -37,10 +42,9 @@ public final class ConversationMapper {
 		return Conversation.builder()
 			.withId(entity.getId())
 			.withTopic(conversation.getTopic())
-			.withType(entity.getType() != null ? ConversationType.valueOf(entity.getType()) : null)
-			.withRelationIds(entity.getRelationIds())
+			.withType(Optional.ofNullable(entity.getType()).map(ConversationType::valueOf).orElse(null))
+			.withRelationIds(Optional.ofNullable(entity.getRelationIds()).map(ArrayList::new).orElse(null))
 			.withParticipants(toIdentifiers(conversation.getParticipants()))
-			.withExternalReferences(toKeyValues(conversation.getExternalReferences()))
 			.withMetadata(toKeyValues(conversation.getMetadata()))
 			.build();
 	}
@@ -102,7 +106,7 @@ public final class ConversationMapper {
 
 	public static generated.se.sundsvall.messageexchange.Conversation toMessageExchangeConversation(final Conversation conversation) {
 		return new generated.se.sundsvall.messageexchange.Conversation()
-			.externalReferences(toMessageExchangeKeyValues(conversation.getExternalReferences()))
+			.externalReferences(toMessageExchangeKeyValues(List.of(KeyValues.builder().withKey(RELATION_ID_KEY).withValues(conversation.getRelationIds()).build())))
 			.metadata(toMessageExchangeKeyValues(conversation.getMetadata()))
 			.participants(toMessageExchangeIdentifiers(conversation.getParticipants()))
 			.topic(conversation.getTopic());
@@ -116,6 +120,15 @@ public final class ConversationMapper {
 
 	}
 
+	public static ConversationEntity updateConversationEntity(final ConversationEntity conversationEntity, final generated.se.sundsvall.messageexchange.Conversation conversation) {
+		Optional.ofNullable(conversation)
+			.ifPresent(c -> conversationEntity
+				.withLatestSyncedSequenceNumber(c.getLatestSequenceNumber())
+				.withTopic(c.getTopic())
+				.withRelationIds(toStringList(toKeyValues(c.getExternalReferences()), RELATION_ID_KEY)));
+		return conversationEntity;
+	}
+
 	public static generated.se.sundsvall.messageexchange.Message toMessageRequest(final Message messageRequest) {
 		return new generated.se.sundsvall.messageexchange.Message()
 			.inReplyToMessageId(messageRequest.getInReplyToMessageId())
@@ -127,7 +140,7 @@ public final class ConversationMapper {
 			.withId(message.getId())
 			.withInReplyToMessageId(message.getInReplyToMessageId())
 			.withCreated(message.getCreated())
-			.withCreatedBy(message.getCreatedBy() == null ? null : toIdentifier(message.getCreatedBy()))
+			.withCreatedBy(Optional.ofNullable(message.getCreatedBy()).map(ConversationMapper::toIdentifier).orElse(null))
 			.withContent(message.getContent())
 			.withReadBy(ConversationMapper.toReadBy(message.getReadBy()))
 			.withAttachments(ConversationMapper.toAttachments(message.getAttachments()))
@@ -149,8 +162,16 @@ public final class ConversationMapper {
 				.withId(attachment.getId())
 				.withFileName(attachment.getFileName())
 				.withMimeType(attachment.getMimeType())
-				.withFileSize(attachment.getFileSize() != null ? attachment.getFileSize() : 0)
+				.withFileSize(Optional.ofNullable(attachment.getFileSize()).orElse(0))
 				.build())
 			.toList();
 	}
+
+	private static List<String> toStringList(final List<KeyValues> keyValueList, final String key) {
+		return new ArrayList<>(Optional.ofNullable(keyValueList).orElse(Collections.emptyList()).stream()
+			.filter(keyValues -> equalsIgnoreCase(keyValues.getKey(), key))
+			.flatMap(keyValues -> keyValues.getValues().stream())
+			.toList());
+	}
+
 }

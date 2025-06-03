@@ -32,7 +32,6 @@ class ConversationTest {
 		final var type = ConversationType.INTERNAL;
 		final var relationIds = List.of("relation-id-1", "relation-id-2");
 		final var participants = List.of(Identifier.builder().build());
-		final var externalReferences = List.of(KeyValues.builder().build());
 		final var metadata = List.of(KeyValues.builder().build());
 
 		// Act
@@ -42,7 +41,6 @@ class ConversationTest {
 			.withType(type)
 			.withRelationIds(relationIds)
 			.withParticipants(participants)
-			.withExternalReferences(externalReferences)
 			.withMetadata(metadata)
 			.build();
 
@@ -53,7 +51,6 @@ class ConversationTest {
 		assertThat(result.getType()).isEqualTo(type);
 		assertThat(result.getRelationIds()).isEqualTo(relationIds);
 		assertThat(result.getParticipants()).isEqualTo(participants);
-		assertThat(result.getExternalReferences()).isEqualTo(externalReferences);
 		assertThat(result.getMetadata()).isEqualTo(metadata);
 
 	}

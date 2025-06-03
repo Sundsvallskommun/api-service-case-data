@@ -77,7 +77,6 @@ class ConversationMapperTest {
 		assertThat(conversation.getType()).isEqualTo(ConversationType.INTERNAL);
 		assertThat(conversation.getRelationIds()).containsExactlyInAnyOrderElementsOf(relationIds);
 		assertThat(conversation.getParticipants()).isEmpty();
-		assertThat(conversation.getExternalReferences()).isEmpty();
 		assertThat(conversation.getMetadata()).isEmpty();
 	}
 
@@ -231,7 +230,6 @@ class ConversationMapperTest {
 			.withType(type)
 			.withRelationIds(relationIds)
 			.withMetadata(List.of())
-			.withExternalReferences(List.of())
 			.withParticipants(List.of())
 			.build();
 

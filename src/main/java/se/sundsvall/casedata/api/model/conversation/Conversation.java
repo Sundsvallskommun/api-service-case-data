@@ -36,9 +36,6 @@ public class Conversation {
 	@ArraySchema(schema = @Schema(implementation = Identifier.class, description = "A list of participants in this conversation"))
 	private List<@Valid Identifier> participants;
 
-	@ArraySchema(schema = @Schema(implementation = KeyValues.class, description = "A list of external references related to this conversation"))
-	private List<@Valid KeyValues> externalReferences;
-
 	@ArraySchema(schema = @Schema(implementation = KeyValues.class, description = "A list of metadata objects associated with the conversation"))
 	private List<@Valid KeyValues> metadata;
 

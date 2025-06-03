@@ -52,10 +52,6 @@ class ConversationResourceTest {
 
 	private static Conversation conversation() {
 		return Conversation.builder()
-			.withExternalReferences(List.of(KeyValues.builder()
-				.withKey("theKey")
-				.withValues(List.of("externalReferenceValue"))
-				.build()))
 			.withMetadata(List.of(KeyValues.builder()
 				.withKey("theMetadata")
 				.withValues(List.of("metadataValue"))
