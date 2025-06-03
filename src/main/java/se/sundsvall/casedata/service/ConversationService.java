@@ -96,12 +96,12 @@ public class ConversationService {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to update conversation in Message Exchange");
 		}
 		// TODO: Create notification
+		updateConversationEntity(entity, request);
 		conversationRepository.save(entity);
 		return toConversation(entity, response.getBody());
 	}
 
 	public void createMessage(final String municipalityId, final String namespace, final long errandId, final String conversationId, final Message messageRequest, final List<MultipartFile> attachments) {
-		// TODO: Create notification
 		final var entity = getConversationEntity(municipalityId, namespace, errandId, conversationId);
 		final var response = messageExchangeClient.createMessage(municipalityId, messageExchangeNamespace, entity.getMessageExchangeId(), toMessageRequest(messageRequest), attachments);
 
