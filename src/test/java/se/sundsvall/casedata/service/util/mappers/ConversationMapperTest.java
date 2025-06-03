@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
@@ -359,4 +360,96 @@ class ConversationMapperTest {
 		assertThat(result.getFirst().getMimeType()).isEqualTo(mimeType);
 		assertThat(result.getFirst().getFileSize()).isEqualTo(fileSize);
 	}
+
+	@Test
+	void toConversationList() {
+		// Arrange
+		final var conversationId = UUID.randomUUID().toString();
+		final var topic = "Test Topic";
+		final var type = ConversationType.INTERNAL;
+		final var relationIds = List.of("relation1", "relation2");
+		final var entity = ConversationEntity.builder()
+			.withId(conversationId)
+			.withTopic(topic)
+			.withType(type.name())
+			.withRelationIds(relationIds)
+			.build();
+
+		// Act
+		final var conversations = ConversationMapper.toConversationList(List.of(entity));
+
+		// Assert
+		assertThat(conversations).isNotNull().hasSize(1);
+		assertThat(conversations.getFirst().getId()).isEqualTo(conversationId);
+		assertThat(conversations.getFirst().getTopic()).isEqualTo(topic);
+		assertThat(conversations.getFirst().getType()).isEqualTo(type);
+		assertThat(conversations.getFirst().getRelationIds()).containsExactlyInAnyOrderElementsOf(relationIds);
+	}
+
+	@Test
+	void toConversationListEmptyList() {
+		// Act
+		final var conversations = ConversationMapper.toConversationList(emptyList());
+
+		// Assert
+		assertThat(conversations).isNotNull().isEmpty();
+	}
+
+	@Test
+	void toConversationListNullList() {
+		// Act
+		final var conversations = ConversationMapper.toConversationList(null);
+
+		// Assert
+		assertThat(conversations).isNotNull().isEmpty();
+	}
+
+	@Test
+	void toConversationFromConversationEntity() {
+		// Arrange
+		final var conversationId = UUID.randomUUID().toString();
+		final var topic = "Test Topic";
+		final var type = ConversationType.INTERNAL;
+		final var relationIds = List.of("relation1", "relation2");
+		final var entity = ConversationEntity.builder()
+			.withId(conversationId)
+			.withTopic(topic)
+			.withType(type.name())
+			.withRelationIds(relationIds)
+			.build();
+
+		// Act
+		final var conversation = ConversationMapper.toConversation(entity);
+
+		// Assert
+		assertThat(conversation).isNotNull().hasNoNullFieldsOrPropertiesExcept("participants", "metadata");
+		assertThat(conversation.getId()).isEqualTo(conversationId);
+		assertThat(conversation.getTopic()).isEqualTo(topic);
+		assertThat(conversation.getType()).isEqualTo(type);
+		assertThat(conversation.getRelationIds()).containsExactlyInAnyOrderElementsOf(relationIds);
+		assertThat(conversation.getParticipants()).isNull();
+		assertThat(conversation.getMetadata()).isNull();
+	}
+
+	@Test
+	void toConversationFromConversationEntityNullValues() {
+		// Arrange
+		final var entity = ConversationEntity.builder().build();
+
+		// Act
+		final var conversation = ConversationMapper.toConversation(entity);
+
+		// Assert
+		assertThat(conversation).isNotNull().hasAllNullFieldsOrProperties();
+	}
+
+	@Test
+	void toConversationFromConversationEntityNull() {
+		// Act
+		final var conversation = ConversationMapper.toConversation(null);
+
+		// Assert
+		assertThat(conversation).isNull();
+	}
+
 }

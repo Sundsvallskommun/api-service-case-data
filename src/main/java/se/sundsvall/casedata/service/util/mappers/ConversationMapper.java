@@ -167,6 +167,23 @@ public final class ConversationMapper {
 			.toList();
 	}
 
+	public static List<Conversation> toConversationList(final List<ConversationEntity> conversationEntityList) {
+		return Optional.ofNullable(conversationEntityList).orElse(emptyList()).stream()
+			.map(ConversationMapper::toConversation)
+			.toList();
+	}
+
+	public static Conversation toConversation(final ConversationEntity conversationEntity) {
+		return Optional.ofNullable(conversationEntity)
+			.map(c -> Conversation.builder()
+				.withId(c.getId())
+				.withRelationIds(Optional.ofNullable(c.getRelationIds()).map(ArrayList::new).orElse(null))
+				.withTopic(c.getTopic())
+				.withType(Optional.ofNullable(c.getType()).map(ConversationType::valueOf).orElse(null))
+				.build())
+			.orElse(null);
+	}
+
 	private static List<String> toStringList(final List<KeyValues> keyValueList, final String key) {
 		return new ArrayList<>(Optional.ofNullable(keyValueList).orElse(Collections.emptyList()).stream()
 			.filter(keyValues -> equalsIgnoreCase(keyValues.getKey(), key))

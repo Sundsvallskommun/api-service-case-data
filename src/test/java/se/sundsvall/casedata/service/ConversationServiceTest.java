@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -65,6 +66,9 @@ class ConversationServiceTest {
 
 		// Assert
 		assertThat(result).isNotNull().isEqualTo(conversationId);
+		verify(messageExchangeClientMock).createConversation(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), any());
+		verify(conversationRepositoryMock).save(any(ConversationEntity.class));
+		verifyNoMoreInteractions(messageExchangeClientMock, conversationRepositoryMock);
 	}
 
 	@Test
@@ -81,6 +85,10 @@ class ConversationServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> conversationService.createConversation(municipalityId, namespace, errandId, conversation)).isInstanceOf(RuntimeException.class)
 			.hasMessageContaining("Failed to create conversation in Message Exchange");
+
+		verify(messageExchangeClientMock).createConversation(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), any());
+		verifyNoMoreInteractions(messageExchangeClientMock);
+		verifyNoInteractions(conversationRepositoryMock);
 	}
 
 	@Test
@@ -97,6 +105,10 @@ class ConversationServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> conversationService.createConversation(municipalityId, namespace, errandId, conversation)).isInstanceOf(RuntimeException.class)
 			.hasMessageContaining("Failed to create conversation in Message Exchange");
+
+		verify(messageExchangeClientMock).createConversation(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), any());
+		verifyNoMoreInteractions(messageExchangeClientMock);
+		verifyNoInteractions(conversationRepositoryMock);
 	}
 
 	@Test
@@ -162,6 +174,10 @@ class ConversationServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> conversationService.getConversation(municipalityId, namespace, errandId, conversationId)).isInstanceOf(RuntimeException.class)
 			.hasMessageContaining("Failed to retrieve conversation from Message Exchange");
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(messageExchangeClientMock).getConversation(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId);
+		verifyNoMoreInteractions(messageExchangeClientMock, conversationRepositoryMock);
 	}
 
 	@Test
@@ -178,6 +194,10 @@ class ConversationServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> conversationService.getConversation(municipalityId, namespace, errandId, conversationId)).isInstanceOf(RuntimeException.class)
 			.hasMessageContaining("Not Found: Conversation not found in local database");
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verifyNoInteractions(messageExchangeClientMock);
+		verifyNoMoreInteractions(conversationRepositoryMock);
 	}
 
 	@Test
@@ -198,6 +218,10 @@ class ConversationServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> conversationService.getConversation(municipalityId, namespace, errandId, conversationId)).isInstanceOf(RuntimeException.class)
 			.hasMessageContaining("Failed to retrieve conversation from Message Exchange");
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(messageExchangeClientMock).getConversation(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId);
+		verifyNoMoreInteractions(messageExchangeClientMock, conversationRepositoryMock);
 	}
 
 	@Test
@@ -218,6 +242,10 @@ class ConversationServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> conversationService.getConversation(municipalityId, namespace, errandId, conversationId)).isInstanceOf(RuntimeException.class)
 			.hasMessageContaining("Not Found: Conversation not found in Message Exchange");
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(messageExchangeClientMock).getConversation(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId);
+		verifyNoMoreInteractions(messageExchangeClientMock, conversationRepositoryMock);
 	}
 
 	@Test
@@ -239,61 +267,26 @@ class ConversationServiceTest {
 			.withMessageExchangeId(messageExchangeId)
 			.withRelationIds(relationIds)
 			.withType(type)
+			.withTopic(topic)
 			.build();
-
-		final var conversationResponse = new generated.se.sundsvall.messageexchange.Conversation()
-			.topic(topic);
 
 		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandId(municipalityId, namespace, String.valueOf(errandId)))
 			.thenReturn(List.of(conversationEntity));
-
-		when(messageExchangeClientMock.getConversation(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId))
-			.thenReturn(ResponseEntity.ok(conversationResponse));
 
 		// Act
 		final var result = conversationService.getConversations(municipalityId, namespace, errandId);
 
 		// Assert
 		assertThat(result).isNotNull().hasSize(1);
-		assertThat(result.getFirst()).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(result.getFirst()).isNotNull().hasNoNullFieldsOrPropertiesExcept("participants", "metadata");
 		assertThat(result.getFirst().getId()).isEqualTo(conversationId);
 		assertThat(result.getFirst().getRelationIds()).isEqualTo(conversationEntity.getRelationIds());
+		assertThat(result.getFirst().getTopic()).isEqualTo(topic);
 
-	}
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandId(municipalityId, namespace, String.valueOf(errandId));
+		verifyNoInteractions(messageExchangeClientMock);
+		verifyNoMoreInteractions(conversationRepositoryMock);
 
-	@Test
-	void getConversationsWithMessageExchangeError() {
-
-		// Arrange
-		final var municipalityId = "municipalityId";
-		final var namespace = "namespace";
-		final var errandId = 123L;
-		final var messageExchangeId = "messageExchangeId";
-
-		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandId(municipalityId, namespace, String.valueOf(errandId)))
-			.thenReturn(List.of(ConversationEntity.builder().withMessageExchangeId(messageExchangeId).build()));
-
-		when(messageExchangeClientMock.getConversation(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId))
-			.thenReturn(ResponseEntity.internalServerError().build());
-
-		// Act & Assert
-		assertThatThrownBy(() -> conversationService.getConversations(municipalityId, namespace, errandId)).isInstanceOf(RuntimeException.class)
-			.hasMessageContaining("Failed to retrieve conversation from Message Exchange");
-	}
-
-	@Test
-	void getConversationsNotFoundLocally() {
-		// Arrange
-		final var municipalityId = "municipalityId";
-		final var namespace = "namespace";
-		final var errandId = 123L;
-
-		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandId(municipalityId, namespace, String.valueOf(errandId)))
-			.thenReturn(List.of());
-
-		// Act & Assert
-		assertThatThrownBy(() -> conversationService.getConversations(municipalityId, namespace, errandId)).isInstanceOf(RuntimeException.class)
-			.hasMessageContaining("No conversations found for the given parameters");
 	}
 
 	@Test

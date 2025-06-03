@@ -4,6 +4,7 @@ import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversation;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationEntity;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationList;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessageExchangeConversation;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessagePage;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessageRequest;
@@ -75,23 +76,7 @@ public class ConversationService {
 
 		final var conversations = conversationRepository.findByMunicipalityIdAndNamespaceAndErrandId(municipalityId, namespace, errandId.toString());
 
-		if (conversations.isEmpty()) {
-			throw Problem.valueOf(NOT_FOUND, "No conversations found for the given parameters");
-		}
-
-		return conversations.stream()
-			.map(conversationEntity -> {
-
-				final var response = messageExchangeClient.getConversation(municipalityId, messageExchangeNamespace, conversationEntity.getMessageExchangeId());
-
-				if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-					throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve conversation from Message Exchange");
-				}
-				final var updatedConversation = toConversation(conversationEntity, response.getBody());
-				conversationRepository.save(updateConversationEntity(conversationEntity, response.getBody()));
-				return updatedConversation;
-			})
-			.toList();
+		return toConversationList(conversations);
 	}
 
 	public Conversation updateConversation(final String municipalityId, final String namespace, final Long errandId, final String conversationId, final Conversation request) {
