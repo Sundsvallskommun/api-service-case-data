@@ -54,6 +54,7 @@ public class ConversationService {
 			.map(location -> location.getPath().substring(location.getPath().lastIndexOf('/') + 1))
 			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create conversation in Message Exchange"));
 
+		// TODO: Create notification
 		final var conversationEntity = toConversationEntity(conversation, municipalityId, namespace, errandId, messageExchangeId);
 		return conversationRepository.save(conversationEntity).getId();
 	}
@@ -72,6 +73,7 @@ public class ConversationService {
 			throw Problem.valueOf(NOT_FOUND, "Conversation not found in Message Exchange");
 		}
 
+		// TODO: Create notification if sequence number is not the latest
 		final var updatedConversation = toConversation(entity, response.getBody());
 		conversationRepository.save(updateConversationEntity(entity, response.getBody()));
 		return updatedConversation;
@@ -93,14 +95,14 @@ public class ConversationService {
 		if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to update conversation in Message Exchange");
 		}
-
+		// TODO: Create notification
 		conversationRepository.save(entity);
 		return toConversation(entity, response.getBody());
 	}
 
 	public void createMessage(final String municipalityId, final String namespace, final long errandId, final String conversationId, final Message messageRequest, final List<MultipartFile> attachments) {
+		// TODO: Create notification
 		final var entity = getConversationEntity(municipalityId, namespace, errandId, conversationId);
-
 		final var response = messageExchangeClient.createMessage(municipalityId, messageExchangeNamespace, entity.getMessageExchangeId(), toMessageRequest(messageRequest), attachments);
 
 		if (!response.getStatusCode().is2xxSuccessful()) {
