@@ -12,6 +12,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
+import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
@@ -36,7 +37,6 @@ class AttachmentIT extends AbstractAppTest {
 	private static final Long ERRAND_ID = 1L;
 	private static final String ATTACHMENTS_PATH = "/{0}/{1}/errands/{2}/attachments";
 	private static final String ATTACHMENT_BY_ID_PATH = "/{0}/{1}/errands/{2}/attachments/{3}";
-	private static final String AD_USER_HEADER_KEY = "sentbyuser";
 
 	@Test
 	void test01_getAttachment() {

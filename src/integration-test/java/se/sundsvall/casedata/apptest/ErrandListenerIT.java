@@ -7,9 +7,11 @@ import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
+import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
+import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
 import org.junit.jupiter.api.Test;
@@ -28,9 +30,7 @@ class ErrandListenerIT extends AbstractAppTest {
 	private static final int ERRAND_ID = 3;
 
 	private static final int PATCH_ERRAND_ID = 2;
-	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "response.json";
-	private static final String AD_USER_HEADER_KEY = "sentbyuser";
 	private String namespace;
 
 	private String getPath() {

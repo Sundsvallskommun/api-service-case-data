@@ -1,0 +1,74 @@
+{
+	"content": [
+		{
+			"id": "d82bd8ac-1507-4d9a-958d-369261eecc15",
+			"created": "2023-01-01T10:00:00Z",
+			"createdBy": {
+				"type": "user",
+				"value": "user1@example.com"
+			},
+			"content": "Message 1 content",
+			"readBy": [
+				{
+					"identifier": {
+						"type": "user",
+						"value": "user5@example.com"
+					},
+					"readAt": "2023-01-01T10:30:00+01:00"
+				}
+			],
+			"attachments": [
+				{
+					"id": "a1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c5",
+					"fileName": "file1.txt",
+					"fileSize": 5068,
+					"mimeType": "image/jpeg"
+				}
+			]
+		},
+		{
+			"id": "m2a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6",
+			"inReplyToMessageId": "d82bd8ac-1507-4d9a-958d-369261eecc15",
+			"created": "2023-01-01T11:00:00Z",
+			"createdBy": {
+				"type": "user",
+				"value": "user2@example.com"
+			},
+			"content": "Message 2 content",
+			"readBy": [
+				{
+					"identifier": {
+						"type": "user",
+						"value": "user6@example.com"
+					},
+					"readAt": "2023-01-01T11:30:00+01:00"
+				}
+			],
+			"attachments": [
+				{
+					"id": "a2a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6",
+					"fileName": "file2.txt",
+					"fileSize": 2048,
+					"mimeType": "text/plain"
+				}
+			]
+		}
+	],
+	"pageable": {
+		"pageNumber": 0,
+		"pageSize": 20,
+		"sort": [],
+		"offset": 0,
+		"paged": true,
+		"unpaged": false
+	},
+	"last": true,
+	"totalPages": 1,
+	"totalElements": 2,
+	"first": true,
+	"size": 20,
+	"number": 0,
+	"sort": [],
+	"numberOfElements": 2,
+	"empty": false
+}

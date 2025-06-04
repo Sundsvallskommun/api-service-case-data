@@ -1,0 +1,22 @@
+{
+	"id": "896a44d8-724b-11ed-a840-0242ac110002",
+	"metadata": [
+		{
+			"key": "meta-key-1",
+			"values": [
+				"meta-value-1"
+			]
+		}
+	],
+	"participants": [
+		{
+			"type": "user",
+			"value": "user3@example.com"
+		}
+	],
+	"relationIds": [
+		"RELATION-ID-1"
+	],
+	"topic": "Topic 1",
+	"type": "EXTERNAL"
+}
