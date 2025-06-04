@@ -11,6 +11,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
+import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
@@ -36,7 +37,6 @@ class MessageIT extends AbstractAppTest {
 
 	private static final String MESSAGE_ID = "a8883fb9-60b4-4f38-9f48-642070ff49ee";
 	private static final String MESSAGE_ATTACHMENT_ID = "05b29c30-4512-46c0-9d82-d0f11cb04bae";
-	private static final String AD_USER_HEADER_KEY = "sentbyuser";
 	private static final Long ERRAND_ID = 1L;
 	private static final String PATH = "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/errands/" + ERRAND_ID + "/messages";
 

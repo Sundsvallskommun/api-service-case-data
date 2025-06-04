@@ -1,0 +1,29 @@
+{
+	"id": "c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c5",
+	"participants": [
+		{
+			"type": "user",
+			"value": "user3@example.com"
+		}
+	],
+	"municipalityId": "2281",
+	"namespace": "casedata",
+	"externalReferences": [
+		{
+			"key": "external-key-1",
+			"values": [
+				"external-value-1"
+			]
+		}
+	],
+	"metadata": [
+		{
+			"key": "meta-key-1",
+			"values": [
+				"meta-value-1"
+			]
+		}
+	],
+	"topic": "Topic 1",
+	"latestSequenceNumber": 100
+}

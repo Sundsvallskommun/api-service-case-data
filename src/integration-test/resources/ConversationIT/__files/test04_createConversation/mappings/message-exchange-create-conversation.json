@@ -1,0 +1,15 @@
+{
+	"request": {
+		"method": "POST",
+		"url": "/message-exchange/2281/casedata/conversations"
+	},
+	"response": {
+		"headers": {
+			"x-current-version": "0",
+			"x-current-revision": "90572753-e8b0-48f8-b200-3623eaa76f9a",
+			"Content-Type": "*/*",
+			"Location": "/message-exchange/2281/casedata/conversations/90572753-e8b0-48f8-b200-3623eaa76f8d"
+		},
+		"status": 201
+	}
+}

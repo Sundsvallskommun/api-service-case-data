@@ -10,6 +10,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
+import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
@@ -32,7 +33,6 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 class ErrandIT extends AbstractAppTest {
 
 	private static final String PATH = "/{0}/{1}/errands";
-	private static final String AD_USER_HEADER_KEY = "sentbyuser";
 
 	@Test
 	void test01_createErrand() {

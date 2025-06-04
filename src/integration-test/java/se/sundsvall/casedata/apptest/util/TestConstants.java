@@ -18,6 +18,8 @@ public final class TestConstants {
 
 	public static final String AD_USER = "Hi my name is AD_USER";
 
+	public static final String AD_USER_HEADER_KEY = "sentbyuser";
+
 	private TestConstants() {
 		// Intentional left empty to prevent instantiation
 	}

@@ -1,24 +1,23 @@
 package se.sundsvall.casedata.apptest;
 
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
+import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
-import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
-
 @WireMockAppTestSuite(files = "classpath:/RollbackIT", classes = Application.class)
 @Sql({
 	"/db/scripts/truncate.sql",
 })
 class RollbackIT extends AbstractAppTest {
-
-	private static final String REQUEST_FILE = "request.json";
 
 	private static final String EXPECTED_FILE = "expected.json";
 
