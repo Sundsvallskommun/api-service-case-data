@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.With;
 import org.hibernate.annotations.UuidGenerator;
 
 @Entity
@@ -52,18 +53,21 @@ public class ConversationEntity {
 
 	@Column(name = "municipality_id", length = 4, nullable = false)
 	private String municipalityId;
-
+	@With
 	@Column(name = "topic")
 	private String topic;
 
+	@With
 	@Column(name = "type", length = 32, nullable = false)
 	private String type;
 
+	@With
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "conversation_relation_id", joinColumns = @JoinColumn(name = "conversation_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_conversation_relation_conversation_id")))
 	@Column(name = "relation_id", length = 36)
 	private List<String> relationIds;
 
+	@With
 	@Column(name = "latest_synced_sequence_number")
 	private Long latestSyncedSequenceNumber;
 
