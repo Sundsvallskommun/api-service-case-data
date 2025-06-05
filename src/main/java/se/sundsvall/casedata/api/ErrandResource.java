@@ -43,6 +43,7 @@ import se.sundsvall.casedata.api.model.Errand;
 import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.ErrandService;
+import se.sundsvall.casedata.service.ProcessService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
@@ -58,8 +59,11 @@ class ErrandResource {
 
 	private final ErrandService errandService;
 
-	ErrandResource(final ErrandService errandService) {
+	private final ProcessService processService;
+
+	ErrandResource(final ErrandService errandService, final ProcessService processService) {
 		this.errandService = errandService;
+		this.processService = processService;
 	}
 
 	@PostMapping(path = "/{namespace}/errands", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
@@ -102,7 +106,10 @@ class ErrandResource {
 		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
 		@RequestBody @Valid final PatchErrand patchErrand) {
 
-		errandService.update(errandId, municipalityId, namespace, patchErrand);
+		final var updatedErrand = errandService.update(errandId, municipalityId, namespace, patchErrand);
+
+		processService.updateProcess(updatedErrand);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
