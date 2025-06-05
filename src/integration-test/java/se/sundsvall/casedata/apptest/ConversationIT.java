@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.apptest;
 
 import static java.text.MessageFormat.format;
+import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
@@ -8,15 +9,16 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
-import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
+import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.casedata.Application;
@@ -62,20 +64,29 @@ class ConversationIT extends AbstractAppTest {
 			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID))
 			.withRequest(REQUEST_FILE)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, "someUser123")
+			.withHeader(HEADER_NAME, "type=adAccount; someUser123")
 			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
 	void test04_createConversation() {
-		setupCall()
+		final var location = setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
 			.withRequest(REQUEST_FILE)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, "someUser123")
+			.withHeader(HEADER_NAME, "type=adAccount; someUser123")
 			.withExpectedResponseStatus(CREATED)
+			.withExpectedResponseHeader("Location", List.of(format(PATH + "/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID)))
+			.sendRequest()
+			.getResponseHeaders().get(LOCATION).getFirst();
+
+		setupCall()
+			.withServicePath(location)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 
 	}
@@ -88,7 +99,7 @@ class ConversationIT extends AbstractAppTest {
 			.withContentType(MULTIPART_FORM_DATA)
 			.withRequestFile("message", REQUEST_FILE)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, "someUser123")
+			.withHeader(HEADER_NAME, "type=adAccount; someUser123")
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 

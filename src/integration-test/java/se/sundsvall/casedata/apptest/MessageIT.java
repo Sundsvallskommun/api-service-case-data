@@ -11,11 +11,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
-import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
+import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -68,7 +68,7 @@ class MessageIT extends AbstractAppTest {
 		final var location = setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(POST)
-			.withHeader(AD_USER_HEADER_KEY, "user123")
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseBodyIsNull()

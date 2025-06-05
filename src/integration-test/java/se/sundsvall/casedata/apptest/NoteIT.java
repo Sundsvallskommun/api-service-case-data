@@ -6,14 +6,13 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
-import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER;
-import static se.sundsvall.casedata.apptest.util.TestConstants.AD_USER_HEADER_KEY;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
+import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
@@ -57,7 +56,7 @@ class NoteIT extends AbstractAppTest {
 			.withHttpMethod(PATCH)
 			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, 1L, 1L))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, "user123")
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequest();
@@ -76,7 +75,7 @@ class NoteIT extends AbstractAppTest {
 		setupCall()
 			.withHttpMethod(DELETE)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, AD_USER)
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
 			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, 1L, 1L))
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
