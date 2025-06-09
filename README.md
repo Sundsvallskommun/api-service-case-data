@@ -1,6 +1,7 @@
 # CaseData
 
-_Manages cases primarily related to citizen-related subjects. Currently handles cases for parking permits and cases related to land and exploitation subjects._
+_Manages cases primarily related to citizen-related subjects. Currently handles cases for parking permits and cases
+related to land and exploitation subjects._
 
 ## Getting Started
 
@@ -29,7 +30,8 @@ _Manages cases primarily related to citizen-related subjects. Currently handles 
 
 3. **Ensure dependent services are running:**
 
-   If this microservice depends on other services, make sure they are up and accessible. See [Dependencies](#dependencies) for more details.
+   If this microservice depends on other services, make sure they are up and accessible.
+   See [Dependencies](#dependencies) for more details.
 
 4. **Build and run the application:**
 
@@ -48,17 +50,27 @@ This microservice depends on the following services:
 - **Employee**
   - **Purpose:** Provides information about an employee and its employment.
   - **Repository:** Not available at this moment.
-  - **Additional Notes:** Citizen is a API serving data from [Metadatakatalogen](https://utveckling.sundsvall.se/digital-infrastruktur/metakatalogen).
+  - **Additional Notes:** Citizen is a API serving data
+    from [Metadatakatalogen](https://utveckling.sundsvall.se/digital-infrastruktur/metakatalogen).
 - **Land and Exploitation**
   - **Purpose:** Serves as a facade for the Land and Exploitation camunda process
   - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/pw-land-and-exploitation)
+  - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
+- **Messaging**
+  - **Purpose:** Used to send communications to stakeholders via E-mail or SMS
+  - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/api-service-messaging)
+  - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
+- **Message-Exchange**
+  - **Purpose:** Used to send local messages between microservices.
+  - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/api-service-message-exchange)
   - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
 - **Parking Permit**
   - **Purpose:** Serves as a facade for the ParkingPermit camunda process
   - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/pw-parking-permit)
   - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
 - **WebMessageCollector**
-  - **Purpose:** Collects messages from the Open-E platform and stores them in a database for subsequent retrieval by other systems.
+  - **Purpose:** Collects messages from the Open-E platform and stores them in a database for subsequent retrieval by
+    other systems.
   - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/api-service-web-message-collector)
   - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
 
@@ -86,7 +98,8 @@ curl -X GET http://localhost:8080/api/2281/mynamespace/errands
 
 ## Configuration
 
-Configuration is crucial for the application to run successfully. Ensure all necessary settings are configured in `application.yml`.
+Configuration is crucial for the application to run successfully. Ensure all necessary settings are configured in
+`application.yml`.
 
 ### Key Configuration Parameters
 
@@ -157,7 +170,8 @@ Configuration is crucial for the application to run successfully. Ensure all nec
 
 ### Database Initialization
 
-The project is set up with [Flyway](https://github.com/flyway/flyway) for database migrations. Flyway is disabled by default so you will have to enable it to automatically populate the database schema upon application startup.
+The project is set up with [Flyway](https://github.com/flyway/flyway) for database migrations. Flyway is disabled by
+default so you will have to enable it to automatically populate the database schema upon application startup.
 
 ```yaml
 spring:
@@ -165,7 +179,8 @@ spring:
     enabled: true
 ```
 
-- **No additional setup is required** for database initialization, as long as the database connection settings are correctly configured.
+- **No additional setup is required** for database initialization, as long as the database connection settings are
+  correctly configured.
 
 ### Additional Notes
 
@@ -179,7 +194,8 @@ spring:
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](https://github.com/Sundsvallskommun/.github/blob/main/.github/CONTRIBUTING.md) for guidelines.
+Contributions are welcome! Please
+see [CONTRIBUTING.md](https://github.com/Sundsvallskommun/.github/blob/main/.github/CONTRIBUTING.md) for guidelines.
 
 ## License
 
