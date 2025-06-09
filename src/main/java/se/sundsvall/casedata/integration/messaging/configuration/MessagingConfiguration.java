@@ -1,4 +1,4 @@
-package se.sundsvall.casedata.integration.messageexchange.configuration;
+package se.sundsvall.casedata.integration.messaging.configuration;
 
 import org.springframework.cloud.openfeign.FeignBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -9,17 +9,16 @@ import se.sundsvall.dept44.configuration.feign.FeignMultiCustomizer;
 import se.sundsvall.dept44.configuration.feign.decoder.ProblemErrorDecoder;
 
 @Import(FeignConfiguration.class)
-public class MessageExchangeConfiguration {
+public class MessagingConfiguration {
 
-	public static final String CLIENT_ID = "message-exchange";
+	public static final String CLIENT_ID = "messaging";
 
 	@Bean
-	FeignBuilderCustomizer feignBuilderCustomizer(final ClientRegistrationRepository clientRepository, final MessageExchangeProperties messageExchangeProperties) {
+	FeignBuilderCustomizer feignBuilderCustomizer(final MessagingProperties messagingProperties, final ClientRegistrationRepository clientRegistrationRepository) {
 		return FeignMultiCustomizer.create()
 			.withErrorDecoder(new ProblemErrorDecoder(CLIENT_ID))
-			.withRequestTimeoutsInSeconds(messageExchangeProperties.connectTimeout(), messageExchangeProperties.readTimeout())
-			.withRetryableOAuth2InterceptorForClientRegistration(clientRepository.findByRegistrationId(CLIENT_ID))
+			.withRequestTimeoutsInSeconds(messagingProperties.connectTimeout(), messagingProperties.readTimeout())
+			.withRetryableOAuth2InterceptorForClientRegistration(clientRegistrationRepository.findByRegistrationId(CLIENT_ID))
 			.composeCustomizersToOne();
 	}
-
 }
