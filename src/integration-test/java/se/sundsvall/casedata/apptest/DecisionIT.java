@@ -12,6 +12,7 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
+import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
@@ -31,7 +32,6 @@ class DecisionIT extends AbstractAppTest {
 	private static final String DECISION_ID = "1";
 	private static final String ERRAND_ID = "1";
 	private static final String PATH = "/{0}/{1}/errands/{2}/decisions/{3}";
-	private static final String AD_USER_HEADER_KEY = "sentbyuser";
 
 	@Test
 	void test01_getDecisionById() {
@@ -48,7 +48,7 @@ class DecisionIT extends AbstractAppTest {
 		setupCall()
 			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, DECISION_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, "user123")
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
 			.withHttpMethod(PATCH)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
@@ -68,7 +68,7 @@ class DecisionIT extends AbstractAppTest {
 		setupCall()
 			.withServicePath(format(PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, DECISION_ID))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, "user123")
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
 			.withHttpMethod(PUT)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)

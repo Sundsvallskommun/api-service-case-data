@@ -28,6 +28,10 @@ spring:
             token-uri: ${config.web-message-collector.token-url}
           employee:
             token-uri: ${config.employee.token-url}
+          message-exchange:
+            token-uri: ${config.message-exchange.token-url}
+          messaging:
+            token-uri: ${config.messaging.token-url}
         registration:
           parkingpermit:
             authorization-grant-type: client_credentials
@@ -54,6 +58,16 @@ spring:
             provider: employee
             client-id: ${config.employee.client-id}
             client-secret: ${config.employee.client-secret}
+          message-exchange:
+            authorization-grant-type: client_credentials
+            provider: message-exchange
+            client-id: ${config.message-exchange.client-id}
+            client-secret: ${config.message-exchange.client-secret}
+          messaging:
+            authorization-grant-type: client_credentials
+            provider: messaging
+            client-id: ${config.messaging.client-id}
+            client-secret: ${config.messaging.client-secret}
 
 #----------------------------------------
 # Open API
@@ -93,6 +107,15 @@ integration:
     base-url: ${config.employee.base-url}
     connectTimeout: 5
     readTimeout: 20
+  message-exchange:
+    base-url: ${config.message-exchange.base-url}
+    connectTimeout: 5
+    readTimeout: 20
+  messaging:
+    base-url: ${config.messaging.base-url}
+    connectTimeout: 5
+    readTimeout: 20
+
 
 #----------------------------------------
 # Circuit breakers

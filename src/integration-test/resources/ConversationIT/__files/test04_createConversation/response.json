@@ -1,0 +1,22 @@
+{
+	"id": "${json-unit.any-string}",
+	"topic": "Topic 1",
+	"type": "INTERNAL",
+	"relationIds": [
+		"1a1b2c3-d4e6-f6aa-b8c9-d0e1f2a3b4c5"
+	],
+	"participants": [
+		{
+			"type": "user",
+			"value": "user3@example.com"
+		}
+	],
+	"metadata": [
+		{
+			"key": "meta-key-1",
+			"values": [
+				"meta-value-1"
+			]
+		}
+	]
+}

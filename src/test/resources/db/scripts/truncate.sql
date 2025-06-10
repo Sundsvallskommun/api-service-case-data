@@ -29,5 +29,7 @@ truncate table stakeholder_contact_information;
 truncate table stakeholder_extra_parameters;
 truncate table stakeholder_roles;
 truncate table message_recipients;
+truncate table conversation;
+truncate table conversation_relation_id;
 
 set foreign_key_checks = 1;
