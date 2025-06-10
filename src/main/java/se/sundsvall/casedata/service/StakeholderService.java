@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service;
 
 import static java.util.Collections.emptyList;
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X;
@@ -27,12 +28,10 @@ public class StakeholderService {
 
 	private final StakeholderRepository stakeholderRepository;
 	private final ErrandRepository errandRepository;
-	private final ProcessService processService;
 
-	public StakeholderService(final StakeholderRepository stakeholderRepository, final ErrandRepository errandRepository, final ProcessService processService) {
+	public StakeholderService(final StakeholderRepository stakeholderRepository, final ErrandRepository errandRepository) {
 		this.stakeholderRepository = stakeholderRepository;
 		this.errandRepository = errandRepository;
-		this.processService = processService;
 	}
 
 	public List<Stakeholder> findStakeholders(final Long errandId, final String municipalityId, final String namespace) {
@@ -84,6 +83,7 @@ public class StakeholderService {
 		stakeholderRepository.save(entity);
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public void replaceOnErrand(final Long errandId, final Long id, final String municipalityId, final String namespace, final Stakeholder stakeholder) {
 		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 
@@ -97,6 +97,7 @@ public class StakeholderService {
 		stakeholderRepository.save(entity);
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public void delete(final Long errandId, final String municipalityId, final String namespace, final Long stakeholderId) {
 		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 
@@ -107,20 +108,20 @@ public class StakeholderService {
 
 		errand.getStakeholders().remove(stakeholderToRemove);
 		errandRepository.save(errand);
-		processService.updateProcess(errand);
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public Stakeholder addToErrand(final Long errandId, final String municipalityId, final String namespace, final Stakeholder stakeholder) {
 		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var stakeholderEntity = toStakeholderEntity(stakeholder, municipalityId, namespace);
 
 		stakeholderEntity.setErrand(oldErrand);
 		oldErrand.getStakeholders().add(stakeholderEntity);
-		final var updatedErrand = errandRepository.save(oldErrand);
-		processService.updateProcess(updatedErrand);
+		errandRepository.save(oldErrand);
 		return toStakeholder(stakeholderEntity);
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public void replaceOnErrand(final Long errandId, final String municipalityId, final String namespace, final List<Stakeholder> stakeholders) {
 		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace, true);
 		oldErrand.getStakeholders().clear();
@@ -133,8 +134,7 @@ public class StakeholderService {
 				oldErrand.getStakeholders().add(stakeholder);
 			});
 
-		final var updatedErrand = errandRepository.save(oldErrand);
-		processService.updateProcess(updatedErrand);
+		errandRepository.save(oldErrand);
 	}
 
 	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace, boolean locking) {

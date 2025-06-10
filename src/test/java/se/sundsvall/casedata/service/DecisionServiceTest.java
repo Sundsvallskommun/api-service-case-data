@@ -57,9 +57,6 @@ class DecisionServiceTest {
 	private ErrandRepository errandRepositoryMock;
 
 	@Mock
-	private ProcessService processServiceMock;
-
-	@Mock
 	private NotificationService notificationServiceMock;
 
 	@InjectMocks
@@ -137,8 +134,7 @@ class DecisionServiceTest {
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
-		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
+		verifyNoMoreInteractions(errandRepositoryMock);
 	}
 
 	@Test
@@ -197,7 +193,6 @@ class DecisionServiceTest {
 		assertThat(errand.getDecisions()).isNotEmpty().hasSize(2);
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
 
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(errand));
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Beslut skapat");

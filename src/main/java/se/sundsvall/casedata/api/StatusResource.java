@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.api.model.Status;
+import se.sundsvall.casedata.service.ProcessService;
 import se.sundsvall.casedata.service.StatusService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -41,9 +42,11 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 class StatusResource {
 
 	private final StatusService statusService;
+	private final ProcessService processService;
 
-	StatusResource(final StatusService statusService) {
+	StatusResource(final StatusService statusService, final ProcessService processService) {
 		this.statusService = statusService;
+		this.processService = processService;
 	}
 
 	@PatchMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
@@ -57,6 +60,8 @@ class StatusResource {
 		@RequestBody @Valid final Status status) {
 
 		statusService.addToErrand(errandId, municipalityId, namespace, status);
+		processService.updateProcess(errandId);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

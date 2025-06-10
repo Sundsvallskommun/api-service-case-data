@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.api.model.Stakeholder;
+import se.sundsvall.casedata.service.ProcessService;
 import se.sundsvall.casedata.service.StakeholderService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -52,9 +53,11 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 class StakeholderResource {
 
 	private final StakeholderService stakeholderService;
+	private final ProcessService processService;
 
-	StakeholderResource(final StakeholderService stakeholderService) {
+	StakeholderResource(final StakeholderService stakeholderService, final ProcessService processService) {
 		this.stakeholderService = stakeholderService;
+		this.processService = processService;
 	}
 
 	@GetMapping(path = "/{stakeholderId}", produces = APPLICATION_JSON_VALUE)
@@ -113,6 +116,8 @@ class StakeholderResource {
 		@RequestBody @Valid final Stakeholder stakeholder) {
 
 		stakeholderService.replaceOnErrand(errandId, stakeholderId, municipalityId, namespace, stakeholder);
+		processService.updateProcess(errandId);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -129,6 +134,8 @@ class StakeholderResource {
 		@RequestBody @Valid final Stakeholder stakeholder) {
 
 		final var result = stakeholderService.addToErrand(errandId, municipalityId, namespace, stakeholder);
+		processService.updateProcess(errandId);
+
 		return created(fromPath("/{municipalityId}/{namespace}/stakeholders/{stakeholderId}").buildAndExpand(municipalityId, namespace, result.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -145,6 +152,8 @@ class StakeholderResource {
 		@RequestBody @Valid final List<Stakeholder> stakeholderList) {
 
 		stakeholderService.replaceOnErrand(errandId, municipalityId, namespace, stakeholderList);
+		processService.updateProcess(errandId);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -161,6 +170,8 @@ class StakeholderResource {
 		@PathVariable(name = "stakeholderId") final Long stakeholderId) {
 
 		stakeholderService.delete(errandId, municipalityId, namespace, stakeholderId);
+		processService.updateProcess(errandId);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

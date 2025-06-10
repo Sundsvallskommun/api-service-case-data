@@ -26,9 +26,6 @@ class StatusServiceTest {
 	@Mock
 	private ErrandRepository errandRepositoryMock;
 
-	@Mock
-	private ProcessService processServiceMock;
-
 	@Test
 	void addToErrand() {
 
@@ -46,6 +43,5 @@ class StatusServiceTest {
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
 	}
 }

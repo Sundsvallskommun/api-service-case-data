@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.service;
 
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
@@ -25,12 +26,10 @@ public class FacilityService {
 	private static final String FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Facility with id: %s was not found on errand with id: %s";
 	private final ErrandRepository errandRepository;
 	private final FacilityRepository facilityRepository;
-	private final ProcessService processService;
 
-	public FacilityService(final ErrandRepository errandRepository, final FacilityRepository facilityRepository, final ProcessService processService) {
+	public FacilityService(final ErrandRepository errandRepository, final FacilityRepository facilityRepository) {
 		this.errandRepository = errandRepository;
 		this.facilityRepository = facilityRepository;
-		this.processService = processService;
 	}
 
 	public List<Facility> findFacilities(final Long errandId, final String municipalityId, final String namespace) {
@@ -44,30 +43,25 @@ public class FacilityService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(facilityId, errandId))));
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public Facility create(final Long errandId, final String municipalityId, final String namespace, final Facility facility) {
 		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var entity = toFacilityEntity(facility, municipalityId, namespace);
 		entity.setErrand(errand);
 
-		final var createdFacility = toFacility(facilityRepository.save(entity));
-
-		processService.updateProcess(errand);
-
-		return createdFacility;
+		return toFacility(facilityRepository.save(entity));
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public Facility update(final Long errandId, final String municipalityId, final String namespace, final Long facilityId, final Facility facility) {
-		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var facilityEntity = facilityRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(facilityId, errandId)));
 
 		final var updatedFacility = patchFacility(facilityEntity, facility);
-		final var result = toFacility(facilityRepository.save(updatedFacility));
-		processService.updateProcess(errand);
-
-		return result;
+		return toFacility(facilityRepository.save(updatedFacility));
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public void replaceFacilities(final Long errandId, final String municipalityId, final String namespace, final List<Facility> dtos) {
 		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var facilitiesToChange = oldErrand.getFacilities().stream().filter(facility -> dtos.stream().map(Facility::getId).toList().contains(facility.getId())).toList();
@@ -90,10 +84,10 @@ public class FacilityService {
 			return facility;
 		}).toList());
 
-		final var updatedErrand = errandRepository.save(oldErrand);
-		processService.updateProcess(updatedErrand);
+		errandRepository.save(oldErrand);
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public void delete(final Long errandId, final String municipalityId, final String namespace, final Long facilityId) {
 		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var facilityToRemove = errand.getFacilities().stream()
@@ -103,7 +97,6 @@ public class FacilityService {
 
 		errand.getFacilities().remove(facilityToRemove);
 		errandRepository.save(errand);
-		processService.updateProcess(errand);
 	}
 
 	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace, boolean locking) {

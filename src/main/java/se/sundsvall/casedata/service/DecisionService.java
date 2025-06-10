@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.service;
 
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.DECISION;
@@ -34,13 +35,11 @@ public class DecisionService {
 
 	private final DecisionRepository decisionRepository;
 	private final ErrandRepository errandRepository;
-	private final ProcessService processService;
 	private final NotificationService notificationService;
 
-	public DecisionService(final DecisionRepository decisionRepository, final ErrandRepository errandRepository, final ProcessService processService, final NotificationService notificationService) {
+	public DecisionService(final DecisionRepository decisionRepository, final ErrandRepository errandRepository, final NotificationService notificationService) {
 		this.decisionRepository = decisionRepository;
 		this.errandRepository = errandRepository;
-		this.processService = processService;
 		this.notificationService = notificationService;
 	}
 
@@ -110,13 +109,13 @@ public class DecisionService {
 			.build(), errand);
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public Decision addToErrand(final Long errandId, final String municipalityId, final String namespace, final Decision decision) {
 
 		final var errandEntity = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var decisionEntity = toDecisionEntity(decision, errandEntity, municipalityId, namespace);
 		errandEntity.getDecisions().add(decisionEntity);
-		final var updatedErrand = errandRepository.save(errandEntity);
-		processService.updateProcess(updatedErrand);
+		errandRepository.save(errandEntity);
 
 		// Create notification
 		notificationService.create(municipalityId, namespace, Notification.builder()
@@ -131,6 +130,7 @@ public class DecisionService {
 		return toDecision(decisionEntity);
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public void delete(final Long errandId, final String municipalityId, final String namespace, final Long decisionId) {
 		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var decisionToRemove = errand.getDecisions().stream()
@@ -139,7 +139,6 @@ public class DecisionService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(decisionId, errandId)));
 		errand.getDecisions().remove(decisionToRemove);
 		errandRepository.save(errand);
-		processService.updateProcess(errand);
 	}
 
 	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace, boolean locking) {

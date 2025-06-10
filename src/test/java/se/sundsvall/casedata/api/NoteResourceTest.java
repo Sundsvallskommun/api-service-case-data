@@ -22,6 +22,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.service.NoteService;
+import se.sundsvall.casedata.service.ProcessService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -31,6 +32,9 @@ class NoteResourceTest {
 
 	@MockitoBean
 	private NoteService noteServiceMock;
+
+	@MockitoBean
+	private ProcessService processServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -57,7 +61,7 @@ class NoteResourceTest {
 		// Assert
 		assertThat(response).isNotNull();
 		verify(noteServiceMock).findNote(errandId, noteId, MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(noteServiceMock);
+		verifyNoMoreInteractions(noteServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -81,7 +85,7 @@ class NoteResourceTest {
 		// Assert
 		assertThat(response).hasSize(1);
 		verify(noteServiceMock).findNotes(errandId, MUNICIPALITY_ID, NAMESPACE, Optional.empty());
-		verifyNoMoreInteractions(noteServiceMock);
+		verifyNoMoreInteractions(noteServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -102,7 +106,8 @@ class NoteResourceTest {
 
 		// Assert
 		verify(noteServiceMock).update(errandId, noteId, MUNICIPALITY_ID, NAMESPACE, note);
-		verifyNoMoreInteractions(noteServiceMock);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(noteServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -120,7 +125,8 @@ class NoteResourceTest {
 
 		// Assert
 		verify(noteServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE, noteId);
-		verifyNoMoreInteractions(noteServiceMock);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(noteServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -145,6 +151,8 @@ class NoteResourceTest {
 
 		// Assert
 		verify(noteServiceMock).addNote(errandId, MUNICIPALITY_ID, NAMESPACE, note);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(noteServiceMock, processServiceMock);
 	}
 
 }

@@ -1,12 +1,15 @@
 package se.sundsvall.casedata.service;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
@@ -18,11 +21,13 @@ public class ProcessService {
 
 	private final ParkingPermitIntegration parkingPermitIntegration;
 	private final LandAndExploitationIntegration landAndExploitationIntegration;
+	private final ErrandRepository errandRepository;
 
 	public ProcessService(final ParkingPermitIntegration parkingPermitIntegration,
-		final LandAndExploitationIntegration landAndExploitationIntegration) {
+		final LandAndExploitationIntegration landAndExploitationIntegration, ErrandRepository errandRepository) {
 		this.parkingPermitIntegration = parkingPermitIntegration;
 		this.landAndExploitationIntegration = landAndExploitationIntegration;
+		this.errandRepository = errandRepository;
 	}
 
 	public String startProcess(final ErrandEntity errand) {
@@ -36,7 +41,10 @@ public class ProcessService {
 		return null;
 	}
 
-	public void updateProcess(final ErrandEntity errand) {
+	public void updateProcess(final Long errandId) {
+		final var errand = errandRepository.findById(errandId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Errand with id %s not found".formatted(errandId)));
+
 		if (CAMUNDA_USER.equals(errand.getUpdatedByClient())) {
 			LOGGER.warn("Errand with id: {} was updated by camunda user, no need to update process", errand.getId());
 			return;

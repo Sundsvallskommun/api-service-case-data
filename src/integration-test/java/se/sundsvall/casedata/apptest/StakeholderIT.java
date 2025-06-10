@@ -91,14 +91,15 @@ class StakeholderIT extends AbstractAppTest {
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
 
 		setupCall()
 			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, 1L))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
-			.sendRequestAndVerifyResponse();
+			.sendRequest();
+		verifyAllStubs();
 	}
 
 	@Test

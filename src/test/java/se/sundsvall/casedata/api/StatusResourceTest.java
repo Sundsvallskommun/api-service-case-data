@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.service.ProcessService;
 import se.sundsvall.casedata.service.StatusService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -26,6 +27,9 @@ class StatusResourceTest {
 
 	@MockitoBean
 	private StatusService statusServiceMock;
+
+	@MockitoBean
+	private ProcessService processServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -47,7 +51,8 @@ class StatusResourceTest {
 
 		// Assert
 		verify(statusServiceMock).addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, status);
-		verifyNoMoreInteractions(statusServiceMock);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(statusServiceMock, processServiceMock);
 	}
 
 }

@@ -38,6 +38,7 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.service.NoteService;
+import se.sundsvall.casedata.service.ProcessService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
@@ -52,9 +53,11 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 class NoteResource {
 
 	private final NoteService noteService;
+	private final ProcessService processService;
 
-	NoteResource(final NoteService noteService) {
+	NoteResource(final NoteService noteService, final ProcessService processService) {
 		this.noteService = noteService;
+		this.processService = processService;
 	}
 
 	@GetMapping(path = "/{noteId}", produces = APPLICATION_JSON_VALUE)
@@ -95,6 +98,8 @@ class NoteResource {
 		@RequestBody @Valid final Note note) {
 
 		noteService.update(errandId, noteId, municipalityId, namespace, note);
+		processService.updateProcess(errandId);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -111,6 +116,8 @@ class NoteResource {
 		@PathVariable(name = "noteId") final Long noteId) {
 
 		noteService.delete(errandId, municipalityId, namespace, noteId);
+		processService.updateProcess(errandId);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -127,6 +134,8 @@ class NoteResource {
 		@RequestBody @Valid final Note note) {
 
 		final var result = noteService.addNote(errandId, municipalityId, namespace, note);
+		processService.updateProcess(errandId);
+
 		return created(fromPath("/{municipalityId}/{namespace}/notes/{noteId}").buildAndExpand(municipalityId, namespace, result.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

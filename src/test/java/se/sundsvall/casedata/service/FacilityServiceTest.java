@@ -48,9 +48,6 @@ class FacilityServiceTest {
 	@Mock
 	private FacilityRepository facilityRepositoryMock;
 
-	@Mock
-	private ProcessService processServiceMock;
-
 	private ErrandEntity mockErrandFindByIdAndMunicipalityIdAndNamespace() {
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		errand.setId(new Random().nextLong(1, 1000));
@@ -85,10 +82,9 @@ class FacilityServiceTest {
 
 		// Assert
 		assertThat(result).isEqualTo(facility);
-		verify(processServiceMock).updateProcess(errand);
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(facilityRepositoryMock).save(any());
-		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
+		verifyNoMoreInteractions(errandRepositoryMock);
 	}
 
 	@Test
@@ -162,7 +158,6 @@ class FacilityServiceTest {
 
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(any());
-		verify(processServiceMock).updateProcess(errand);
 	}
 
 	@Test
@@ -182,7 +177,6 @@ class FacilityServiceTest {
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
 	}
 
 	@Test
@@ -195,7 +189,6 @@ class FacilityServiceTest {
 		final var facilityId = facility.getId();
 		final var patch = createFacility();
 
-		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(facilityRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(facility));
 		when(facilityRepositoryMock.save(facility)).thenReturn(facility);
 
@@ -212,9 +205,7 @@ class FacilityServiceTest {
 			assertThat(f.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
 		});
 
-		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(facilityRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(facilityRepositoryMock).save(facility);
-		verify(processServiceMock).updateProcess(errand);
 	}
 }

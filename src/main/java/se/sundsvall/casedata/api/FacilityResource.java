@@ -37,6 +37,7 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.service.FacilityService;
+import se.sundsvall.casedata.service.ProcessService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
@@ -51,9 +52,11 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 class FacilityResource {
 
 	private final FacilityService facilityService;
+	private final ProcessService processService;
 
-	FacilityResource(final FacilityService facilityService) {
+	FacilityResource(final FacilityService facilityService, final ProcessService processService) {
 		this.facilityService = facilityService;
+		this.processService = processService;
 	}
 
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
@@ -67,6 +70,8 @@ class FacilityResource {
 		@RequestBody @Valid final Facility facility) {
 
 		final Facility result = facilityService.create(errandId, municipalityId, namespace, facility);
+		processService.updateProcess(errandId);
+
 		return created(
 			fromPath("/{municipalityId}/{namespace}/errands/{id}/facilities/{facilityId}")
 				.buildAndExpand(municipalityId, namespace, errandId, result.getId())
@@ -112,6 +117,8 @@ class FacilityResource {
 		@RequestBody @Valid final Facility facility) {
 
 		facilityService.update(errandId, municipalityId, namespace, facilityId, facility);
+		processService.updateProcess(errandId);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -129,6 +136,8 @@ class FacilityResource {
 		@RequestBody @Valid final List<Facility> facilities) {
 
 		facilityService.replaceFacilities(errandId, municipalityId, namespace, facilities);
+		processService.updateProcess(errandId);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -145,6 +154,8 @@ class FacilityResource {
 		@PathVariable(name = "facilityId") final Long facilityId) {
 
 		facilityService.delete(errandId, municipalityId, namespace, facilityId);
+		processService.updateProcess(errandId);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

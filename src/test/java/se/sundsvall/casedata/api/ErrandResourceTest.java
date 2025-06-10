@@ -22,8 +22,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 import se.sundsvall.casedata.service.ErrandService;
+import se.sundsvall.casedata.service.ProcessService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -33,6 +35,9 @@ class ErrandResourceTest {
 
 	@MockitoBean
 	private ErrandService errandServiceMock;
+
+	@MockitoBean
+	private ProcessService processServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -80,5 +85,27 @@ class ErrandResourceTest {
 		// Assert
 		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@Test
+	void patchErrand() {
+		// Arrange
+		final var errandId = 123L;
+		final var patchErrand = new PatchErrand();
+		patchErrand.setDescription("Updated description");
+
+		// Act
+		webTestClient.patch()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", errandId)))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(patchErrand)
+			.exchange()
+			.expectStatus().isNoContent();
+
+		// Assert
+		verify(errandServiceMock).update(errandId, MUNICIPALITY_ID, NAMESPACE, patchErrand);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(errandServiceMock, processServiceMock);
 	}
 }

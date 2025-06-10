@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service;
 
 import static java.util.Collections.emptyList;
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.NOTE;
 import static se.sundsvall.casedata.service.NotificationService.EventType.CREATE;
@@ -33,20 +34,18 @@ public class NoteService {
 
 	private final NoteRepository noteRepository;
 	private final ErrandRepository errandRepository;
-	private final ProcessService processService;
 	private final NotificationService notificationService;
 
 	public NoteService(final NoteRepository noteRepository,
 		final ErrandRepository errandRepository,
-		final ProcessService processService,
 		final NotificationService notificationService) {
 
 		this.noteRepository = noteRepository;
 		this.errandRepository = errandRepository;
-		this.processService = processService;
 		this.notificationService = notificationService;
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public void update(final Long errandId, final Long noteId, final String municipalityId, final String namespace, final Note updatedNote) {
 		final var errandEntity = findErrandEntity(errandId, municipalityId, namespace, true);
 
@@ -59,7 +58,6 @@ public class NoteService {
 
 		patchNote(noteEntity, updatedNote);
 		noteRepository.save(noteEntity);
-		processService.updateProcess(noteEntity.getErrand());
 
 		// Create notification
 		notificationService.create(municipalityId, namespace, Notification.builder()
@@ -94,6 +92,7 @@ public class NoteService {
 				.toList());
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public void delete(final Long errandId, final String municipalityId, final String namespace, final Long noteId) {
 		final var errand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var noteToRemove = errand.getNotes().stream()
@@ -102,16 +101,15 @@ public class NoteService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(noteId, errandId)));
 		errand.getNotes().remove(noteToRemove);
 		errandRepository.save(errand);
-		processService.updateProcess(errand);
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public Note addNote(final Long errandId, final String municipalityId, final String namespace, final Note note) {
 		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var noteEntity = toNoteEntity(note, municipalityId, namespace);
 		noteEntity.setErrand(oldErrand);
 		oldErrand.getNotes().add(noteEntity);
 		final var updatedErrand = errandRepository.save(oldErrand);
-		processService.updateProcess(updatedErrand);
 
 		// Create notification
 		notificationService.create(municipalityId, namespace, Notification.builder()

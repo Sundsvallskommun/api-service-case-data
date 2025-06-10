@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
@@ -100,11 +101,10 @@ public class ErrandService {
 		return toErrand(resultErrand);
 	}
 
+	@Transactional(propagation = REQUIRES_NEW)
 	public void update(final Long errandId, final String municipalityId, final String namespace, final PatchErrand patchErrand) {
 		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace);
 		final var updatedErrand = errandRepository.save(PatchMapper.patchErrand(oldErrand, patchErrand));
-
-		processService.updateProcess(updatedErrand);
 
 		// Create notification
 		notificationService.create(municipalityId, namespace, Notification.builder()

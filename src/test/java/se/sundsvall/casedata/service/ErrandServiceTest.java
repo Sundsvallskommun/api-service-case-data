@@ -45,7 +45,6 @@ import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.FacilityRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
@@ -61,9 +60,6 @@ class ErrandServiceTest {
 
 	@Mock
 	private ErrandRepository errandRepositoryMock;
-
-	@Mock
-	private FacilityRepository facilityRepositoryMock;
 
 	@Mock
 	private ProcessService processServiceMock;
@@ -204,7 +200,6 @@ class ErrandServiceTest {
 
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(updatedErrand);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(updatedErrand));
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
@@ -285,7 +280,6 @@ class ErrandServiceTest {
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(entity);
-		verify(processServiceMock).updateProcess(entity);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(entity));
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");

@@ -67,9 +67,6 @@ class StakeholderServiceTest {
 	@Mock
 	private ErrandRepository errandRepositoryMock;
 
-	@Mock
-	private ProcessService processServiceMock;
-
 	@Captor
 	private ArgumentCaptor<ErrandEntity> errandCaptor;
 
@@ -262,8 +259,6 @@ class StakeholderServiceTest {
 			.usingRecursiveComparison()
 			.ignoringFields("municipalityId", "errand", "namespace", "created", "updated")
 			.isEqualTo(stakeholders.getFirst());
-
-		verify(processServiceMock).updateProcess(errand);
 	}
 
 	@Test
@@ -285,9 +280,8 @@ class StakeholderServiceTest {
 
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(processServiceMock).updateProcess(errand);
 		verify(errandRepositoryMock).save(errand);
-		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
+		verifyNoMoreInteractions(errandRepositoryMock);
 	}
 
 	@Test
@@ -320,6 +314,5 @@ class StakeholderServiceTest {
 
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
 	}
 }

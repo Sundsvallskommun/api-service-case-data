@@ -37,6 +37,7 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.service.DecisionService;
+import se.sundsvall.casedata.service.ProcessService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
@@ -51,9 +52,11 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 class DecisionResource {
 
 	private final DecisionService decisionService;
+	private final ProcessService processService;
 
-	DecisionResource(final DecisionService decisionService) {
+	DecisionResource(final DecisionService decisionService, final ProcessService processService) {
 		this.decisionService = decisionService;
+		this.processService = processService;
 	}
 
 	@GetMapping(path = "/{decisionId}", produces = APPLICATION_JSON_VALUE)
@@ -81,6 +84,7 @@ class DecisionResource {
 		@RequestBody @Valid final PatchDecision patchDecision) {
 
 		decisionService.update(errandId, decisionId, municipalityId, namespace, patchDecision);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -98,6 +102,7 @@ class DecisionResource {
 		@RequestBody @Valid final Decision decision) {
 
 		decisionService.replaceOnErrand(errandId, decisionId, municipalityId, namespace, decision);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -114,6 +119,8 @@ class DecisionResource {
 		@RequestBody @Valid final Decision decision) {
 
 		final var result = decisionService.addToErrand(errandId, municipalityId, namespace, decision);
+		processService.updateProcess(errandId);
+
 		return created(fromPath("/{municipalityId}/{namespace}/decisions/{decisionId}").buildAndExpand(municipalityId, namespace, result.getId()).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -142,6 +149,8 @@ class DecisionResource {
 		@PathVariable(name = "decisionId") final Long decisionId) {
 
 		decisionService.delete(errandId, municipalityId, namespace, decisionId);
+		processService.updateProcess(errandId);
+
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

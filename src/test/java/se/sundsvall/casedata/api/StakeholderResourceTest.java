@@ -21,6 +21,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import se.sundsvall.casedata.service.ProcessService;
 import se.sundsvall.casedata.service.StakeholderService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -31,6 +32,9 @@ class StakeholderResourceTest {
 
 	@MockitoBean
 	private StakeholderService stakeholderServiceMock;
+
+	@MockitoBean
+	private ProcessService processServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -57,7 +61,7 @@ class StakeholderResourceTest {
 		// Assert
 		assertThat(response).isNotNull();
 		verify(stakeholderServiceMock).findStakeholder(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(stakeholderServiceMock);
+		verifyNoMoreInteractions(stakeholderServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -81,7 +85,7 @@ class StakeholderResourceTest {
 		// Assert
 		assertThat(response).hasSize(1);
 		verify(stakeholderServiceMock).findStakeholders(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(stakeholderServiceMock);
+		verifyNoMoreInteractions(stakeholderServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -102,7 +106,7 @@ class StakeholderResourceTest {
 
 		// Assert
 		verify(stakeholderServiceMock).update(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
-		verifyNoMoreInteractions(stakeholderServiceMock);
+		verifyNoMoreInteractions(stakeholderServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -123,7 +127,8 @@ class StakeholderResourceTest {
 
 		// Assert
 		verify(stakeholderServiceMock).replaceOnErrand(errandId, stakeholderId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
-		verifyNoMoreInteractions(stakeholderServiceMock);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(stakeholderServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -148,6 +153,8 @@ class StakeholderResourceTest {
 
 		// Assert
 		verify(stakeholderServiceMock).addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholder);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(stakeholderServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -167,7 +174,8 @@ class StakeholderResourceTest {
 
 		// Assert
 		verify(stakeholderServiceMock).replaceOnErrand(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholderList);
-		verifyNoMoreInteractions(stakeholderServiceMock);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(stakeholderServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -185,7 +193,8 @@ class StakeholderResourceTest {
 
 		// Assert
 		verify(stakeholderServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE, stakeholderId);
-		verifyNoMoreInteractions(stakeholderServiceMock);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(stakeholderServiceMock, processServiceMock);
 	}
 
 }

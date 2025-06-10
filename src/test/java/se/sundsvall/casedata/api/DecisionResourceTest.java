@@ -22,6 +22,7 @@ import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.service.DecisionService;
+import se.sundsvall.casedata.service.ProcessService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -31,6 +32,9 @@ class DecisionResourceTest {
 
 	@MockitoBean
 	private DecisionService decisionServiceMock;
+
+	@MockitoBean
+	private ProcessService processServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -161,7 +165,8 @@ class DecisionResourceTest {
 
 		// Assert
 		verify(decisionServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE, decisionId);
-		verifyNoMoreInteractions(decisionServiceMock);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(decisionServiceMock, processServiceMock);
 	}
 
 }

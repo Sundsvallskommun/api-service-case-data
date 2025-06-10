@@ -22,6 +22,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.service.FacilityService;
+import se.sundsvall.casedata.service.ProcessService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -31,6 +32,9 @@ class FacilityResourceTest {
 
 	@MockitoBean
 	private FacilityService facilityServiceMock;
+
+	@MockitoBean
+	private ProcessService processServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -55,7 +59,7 @@ class FacilityResourceTest {
 		// Assert
 		assertThat(response).hasSize(1);
 		verify(facilityServiceMock).findFacilities(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(facilityServiceMock);
+		verifyNoMoreInteractions(facilityServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -79,7 +83,7 @@ class FacilityResourceTest {
 		// Assert
 		assertThat(response).isNotNull();
 		verify(facilityServiceMock).findFacility(errandId, facilityId, MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(facilityServiceMock);
+		verifyNoMoreInteractions(facilityServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -97,7 +101,8 @@ class FacilityResourceTest {
 
 		// Assert
 		verify(facilityServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId);
-		verifyNoMoreInteractions(facilityServiceMock);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(facilityServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -121,6 +126,8 @@ class FacilityResourceTest {
 
 		// Assert
 		verify(facilityServiceMock).create(errandId, MUNICIPALITY_ID, NAMESPACE, facility);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(facilityServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -142,6 +149,8 @@ class FacilityResourceTest {
 
 		// Assert
 		verify(facilityServiceMock).update(errandId, MUNICIPALITY_ID, NAMESPACE, facilityId, facility);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(facilityServiceMock, processServiceMock);
 	}
 
 	@Test
@@ -167,6 +176,8 @@ class FacilityResourceTest {
 
 		// Assert
 		verify(facilityServiceMock).replaceFacilities(errandId, MUNICIPALITY_ID, NAMESPACE, facilities);
+		verify(processServiceMock).updateProcess(errandId);
+		verifyNoMoreInteractions(facilityServiceMock, processServiceMock);
 	}
 
 }
