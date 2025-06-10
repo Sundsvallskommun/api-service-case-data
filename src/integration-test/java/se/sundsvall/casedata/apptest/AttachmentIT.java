@@ -18,6 +18,7 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
+import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -36,7 +37,6 @@ class AttachmentIT extends AbstractAppTest {
 	private static final Long ERRAND_ID = 1L;
 	private static final String ATTACHMENTS_PATH = "/{0}/{1}/errands/{2}/attachments";
 	private static final String ATTACHMENT_BY_ID_PATH = "/{0}/{1}/errands/{2}/attachments/{3}";
-	private static final String AD_USER_HEADER_KEY = "sentbyuser";
 
 	@Test
 	void test01_getAttachment() {
@@ -65,7 +65,7 @@ class AttachmentIT extends AbstractAppTest {
 			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withRequest(REQUEST_FILE)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, "someUser123")
+			.withHeader(HEADER_NAME, "type=adAccount; someUser123")
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequest();
 
@@ -102,7 +102,7 @@ class AttachmentIT extends AbstractAppTest {
 			.withHttpMethod(DELETE)
 			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, "user123")
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequest();
 
@@ -128,7 +128,7 @@ class AttachmentIT extends AbstractAppTest {
 		final var location = setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(format(ATTACHMENTS_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
-			.withHeader(AD_USER_HEADER_KEY, "user123")
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseBodyIsNull()
@@ -169,7 +169,7 @@ class AttachmentIT extends AbstractAppTest {
 		setupCall()
 			.withHttpMethod(PATCH)
 			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
-			.withHeader("sentbyuser", "user123")
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequest();

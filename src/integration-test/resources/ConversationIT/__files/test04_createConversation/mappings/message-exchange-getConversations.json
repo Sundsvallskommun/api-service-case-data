@@ -1,0 +1,13 @@
+{
+	"request": {
+		"method": "GET",
+		"urlPattern": "/message-exchange/2281/casedata/conversations/[a-f0-9\\-]{36}"
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"bodyFileName": "test01_getConversation/response/message-exchange-getConversations.json",
+		"status": 200
+	}
+}

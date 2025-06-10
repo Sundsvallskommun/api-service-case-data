@@ -16,6 +16,7 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
+import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
 
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,6 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 class ErrandIT extends AbstractAppTest {
 
 	private static final String PATH = "/{0}/{1}/errands";
-	private static final String AD_USER_HEADER_KEY = "sentbyuser";
 
 	@Test
 	void test01_createErrand() {
@@ -40,7 +40,7 @@ class ErrandIT extends AbstractAppTest {
 		final var location = Objects.requireNonNull(setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(format(PATH, MUNICIPALITY_ID, "SBK_PARKING_PERMIT"))
-			.withHeader(AD_USER_HEADER_KEY, "user123")
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
 			.withExpectedResponseStatus(CREATED)
 			.withRequest(REQUEST_FILE)
 			.sendRequest()
@@ -61,7 +61,7 @@ class ErrandIT extends AbstractAppTest {
 			.withServicePath(format(PATH + "/{2}", MUNICIPALITY_ID, NAMESPACE, 2))
 			.withHttpMethod(PATCH)
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(AD_USER_HEADER_KEY, "user123")
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withRequest(REQUEST_FILE)
 			.sendRequest();
