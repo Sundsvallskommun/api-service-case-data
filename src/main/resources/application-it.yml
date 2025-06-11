@@ -47,6 +47,11 @@ config:
     token-url: http://localhost:${wiremock.server.port:}/token
     client-id: client-id
     client-secret: client-secret
+  messaging-settings:
+    base-url: http://localhost:${wiremock.server.port:}/messaging-settings
+    token-url: http://localhost:${wiremock.server.port:}/token
+    client-id: client-id
+    client-secret: client-secret
 
 #----------------------------------------
 # Scheduler settings

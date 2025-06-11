@@ -71,6 +71,11 @@ config:
     client-id: client-id
     client-secret: client-secret
     token-url: token-url
+  messaging-settings:
+    base-url: http://localhost:8080
+    client-id: client-id
+    client-secret: client-secret
+    token-url: token-url
 
 #----------------------------------------
 # Scheduler settings
