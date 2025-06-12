@@ -1,73 +1,73 @@
 openapi: 3.0.1
 info:
   title: api-service-case-data
-  contact: { }
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.3"
+  version: "11.4"
 servers:
-  - url: http://localhost:52167
-    description: Generated server url
+- url: http://localhost:55018
+  description: Generated server url
 tags:
-  - name: Notes
-    description: Note operations
-  - name: Status
-    description: Errand status operations
-  - name: Notifications
-    description: User notification operations
-  - name: Messages
-    description: Message operations
-  - name: History
-    description: History operations
-  - name: Decisions
-    description: Decision operations
-  - name: Conversations
-    description: Conversation operations
-  - name: Stakeholders
-    description: Stakeholder operations
-  - name: Errands
-    description: Errand operations
-  - name: Attachments
-    description: Attachment operations
-  - name: Facilities
-    description: Errand facilities operations
+- name: Notes
+  description: Note operations
+- name: Status
+  description: Errand status operations
+- name: Notifications
+  description: User notification operations
+- name: Messages
+  description: Message operations
+- name: History
+  description: History operations
+- name: Decisions
+  description: Decision operations
+- name: Conversations
+  description: Conversation operations
+- name: Stakeholders
+  description: Stakeholder operations
+- name: Errands
+  description: Errand operations
+- name: Attachments
+  description: Attachment operations
+- name: Facilities
+  description: Errand facilities operations
 paths:
   /{municipalityId}/{namespace}/errands/{errandId}/stakeholders:
     get:
       tags:
-        - Stakeholders
+      - Stakeholders
       description: Get all stakeholders on errand.
       operationId: getAllStakeholdersOnErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: stakeholderRole
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: stakeholderRole
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
         "200":
           description: OK - Successful operation
@@ -83,8 +83,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -99,33 +99,33 @@ paths:
                 $ref: "#/components/schemas/Problem"
     put:
       tags:
-        - Stakeholders
+      - Stakeholders
       description: Replace stakeholders on errand.
       operationId: replaceStakeholdersOnErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       requestBody:
         content:
           application/json:
@@ -143,8 +143,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -159,33 +159,33 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Stakeholders
+      - Stakeholders
       description: Create and add stakeholder to errand.
       operationId: updateErrandWithStakeholder
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       requestBody:
         content:
           application/json:
@@ -207,8 +207,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -224,39 +224,39 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}:
     get:
       tags:
-        - Stakeholders
+      - Stakeholders
       description: Get stakeholder on errand by stakeholder id.
       operationId: getStakeholderOnErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: stakeholderId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: stakeholderId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -270,8 +270,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -286,39 +286,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     put:
       tags:
-        - Stakeholders
+      - Stakeholders
       description: Replace stakeholder on errand by stakeholder id.
       operationId: replaceStakeholderOnErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: stakeholderId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: stakeholderId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -334,8 +334,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -350,39 +350,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Stakeholders
+      - Stakeholders
       description: Delete stakeholder on errand by stakeholder id.
       operationId: deleteStakeholder
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: stakeholderId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: stakeholderId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "204":
           description: No content - Successful operation
@@ -392,8 +392,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -408,39 +408,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Stakeholders
+      - Stakeholders
       description: Update stakeholder on errand by stakeholder id.
       operationId: updateStakeholderOnErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: stakeholderId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: stakeholderId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -456,8 +456,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -473,35 +473,35 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/notifications/global-acknowledged:
     put:
       tags:
-        - Notifications
+      - Notifications
       summary: Global acknowledge notifications
       description: Set the globalAcknowledged-attribute to 'true' for all notifications
         on the errand
       operationId: globalAcknowledgeNotification
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       responses:
         "204":
           description: Successful operation
@@ -511,8 +511,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -528,43 +528,43 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}/viewed/{isViewed}:
     put:
       tags:
-        - Messages
+      - Messages
       description: Set viewed status for message
       operationId: updateViewedStatus
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: messageId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: isViewed
-          in: path
-          required: true
-          schema:
-            type: boolean
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: messageId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: isViewed
+        in: path
+        required: true
+        schema:
+          type: boolean
       responses:
         "204":
           description: No content - Successful operation
@@ -574,8 +574,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -591,33 +591,33 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/facilities:
     get:
       tags:
-        - Facilities
+      - Facilities
       description: Get all facilities on errand
       operationId: getFacilities
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       responses:
         "200":
           description: OK - Successful operation
@@ -633,8 +633,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -649,33 +649,33 @@ paths:
                 $ref: "#/components/schemas/Problem"
     put:
       tags:
-        - Facilities
+      - Facilities
       description: Add/replace facility on errand
       operationId: putFacilitiesOnErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       requestBody:
         content:
           application/json:
@@ -693,8 +693,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -709,33 +709,33 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Facilities
+      - Facilities
       description: Create errand facility
       operationId: postErrandFacility
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       requestBody:
         content:
           application/json:
@@ -756,8 +756,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -773,39 +773,39 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}:
     get:
       tags:
-        - Decisions
+      - Decisions
       description: Get decision on errand by decision id.
       operationId: getDecisionById
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: decisionId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: decisionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -819,8 +819,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -835,39 +835,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     put:
       tags:
-        - Decisions
+      - Decisions
       description: Replace decision on errand.
       operationId: putDecision
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: decisionId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: decisionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -883,8 +883,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -899,39 +899,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Decisions
+      - Decisions
       description: Delete decision on errand.
       operationId: deleteDecision
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: decisionId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: decisionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "204":
           description: No content - Successful operation
@@ -941,8 +941,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -957,39 +957,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Decisions
+      - Decisions
       description: Update decision on errand.
       operationId: patchDecision
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: decisionId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: decisionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -1005,8 +1005,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -1022,39 +1022,39 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}:
     get:
       tags:
-        - Attachments
+      - Attachments
       description: Get attachment on errand by attachment id.
       operationId: getAttachments
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: attachmentId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: attachmentId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -1068,8 +1068,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -1084,39 +1084,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     put:
       tags:
-        - Attachments
+      - Attachments
       description: Replace attachment on errand.
       operationId: putAttachmentOnErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: attachmentId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: attachmentId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -1132,8 +1132,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -1148,39 +1148,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Attachments
+      - Attachments
       description: Delete attachment on errand.
       operationId: deleteAttachment
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: attachmentId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: attachmentId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "204":
           description: No content - Successful operation
@@ -1190,8 +1190,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -1206,39 +1206,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Attachments
+      - Attachments
       description: Update attachment on errand.
       operationId: patchAttachment
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: attachmentId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: attachmentId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -1254,8 +1254,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -1271,59 +1271,59 @@ paths:
   /{municipalityId}/{namespace}/errands:
     get:
       tags:
-        - Errands
+      - Errands
       description: Get errands with or without query. The query is very flexible and
         allows you as a client to control a lot yourself.
       operationId: getErrands
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: filter
-          in: query
-          description: "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)"
-          required: true
-          schema:
-            type: string
-          example: caseType:'PARKING_PERMIT' and stakeholders.firstName~'*mar*' and
-            applicationReceived>'2022-09-08T12:18:03.747+02:00'
-        - name: page
-          in: query
-          description: Zero-based page index (0..N)
-          required: false
-          schema:
-            minimum: 0
-            type: integer
-            default: 0
-        - name: size
-          in: query
-          description: The size of the page to be returned
-          required: false
-          schema:
-            minimum: 1
-            type: integer
-            default: 20
-        - name: sort
-          in: query
-          description: "Sorting criteria in the format: property,(asc|desc). Default\
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: filter
+        in: query
+        description: "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)"
+        required: false
+        schema:
+          type: string
+        example: caseType:'PARKING_PERMIT' and stakeholders.firstName~'*mar*' and
+          applicationReceived>'2022-09-08T12:18:03.747+02:00'
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
           \ sort order is ascending. Multiple sort criteria are supported."
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: OK - Successful operation
@@ -1337,8 +1337,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -1353,26 +1353,26 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Errands
+      - Errands
       description: "Create errand (without attachments). Add attachments to errand\
         \ with PATCH /errands/{id}/attachments afterwards."
       operationId: createErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
       requestBody:
         content:
           application/json:
@@ -1393,8 +1393,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -1410,44 +1410,44 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/notifications:
     get:
       tags:
-        - Notifications
+      - Notifications
       summary: Get notifications
       description: "Get notifications for the provided namespace, municipality and\
         \ ownerId"
       operationId: getNotificationsForErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: sort
-          in: query
-          description: "Sorting criteria in the format: property,(asc|desc). Default\
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
           \ sort order is ascending. Multiple sort criteria are supported."
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: OK - Successful operation
@@ -1463,8 +1463,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -1479,34 +1479,34 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Notifications
+      - Notifications
       summary: Create notification
       description: Create new notification for the namespace and municipality
       operationId: createNotification
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       requestBody:
         content:
           application/json:
@@ -1527,8 +1527,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -1544,33 +1544,33 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/messages:
     get:
       tags:
-        - Messages
+      - Messages
       description: Get all messages for an errand
       operationId: getMessagesByErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       responses:
         "200":
           description: OK - Successful operation
@@ -1586,8 +1586,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1602,33 +1602,33 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Messages
+      - Messages
       description: Save a message on an errand
       operationId: createMessage
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       requestBody:
         content:
           application/json:
@@ -1644,8 +1644,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1661,34 +1661,34 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/communication/conversations:
     get:
       tags:
-        - Conversations
+      - Conversations
       summary: Get conversations
       description: Get existing conversations
       operationId: getConversations
       parameters:
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 1
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
       responses:
         "200":
           description: Successful Operation
@@ -1710,8 +1710,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
@@ -1720,34 +1720,34 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Conversations
+      - Conversations
       summary: Create conversation
       description: Create new conversation
       operationId: createConversation
       parameters:
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 1
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
       requestBody:
         content:
           application/json:
@@ -1768,8 +1768,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1785,66 +1785,66 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/communication/conversations/{conversationId}/messages:
     get:
       tags:
-        - Conversations
+      - Conversations
       summary: Get message list
       description: Get message list
       operationId: getMessages
       parameters:
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 1
-        - name: conversationId
-          in: path
-          description: Conversation ID
-          required: true
-          schema:
-            type: string
-          example: 1aefbbb8-de82-414b-b5d7-ba7c5bbe4506
-        - name: page
-          in: query
-          description: Zero-based page index (0..N)
-          required: false
-          schema:
-            minimum: 0
-            type: integer
-            default: 0
-        - name: size
-          in: query
-          description: The size of the page to be returned
-          required: false
-          schema:
-            minimum: 1
-            type: integer
-            default: 20
-        - name: sort
-          in: query
-          description: "Sorting criteria in the format: property,(asc|desc). Default\
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      - name: conversationId
+        in: path
+        description: Conversation ID
+        required: true
+        schema:
+          type: string
+        example: 1aefbbb8-de82-414b-b5d7-ba7c5bbe4506
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
           \ sort order is ascending. Multiple sort criteria are supported."
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: Successful Operation
@@ -1864,8 +1864,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
@@ -1874,48 +1874,48 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Conversations
+      - Conversations
       summary: Create new message
       description: Create new message
       operationId: createMessage_1
       parameters:
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 1
-        - name: conversationId
-          in: path
-          description: Conversation ID
-          required: true
-          schema:
-            type: string
-          example: 1aefbbb8-de82-414b-b5d7-ba7c5bbe4506
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      - name: conversationId
+        in: path
+        description: Conversation ID
+        required: true
+        schema:
+          type: string
+        example: 1aefbbb8-de82-414b-b5d7-ba7c5bbe4506
       requestBody:
         description: Message to be posted
         content:
           multipart/form-data:
             schema:
               required:
-                - message
+              - message
               type: object
               properties:
                 message:
@@ -1940,8 +1940,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
@@ -1951,33 +1951,33 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/attachments:
     get:
       tags:
-        - Attachments
+      - Attachments
       description: Get attachments by errand id.
       operationId: getAttachmentsByErrandId
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       responses:
         "200":
           description: OK - Successful operation
@@ -1993,8 +1993,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2009,33 +2009,33 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Attachments
+      - Attachments
       description: Create attachment on errand.
       operationId: postAttachment
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       requestBody:
         content:
           application/json:
@@ -2057,8 +2057,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2074,34 +2074,34 @@ paths:
   /{municipalityId}/{namespace}/notifications:
     get:
       tags:
-        - Notifications
+      - Notifications
       summary: Get notifications
       description: "Get notifications for the provided namespace, municipality and\
         \ ownerId"
       operationId: getNotificationsForOwner
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: ownerId
-          in: query
-          description: ownerId
-          required: true
-          schema:
-            type: string
-          example: AD01
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: ownerId
+        in: query
+        description: ownerId
+        required: true
+        schema:
+          type: string
+        example: AD01
       responses:
         "200":
           description: OK - Successful operation
@@ -2117,8 +2117,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2133,26 +2133,26 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Notifications
+      - Notifications
       summary: Update notification
       description: Update notifications for the namespace and municipality
       operationId: updateNotifications
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
       requestBody:
         content:
           application/json:
@@ -2170,8 +2170,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2187,33 +2187,33 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}:
     get:
       tags:
-        - Errands
+      - Errands
       description: Get errand by ID.
       operationId: getErrandById
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       responses:
         "200":
           description: OK - Successful operation
@@ -2227,8 +2227,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2243,33 +2243,33 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Errands
+      - Errands
       description: Update errand.
       operationId: patchErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       requestBody:
         content:
           application/json:
@@ -2285,8 +2285,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2302,33 +2302,33 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/status:
     patch:
       tags:
-        - Status
+      - Status
       description: Add status to errand
       operationId: updateErrandWithStatus
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       requestBody:
         content:
           application/json:
@@ -2344,8 +2344,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2361,38 +2361,38 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/notes:
     get:
       tags:
-        - Notes
+      - Notes
       description: "Get notes for a specific errand, possible to filter by note type"
       operationId: getNotesByErrandId
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: noteType
-          in: query
-          required: false
-          schema:
-            $ref: "#/components/schemas/NoteType"
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: noteType
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/NoteType"
       responses:
         "200":
           description: OK - Successful operation
@@ -2408,8 +2408,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2424,33 +2424,33 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Notes
+      - Notes
       description: Create and add note to errand
       operationId: updateErrandWithNote
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       requestBody:
         content:
           application/json:
@@ -2472,8 +2472,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2489,39 +2489,39 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}:
     get:
       tags:
-        - Notes
+      - Notes
       description: Get note on errand by note id
       operationId: getNoteById
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -2535,8 +2535,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2551,39 +2551,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Notes
+      - Notes
       description: Delete note on errand by note id
       operationId: deleteNoteOnErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "204":
           description: No content - Successful operation
@@ -2593,8 +2593,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2609,39 +2609,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Notes
+      - Notes
       description: Update note on errand by note id
       operationId: updateNoteOnErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -2657,8 +2657,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2674,39 +2674,39 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}:
     get:
       tags:
-        - Facilities
+      - Facilities
       description: Get a specific facility on errand
       operationId: getFacility
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: facilityId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: facilityId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -2720,8 +2720,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2736,39 +2736,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Facilities
+      - Facilities
       description: Delete facility on errand
       operationId: deleteFacility
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: facilityId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: facilityId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "204":
           description: No content - Successful operation
@@ -2778,8 +2778,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2794,39 +2794,39 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Facilities
+      - Facilities
       description: Update errand facility by facility id
       operationId: patchErrandFacility
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: facilityId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: facilityId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -2842,8 +2842,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2859,33 +2859,33 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/decisions:
     get:
       tags:
-        - Decisions
+      - Decisions
       description: Get decisions on errand.
       operationId: getDecision
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       responses:
         "200":
           description: OK - Successful operation
@@ -2901,8 +2901,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2917,33 +2917,33 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Decisions
+      - Decisions
       description: Create and add decision to errand.
       operationId: createDecision
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       requestBody:
         content:
           application/json:
@@ -2965,8 +2965,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2982,41 +2982,41 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/communication/conversations/{conversationId}:
     get:
       tags:
-        - Conversations
+      - Conversations
       summary: Get conversation
       description: Get existing conversation
       operationId: getConversation
       parameters:
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 1
-        - name: conversationId
-          in: path
-          description: Conversation ID
-          required: true
-          schema:
-            type: string
-          example: 1aefbbb8-de82-414b-b5d7-ba7c5bbe4506
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      - name: conversationId
+        in: path
+        description: Conversation ID
+        required: true
+        schema:
+          type: string
+        example: 1aefbbb8-de82-414b-b5d7-ba7c5bbe4506
       responses:
         "200":
           description: Successful Operation
@@ -3036,8 +3036,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
@@ -3046,41 +3046,41 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Conversations
+      - Conversations
       summary: Update conversation
       description: Update existing conversation
       operationId: updateConversation
       parameters:
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 1
-        - name: conversationId
-          in: path
-          description: Conversation ID
-          required: true
-          schema:
-            type: string
-          example: 1aefbbb8-de82-414b-b5d7-ba7c5bbe4506
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      - name: conversationId
+        in: path
+        description: Conversation ID
+        required: true
+        schema:
+          type: string
+        example: 1aefbbb8-de82-414b-b5d7-ba7c5bbe4506
       requestBody:
         content:
           application/json:
@@ -3106,8 +3106,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
@@ -3117,39 +3117,39 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/stakeholders/{stakeholderId}/history:
     get:
       tags:
-        - History
+      - History
       description: Get stakeholder history for an errand
       operationId: getStakeholderHistory
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: stakeholderId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: stakeholderId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -3165,8 +3165,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -3182,41 +3182,41 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/notifications/{notificationId}:
     get:
       tags:
-        - Notifications
+      - Notifications
       summary: Get notification
       description: Get a specific notification for the namespace and municipality
       operationId: getNotification
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: notificationId
-          in: path
-          description: notificationId
-          required: true
-          schema:
-            type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: notificationId
+        in: path
+        description: notificationId
+        required: true
+        schema:
+          type: string
+        example: 123e4567-e89b-12d3-a456-426614174000
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       responses:
         "200":
           description: Successful operation
@@ -3230,8 +3230,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -3246,40 +3246,40 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Notifications
+      - Notifications
       summary: Delete notification
       description: Delete notification for the namespace and municipality
       operationId: deleteNotification
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: notificationId
-          in: path
-          description: Notification ID
-          required: true
-          schema:
-            type: string
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: notificationId
+        in: path
+        description: Notification ID
+        required: true
+        schema:
+          type: string
       responses:
         "204":
           description: Successful operation
@@ -3289,8 +3289,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -3306,39 +3306,39 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/notes/{noteId}/history:
     get:
       tags:
-        - History
+      - History
       description: Get note history for an errand
       operationId: getNoteHistory
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -3354,8 +3354,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -3371,38 +3371,38 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}:
     get:
       tags:
-        - Messages
+      - Messages
       description: Get all messages for an errand
       operationId: getMessageByMesssageId
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: messageId
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: messageId
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK - Successful operation
@@ -3416,8 +3416,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -3433,45 +3433,45 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}/attachments/{attachmentId}:
     get:
       tags:
-        - Messages
+      - Messages
       summary: Get a streamed messageAttachment.
       description: Fetches the message attachment that matches the provided id in
         a streamed manner
       operationId: getMessageAttachment
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: messageId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: attachmentId
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: messageId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK - Successful operation
@@ -3481,8 +3481,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -3498,33 +3498,33 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/messages/external:
     get:
       tags:
-        - Messages
+      - Messages
       description: Get non internal messages
       operationId: getExternalMessagesByErrand
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       responses:
         "200":
           description: OK - Successful operation
@@ -3540,8 +3540,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -3557,33 +3557,33 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/history:
     get:
       tags:
-        - History
+      - History
       description: Get errand history for an errand
       operationId: getErrandHistory
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
       responses:
         "200":
           description: OK - Successful operation
@@ -3599,8 +3599,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -3616,39 +3616,39 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/facilities/{facilityId}/history:
     get:
       tags:
-        - History
+      - History
       description: Get facility history for an errand
       operationId: getFacilityHistory
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: facilityId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: facilityId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -3664,8 +3664,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -3681,39 +3681,39 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}/history:
     get:
       tags:
-        - History
+      - History
       description: Get decision history for an errand
       operationId: getDecisionHistory
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: decisionId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: decisionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -3729,8 +3729,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -3746,39 +3746,39 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/attachments/{attachmentId}/history:
     get:
       tags:
-        - History
+      - History
       description: Get attachment history for an errand
       operationId: getAttachmentHistory
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            pattern: "[\\w|\\-]+"
-            type: string
-          example: MY_NAMESPACE
-        - name: errandId
-          in: path
-          description: Errand ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 123
-        - name: attachmentId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      - name: attachmentId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: OK - Successful operation
@@ -3794,8 +3794,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -3811,7 +3811,7 @@ paths:
   /api-docs:
     get:
       tags:
-        - API
+      - API
       summary: OpenAPI
       operationId: getApiDocs
       responses:
@@ -3834,9 +3834,9 @@ components:
           description: Category of the address
           example: RESIDENTIAL
           enum:
-            - POSTAL_ADDRESS
-            - INVOICE_ADDRESS
-            - VISITING_ADDRESS
+          - POSTAL_ADDRESS
+          - INVOICE_ADDRESS
+          - VISITING_ADDRESS
         street:
           maxLength: 255
           minLength: 0
@@ -3914,9 +3914,9 @@ components:
           description: The type of contact information
           example: EMAIL
           enum:
-            - CELLPHONE
-            - PHONE
-            - EMAIL
+          - CELLPHONE
+          - PHONE
+          - EMAIL
         value:
           maxLength: 255
           minLength: 0
@@ -3943,8 +3943,8 @@ components:
         longitude: 17.3069
     Stakeholder:
       required:
-        - roles
-        - type
+      - roles
+      - type
       type: object
       properties:
         id:
@@ -3974,8 +3974,8 @@ components:
           description: The type of stakeholder
           example: PERSON
           enum:
-            - PERSON
-            - ORGANIZATION
+          - PERSON
+          - ORGANIZATION
         firstName:
           maxLength: 255
           minLength: 0
@@ -4071,9 +4071,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        title:
-          type: string
         detail:
+          type: string
+        title:
           type: string
     StatusType:
       type: object
@@ -4206,9 +4206,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        title:
-          type: string
         detail:
+          type: string
+        title:
           type: string
         suppressed:
           type: array
@@ -4427,18 +4427,18 @@ components:
           description: Type of the decision
           example: APPROVAL
           enum:
-            - RECOMMENDED
-            - PROPOSED
-            - FINAL
+          - RECOMMENDED
+          - PROPOSED
+          - FINAL
         decisionOutcome:
           type: string
           description: Outcome of the decision
           example: GRANTED
           enum:
-            - APPROVAL
-            - REJECTION
-            - DISMISSAL
-            - CANCELLATION
+          - APPROVAL
+          - REJECTION
+          - DISMISSAL
+          - CANCELLATION
         description:
           maxLength: 100000
           minLength: 0
@@ -4568,20 +4568,21 @@ components:
           nullable: true
           example: EMAIL
           enum:
-            - ESERVICE
-            - EMAIL
-            - WEB_UI
-            - MOBILE
-            - SYSTEM
+          - ESERVICE
+          - ESERVICE_KATLA
+          - EMAIL
+          - WEB_UI
+          - MOBILE
+          - SYSTEM
         priority:
           type: string
           description: Priority of the errand
           example: HIGH
           default: MEDIUM
           enum:
-            - HIGH
-            - MEDIUM
-            - LOW
+          - HIGH
+          - MEDIUM
+          - LOW
         description:
           type: string
           description: Description of the errand
@@ -4673,8 +4674,8 @@ components:
           type: array
           description: List of labels for the errand
           example:
-            - label1
-            - label2
+          - label1
+          - label2
           items:
             type: string
             description: List of labels for the errand
@@ -4721,7 +4722,7 @@ components:
           example: 2023-10-02T12:00:00Z
     ExtraParameter:
       required:
-        - key
+      - key
       type: object
       properties:
         key:
@@ -4816,13 +4817,13 @@ components:
       description: The type of note
       example: INTERNAL
       enum:
-        - INTERNAL
-        - PUBLIC
+      - INTERNAL
+      - PUBLIC
     Notification:
       required:
-        - description
-        - ownerId
-        - type
+      - description
+      - ownerId
+      - type
       type: object
       properties:
         id:
@@ -4920,7 +4921,7 @@ components:
       readOnly: true
     RelatedErrand:
       required:
-        - errandNumber
+      - errandNumber
       type: object
       properties:
         errandId:
@@ -4939,7 +4940,7 @@ components:
       description: Related errand for errand
     Status:
       required:
-        - statusType
+      - statusType
       type: object
       properties:
         statusType:
@@ -4980,11 +4981,11 @@ components:
       type: string
       description: Message classification
       enum:
-        - INFORMATION
-        - COMPLETION_REQUEST
-        - OBTAIN_OPINION
-        - INTERNAL_COMMUNICATION
-        - OTHER
+      - INFORMATION
+      - COMPLETION_REQUEST
+      - OBTAIN_OPINION
+      - INTERNAL_COMMUNICATION
+      - OTHER
     EmailHeader:
       type: object
       properties:
@@ -4994,7 +4995,7 @@ components:
           type: array
           description: The value of the email header
           example:
-            - <this-is-a-test@domain.com>
+          - <this-is-a-test@domain.com>
           items:
             type: string
             description: The value of the email header
@@ -5005,13 +5006,13 @@ components:
       description: An email header
       example: MESSAGE_ID
       enum:
-        - IN_REPLY_TO
-        - REFERENCES
-        - MESSAGE_ID
+      - IN_REPLY_TO
+      - REFERENCES
+      - MESSAGE_ID
     MessageAttachment:
       required:
-        - content
-        - name
+      - content
+      - name
       type: object
       properties:
         content:
@@ -5042,8 +5043,8 @@ components:
             of case-data/e-service.
           example: INBOUND
           enum:
-            - INBOUND
-            - OUTBOUND
+          - INBOUND
+          - OUTBOUND
         familyId:
           type: string
           description: The E-service ID that the message was created in
@@ -5092,7 +5093,7 @@ components:
           type: array
           description: List of email recipients
           example:
-            - kalle.anka@ankeborg.se
+          - kalle.anka@ankeborg.se
           items:
             type: string
             description: List of email recipients
@@ -5119,8 +5120,8 @@ components:
           example: true
     Conversation:
       required:
-        - topic
-        - type
+      - topic
+      - type
       type: object
       properties:
         id:
@@ -5153,11 +5154,11 @@ components:
       description: ConversationType model
       example: INTERNAL
       enum:
-        - INTERNAL
-        - EXTERNAL
+      - INTERNAL
+      - EXTERNAL
     Identifier:
       required:
-        - value
+      - value
       type: object
       properties:
         type:
@@ -5185,7 +5186,7 @@ components:
       description: KeyValues model
     Message:
       required:
-        - content
+      - content
       type: object
       properties:
         id:
@@ -5234,7 +5235,7 @@ components:
       readOnly: true
     PatchNotification:
       required:
-        - errandId
+      - errandId
       type: object
       properties:
         id:
@@ -5294,9 +5295,9 @@ components:
           description: The priority of the case
           example: MEDIUM
           enum:
-            - HIGH
-            - MEDIUM
-            - LOW
+          - HIGH
+          - MEDIUM
+          - LOW
         description:
           type: string
           description: Description of the case
@@ -5356,8 +5357,8 @@ components:
           type: array
           description: List of labels for the errand
           example:
-            - label1
-            - label2
+          - label1
+          - label2
           items:
             type: string
             description: List of labels for the errand
@@ -5372,18 +5373,18 @@ components:
           description: The type of decision
           example: APPROVAL
           enum:
-            - RECOMMENDED
-            - PROPOSED
-            - FINAL
+          - RECOMMENDED
+          - PROPOSED
+          - FINAL
         decisionOutcome:
           type: string
           description: The outcome of the decision
           example: GRANTED
           enum:
-            - APPROVAL
-            - REJECTION
-            - DISMISSAL
-            - CANCELLATION
+          - APPROVAL
+          - REJECTION
+          - DISMISSAL
+          - CANCELLATION
         description:
           maxLength: 1000
           minLength: 0
@@ -5424,10 +5425,6 @@ components:
         totalPages:
           type: integer
           format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
         size:
           type: integer
           format: int32
@@ -5440,6 +5437,10 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
@@ -5457,14 +5458,14 @@ components:
           $ref: "#/components/schemas/SortObject"
         paged:
           type: boolean
-        unpaged:
-          type: boolean
         pageNumber:
           type: integer
           format: int32
         pageSize:
           type: integer
           format: int32
+        unpaged:
+          type: boolean
     SortObject:
       type: object
       properties:
@@ -5558,8 +5559,8 @@ components:
           type: string
     AttachmentResponse:
       required:
-        - attachmentId
-        - name
+      - attachmentId
+      - name
       type: object
       properties:
         attachmentId:
@@ -5601,8 +5602,8 @@ components:
             of case-data/e-service.
           example: INBOUND
           enum:
-            - INBOUND
-            - OUTBOUND
+          - INBOUND
+          - OUTBOUND
         familyId:
           type: string
           description: The E-service ID that the message was created in
@@ -5647,7 +5648,7 @@ components:
           type: array
           description: "The recipients of the message, if email"
           example:
-            - kalle.anka@ankeborg.se
+          - kalle.anka@ankeborg.se
           items:
             type: string
             description: "The recipients of the message, if email"
@@ -5689,10 +5690,6 @@ components:
         totalPages:
           type: integer
           format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
         size:
           type: integer
           format: int32
@@ -5705,6 +5702,10 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
@@ -5712,4 +5713,4 @@ components:
           $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
-  securitySchemes: { }
+  securitySchemes: {}

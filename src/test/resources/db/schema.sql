@@ -116,7 +116,7 @@
         status varchar(255),
         status_description varchar(255),
         updated_by_client varchar(255),
-        channel enum ('EMAIL','ESERVICE','MOBILE','SYSTEM','WEB_UI'),
+        channel enum ('EMAIL','ESERVICE','ESERVICE_KATLA','MOBILE','SYSTEM','WEB_UI'),
         description longtext,
         priority enum ('HIGH','LOW','MEDIUM'),
         primary key (id)
@@ -347,97 +347,97 @@
         primary key (role_order, stakeholder_id)
     ) engine=InnoDB;
 
-    create index idx_attachment_errand_id
+    create index idx_attachment_errand_id 
        on attachment (errand_id);
 
-    create index idx_attachment_municipality_id
+    create index idx_attachment_municipality_id 
        on attachment (municipality_id);
 
-    create index idx_attachment_namespace
+    create index idx_attachment_namespace 
        on attachment (namespace);
 
-    create index idx_municipality_id_namespace_errand_id
+    create index idx_municipality_id_namespace_errand_id 
        on conversation (municipality_id, namespace, errand_id);
 
-    create index idx_message_exchange_id
+    create index idx_message_exchange_id 
        on conversation (message_exchange_id);
 
-    create index idx_decision_municipality_id
+    create index idx_decision_municipality_id 
        on decision (municipality_id);
 
-    create index idx_decision_namespace
+    create index idx_decision_namespace 
        on decision (namespace);
 
-    alter table if exists decision
+    alter table if exists decision 
        add constraint UKj00sxiyx1fhmcdofxuugumdon unique (decided_by_id);
 
-    create index idx_errand_municipality_id
+    create index idx_errand_municipality_id 
        on errand (municipality_id);
 
-    create index idx_errand_namespace
+    create index idx_errand_namespace 
        on errand (namespace);
 
-    alter table if exists errand
+    alter table if exists errand 
        add constraint UK_errand_errand_number_municipality_id unique (errand_number, municipality_id);
 
-    create index idx_facility_municipality_id
+    create index idx_facility_municipality_id 
        on facility (municipality_id);
 
-    create index idx_facility_namespace
+    create index idx_facility_namespace 
        on facility (namespace);
 
-    create index idx_message_municipality_id
+    create index idx_message_municipality_id 
        on message (municipality_id);
 
-    create index idx_message_namespace
+    create index idx_message_namespace 
        on message (namespace);
 
-    create index idx_messsage_errand_id
+    create index idx_messsage_errand_id 
        on message (errand_id);
 
-    create index idx_message_attachment_municipality_id
+    create index idx_message_attachment_municipality_id 
        on message_attachment (municipality_id);
 
-    create index idx_message_attachment_namespace
+    create index idx_message_attachment_namespace 
        on message_attachment (namespace);
 
-    alter table if exists message_attachment
+    alter table if exists message_attachment 
        add constraint UK_message_attachment_data_id unique (message_attachment_data_id);
 
-    create index idx_note_municipality_id
+    create index idx_note_municipality_id 
        on note (municipality_id);
 
-    create index idx_note_namespace
+    create index idx_note_namespace 
        on note (namespace);
 
-    create index idx_notification_municipality_id
+    create index idx_notification_municipality_id 
        on notification (municipality_id);
 
-    create index idx_notification_namespace
+    create index idx_notification_namespace 
        on notification (namespace);
 
-    create index idx_notification_owner_id
+    create index idx_notification_owner_id 
        on notification (owner_id);
 
-    create index idx_stakeholder_municipality_id
+    create index idx_stakeholder_municipality_id 
        on stakeholder (municipality_id);
 
-    create index idx_stakeholder_namespace
+    create index idx_stakeholder_namespace 
        on stakeholder (namespace);
 
-    alter table if exists attachment
-       add constraint FK_decision_id
-       foreign key (decision_id)
+    alter table if exists attachment 
+       add constraint FK_decision_id 
+       foreign key (decision_id) 
        references decision (id);
 
-    alter table if exists attachment_extra_parameters
-       add constraint FK_attachment_extra_parameters_attachment_id
-       foreign key (attachment_id)
+    alter table if exists attachment_extra_parameters 
+       add constraint FK_attachment_extra_parameters_attachment_id 
+       foreign key (attachment_id) 
        references attachment (id);
 
-    alter table if exists conversation_relation_id
-       add constraint fk_conversation_relation_conversation_id
-       foreign key (conversation_id)
+    alter table if exists conversation_relation_id 
+       add constraint fk_conversation_relation_conversation_id 
+       foreign key (conversation_id) 
        references conversation (id);
 
     alter table if exists decision 

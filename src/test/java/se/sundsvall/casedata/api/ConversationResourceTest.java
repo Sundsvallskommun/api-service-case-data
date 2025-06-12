@@ -114,7 +114,6 @@ class ConversationResourceTest {
 
 		verify(conversationServiceMock).getConversation(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID);
 		verifyNoMoreInteractions(conversationServiceMock);
-
 	}
 
 	@Test
