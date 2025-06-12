@@ -76,6 +76,11 @@ config:
     client-id: client-id
     client-secret: client-secret
     token-url: token-url
+  relation:
+    base-url: http://localhost:8080
+    client-id: client-id
+    client-secret: client-secret
+    token-url: token-url
 
 #----------------------------------------
 # Scheduler settings
@@ -88,4 +93,6 @@ scheduler:
   suspension:
     enabled: false
   notification:
+    enabled: false
+  messageexchange:
     enabled: false

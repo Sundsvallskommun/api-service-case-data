@@ -80,9 +80,9 @@ class ConversationRepositoryTest {
 
 	@Test
 	void findByMessageExchangeId() {
-		var optionalConversation = repository.findByMessageExchangeId("message_exchange_id-3");
+		var conversations = repository.findByMessageExchangeId("message_exchange_id-3");
 
-		assertThat(optionalConversation).isNotEmpty().hasValueSatisfying(conversation -> {
+		assertThat(conversations).hasSize(1).first().satisfies(conversation -> {
 			assertThat(conversation).extracting(
 				ConversationEntity::getId,
 				ConversationEntity::getMunicipalityId,
