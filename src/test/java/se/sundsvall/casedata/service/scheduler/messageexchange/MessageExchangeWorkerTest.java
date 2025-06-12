@@ -104,12 +104,18 @@ class MessageExchangeWorkerTest {
 		conversation.setMunicipalityId("municipalityId");
 		conversation.setId("conversationId");
 		var conversationEntities = new ArrayList<ConversationEntity>();
-		conversationEntities.add(ConversationEntity.builder().withId("existingConversationEntityId").withMessageExchangeId("existingMessageExchangeId").withRelationIds(List.of("1")).build());
+		conversationEntities.add(ConversationEntity.builder()
+			.withMunicipalityId("municipalityId-existing")
+			.withNamespace("case-data-namespace-existing")
+			.withId("existingConversationEntityId")
+			.withMessageExchangeId("existingMessageExchangeId")
+			.withRelationIds(List.of("1"))
+			.build());
 
 		when(conversationRepositoryMock.findByMessageExchangeId(any())).thenReturn(conversationEntities);
 		when(relationClientMock.getRelation(any(), any())).thenReturn(ResponseEntity.ok(
 			new Relation(null, new ResourceIdentifier().resourceId("case-data-id"), new ResourceIdentifier().resourceId("other-id"))));
-		when(errandRepositoryMock.findByErrandNumber("case-data-id")).thenReturn(Optional.of(ErrandEntity.builder().withId(123L).build()));
+		when(errandRepositoryMock.findByErrandNumber("case-data-id")).thenReturn(Optional.of(ErrandEntity.builder().withMunicipalityId("municipalityId").withNamespace("case-data-namespace").withId(123L).build()));
 		when(errandRepositoryMock.findByErrandNumber("other-id")).thenReturn(Optional.empty());
 
 		messageExchangeWorker.processConversation(conversation);
@@ -119,8 +125,10 @@ class MessageExchangeWorkerTest {
 		verify(errandRepositoryMock, times(2)).findByErrandNumber("case-data-id");
 		verify(errandRepositoryMock, times(2)).findByErrandNumber("other-id");
 		verify(conversationServiceMock, times(2)).syncConversation(conversationEntityArgumentCaptor.capture(), same(conversation));
-		assertThat(conversationEntityArgumentCaptor.getAllValues()).hasSize(2).extracting(ConversationEntity::getId, ConversationEntity::getMessageExchangeId).containsExactly(
-			tuple("existingConversationEntityId", "existingMessageExchangeId"),
-			tuple(null, "conversationId"));
+		assertThat(conversationEntityArgumentCaptor.getAllValues()).hasSize(2)
+			.extracting(ConversationEntity::getMunicipalityId, ConversationEntity::getNamespace, ConversationEntity::getId, ConversationEntity::getMessageExchangeId)
+			.containsExactly(
+				tuple("municipalityId-existing", "case-data-namespace-existing", "existingConversationEntityId", "existingMessageExchangeId"),
+				tuple("municipalityId", "case-data-namespace", null, "conversationId"));
 	}
 }

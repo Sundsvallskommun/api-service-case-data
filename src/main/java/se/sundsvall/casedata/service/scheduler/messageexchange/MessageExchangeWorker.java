@@ -9,7 +9,6 @@ import generated.se.sundsvall.relation.ResourceIdentifier;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -35,9 +34,6 @@ public class MessageExchangeWorker {
 	private final ConversationService conversationService;
 	private final RelationClient relationClient;
 	private final ErrandRepository errandRepository;
-
-	@Value("${integration.message-exchange.namespace:casedata}")
-	private String messageExchangeNamespace;
 
 	public MessageExchangeWorker(final MessageExchangeClient messageExchangeClient, final MessageExchangeSyncRepository messageExchangeSyncRepository,
 		final ConversationRepository conversationRepository, final ConversationService conversationService,
@@ -106,7 +102,8 @@ public class MessageExchangeWorker {
 				.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, "Bug in relation filter"));
 			return ConversationEntity.builder().withErrandId(errand.getId().toString())
 				.withMessageExchangeId(conversation.getId())
-				.withNamespace(messageExchangeNamespace)
+				.withNamespace(errand.getNamespace())
+				.withMunicipalityId(errand.getMunicipalityId())
 				.withType("INTERNAL")
 				.build();
 		};
