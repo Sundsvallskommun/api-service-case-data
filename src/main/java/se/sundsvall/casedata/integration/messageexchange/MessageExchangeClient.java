@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.casedata.integration.messageexchange.configuration.MessageExchangeConfiguration;
@@ -36,6 +37,7 @@ public interface MessageExchangeClient {
 	ResponseEntity<Page<Conversation>> getConversations(
 		@PathVariable("municipalityId") final String municipalityId,
 		@PathVariable("namespace") final String namespace,
+		@RequestParam("filter") String filter,
 		@ParameterObject final Pageable pageable);
 
 	@GetMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}", produces = APPLICATION_JSON_VALUE)

@@ -52,6 +52,11 @@ config:
     token-url: http://localhost:${wiremock.server.port:}/token
     client-id: client-id
     client-secret: client-secret
+  relation:
+    base-url: http://localhost:${wiremock.server.port:}/relation
+    token-url: http://localhost:${wiremock.server.port:}/token
+    client-id: client-id
+    client-secret: client-secret
 
 #----------------------------------------
 # Scheduler settings
@@ -64,6 +69,8 @@ scheduler:
   suspension:
     enabled: false
   notification:
+    enabled: false
+  messageexchange:
     enabled: false
 
 #----------------------------------------

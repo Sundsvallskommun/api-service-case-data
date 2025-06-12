@@ -77,9 +77,13 @@ public class ConversationService {
 			throw Problem.valueOf(NOT_FOUND, "Conversation not found in Message Exchange");
 		}
 
+		return syncConversation(entity, response.getBody());
+	}
+
+	public Conversation syncConversation(ConversationEntity conversationEntity, generated.se.sundsvall.messageexchange.Conversation conversation) {
 		// TODO: Create notification if sequence number is not the latest
-		final var updatedConversation = toConversation(entity, response.getBody());
-		conversationRepository.save(updateConversationEntity(entity, response.getBody()));
+		final var updatedConversation = toConversation(conversationEntity, conversation);
+		conversationRepository.save(updateConversationEntity(conversationEntity, conversation));
 		return updatedConversation;
 	}
 

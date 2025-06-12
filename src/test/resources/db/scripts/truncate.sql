@@ -31,5 +31,6 @@ truncate table stakeholder_roles;
 truncate table message_recipients;
 truncate table conversation;
 truncate table conversation_relation_id;
+truncate table message_exchange_sync;
 
 set foreign_key_checks = 1;
