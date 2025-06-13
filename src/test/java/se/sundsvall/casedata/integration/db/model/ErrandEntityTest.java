@@ -177,5 +177,4 @@ class ErrandEntityTest {
 		assertThat(new ErrandEntity()).hasAllNullFieldsOrPropertiesExcept("version")
 			.satisfies(bean -> assertThat(bean.getVersion()).isZero());
 	}
-
 }

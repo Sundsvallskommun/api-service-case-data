@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springdoc.core.annotations.ParameterObject;
@@ -134,7 +135,7 @@ class ErrandResource {
 		@Parameter(
 			description = "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)",
 			example = "caseType:'PARKING_PERMIT' and stakeholders.firstName~'*mar*' and applicationReceived>'2022-09-08T12:18:03.747+02:00'",
-			schema = @Schema(implementation = String.class)) @Filter final Specification<ErrandEntity> filter,
+			schema = @Schema(implementation = String.class)) @Nullable @Filter final Specification<ErrandEntity> filter,
 		@ParameterObject final Pageable pageable) {
 
 		return ok(errandService.findAll(filter, municipalityId, namespace, pageable));
@@ -149,7 +150,7 @@ class ErrandResource {
 		@Parameter(
 			description = "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)",
 			example = "caseType:'PARKING_PERMIT' and stakeholders.firstName~'*mar*' and applicationReceived>'2022-09-08T12:18:03.747+02:00'",
-			schema = @Schema(implementation = String.class)) @Filter final Specification<ErrandEntity> filter,
+			schema = @Schema(implementation = String.class)) @Nullable @Filter final Specification<ErrandEntity> filter,
 		@ParameterObject final Pageable pageable) {
 
 		return ok(errandService.findAllWithoutNamespace(filter, municipalityId, pageable));

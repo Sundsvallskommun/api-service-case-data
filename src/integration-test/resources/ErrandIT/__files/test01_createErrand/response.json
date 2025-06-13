@@ -61,7 +61,7 @@
 	"errandNumber": "${json-unit.regex}^PRH-\\d{4}-000001$",
 	"endDate": "2024-05-09",
 	"createdByClient": "UNKNOWN",
-	"channel": "EMAIL",
+	"channel": "ESERVICE_KATLA",
 	"description": "Case description",
 	"applicationReceived": "2000-09-23T11:04:04.317+02:00",
 	"extraParameters": [
