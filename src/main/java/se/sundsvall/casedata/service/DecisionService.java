@@ -14,6 +14,7 @@ import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecisi
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 
 import java.util.List;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
@@ -34,13 +35,13 @@ public class DecisionService {
 
 	private final DecisionRepository decisionRepository;
 	private final ErrandRepository errandRepository;
-	private final ProcessService processService;
+	private final ApplicationEventPublisher applicationEventPublisher;
 	private final NotificationService notificationService;
 
-	public DecisionService(final DecisionRepository decisionRepository, final ErrandRepository errandRepository, final ProcessService processService, final NotificationService notificationService) {
+	public DecisionService(final DecisionRepository decisionRepository, final ErrandRepository errandRepository, final ApplicationEventPublisher applicationEventPublisher, final NotificationService notificationService) {
 		this.decisionRepository = decisionRepository;
 		this.errandRepository = errandRepository;
-		this.processService = processService;
+		this.applicationEventPublisher = applicationEventPublisher;
 		this.notificationService = notificationService;
 	}
 
@@ -116,7 +117,7 @@ public class DecisionService {
 		final var decisionEntity = toDecisionEntity(decision, errandEntity, municipalityId, namespace);
 		errandEntity.getDecisions().add(decisionEntity);
 		final var updatedErrand = errandRepository.save(errandEntity);
-		processService.updateProcess(updatedErrand);
+		applicationEventPublisher.publishEvent(updatedErrand);
 
 		// Create notification
 		notificationService.create(municipalityId, namespace, Notification.builder()
@@ -139,7 +140,7 @@ public class DecisionService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(decisionId, errandId)));
 		errand.getDecisions().remove(decisionToRemove);
 		errandRepository.save(errand);
-		processService.updateProcess(errand);
+		applicationEventPublisher.publishEvent(errand);
 	}
 
 	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace, boolean locking) {

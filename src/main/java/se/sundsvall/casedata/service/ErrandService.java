@@ -17,6 +17,7 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 import java.util.List;
 import java.util.Optional;
 import org.hibernate.query.sqm.PathElementException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,11 +41,14 @@ public class ErrandService {
 	private final ErrandRepository errandRepository;
 	private final ProcessService processService;
 	private final NotificationService notificationService;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
-	public ErrandService(final ErrandRepository errandRepository, final ProcessService processService, final NotificationService notificationService) {
+	public ErrandService(final ErrandRepository errandRepository, final ProcessService processService, final NotificationService notificationService,
+		final ApplicationEventPublisher applicationEventPublisher) {
 		this.errandRepository = errandRepository;
 		this.processService = processService;
 		this.notificationService = notificationService;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	private String determineSubType(final ErrandEntity updatedErrand) {
@@ -104,7 +108,7 @@ public class ErrandService {
 		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace);
 		final var updatedErrand = errandRepository.save(PatchMapper.patchErrand(oldErrand, patchErrand));
 
-		processService.updateProcess(updatedErrand);
+		applicationEventPublisher.publishEvent(updatedErrand);
 
 		// Create notification
 		notificationService.create(municipalityId, namespace, Notification.builder()

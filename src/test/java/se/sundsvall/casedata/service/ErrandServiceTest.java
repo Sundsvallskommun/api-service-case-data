@@ -37,6 +37,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +46,6 @@ import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.FacilityRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
@@ -63,10 +63,10 @@ class ErrandServiceTest {
 	private ErrandRepository errandRepositoryMock;
 
 	@Mock
-	private FacilityRepository facilityRepositoryMock;
+	private ProcessService processServiceMock;
 
 	@Mock
-	private ProcessService processServiceMock;
+	private ApplicationEventPublisher applicationEventPublisherMock;
 
 	@Mock
 	private NotificationService notificationServiceMock;
@@ -204,13 +204,14 @@ class ErrandServiceTest {
 
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(updatedErrand);
+		verify(applicationEventPublisherMock).publishEvent(updatedErrand);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(updatedErrand));
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
 		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
 		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
 		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
+		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock, notificationServiceMock, applicationEventPublisherMock);
 	}
 
 	@Test
@@ -285,7 +286,7 @@ class ErrandServiceTest {
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(entity);
-		verify(processServiceMock).updateProcess(entity);
+		verify(applicationEventPublisherMock).publishEvent(entity);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(entity));
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
