@@ -34,6 +34,8 @@ spring:
             token-uri: ${config.messaging.token-url}
           messaging-settings:
             token-uri: ${config.messaging-settings.token-url}
+          relation:
+            token-uri: ${config.relation.token-url}
         registration:
           parkingpermit:
             authorization-grant-type: client_credentials
@@ -75,6 +77,12 @@ spring:
             provider: messaging
             client-id: ${config.messaging-settings.client-id}
             client-secret: ${config.messaging-settings.client-secret}
+          relation:
+            authorization-grant-type: client_credentials
+            provider: message-exchange
+            client-id: ${config.relation.client-id}
+            client-secret: ${config.relation.client-secret}
+
 #----------------------------------------
 # Open API
 #----------------------------------------
@@ -123,6 +131,10 @@ integration:
     readTimeout: 20
   messaging-settings:
     base-url: ${config.messaging-settings.base-url}
+    connectTimeout: 5
+    readTimeout: 20
+  relation:
+    base-url: ${config.relation.base-url}
     connectTimeout: 5
     readTimeout: 20
 
@@ -197,3 +209,8 @@ scheduler:
     cron: 0 0 0 * * *
     shedlock-lock-at-most-for: PT4M
     maximum-execution-time: PT2M
+  messageexchange:
+    name: message_exchange
+    cron: 0 */1 * * * *
+    shedlock-lock-at-most-for: PT2M
+    maximum-execution-time: PT1M
