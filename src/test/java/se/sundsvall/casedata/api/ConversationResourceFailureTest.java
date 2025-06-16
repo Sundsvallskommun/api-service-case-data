@@ -37,6 +37,8 @@ class ConversationResourceFailureTest {
 	private static final String ERRAND_ID = "123";
 	private static final String CONVERSATION_ID = randomUUID().toString();
 	private static final String INVALID = "#invalid";
+	private static final String MESSAGE_ID = randomUUID().toString();
+	private static final String ATTACHMENT_ID = randomUUID().toString();
 
 	@MockitoBean
 	private ConversationService conversationServiceMock;
@@ -348,5 +350,131 @@ class ConversationResourceFailureTest {
 
 		// Verification
 		verifyNoInteractions(conversationServiceMock);
+	}
+
+	@Test
+	void getMessageAttachmentsWithInvalidConversationId() {
+
+		// Call
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_URL + "/{conversationId}/messages/{messageId}/attachments/{attachmentId}")
+				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "errandId", ERRAND_ID, "conversationId", INVALID, "messageId", MESSAGE_ID, "attachmentId", ATTACHMENT_ID)))
+			.accept(APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isNotNull();
+		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
+		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
+		assertThat(response.getViolations())
+			.extracting(Violation::getField, Violation::getMessage)
+			.containsExactly(tuple("getConversationMessageAttachment.conversationId", "not a valid UUID"));
+
+		// Verification
+		verifyNoInteractions(conversationServiceMock);
+	}
+
+	@Test
+	void getMessageAttachmentsWithInvalidNamespace() {
+
+		// Call
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_URL + "/{conversationId}/messages/{messageId}/attachments/{attachmentId}")
+				.build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "errandId", ERRAND_ID, "conversationId", CONVERSATION_ID, "messageId", MESSAGE_ID, "attachmentId", ATTACHMENT_ID)))
+			.accept(APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isNotNull();
+		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
+		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
+		assertThat(response.getViolations())
+			.extracting(Violation::getField, Violation::getMessage)
+			.containsExactly(tuple("getConversationMessageAttachment.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
+
+		// Verification
+		verifyNoInteractions(conversationServiceMock);
+
+	}
+
+	@Test
+	void getMessageAttachmentsWithInvalidMunicipalityId() {
+		// Call
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_URL + "/{conversationId}/messages/{messageId}/attachments/{attachmentId}")
+				.build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "errandId", ERRAND_ID, "conversationId", CONVERSATION_ID, "messageId", MESSAGE_ID, "attachmentId", ATTACHMENT_ID)))
+			.accept(APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isNotNull();
+		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
+		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
+		assertThat(response.getViolations())
+			.extracting(Violation::getField, Violation::getMessage)
+			.containsExactly(tuple("getConversationMessageAttachment.municipalityId", "not a valid municipality ID"));
+
+		// Verification
+		verifyNoInteractions(conversationServiceMock);
+	}
+
+	@Test
+	void getMessageAttachmentsWithInvalidMessageId() {
+
+		// Call
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_URL + "/{conversationId}/messages/{messageId}/attachments/{attachmentId}")
+				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "errandId", ERRAND_ID, "conversationId", CONVERSATION_ID, "messageId", INVALID, "attachmentId", ATTACHMENT_ID)))
+			.accept(APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isNotNull();
+		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
+		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
+		assertThat(response.getViolations())
+			.extracting(Violation::getField, Violation::getMessage)
+			.containsExactly(tuple("getConversationMessageAttachment.messageId", "not a valid UUID"));
+		// Verification
+		verifyNoInteractions(conversationServiceMock);
+
+	}
+
+	@Test
+	void getMessageAttachmentsWithInvalidAttachmentId() {
+
+		// Call
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_URL + "/{conversationId}/messages/{messageId}/attachments/{attachmentId}")
+				.build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "errandId", ERRAND_ID, "conversationId", CONVERSATION_ID, "messageId", MESSAGE_ID, "attachmentId", INVALID)))
+			.accept(APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isNotNull();
+		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
+		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
+		assertThat(response.getViolations())
+			.extracting(Violation::getField, Violation::getMessage)
+			.containsExactly(tuple("getConversationMessageAttachment.attachmentId", "not a valid UUID"));
+
+		// Verification
+		verifyNoInteractions(conversationServiceMock);
+
 	}
 }

@@ -85,7 +85,7 @@ public interface MessageExchangeClient {
 		@PathVariable("conversationId") final String conversationId,
 		@PathVariable("messageId") final String messageId);
 
-	@GetMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}/messages{messageId}/attachments/{attachmentId}", produces = ALL_VALUE)
+	@GetMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}/messages/{messageId}/attachments/{attachmentId}", produces = ALL_VALUE)
 	ResponseEntity<InputStreamResource> readErrandAttachment(
 		@PathVariable("municipalityId") final String municipalityId,
 		@PathVariable("namespace") final String namespace,

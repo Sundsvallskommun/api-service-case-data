@@ -16,6 +16,8 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 import static se.sundsvall.casedata.api.model.conversation.ConversationType.INTERNAL;
 
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -230,5 +232,25 @@ class ConversationResourceTest {
 
 		verify(conversationServiceMock).getMessages(eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(ERRAND_ID), eq(CONVERSATION_ID), any());
 		verifyNoMoreInteractions(conversationServiceMock);
+	}
+
+	@Test
+	void getMessageAttachment() throws IOException {
+
+		// Act
+		webTestClient.get()
+			.uri(builder -> builder.path(BASE_URL + "/{conversationId}/messages/{messageId}/attachments/{attachmentId}")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", ERRAND_ID, "conversationId", CONVERSATION_ID,
+					"messageId", randomUUID().toString(),
+					"attachmentId", randomUUID().toString())))
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody()
+			.returnResult();
+
+		// Assert
+		verify(conversationServiceMock).getConversationMessageAttachment(any(String.class), any(String.class), any(Long.class), any(String.class), any(String.class), any(String.class), any(HttpServletResponse.class));
+		verifyNoMoreInteractions(conversationServiceMock, conversationServiceMock);
+
 	}
 }

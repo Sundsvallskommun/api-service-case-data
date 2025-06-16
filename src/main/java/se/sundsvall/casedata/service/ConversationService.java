@@ -12,6 +12,8 @@ import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMe
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessageRequest;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.updateConversationEntity;
 
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
@@ -130,6 +132,39 @@ public class ConversationService {
 	private void saveAttachment(final Long errandId, final String municipalityId, final String namespace, final MultipartFile attachment) {
 
 		attachmentService.create(errandId, toAttachment(attachment, errandId, municipalityId, namespace), municipalityId, namespace);
+	}
+
+	public void getConversationMessageAttachment(
+		final String municipalityId, final String namespace, final Long errandId,
+		final String conversationId, final String messageId, final String attachmentId,
+		final HttpServletResponse response) throws IOException {
+
+		final var conversation = getConversationEntity(municipalityId, namespace, errandId, conversationId);
+		final var exchangeId = conversation.getMessageExchangeId();
+
+		if (exchangeId == null) {
+			throw Problem.valueOf(NOT_FOUND, "Conversation not found in local database");
+		}
+
+		final var attachmentResponse = messageExchangeClient.readErrandAttachment(
+			municipalityId, messageExchangeNamespace, exchangeId, messageId, attachmentId);
+
+		final var body = attachmentResponse.getBody();
+		final var contentType = attachmentResponse.getHeaders().getContentType();
+
+		if (!attachmentResponse.getStatusCode().is2xxSuccessful() || body == null || contentType == null) {
+			throw Problem.valueOf(NOT_FOUND, "Attachment not found or invalid in Message Exchange");
+		}
+
+		response.setContentType(contentType.toString());
+
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + body.getFilename() + "\"");
+		response.setContentLengthLong(attachmentResponse.getHeaders().getContentLength());
+
+		try (final var in = body.getInputStream(); final var out = response.getOutputStream()) {
+			in.transferTo(out);
+			out.flush();
+		}
 	}
 
 }
