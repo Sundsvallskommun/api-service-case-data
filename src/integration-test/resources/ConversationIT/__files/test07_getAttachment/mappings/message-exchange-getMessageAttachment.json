@@ -1,0 +1,14 @@
+{
+	"request": {
+		"method": "GET",
+		"url": "/message-exchange/2281/casedata/conversations/c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c5/messages/d82bd8ac-1507-4d9a-958d-369261eecc15/attachments/a1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c5"
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "image/jpeg",
+			"Content-Disposition": "attachment; filename=\"Test_image.jpg\""
+		},
+		"bodyFileName": "test07_getAttachment/response/Test_image.jpg",
+		"status": 200
+	}
+}

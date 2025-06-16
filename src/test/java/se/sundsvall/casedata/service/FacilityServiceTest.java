@@ -27,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -49,7 +50,7 @@ class FacilityServiceTest {
 	private FacilityRepository facilityRepositoryMock;
 
 	@Mock
-	private ProcessService processServiceMock;
+	private ApplicationEventPublisher applicationEventPublisherMock;
 
 	private ErrandEntity mockErrandFindByIdAndMunicipalityIdAndNamespace() {
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
@@ -85,10 +86,10 @@ class FacilityServiceTest {
 
 		// Assert
 		assertThat(result).isEqualTo(facility);
-		verify(processServiceMock).updateProcess(errand);
+		verify(applicationEventPublisherMock).publishEvent(errand);
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(facilityRepositoryMock).save(any());
-		verifyNoMoreInteractions(processServiceMock, errandRepositoryMock);
+		verifyNoMoreInteractions(applicationEventPublisherMock, errandRepositoryMock);
 	}
 
 	@Test
@@ -162,7 +163,7 @@ class FacilityServiceTest {
 
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(any());
-		verify(processServiceMock).updateProcess(errand);
+		verify(applicationEventPublisherMock).publishEvent(errand);
 	}
 
 	@Test
@@ -182,7 +183,9 @@ class FacilityServiceTest {
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
+		verify(applicationEventPublisherMock).publishEvent(errand);
+		assertThat(errand.getFacilities()).doesNotContain(facility);
+		verifyNoMoreInteractions(errandRepositoryMock, applicationEventPublisherMock);
 	}
 
 	@Test
@@ -215,6 +218,7 @@ class FacilityServiceTest {
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(facilityRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(facilityId, errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(facilityRepositoryMock).save(facility);
-		verify(processServiceMock).updateProcess(errand);
+		verify(applicationEventPublisherMock).publishEvent(errand);
+		verifyNoMoreInteractions(errandRepositoryMock, facilityRepositoryMock, applicationEventPublisherMock);
 	}
 }

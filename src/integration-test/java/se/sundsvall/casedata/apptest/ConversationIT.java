@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.apptest;
 
 import static java.text.MessageFormat.format;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -9,6 +10,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
+import static org.springframework.util.MimeTypeUtils.IMAGE_JPEG_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.JWT_HEADER_VALUE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
@@ -18,6 +20,7 @@ import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADE
 import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
@@ -35,6 +38,8 @@ class ConversationIT extends AbstractAppTest {
 	private static final String CONVERSATION_ID = "896a44d8-724b-11ed-a840-0242ac110002";
 	private static final Long ERRAND_ID = 1L;
 	private static final String PATH = "/{0}/{1}/errands/{2}/communication/conversations";
+	private static final String MESSAGE_ID = "d82bd8ac-1507-4d9a-958d-369261eecc15";
+	private static final String ATTACHMENT_ID = "a1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c5";
 
 	@Test
 	void test01_getConversation() {
@@ -114,6 +119,17 @@ class ConversationIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 
+	}
+
+	@Test
+	void test07_getAttachment() throws IOException {
+		setupCall()
+			.withServicePath(format(PATH + "/{3}/messages/{4}/attachments/{5}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID, MESSAGE_ID, ATTACHMENT_ID))
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(IMAGE_JPEG_VALUE))
+			.withExpectedBinaryResponse("Test_image.jpg")
+			.sendRequestAndVerifyResponse();
 	}
 
 }

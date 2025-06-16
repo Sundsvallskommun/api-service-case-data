@@ -20,9 +20,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import java.io.IOException;
 import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -155,6 +157,24 @@ class ConversationResource {
 		@ParameterObject final Pageable pageable) {
 
 		return ok(conversationService.getMessages(municipalityId, namespace, errandId, conversationId, pageable));
+	}
+
+	@GetMapping(path = "{conversationId}/messages/{messageId}/attachments/{attachmentId}", produces = ALL_VALUE)
+	@Operation(summary = "Get a streamed conversation message attachment.", description = "Fetches the conversation message attachment that matches the provided ID, in a streamed manner", responses = {
+		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class))),
+	})
+	void getConversationMessageAttachment(
+		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "1") @PathVariable("errandId") final Long errandId,
+		@Parameter(name = "conversationId", description = "Conversation ID", example = "1aefbbb8-de82-414b-b5d7-ba7c5bbe4506") @ValidUuid @PathVariable("conversationId") final String conversationId,
+		@Parameter(name = "messageId", description = "Message ID", example = "be3a5c7b-0f39-4867-8065-6a286b36fcc3") @ValidUuid @PathVariable("messageId") final String messageId,
+		@Parameter(name = "attachmentId", description = "Conversation message attachment ID", example = "b82bd8ac-1507-4d9a-958d-369261eecc15") @ValidUuid @PathVariable final String attachmentId,
+		final HttpServletResponse response) throws IOException {
+
+		conversationService.getConversationMessageAttachment(municipalityId, namespace, errandId, conversationId, messageId, attachmentId, response);
+
 	}
 
 }
