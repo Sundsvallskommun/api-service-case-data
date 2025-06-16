@@ -11,6 +11,7 @@ import static se.sundsvall.casedata.service.util.mappers.PutMapper.putStakeholde
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
@@ -27,12 +28,13 @@ public class StakeholderService {
 
 	private final StakeholderRepository stakeholderRepository;
 	private final ErrandRepository errandRepository;
-	private final ProcessService processService;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
-	public StakeholderService(final StakeholderRepository stakeholderRepository, final ErrandRepository errandRepository, final ProcessService processService) {
+	public StakeholderService(final StakeholderRepository stakeholderRepository, final ErrandRepository errandRepository,
+		final ApplicationEventPublisher applicationEventPublisher) {
 		this.stakeholderRepository = stakeholderRepository;
 		this.errandRepository = errandRepository;
-		this.processService = processService;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	public List<Stakeholder> findStakeholders(final Long errandId, final String municipalityId, final String namespace) {
@@ -107,7 +109,7 @@ public class StakeholderService {
 
 		errand.getStakeholders().remove(stakeholderToRemove);
 		errandRepository.save(errand);
-		processService.updateProcess(errand);
+		applicationEventPublisher.publishEvent(errand);
 	}
 
 	public Stakeholder addToErrand(final Long errandId, final String municipalityId, final String namespace, final Stakeholder stakeholder) {
@@ -117,7 +119,8 @@ public class StakeholderService {
 		stakeholderEntity.setErrand(oldErrand);
 		oldErrand.getStakeholders().add(stakeholderEntity);
 		final var updatedErrand = errandRepository.save(oldErrand);
-		processService.updateProcess(updatedErrand);
+		applicationEventPublisher.publishEvent(updatedErrand);
+
 		return toStakeholder(stakeholderEntity);
 	}
 
@@ -134,7 +137,7 @@ public class StakeholderService {
 			});
 
 		final var updatedErrand = errandRepository.save(oldErrand);
-		processService.updateProcess(updatedErrand);
+		applicationEventPublisher.publishEvent(updatedErrand);
 	}
 
 	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace, boolean locking) {

@@ -6,6 +6,7 @@ import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionalEventListener;
 import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
@@ -36,6 +37,7 @@ public class ProcessService {
 		return null;
 	}
 
+	@TransactionalEventListener
 	public void updateProcess(final ErrandEntity errand) {
 		if (CAMUNDA_USER.equals(errand.getUpdatedByClient())) {
 			LOGGER.warn("Errand with id: {} was updated by camunda user, no need to update process", errand.getId());
