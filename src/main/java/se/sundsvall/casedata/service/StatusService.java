@@ -4,6 +4,7 @@ import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatusEntity;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
@@ -16,11 +17,11 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 public class StatusService {
 
 	private final ErrandRepository errandRepository;
-	private final ProcessService processService;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
-	public StatusService(final ErrandRepository errandRepository, final ProcessService processService) {
+	public StatusService(final ErrandRepository errandRepository, final ApplicationEventPublisher applicationEventPublisher) {
 		this.errandRepository = errandRepository;
-		this.processService = processService;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	public void addToErrand(final Long errandId, final String municipalityId, final String namespace, final Status status) {
@@ -29,7 +30,7 @@ public class StatusService {
 		oldErrand.setStatus(statusEntity);
 		oldErrand.getStatuses().add(statusEntity);
 		final var updatedErrand = errandRepository.save(oldErrand);
-		processService.updateProcess(updatedErrand);
+		applicationEventPublisher.publishEvent(updatedErrand);
 	}
 
 	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace) {

@@ -3,6 +3,7 @@ package se.sundsvall.casedata.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,7 +29,7 @@ class StatusServiceTest {
 	private ErrandRepository errandRepositoryMock;
 
 	@Mock
-	private ProcessService processServiceMock;
+	private ApplicationEventPublisher applicationEventPublisherMock;
 
 	@Test
 	void addToErrand() {
@@ -46,6 +48,7 @@ class StatusServiceTest {
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
+		verify(applicationEventPublisherMock).publishEvent(errand);
+		verifyNoMoreInteractions(errandRepositoryMock, applicationEventPublisherMock);
 	}
 }

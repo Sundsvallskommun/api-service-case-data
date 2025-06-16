@@ -7,6 +7,7 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacility;
 
 import java.util.List;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
@@ -25,12 +26,12 @@ public class FacilityService {
 	private static final String FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Facility with id: %s was not found on errand with id: %s";
 	private final ErrandRepository errandRepository;
 	private final FacilityRepository facilityRepository;
-	private final ProcessService processService;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
-	public FacilityService(final ErrandRepository errandRepository, final FacilityRepository facilityRepository, final ProcessService processService) {
+	public FacilityService(final ErrandRepository errandRepository, final FacilityRepository facilityRepository, final ApplicationEventPublisher applicationEventPublisher) {
 		this.errandRepository = errandRepository;
 		this.facilityRepository = facilityRepository;
-		this.processService = processService;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	public List<Facility> findFacilities(final Long errandId, final String municipalityId, final String namespace) {
@@ -51,7 +52,7 @@ public class FacilityService {
 
 		final var createdFacility = toFacility(facilityRepository.save(entity));
 
-		processService.updateProcess(errand);
+		applicationEventPublisher.publishEvent(errand);
 
 		return createdFacility;
 	}
@@ -63,7 +64,7 @@ public class FacilityService {
 
 		final var updatedFacility = patchFacility(facilityEntity, facility);
 		final var result = toFacility(facilityRepository.save(updatedFacility));
-		processService.updateProcess(errand);
+		applicationEventPublisher.publishEvent(errand);
 
 		return result;
 	}
@@ -91,7 +92,7 @@ public class FacilityService {
 		}).toList());
 
 		final var updatedErrand = errandRepository.save(oldErrand);
-		processService.updateProcess(updatedErrand);
+		applicationEventPublisher.publishEvent(updatedErrand);
 	}
 
 	public void delete(final Long errandId, final String municipalityId, final String namespace, final Long facilityId) {
@@ -103,7 +104,7 @@ public class FacilityService {
 
 		errand.getFacilities().remove(facilityToRemove);
 		errandRepository.save(errand);
-		processService.updateProcess(errand);
+		applicationEventPublisher.publishEvent(errand);
 	}
 
 	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace, boolean locking) {

@@ -42,6 +42,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.Stakeholder;
@@ -68,7 +69,7 @@ class StakeholderServiceTest {
 	private ErrandRepository errandRepositoryMock;
 
 	@Mock
-	private ProcessService processServiceMock;
+	private ApplicationEventPublisher applicationEventPublisherMock;
 
 	@Captor
 	private ArgumentCaptor<ErrandEntity> errandCaptor;
@@ -263,7 +264,8 @@ class StakeholderServiceTest {
 			.ignoringFields("municipalityId", "errand", "namespace", "created", "updated")
 			.isEqualTo(stakeholders.getFirst());
 
-		verify(processServiceMock).updateProcess(errand);
+		verify(applicationEventPublisherMock).publishEvent(errand);
+		verifyNoMoreInteractions(errandRepositoryMock, applicationEventPublisherMock);
 	}
 
 	@Test
@@ -285,9 +287,9 @@ class StakeholderServiceTest {
 
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(processServiceMock).updateProcess(errand);
+		verify(applicationEventPublisherMock).publishEvent(errand);
 		verify(errandRepositoryMock).save(errand);
-		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
+		verifyNoMoreInteractions(errandRepositoryMock, applicationEventPublisherMock);
 	}
 
 	@Test
@@ -320,6 +322,7 @@ class StakeholderServiceTest {
 
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
+		verify(applicationEventPublisherMock).publishEvent(errand);
+		verifyNoMoreInteractions(errandRepositoryMock, applicationEventPublisherMock);
 	}
 }

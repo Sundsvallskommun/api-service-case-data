@@ -31,6 +31,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.model.Note;
@@ -51,7 +52,7 @@ class NoteServiceTest {
 	private ErrandRepository errandRepositoryMock;
 
 	@Mock
-	private ProcessService processServiceMock;
+	private ApplicationEventPublisher applicationEventPublisherMock;
 
 	@Mock
 	private NotificationService notificationServiceMock;
@@ -191,8 +192,8 @@ class NoteServiceTest {
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
-		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
+		verify(applicationEventPublisherMock).publishEvent(errand);
+		verifyNoMoreInteractions(errandRepositoryMock, applicationEventPublisherMock);
 	}
 
 	@Test
@@ -219,11 +220,12 @@ class NoteServiceTest {
 		assertThat(errand.getNotes()).isNotEmpty().hasSize(2);
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errand);
-		verify(processServiceMock).updateProcess(errand);
+		verify(applicationEventPublisherMock).publishEvent(errand);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(errand));
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Notering skapad");
 		assertThat(notificationCaptor.getValue().getType()).isEqualTo("CREATE");
 		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
 		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
+		verifyNoMoreInteractions(errandRepositoryMock, applicationEventPublisherMock, notificationServiceMock);
 	}
 }
