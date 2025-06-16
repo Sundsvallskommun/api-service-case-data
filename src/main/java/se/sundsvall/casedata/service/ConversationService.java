@@ -32,14 +32,16 @@ public class ConversationService {
 	private final ConversationRepository conversationRepository;
 	private final MessageExchangeClient messageExchangeClient;
 	private final AttachmentService attachmentService;
+	private final MessageService messageService;
 
 	@Value("${integration.message-exchange.namespace:casedata}")
 	private String messageExchangeNamespace;
 
-	public ConversationService(final ConversationRepository conversationRepository, final MessageExchangeClient messageExchangeClient, final AttachmentService attachmentService) {
+	public ConversationService(final ConversationRepository conversationRepository, final MessageExchangeClient messageExchangeClient, final AttachmentService attachmentService, final MessageService messageService) {
 		this.conversationRepository = conversationRepository;
 		this.messageExchangeClient = messageExchangeClient;
 		this.attachmentService = attachmentService;
+		this.messageService = messageService;
 	}
 
 	public String createConversation(final String municipalityId, final String namespace, final Long errandId, final Conversation conversation) {
@@ -109,6 +111,9 @@ public class ConversationService {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message in Message Exchange");
 		}
 		Optional.ofNullable(attachments).orElse(emptyList()).forEach(attachment -> saveAttachment(errandId, municipalityId, namespace, attachment));
+
+		messageService.sendMessageNotification(municipalityId, namespace, errandId);
+
 	}
 
 	public Page<Message> getMessages(final String municipalityId, final String namespace, final Long errandId, final String conversationId, final Pageable pageable) {

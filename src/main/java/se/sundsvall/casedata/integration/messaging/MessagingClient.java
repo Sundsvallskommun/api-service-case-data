@@ -24,7 +24,7 @@ public interface MessagingClient {
 	 * @return                response containing id and delivery results for sent message
 	 */
 	@PostMapping(path = "/{municipalityId}/messages", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-	MessageResult sendEmail(
+	MessageResult sendMessage(
 		@PathVariable("municipalityId") final String municipalityId,
 		@RequestBody final MessageRequest messageRequest);
 }
