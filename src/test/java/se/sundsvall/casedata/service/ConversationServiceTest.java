@@ -38,6 +38,8 @@ class ConversationServiceTest {
 
 	private static final String MESSAGE_EXCHANGE_NAMESPACE = "case-data";
 	@Mock
+	private MessageService messageServiceMock;
+	@Mock
 	private ConversationRepository conversationRepositoryMock;
 	@Mock
 	private MessageExchangeClient messageExchangeClientMock;
@@ -75,7 +77,7 @@ class ConversationServiceTest {
 		verify(messageExchangeClientMock).createConversation(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), any());
 		verify(conversationRepositoryMock).save(any(ConversationEntity.class));
 		verifyNoMoreInteractions(messageExchangeClientMock, conversationRepositoryMock);
-		verifyNoInteractions(attachmentServiceMock);
+		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -95,7 +97,7 @@ class ConversationServiceTest {
 
 		verify(messageExchangeClientMock).createConversation(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), any());
 		verifyNoMoreInteractions(messageExchangeClientMock);
-		verifyNoInteractions(conversationRepositoryMock, attachmentServiceMock);
+		verifyNoInteractions(conversationRepositoryMock, attachmentServiceMock, messageServiceMock);
 
 	}
 
@@ -116,7 +118,7 @@ class ConversationServiceTest {
 
 		verify(messageExchangeClientMock).createConversation(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), any());
 		verifyNoMoreInteractions(messageExchangeClientMock);
-		verifyNoInteractions(conversationRepositoryMock, attachmentServiceMock);
+		verifyNoInteractions(conversationRepositoryMock, attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -162,7 +164,7 @@ class ConversationServiceTest {
 		verify(messageExchangeClientMock).getConversation(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId);
 		verify(conversationRepositoryMock).save(conversationEntity);
 		verifyNoMoreInteractions(messageExchangeClientMock, conversationRepositoryMock);
-		verifyNoInteractions(attachmentServiceMock);
+		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -187,7 +189,7 @@ class ConversationServiceTest {
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(messageExchangeClientMock).getConversation(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId);
 		verifyNoMoreInteractions(messageExchangeClientMock, conversationRepositoryMock);
-		verifyNoInteractions(attachmentServiceMock);
+		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -207,7 +209,7 @@ class ConversationServiceTest {
 
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verifyNoInteractions(messageExchangeClientMock);
-		verifyNoMoreInteractions(conversationRepositoryMock, attachmentServiceMock);
+		verifyNoMoreInteractions(conversationRepositoryMock, attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -232,7 +234,7 @@ class ConversationServiceTest {
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(messageExchangeClientMock).getConversation(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId);
 		verifyNoMoreInteractions(messageExchangeClientMock, conversationRepositoryMock);
-		verifyNoInteractions(attachmentServiceMock);
+		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -257,7 +259,7 @@ class ConversationServiceTest {
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(messageExchangeClientMock).getConversation(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId);
 		verifyNoMoreInteractions(messageExchangeClientMock, conversationRepositoryMock);
-		verifyNoInteractions(attachmentServiceMock);
+		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -297,7 +299,7 @@ class ConversationServiceTest {
 
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandId(municipalityId, namespace, String.valueOf(errandId));
 		verifyNoInteractions(messageExchangeClientMock, attachmentServiceMock);
-		verifyNoMoreInteractions(conversationRepositoryMock);
+		verifyNoMoreInteractions(conversationRepositoryMock, messageServiceMock);
 
 	}
 
@@ -349,7 +351,7 @@ class ConversationServiceTest {
 		verify(messageExchangeClientMock).updateConversation(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any());
 		verify(conversationRepositoryMock).save(any(ConversationEntity.class));
 		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
-		verifyNoInteractions(attachmentServiceMock);
+		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -405,7 +407,7 @@ class ConversationServiceTest {
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(messageExchangeClientMock).updateConversation(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any());
 		verifyNoMoreInteractions(conversationRepositoryMock);
-		verifyNoInteractions(attachmentServiceMock);
+		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -435,7 +437,8 @@ class ConversationServiceTest {
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(messageExchangeClientMock).createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any());
 		verify(attachmentServiceMock).create(eq(errandId), any(Attachment.class), eq(municipalityId), eq(namespace));
-		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock, attachmentServiceMock);
+		verify(messageServiceMock).sendMessageNotification(municipalityId, namespace, errandId);
+		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock, attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -461,7 +464,7 @@ class ConversationServiceTest {
 
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(messageExchangeClientMock).createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any());
-		verifyNoInteractions(attachmentServiceMock);
+		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
 		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
 	}
 
@@ -490,6 +493,7 @@ class ConversationServiceTest {
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(messageExchangeClientMock).getMessages(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId, pageable);
 		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
+		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -516,6 +520,7 @@ class ConversationServiceTest {
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(messageExchangeClientMock).getMessages(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId, pageable);
 		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
+		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test
@@ -542,6 +547,7 @@ class ConversationServiceTest {
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(messageExchangeClientMock).getMessages(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId, pageable);
 		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
+		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
 	}
 
 	@Test

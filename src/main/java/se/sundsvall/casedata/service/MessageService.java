@@ -5,11 +5,13 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toMessagingMessageRequest;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
+import generated.se.sundsvall.messagingsettings.SenderInfoResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -23,6 +25,9 @@ import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.messaging.MessagingClient;
+import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsClient;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 
 @Service
@@ -34,16 +39,19 @@ public class MessageService {
 	private final MessageRepository messageRepository;
 	private final ErrandRepository errandRepository;
 	private final MessageAttachmentRepository messageAttachmentRepository;
-
+	private final MessagingClient messagingClient;
+	private final MessagingSettingsClient messagingSettingsClient;
 	private final NotificationService notificationService;
 
 	private final MessageMapper mapper;
 
 	public MessageService(final MessageRepository messageRepository, final ErrandRepository errandRepository,
-		final MessageAttachmentRepository messageAttachmentRepository, final NotificationService notificationService, final MessageMapper mapper) {
+		final MessageAttachmentRepository messageAttachmentRepository, final MessagingClient messagingClient, final MessagingSettingsClient messagingSettingsClient, final NotificationService notificationService, final MessageMapper mapper) {
 		this.messageRepository = messageRepository;
 		this.errandRepository = errandRepository;
 		this.messageAttachmentRepository = messageAttachmentRepository;
+		this.messagingClient = messagingClient;
+		this.messagingSettingsClient = messagingSettingsClient;
 		this.notificationService = notificationService;
 		this.mapper = mapper;
 	}
@@ -106,4 +114,36 @@ public class MessageService {
 			throw Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId));
 		}
 	}
+
+	public void sendMessageNotification(final String municipalityId, final String namespace, final Long errandId) {
+
+		final var errand = errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+
+		final var senderInfo = getSenderInfo(municipalityId, namespace);
+
+		sendMessageNotification(errand, senderInfo);
+	}
+
+	private SenderInfoResponse getSenderInfo(final String municipalityId, final String namespace) {
+		final var senderInfo = messagingSettingsClient.getSenderInfo(municipalityId, namespace);
+
+		if (senderInfo == null) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve sender information for municipality '%s' and namespace '%s'".formatted(municipalityId, namespace));
+		}
+		return senderInfo;
+	}
+
+	public void sendMessageNotification(final ErrandEntity errandEntity, final SenderInfoResponse senderInfo) {
+
+		final var request = toMessagingMessageRequest(errandEntity, senderInfo);
+
+		final var message = messagingClient.sendMessage(errandEntity.getMunicipalityId(), request);
+
+		if (message == null) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message notification");
+		}
+
+	}
+
 }

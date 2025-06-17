@@ -19,6 +19,8 @@ import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 
+import generated.se.sundsvall.messaging.MessageResult;
+import generated.se.sundsvall.messagingsettings.SenderInfoResponse;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Blob;
@@ -26,6 +28,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
@@ -49,11 +52,19 @@ import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+import se.sundsvall.casedata.integration.messaging.MessagingClient;
+import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsClient;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.casedata.service.util.BlobBuilder;
 
 @ExtendWith(MockitoExtension.class)
 class MessageServiceTest {
+
+	@Mock
+	private MessagingSettingsClient messagingSettingsClientMock;
+
+	@Mock
+	private MessagingClient messagingClientMock;
 
 	@Mock
 	private ErrandRepository errandRepositoryMock;
@@ -96,6 +107,9 @@ class MessageServiceTest {
 
 	@Captor
 	private ArgumentCaptor<Notification> notificationCaptor;
+
+	@Captor
+	private ArgumentCaptor<generated.se.sundsvall.messaging.MessageRequest> messageRequestCaptor;
 
 	@Test
 	void findMessages() {
@@ -296,4 +310,90 @@ class MessageServiceTest {
 		verify(messageRepositoryMock, never()).save(any());
 		verifyNoInteractions(messageMock);
 	}
+
+	@Test
+	void sendMessageNotification() {
+		// Arrange
+		final var errandId = 1L;
+		final var messageId = UUID.randomUUID();
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE)).thenReturn(new SenderInfoResponse());
+		when(messagingClientMock.sendMessage(eq(MUNICIPALITY_ID), any())).thenReturn(
+			new MessageResult().messageId(messageId));
+		// Act
+		messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId);
+
+		// Assert
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messagingClientMock).sendMessage(eq(MUNICIPALITY_ID), messageRequestCaptor.capture());
+		assertThat(messageRequestCaptor.getValue().getMessages()).hasSize(1);
+		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
+
+	}
+
+	@Test
+	void sendMessageNotificationWithNullSenderInfo() {
+		// Arrange
+		final var errandId = 1L;
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE)).thenReturn(null);
+
+		// Act & Assert
+		assertThatThrownBy(() -> messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.isInstanceOf(ThrowableProblem.class)
+			.hasFieldOrPropertyWithValue("status", Status.INTERNAL_SERVER_ERROR)
+			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to retrieve sender information for municipality '2281' and namespace 'MY_NAMESPACE'");
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messagingSettingsClientMock).getSenderInfo(MUNICIPALITY_ID, NAMESPACE);
+		verifyNoInteractions(messagingClientMock, messageMapperMock, notificationServiceMock);
+
+	}
+
+	@Test
+	void sendMessageNotificationWithErrandNotFound() {
+		// Arrange
+		final var errandId = 1L;
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.empty());
+
+		// Act & Assert
+		assertThatThrownBy(() -> messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.isInstanceOf(ThrowableProblem.class)
+			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
+			.hasFieldOrPropertyWithValue("message", "Not Found: Errand with id:'1' not found in namespace:'MY_NAMESPACE' for municipality with id:'2281'");
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoInteractions(messagingSettingsClientMock, messagingClientMock, messageMapperMock, notificationServiceMock);
+
+	}
+
+	@Test
+	void sendMessageNotificationFailed() {
+		// Arrange
+		final var errandId = 1L;
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE)).thenReturn(new SenderInfoResponse());
+		when(messagingClientMock.sendMessage(eq(MUNICIPALITY_ID), any())).thenReturn(null);
+
+		// Act & Assert
+		assertThatThrownBy(() -> messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.isInstanceOf(ThrowableProblem.class)
+			.hasFieldOrPropertyWithValue("status", Status.INTERNAL_SERVER_ERROR)
+			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to create message notification");
+
+	}
+
 }
