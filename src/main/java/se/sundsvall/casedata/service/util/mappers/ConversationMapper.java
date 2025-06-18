@@ -128,10 +128,11 @@ public final class ConversationMapper {
 
 	public static ConversationEntity updateConversationEntity(final ConversationEntity conversationEntity, final generated.se.sundsvall.messageexchange.Conversation conversation) {
 		Optional.ofNullable(conversation)
-			.ifPresent(c -> conversationEntity
-				.withLatestSyncedSequenceNumber(c.getLatestSequenceNumber())
-				.withTopic(c.getTopic())
-				.withRelationIds(toStringList(toKeyValues(c.getExternalReferences()), RELATION_ID_KEY)));
+			.ifPresent(c -> {
+				conversationEntity.setLatestSyncedSequenceNumber(c.getLatestSequenceNumber());
+				conversationEntity.setTopic(c.getTopic());
+				conversationEntity.setRelationIds(toStringList(toKeyValues(c.getExternalReferences()), RELATION_ID_KEY));
+			});
 		return conversationEntity;
 	}
 

@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.within;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
@@ -246,6 +247,41 @@ class ConversationMapperTest {
 		// Assert
 		assertThat(result).isNotNull();
 		assertThat(result.getTopic()).isEqualTo(topic);
+	}
+
+	@Test
+	void updateConversationEntityMessageExchangeConversation() {
+		// Arrange
+		final var existingId = "existing-id";
+		final var existingTopic = "Existing Topic";
+		final var existingType = "EXTERNAL";
+		final var existingSequenceNumber = 1L;
+		final var existingRelationIds = List.of("relation1");
+		final var updatedTopic = "Updated Topic";
+		final var updatedRelationIds = List.of("relation2", "relation3");
+		final var updatedSequenceNumber = 2L;
+		final var existingEntity = ConversationEntity.builder()
+			.withId(existingId)
+			.withTopic(existingTopic)
+			.withType(existingType)
+			.withRelationIds(existingRelationIds)
+			.withLatestSyncedSequenceNumber(existingSequenceNumber)
+			.build();
+		final var messageExchangeConversation = new generated.se.sundsvall.messageexchange.Conversation()
+			.topic(updatedTopic)
+			.latestSequenceNumber(updatedSequenceNumber)
+			.externalReferences(List.of(new generated.se.sundsvall.messageexchange.KeyValues().key(RELATION_ID_KEY).values(updatedRelationIds)));
+
+		// Act
+		var result = ConversationMapper.updateConversationEntity(existingEntity, messageExchangeConversation);
+
+		// Assert
+		assertThat(result).isNotNull();
+		assertThat(result.getId()).isEqualTo(existingId);
+		assertThat(result.getType()).isEqualTo(existingType);
+		assertThat(result.getTopic()).isEqualTo(updatedTopic);
+		assertThat(result.getLatestSyncedSequenceNumber()).isEqualTo(updatedSequenceNumber);
+		assertThat(result.getRelationIds()).containsExactlyInAnyOrderElementsOf(updatedRelationIds);
 	}
 
 	@Test
