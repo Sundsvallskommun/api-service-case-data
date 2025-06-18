@@ -14,7 +14,8 @@ import se.sundsvall.casedata.integration.relation.configuration.RelationConfigur
 @FeignClient(
 	name = CLIENT_ID,
 	url = "${integration.relation.base-url}",
-	configuration = RelationConfiguration.class)
+	configuration = RelationConfiguration.class,
+	dismiss404 = true)
 @CircuitBreaker(name = CLIENT_ID)
 public interface RelationClient {
 
