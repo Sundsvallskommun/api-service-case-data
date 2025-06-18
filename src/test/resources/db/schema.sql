@@ -32,6 +32,7 @@
         errand_id varchar(36) not null,
         id varchar(36) not null,
         message_exchange_id varchar(36) not null,
+        target_relation_id varchar(36),
         topic varchar(255),
         primary key (id)
     ) engine=InnoDB;
@@ -225,6 +226,16 @@
     create table message_attachment_data (
         id integer not null auto_increment,
         file longblob,
+        primary key (id)
+    ) engine=InnoDB;
+
+    create table message_exchange_sync (
+        active bit,
+        municipality_id varchar(4) not null,
+        id bigint not null auto_increment,
+        latest_synced_sequence_number bigint default 0,
+        updated datetime(6),
+        namespace varchar(32) not null,
         primary key (id)
     ) engine=InnoDB;
 

@@ -42,6 +42,7 @@ class ConversationRepositoryTest {
 		final var type = "type";
 		final var relationIds = List.of("relationId");
 		final var latestSyncedSequenceNumber = 123L;
+		final var targetRelationId = "targetRelationId";
 
 		final var entity = ConversationEntity.builder()
 			.withMessageExchangeId(messageExchangeId)
@@ -52,6 +53,7 @@ class ConversationRepositoryTest {
 			.withType(type)
 			.withRelationIds(relationIds)
 			.withLatestSyncedSequenceNumber(latestSyncedSequenceNumber)
+			.withTargetRelationId(targetRelationId)
 			.build();
 
 		final var persistedEntity = repository.saveAndFlush(entity);
@@ -65,6 +67,7 @@ class ConversationRepositoryTest {
 		assertThat(persistedEntity.getType()).isEqualTo(type);
 		assertThat(persistedEntity.getRelationIds()).containsExactlyElementsOf(relationIds);
 		assertThat(persistedEntity.getLatestSyncedSequenceNumber()).isEqualTo(latestSyncedSequenceNumber);
+		assertThat(persistedEntity.getTargetRelationId()).isEqualTo(targetRelationId);
 	}
 
 	@Test
@@ -80,9 +83,9 @@ class ConversationRepositoryTest {
 
 	@Test
 	void findByMessageExchangeId() {
-		var optionalConversation = repository.findByMessageExchangeId("message_exchange_id-3");
+		var conversations = repository.findByMessageExchangeId("message_exchange_id-3");
 
-		assertThat(optionalConversation).isNotEmpty().hasValueSatisfying(conversation -> {
+		assertThat(conversations).hasSize(1).first().satisfies(conversation -> {
 			assertThat(conversation).extracting(
 				ConversationEntity::getId,
 				ConversationEntity::getMunicipalityId,

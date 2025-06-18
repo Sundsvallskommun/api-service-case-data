@@ -43,7 +43,7 @@ class ConversationMapperTest {
 		final var conversation = ConversationMapper.toConversationEntity(request, municipalityId, namespace, errandId, messageExchangeId);
 
 		// Assert
-		assertThat(conversation).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "latestSyncedSequenceNumber");
+		assertThat(conversation).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "latestSyncedSequenceNumber", "targetRelationId");
 		assertThat(conversation.getErrandId()).isEqualTo(String.valueOf(errandId));
 		assertThat(conversation.getMessageExchangeId()).isEqualTo(messageExchangeId);
 		assertThat(conversation.getNamespace()).isEqualTo(namespace);

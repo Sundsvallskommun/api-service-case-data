@@ -36,6 +36,7 @@ class ConversationEntityTest {
 		final var type = "type";
 		final var relationIds = List.of("relationId");
 		final var latestSyncedSequenceNumber = 123L;
+		final var targetRelationId = "targetRelationId";
 
 		final var entity = ConversationEntity.builder()
 			.withId(id)
@@ -47,6 +48,7 @@ class ConversationEntityTest {
 			.withType(type)
 			.withRelationIds(relationIds)
 			.withLatestSyncedSequenceNumber(latestSyncedSequenceNumber)
+			.withTargetRelationId(targetRelationId)
 			.build();
 
 		Assertions.assertThat(entity).hasNoNullFieldsOrProperties();
@@ -59,5 +61,6 @@ class ConversationEntityTest {
 		Assertions.assertThat(entity.getType()).isEqualTo(type);
 		Assertions.assertThat(entity.getRelationIds()).isEqualTo(relationIds);
 		Assertions.assertThat(entity.getLatestSyncedSequenceNumber()).isEqualTo(latestSyncedSequenceNumber);
+		Assertions.assertThat(entity.getTargetRelationId()).isEqualTo(targetRelationId);
 	}
 }

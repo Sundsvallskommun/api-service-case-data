@@ -73,6 +73,10 @@ This microservice depends on the following services:
     other systems.
   - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/api-service-web-message-collector)
   - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
+- **Relation**
+  - **Purpose:** Used to fetch relation data (linked errands)
+  - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/api-service-relations)
+  - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
 
 Ensure that these services are running and properly configured before starting this microservice.
 
