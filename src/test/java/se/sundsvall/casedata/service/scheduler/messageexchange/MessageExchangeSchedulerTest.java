@@ -63,8 +63,8 @@ class MessageExchangeSchedulerTest {
 		verify(messageExchangeWorkerMock, times(2)).getConversations(eq(messageExchangeSyncEntityMock), pageableArgumentCaptor.capture());
 		verify(messageExchangeWorkerMock, times(2)).processConversation(conversationMock);
 		verify(conversationMock, times(2)).getLatestSequenceNumber();
-		verify(messageExchangeSyncEntityMock).setLatestSyncedSequenceNumber(eq(2L));
-		verify(messageExchangeSyncEntityMock).setLatestSyncedSequenceNumber(eq(4L));
+		verify(messageExchangeSyncEntityMock).setLatestSyncedSequenceNumber(2L);
+		verify(messageExchangeSyncEntityMock).setLatestSyncedSequenceNumber(4L);
 		verify(messageExchangeWorkerMock).saveSyncEntity(messageExchangeSyncEntityMock);
 
 		assertThat(pageableArgumentCaptor.getAllValues())

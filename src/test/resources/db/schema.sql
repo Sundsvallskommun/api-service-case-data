@@ -32,6 +32,7 @@
         errand_id varchar(36) not null,
         id varchar(36) not null,
         message_exchange_id varchar(36) not null,
+        target_relation_id varchar(36),
         topic varchar(255),
         primary key (id)
     ) engine=InnoDB;

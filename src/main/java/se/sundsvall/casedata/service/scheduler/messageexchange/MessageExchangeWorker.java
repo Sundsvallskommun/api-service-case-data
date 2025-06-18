@@ -3,6 +3,7 @@ package se.sundsvall.casedata.service.scheduler.messageexchange;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
 
+import com.google.common.primitives.Longs;
 import generated.se.sundsvall.messageexchange.Conversation;
 import generated.se.sundsvall.relation.Relation;
 import generated.se.sundsvall.relation.ResourceIdentifier;
@@ -67,6 +68,14 @@ public class MessageExchangeWorker {
 		return conversation;
 	}
 
+	/**
+	 * Appends conversation to conversationEntities for conversation where target relation points to case-data errand and is
+	 * not created.
+	 *
+	 * @param  conversation         Conversation that is processed
+	 * @param  conversationEntities List of existing conversations
+	 * @return                      conversationEntities with possible added conversations
+	 */
 	private List<ConversationEntity> addNewUnsyncedConversationsToList(Conversation conversation, List<ConversationEntity> conversationEntities) {
 		conversation.getExternalReferences().stream()
 			.filter(keyValues -> keyValues.getKey() != null && keyValues.getKey().equals(RELATION_ID_KEY))
@@ -75,7 +84,7 @@ public class MessageExchangeWorker {
 			.map(relationId -> relationClient.getRelation(conversation.getMunicipalityId(), relationId))
 			.filter(response -> response.getStatusCode().is2xxSuccessful())
 			.map(HttpEntity::getBody)
-			.filter(relationConnectedToCaseDataErrand())
+			.filter(relationTargetConnectedToCaseDataErrand())
 			.map(createConversation(conversation))
 			.forEach(conversationEntities::add);
 
@@ -83,27 +92,28 @@ public class MessageExchangeWorker {
 	}
 
 	private Predicate<String> isNotPresentInConversationRelations(List<ConversationEntity> conversationEntities) {
-		return relationId -> conversationEntities.stream().flatMap(conversationEntity -> conversationEntity.getRelationIds().stream())
-			.noneMatch(relationId::equals);
+		// if targetRelationId matches existing conversationEntity it means the conversation is already added
+		return relationId -> conversationEntities.stream().noneMatch(conversationEntity -> relationId.equals(conversationEntity.getTargetRelationId()));
 	}
 
-	private Predicate<Relation> relationConnectedToCaseDataErrand() {
-		return relation -> resourceIdentifierMatchesErrand(relation.getTarget()) || resourceIdentifierMatchesErrand(relation.getSource());
+	private Predicate<Relation> relationTargetConnectedToCaseDataErrand() {
+		// Only match target, since source will be created through case-data service and already added
+		return relation -> resourceIdentifierMatchesErrand(relation.getTarget());
 	}
 
 	private boolean resourceIdentifierMatchesErrand(ResourceIdentifier resourceIdentifier) {
-		return errandRepository.findByErrandNumber(resourceIdentifier.getResourceId()).isPresent();
+		return "case-data".equalsIgnoreCase(resourceIdentifier.getService()) && Longs.tryParse(resourceIdentifier.getResourceId()) != null && errandRepository.findById(Long.parseLong(resourceIdentifier.getResourceId())).isPresent();
 	}
 
 	private Function<Relation, ConversationEntity> createConversation(Conversation conversation) {
 		return relation -> {
-			var errand = errandRepository.findByErrandNumber(relation.getTarget().getResourceId())
-				.or(() -> errandRepository.findByErrandNumber(relation.getSource().getResourceId()))
+			var errand = errandRepository.findById(Long.parseLong(relation.getTarget().getResourceId()))
 				.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, "Bug in relation filter"));
 			return ConversationEntity.builder().withErrandId(errand.getId().toString())
 				.withMessageExchangeId(conversation.getId())
 				.withNamespace(errand.getNamespace())
 				.withMunicipalityId(errand.getMunicipalityId())
+				.withTargetRelationId(relation.getId())
 				.withType("INTERNAL")
 				.build();
 		};

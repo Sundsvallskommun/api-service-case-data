@@ -35,6 +35,13 @@ public class MessageExchangeScheduler {
 			});
 	}
 
+	/**
+	 * Process all conversations in page. Sets the highest sequence number on syncEntity
+	 *
+	 * @param  conversationPage page to process
+	 * @param  syncEntity       Updated with the highest sequence number from conversation page
+	 * @return                  same as param conversationPage
+	 */
 	private Page<Conversation> processConversationPage(Page<Conversation> conversationPage, MessageExchangeSyncEntity syncEntity) {
 		conversationPage.stream()
 			.map(messageExchangeWorker::processConversation)

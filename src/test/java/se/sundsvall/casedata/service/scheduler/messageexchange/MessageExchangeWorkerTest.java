@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
 
@@ -113,22 +114,24 @@ class MessageExchangeWorkerTest {
 			.build());
 
 		when(conversationRepositoryMock.findByMessageExchangeId(any())).thenReturn(conversationEntities);
-		when(relationClientMock.getRelation(any(), any())).thenReturn(ResponseEntity.ok(
-			new Relation(null, new ResourceIdentifier().resourceId("case-data-id"), new ResourceIdentifier().resourceId("other-id"))));
-		when(errandRepositoryMock.findByErrandNumber("case-data-id")).thenReturn(Optional.of(ErrandEntity.builder().withMunicipalityId("municipalityId").withNamespace("case-data-namespace").withId(123L).build()));
-		when(errandRepositoryMock.findByErrandNumber("other-id")).thenReturn(Optional.empty());
+		when(relationClientMock.getRelation(any(), any())).thenReturn(
+			ResponseEntity.ok(new Relation(null, new ResourceIdentifier().resourceId("other-id"), new ResourceIdentifier().resourceId("123").service("case-data"))), // relation 1
+			ResponseEntity.ok(new Relation(null, new ResourceIdentifier().resourceId("existingConversationEntityId"), new ResourceIdentifier().resourceId("other-id")))); // relation 2
+		when(errandRepositoryMock.findById(123L)).thenReturn(Optional.of(ErrandEntity.builder().withMunicipalityId("municipalityId").withNamespace("case-data-namespace").withId(123L).build()));
 
 		messageExchangeWorker.processConversation(conversation);
 
 		verify(conversationRepositoryMock).findByMessageExchangeId("conversationId");
+		verify(relationClientMock).getRelation("municipalityId", "1");
 		verify(relationClientMock).getRelation("municipalityId", "2");
-		verify(errandRepositoryMock, times(2)).findByErrandNumber("case-data-id");
-		verify(errandRepositoryMock, times(2)).findByErrandNumber("other-id");
+		verify(errandRepositoryMock, times(2)).findById(123L);
 		verify(conversationServiceMock, times(2)).syncConversation(conversationEntityArgumentCaptor.capture(), same(conversation));
 		assertThat(conversationEntityArgumentCaptor.getAllValues()).hasSize(2)
 			.extracting(ConversationEntity::getMunicipalityId, ConversationEntity::getNamespace, ConversationEntity::getId, ConversationEntity::getMessageExchangeId)
 			.containsExactly(
 				tuple("municipalityId-existing", "case-data-namespace-existing", "existingConversationEntityId", "existingMessageExchangeId"),
 				tuple("municipalityId", "case-data-namespace", null, "conversationId"));
+
+		verifyNoMoreInteractions(conversationRepositoryMock, relationClientMock, errandRepositoryMock, conversationServiceMock, messageExchangeClientMock, messageExchangeSyncRepositoryMock);
 	}
 }

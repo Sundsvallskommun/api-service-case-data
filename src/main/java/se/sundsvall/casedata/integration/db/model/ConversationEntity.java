@@ -68,6 +68,10 @@ public class ConversationEntity {
 	private List<String> relationIds;
 
 	@With
+	@Column(name = "target_relation_id", length = 36)
+	private String targetRelationId;
+
+	@With
 	@Column(name = "latest_synced_sequence_number")
 	private Long latestSyncedSequenceNumber;
 
