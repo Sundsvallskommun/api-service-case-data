@@ -21,7 +21,7 @@ public interface ErrandRepository extends JpaRepository<ErrandEntity, Long>, Jpa
 
 	Page<ErrandEntity> findAllByIdInAndMunicipalityId(List<Long> allIds, String municipalityId, Pageable pageable);
 
-	List<ErrandEntity> findAllByMunicipalityIdAndNamespace(final String municipalityId, final String namespace);
+	Optional<ErrandEntity> findTopByMunicipalityIdAndNamespaceOrderByCreatedDesc(final String municipalityId, final String namespace);
 
 	Optional<ErrandEntity> findByExternalCaseId(final String externalCaseId);
 
