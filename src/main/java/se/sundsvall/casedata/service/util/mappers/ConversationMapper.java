@@ -219,6 +219,22 @@ public final class ConversationMapper {
 			.build();
 	}
 
+	public static se.sundsvall.casedata.api.model.Attachment toAttachment(final byte[] content, final String filename, final String mimeType, final Long errandId, final String municipalityId, final String namespace) {
+
+		final String contentString = Optional.ofNullable(content)
+			.map(ConversationMapper::toContentString)
+			.orElse(null);
+
+		return se.sundsvall.casedata.api.model.Attachment.builder()
+			.withErrandId(errandId)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.withFile(contentString)
+			.withName(filename)
+			.withMimeType(mimeType)
+			.build();
+	}
+
 	private static String toContentString(final byte[] result) {
 		return new String(Base64.getEncoder().encode(result), UTF_8);
 	}

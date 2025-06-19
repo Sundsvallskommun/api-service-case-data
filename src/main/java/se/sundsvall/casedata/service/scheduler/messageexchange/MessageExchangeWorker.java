@@ -10,6 +10,7 @@ import generated.se.sundsvall.relation.ResourceIdentifier;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -24,7 +25,7 @@ import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.MessageExchangeSyncEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.casedata.integration.relation.RelationClient;
-import se.sundsvall.casedata.service.ConversationService;
+import se.sundsvall.casedata.service.MessageExchangeSyncService;
 
 @Component
 public class MessageExchangeWorker {
@@ -32,20 +33,22 @@ public class MessageExchangeWorker {
 	private final MessageExchangeClient messageExchangeClient;
 	private final MessageExchangeSyncRepository messageExchangeSyncRepository;
 	private final ConversationRepository conversationRepository;
-	private final ConversationService conversationService;
 	private final RelationClient relationClient;
 	private final ErrandRepository errandRepository;
+	private final MessageExchangeSyncService messageExchangeSyncService;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public MessageExchangeWorker(final MessageExchangeClient messageExchangeClient, final MessageExchangeSyncRepository messageExchangeSyncRepository,
-		final ConversationRepository conversationRepository, final ConversationService conversationService,
-		final RelationClient relationClient, final ErrandRepository errandRepository) {
+		final ConversationRepository conversationRepository,
+		final RelationClient relationClient, final ErrandRepository errandRepository, final MessageExchangeSyncService messageExchangeSyncService, final ApplicationEventPublisher applicationEventPublisher) {
 
 		this.messageExchangeClient = messageExchangeClient;
 		this.messageExchangeSyncRepository = messageExchangeSyncRepository;
 		this.conversationRepository = conversationRepository;
-		this.conversationService = conversationService;
 		this.relationClient = relationClient;
 		this.errandRepository = errandRepository;
+		this.messageExchangeSyncService = messageExchangeSyncService;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	public List<MessageExchangeSyncEntity> getActiveSyncEntities() {
@@ -53,18 +56,18 @@ public class MessageExchangeWorker {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void saveSyncEntity(MessageExchangeSyncEntity syncEntity) {
+	public void saveSyncEntity(final MessageExchangeSyncEntity syncEntity) {
 		messageExchangeSyncRepository.save(syncEntity);
 	}
 
-	public Page<Conversation> getConversations(MessageExchangeSyncEntity syncEntity, Pageable pageable) {
+	public Page<Conversation> getConversations(final MessageExchangeSyncEntity syncEntity, final Pageable pageable) {
 		return messageExchangeClient.getConversations(syncEntity.getMunicipalityId(), syncEntity.getNamespace(), "messages.sequenceNumber.id > ".concat(syncEntity.getLatestSyncedSequenceNumber().toString()), pageable).getBody();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Conversation processConversation(Conversation conversation) {
+	public Conversation processConversation(final Conversation conversation) {
 		addNewUnsyncedConversationsToList(conversation, conversationRepository.findByMessageExchangeId(conversation.getId()))
-			.forEach(conversationEntity -> conversationService.syncConversation(conversationEntity, conversation));
+			.forEach(conversationEntity -> messageExchangeSyncService.syncConversation(conversationEntity, conversation));
 		return conversation;
 	}
 
@@ -76,7 +79,7 @@ public class MessageExchangeWorker {
 	 * @param  conversationEntities List of existing conversations
 	 * @return                      conversationEntities with possible added conversations
 	 */
-	private List<ConversationEntity> addNewUnsyncedConversationsToList(Conversation conversation, List<ConversationEntity> conversationEntities) {
+	private List<ConversationEntity> addNewUnsyncedConversationsToList(final Conversation conversation, final List<ConversationEntity> conversationEntities) {
 		conversation.getExternalReferences().stream()
 			.filter(keyValues -> keyValues.getKey() != null && keyValues.getKey().equals(RELATION_ID_KEY))
 			.flatMap(keyValues -> keyValues.getValues().stream())
@@ -91,7 +94,7 @@ public class MessageExchangeWorker {
 		return conversationEntities;
 	}
 
-	private Predicate<String> isNotPresentInConversationRelations(List<ConversationEntity> conversationEntities) {
+	private Predicate<String> isNotPresentInConversationRelations(final List<ConversationEntity> conversationEntities) {
 		// if targetRelationId matches existing conversationEntity it means the conversation is already added
 		return relationId -> conversationEntities.stream().noneMatch(conversationEntity -> relationId.equals(conversationEntity.getTargetRelationId()));
 	}
@@ -101,13 +104,13 @@ public class MessageExchangeWorker {
 		return relation -> resourceIdentifierMatchesErrand(relation.getTarget());
 	}
 
-	private boolean resourceIdentifierMatchesErrand(ResourceIdentifier resourceIdentifier) {
+	private boolean resourceIdentifierMatchesErrand(final ResourceIdentifier resourceIdentifier) {
 		return "case-data".equalsIgnoreCase(resourceIdentifier.getService()) && Longs.tryParse(resourceIdentifier.getResourceId()) != null && errandRepository.findById(Long.parseLong(resourceIdentifier.getResourceId())).isPresent();
 	}
 
-	private Function<Relation, ConversationEntity> createConversation(Conversation conversation) {
+	private Function<Relation, ConversationEntity> createConversation(final Conversation conversation) {
 		return relation -> {
-			var errand = errandRepository.findById(Long.parseLong(relation.getTarget().getResourceId()))
+			final var errand = errandRepository.findById(Long.parseLong(relation.getTarget().getResourceId()))
 				.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, "Bug in relation filter"));
 			return ConversationEntity.builder().withErrandId(errand.getId().toString())
 				.withMessageExchangeId(conversation.getId())
