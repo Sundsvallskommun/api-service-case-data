@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -49,6 +50,8 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
+import se.sundsvall.dept44.support.Identifier;
+import se.sundsvall.dept44.support.Identifier.Type;
 
 @ExtendWith(MockitoExtension.class)
 class ErrandServiceTest {
@@ -82,6 +85,11 @@ class ErrandServiceTest {
 		errand.setId(new Random().nextLong(1, 1000));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		return errand;
+	}
+
+	@AfterEach
+	void afterEach() {
+		Identifier.remove();
 	}
 
 	@Test
@@ -178,8 +186,11 @@ class ErrandServiceTest {
 		final var errand = createErrandEntity();
 		final var updatedErrand = createErrandEntity();
 		final var patch = createPatchErrand();
+		final var executingUserId = "executingUserId";
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(errand)).thenReturn(updatedErrand);
+
+		Identifier.set(Identifier.create().withType(Type.AD_ACCOUNT).withValue(executingUserId));
 
 		// Act
 		errandService.update(errand.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
@@ -209,7 +220,7 @@ class ErrandServiceTest {
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
 		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
-		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(errand.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(executingUserId);
 		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock, notificationServiceMock, applicationEventPublisherMock);
 	}
@@ -276,9 +287,12 @@ class ErrandServiceTest {
 		// Arrange
 		final var dto = new PatchErrand();
 		final var entity = new ErrandEntity();
+		final var executingUserId = "executingUserId";
 		entity.setCaseType(PARKING_PERMIT_RENEWAL.name());
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
 		when(errandRepositoryMock.save(entity)).thenReturn(entity);
+
+		Identifier.set(Identifier.create().withType(Type.AD_ACCOUNT).withValue(executingUserId));
 
 		// Act
 		errandService.update(1L, MUNICIPALITY_ID, NAMESPACE, dto);
@@ -291,7 +305,7 @@ class ErrandServiceTest {
 
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
 		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
-		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(entity.getCreatedBy());
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(executingUserId);
 		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(entity.getId());
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
 	}

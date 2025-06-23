@@ -10,6 +10,7 @@ import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE
 import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;
+import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
@@ -112,7 +113,7 @@ public class ErrandService {
 
 		// Create notification
 		notificationService.create(municipalityId, namespace, Notification.builder()
-			.withCreatedBy(updatedErrand.getCreatedBy())
+			.withCreatedBy(getAdUser())
 			.withDescription(NOTIFICATION_ERRAND_UPDATED)
 			.withErrandId(updatedErrand.getId())
 			.withType(UPDATE.toString())
