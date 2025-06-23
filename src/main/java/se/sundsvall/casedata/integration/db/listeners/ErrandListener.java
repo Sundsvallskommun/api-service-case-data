@@ -1,15 +1,14 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
 import static java.time.OffsetDateTime.now;
+import static java.time.OffsetDateTime.of;
 import static java.time.ZoneId.systemDefault;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
 
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,11 +65,8 @@ public class ErrandListener {
 	private String generateErrandNumber(final String municipalityId, final String namespace) {
 		// Get the latest errand with an errandNumber and only the ones within the same year. If this year i different, a new
 		// sequenceNumber begins.
-		final Optional<ErrandEntity> latestErrand = errandRepository.findAllByMunicipalityIdAndNamespace(municipalityId, namespace)
-			.stream()
-			.filter(errand -> isNotBlank(errand.getErrandNumber()))
-			.filter(errand -> LocalDate.now().getYear() == extractYearFromErrandNumber(errand))
-			.max(Comparator.comparing(ErrandEntity::getCreated));
+		final Optional<ErrandEntity> latestErrand = errandRepository.findTopByMunicipalityIdAndNamespaceAndCreatedIsAfterOrderByCreatedDesc(municipalityId, namespace,
+			of(now().getYear(), 1, 1, 0, 0, 0, 0, now().getOffset()));
 
 		// Default start value = 1
 		long nextSequenceNumber = 1;
@@ -84,9 +80,5 @@ public class ErrandListener {
 		return Shortcode.getByNamespace(namespace) + DELIMITER +
 			LocalDate.now().getYear() + DELIMITER +
 			String.format("%06d", nextSequenceNumber);
-	}
-
-	private int extractYearFromErrandNumber(final ErrandEntity errand) {
-		return Integer.parseInt(errand.getErrandNumber().substring(errand.getErrandNumber().lastIndexOf(DELIMITER) - 4, errand.getErrandNumber().lastIndexOf(DELIMITER)));
 	}
 }
