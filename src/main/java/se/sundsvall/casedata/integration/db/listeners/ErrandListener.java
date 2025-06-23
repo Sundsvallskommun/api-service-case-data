@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
 import static java.time.OffsetDateTime.now;
+import static java.time.OffsetDateTime.of;
 import static java.time.ZoneId.systemDefault;
 import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
 
@@ -64,7 +65,8 @@ public class ErrandListener {
 	private String generateErrandNumber(final String municipalityId, final String namespace) {
 		// Get the latest errand with an errandNumber and only the ones within the same year. If this year i different, a new
 		// sequenceNumber begins.
-		final Optional<ErrandEntity> latestErrand = errandRepository.findTopByMunicipalityIdAndNamespaceOrderByCreatedDesc(municipalityId, namespace);
+		final Optional<ErrandEntity> latestErrand = errandRepository.findTopByMunicipalityIdAndNamespaceAndCreatedIsAfterOrderByCreatedDesc(municipalityId, namespace,
+			of(now().getYear(), 1, 1, 0, 0, 0, 0, now().getOffset()));
 
 		// Default start value = 1
 		long nextSequenceNumber = 1;
