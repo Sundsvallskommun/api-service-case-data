@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.integration.messageexchange.configuration;
 
-import static com.google.common.base.CaseFormat.LOWER_CAMEL;
-import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ObjectUtils.allNotNull;
 
@@ -39,7 +37,7 @@ public class MessageExchangeConfiguration {
 	String createSentByHeaderValue(final Identifier identifier) {
 		return ofNullable(identifier)
 			.filter(i -> allNotNull(i.getType(), i.getValue()))
-			.map(i -> "%s; type=%s".formatted(ofNullable(i.getValue()).orElse(""), ofNullable(i.getType()).map(t -> UPPER_UNDERSCORE.to(LOWER_CAMEL, i.getType().name())).orElse("")))
+			.map(Identifier::toHeaderValue)
 			.orElse(null);
 	}
 
