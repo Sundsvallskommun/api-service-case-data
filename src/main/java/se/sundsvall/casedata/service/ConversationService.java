@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,7 @@ import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 @Service
 public class ConversationService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConversationService.class);
 	private final ConversationRepository conversationRepository;
 	private final MessageExchangeClient messageExchangeClient;
 	private final AttachmentService attachmentService;
@@ -80,7 +83,7 @@ public class ConversationService {
 		return syncConversation(entity, response.getBody());
 	}
 
-	public Conversation syncConversation(ConversationEntity conversationEntity, generated.se.sundsvall.messageexchange.Conversation conversation) {
+	public Conversation syncConversation(final ConversationEntity conversationEntity, final generated.se.sundsvall.messageexchange.Conversation conversation) {
 		// TODO: Create notification if sequence number is not the latest
 		final var updatedConversation = toConversation(conversationEntity, conversation);
 		conversationRepository.save(updateConversationEntity(conversationEntity, conversation));
@@ -118,8 +121,11 @@ public class ConversationService {
 		}
 		Optional.ofNullable(attachments).orElse(emptyList()).forEach(attachment -> saveAttachment(errandId, municipalityId, namespace, attachment));
 
-		messageService.sendMessageNotification(municipalityId, namespace, errandId);
-
+		try {
+			messageService.sendMessageNotification(municipalityId, namespace, errandId);
+		} catch (final Exception e) {
+			LOGGER.error("Failed to send message notification", e);
+		}
 	}
 
 	public Page<Message> getMessages(final String municipalityId, final String namespace, final Long errandId, final String conversationId, final Pageable pageable) {
