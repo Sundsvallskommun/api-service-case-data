@@ -28,6 +28,7 @@ import org.zalando.problem.Problem;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
+import se.sundsvall.casedata.service.util.ConversationEvent;
 
 @ExtendWith(MockitoExtension.class)
 class MessageExchangeSyncServiceTest {
@@ -58,7 +59,6 @@ class MessageExchangeSyncServiceTest {
 		final var latestSyncedSequenceNumber = 123L;
 		final var targetRelationId = "targetRelationId";
 		final var newLatestSyncedSequenceNumber = 456L;
-		final var filter = "sequenceNumber >" + latestSyncedSequenceNumber;
 
 		final var entity = ConversationEntity.builder()
 			.withId(id)
@@ -98,7 +98,7 @@ class MessageExchangeSyncServiceTest {
 		assertThat(result.getMetadata()).hasSize(1);
 
 		verify(conversationRepositoryMock).save(entity);
-		verify(applicationEventPublisherMock).publishEvent(entity);
+		verify(applicationEventPublisherMock).publishEvent(any(ConversationEvent.class));
 
 		verifyNoMoreInteractions(conversationRepositoryMock, applicationEventPublisherMock);
 		verifyNoInteractions(messageExchangeClientMock, attachmentServiceMock);
@@ -115,12 +115,14 @@ class MessageExchangeSyncServiceTest {
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.build();
+		final var requestId = "requestId";
+		final var conversationEvent = ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(requestId).build();
 
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(namespace), any(), any(), any()))
 			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message()))));
 
 		// Act
-		service.syncMessages(conversationEntity);
+		service.syncMessages(conversationEvent);
 
 		// Assert
 		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), any(), any(), any());
@@ -139,12 +141,14 @@ class MessageExchangeSyncServiceTest {
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.build();
+		final var requestId = "requestId";
+		final var conversationEvent = ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(requestId).build();
 
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(namespace), any(), any(), any()))
 			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of())));
 
 		// Act
-		service.syncMessages(conversationEntity);
+		service.syncMessages(conversationEvent);
 
 		// Assert
 		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), any(), any(), any());
@@ -164,11 +168,14 @@ class MessageExchangeSyncServiceTest {
 			.withNamespace(namespace)
 			.build();
 
+		final var requestId = "requestId";
+		final var conversationEvent = ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(requestId).build();
+
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(namespace), any(), any(), any()))
 			.thenReturn(null);
 
 		// Act & Assert
-		assertThatThrownBy(() -> service.syncMessages(conversationEntity))
+		assertThatThrownBy(() -> service.syncMessages(conversationEvent))
 			.isInstanceOf(Problem.class)
 			.hasMessageContaining("Failed to retrieve messages from Message Exchange");
 

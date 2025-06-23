@@ -30,6 +30,8 @@ import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
+import se.sundsvall.casedata.service.util.ConversationEvent;
+import se.sundsvall.dept44.requestid.RequestId;
 
 @Service
 public class ConversationService {
@@ -86,14 +88,7 @@ public class ConversationService {
 			throw Problem.valueOf(NOT_FOUND, "Conversation not found in Message Exchange");
 		}
 
-		return syncConversation(entity, response.getBody());
-	}
-
-	public Conversation syncConversation(final ConversationEntity conversationEntity, final generated.se.sundsvall.messageexchange.Conversation conversation) {
-		// TODO: Create notification if sequence number is not the latest
-		final var updatedConversation = toConversation(conversationEntity, conversation);
-		conversationRepository.save(updateConversationEntity(conversationEntity, conversation));
-		return updatedConversation;
+		return messageExchangeSyncService.syncConversation(entity, response.getBody());
 	}
 
 	public List<Conversation> getConversations(final String municipalityId, final String namespace, final Long errandId) {
@@ -140,7 +135,7 @@ public class ConversationService {
 		if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve messages from Message Exchange");
 		}
-		applicationEventPublisher.publishEvent(conversationEntity);
+		applicationEventPublisher.publishEvent(ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(RequestId.get()).build());
 		return toMessagePage(response.getBody());
 	}
 
@@ -164,7 +159,7 @@ public class ConversationService {
 		if (exchangeId == null) {
 			throw Problem.valueOf(NOT_FOUND, "Conversation not found in local database");
 		}
-		applicationEventPublisher.publishEvent(conversationEntity);
+		applicationEventPublisher.publishEvent(ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(RequestId.get()).build());
 
 		final var attachmentResponse = messageExchangeClient.readErrandAttachment(
 			municipalityId, messageExchangeNamespace, exchangeId, messageId, attachmentId);

@@ -20,6 +20,8 @@ import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
+import se.sundsvall.casedata.service.util.ConversationEvent;
+import se.sundsvall.dept44.requestid.RequestId;
 
 @Service
 public class MessageExchangeSyncService {
@@ -41,14 +43,16 @@ public class MessageExchangeSyncService {
 
 	public Conversation syncConversation(final ConversationEntity conversationEntity, final generated.se.sundsvall.messageexchange.Conversation conversation) {
 		// TODO: Create notification if sequence number is not the latest
-		applicationEventPublisher.publishEvent(conversationEntity);
+		applicationEventPublisher.publishEvent(ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(RequestId.get()).build());
 		final var updatedConversation = toConversation(conversationEntity, conversation);
 		conversationRepository.save(updateConversationEntity(conversationEntity, conversation));
 		return updatedConversation;
 	}
 
 	@TransactionalEventListener
-	void syncMessages(final ConversationEntity conversationEntity) {
+	void syncMessages(final ConversationEvent conversationEvent) {
+		final var conversationEntity = conversationEvent.getConversationEntity();
+		RequestId.init(conversationEvent.getRequestId());
 
 		final var filter = "sequenceNumber >" + conversationEntity.getLatestSyncedSequenceNumber();
 

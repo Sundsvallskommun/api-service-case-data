@@ -33,6 +33,7 @@ import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
+import se.sundsvall.casedata.service.util.ConversationEvent;
 
 @ExtendWith(MockitoExtension.class)
 class ConversationServiceTest {
@@ -507,7 +508,7 @@ class ConversationServiceTest {
 		// Assert
 		assertThat(result).isNotNull().hasSize(1);
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
-		verify(applicationEventPublisherMock).publishEvent(conversationEntity);
+		verify(applicationEventPublisherMock).publishEvent(any(ConversationEvent.class));
 		verify(messageExchangeClientMock).getMessages(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId, null, pageable);
 		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock, applicationEventPublisherMock);
 		verifyNoInteractions(attachmentServiceMock, messageServiceMock);
