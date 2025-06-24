@@ -15,11 +15,14 @@ import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.REQUEST_FILE;
 import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
+import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
+import static se.sundsvall.dept44.support.Identifier.Type.AD_ACCOUNT;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.casedata.Application;
+import se.sundsvall.dept44.support.Identifier;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -66,7 +69,7 @@ class NotificationIT extends AbstractAppTest {
 			.withServicePath(builder -> fromPath(ERRAND_NOTIFICATIONS_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 1)))
 			.withHttpMethod(POST)
-			.withHeader("sentbyuser", "creator123")
+			.withHeader(HEADER_NAME, Identifier.create().withType(AD_ACCOUNT).withValue("creator123").toHeaderValue())
 			.withExpectedResponseStatus(CREATED)
 			.withRequest(REQUEST_FILE)
 			.sendRequest()
