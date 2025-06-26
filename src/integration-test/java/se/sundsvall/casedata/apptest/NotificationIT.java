@@ -89,7 +89,7 @@ class NotificationIT extends AbstractAppTest {
 			.withServicePath(builder -> fromPath(NOTIFICATIONS_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
 			.withHttpMethod(PATCH)
-			.withHeader("sentbyuser", "modifier123")
+			.withHeader(HEADER_NAME, "type=adAccount; modifier123")
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withRequest(REQUEST_FILE)
 			.sendRequest();
