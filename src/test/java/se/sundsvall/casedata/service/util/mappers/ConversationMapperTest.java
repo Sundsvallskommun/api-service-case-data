@@ -10,12 +10,15 @@ import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.zalando.problem.Problem;
+import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.ConversationType;
 import se.sundsvall.casedata.api.model.conversation.Identifier;
@@ -273,7 +276,7 @@ class ConversationMapperTest {
 			.externalReferences(List.of(new generated.se.sundsvall.messageexchange.KeyValues().key(RELATION_ID_KEY).values(updatedRelationIds)));
 
 		// Act
-		var result = ConversationMapper.updateConversationEntity(existingEntity, messageExchangeConversation);
+		final var result = ConversationMapper.updateConversationEntity(existingEntity, messageExchangeConversation);
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -529,6 +532,47 @@ class ConversationMapperTest {
 		assertThatThrownBy(() -> ConversationMapper.toAttachment(attachment, errandId, municipalityId, namespace))
 			.isInstanceOf(Problem.class)
 			.hasMessageContaining("Failed to read attachment content");
+	}
+
+	@Test
+	void toAttachmentFromBytes() {
+		// Arrange
+		final byte[] content = "test content".getBytes(StandardCharsets.UTF_8);
+		final String filename = "file.txt";
+		final String mimeType = "text/plain";
+		final Long errandId = 42L;
+		final String municipalityId = "1234";
+		final String namespace = "test-namespace";
+		final String expectedBase64 = Base64.getEncoder().encodeToString(content);
+
+		// Act
+		final Attachment result = ConversationMapper.toAttachment(content, filename, mimeType, errandId, municipalityId, namespace);
+
+		// Assert
+		assertThat(result).isNotNull();
+		assertThat(result.getErrandId()).isEqualTo(errandId);
+		assertThat(result.getMunicipalityId()).isEqualTo(municipalityId);
+		assertThat(result.getNamespace()).isEqualTo(namespace);
+		assertThat(result.getFile()).isEqualTo(expectedBase64);
+		assertThat(result.getName()).isEqualTo(filename);
+		assertThat(result.getMimeType()).isEqualTo(mimeType);
+	}
+
+	@Test
+	void toAttachmentFromByteswithNullContent() {
+		// Arrange
+		final String filename = "file.txt";
+		final String mimeType = "text/plain";
+		final Long errandId = 42L;
+		final String municipalityId = "1234";
+		final String namespace = "test-namespace";
+
+		// Act
+		final Attachment result = ConversationMapper.toAttachment(null, filename, mimeType, errandId, municipalityId, namespace);
+
+		// Assert
+		assertThat(result).isNotNull();
+		assertThat(result.getFile()).isNull();
 	}
 
 }
