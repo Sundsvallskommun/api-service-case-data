@@ -78,6 +78,7 @@ public interface MessageExchangeClient {
 		@PathVariable("municipalityId") final String municipalityId,
 		@PathVariable("namespace") final String namespace,
 		@PathVariable("conversationId") final String conversationId,
+		@RequestParam("filter") String filter,
 		@ParameterObject final Pageable pageable);
 
 	@DeleteMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}/messages/{messageId}", produces = ALL_VALUE)
