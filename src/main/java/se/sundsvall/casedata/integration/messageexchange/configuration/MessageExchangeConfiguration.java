@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.integration.messageexchange.configuration;
 
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.ObjectUtils.allNotNull;
 
 import org.springframework.cloud.openfeign.FeignBuilderCustomizer;
 import org.springframework.cloud.openfeign.support.JsonFormWriter;
@@ -36,9 +35,7 @@ public class MessageExchangeConfiguration {
 
 	String createSentByHeaderValue(final Identifier identifier) {
 		return ofNullable(identifier)
-			.filter(i -> allNotNull(i.getType(), i.getValue()))
 			.map(Identifier::toHeaderValue)
 			.orElse(null);
 	}
-
 }
