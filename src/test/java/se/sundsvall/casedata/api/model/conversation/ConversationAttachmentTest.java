@@ -16,7 +16,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class AttachmentTest {
+class ConversationAttachmentTest {
 
 	@BeforeAll
 	static void setup() {
@@ -25,7 +25,7 @@ class AttachmentTest {
 
 	@Test
 	void testBean() {
-		MatcherAssert.assertThat(Attachment.class, allOf(
+		MatcherAssert.assertThat(ConversationAttachment.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
@@ -44,7 +44,7 @@ class AttachmentTest {
 		final var created = "2023-01-01T00:00:00+01:00";
 
 		// Act
-		final var result = Attachment.builder()
+		final var result = ConversationAttachment.builder()
 			.withId(id)
 			.withFileName(fileName)
 			.withFileSize(fileSize)
@@ -63,8 +63,8 @@ class AttachmentTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Attachment.builder().build()).hasAllNullFieldsOrPropertiesExcept("fileSize");
-		assertThat(new Attachment()).hasAllNullFieldsOrPropertiesExcept("fileSize");
+		assertThat(ConversationAttachment.builder().build()).hasAllNullFieldsOrPropertiesExcept("fileSize");
+		assertThat(new ConversationAttachment()).hasAllNullFieldsOrPropertiesExcept("fileSize");
 	}
 
 }
