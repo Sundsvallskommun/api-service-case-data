@@ -38,7 +38,7 @@ public class Message {
 	@ArraySchema(schema = @Schema(implementation = ReadBy.class, description = "A list of users who have read the message.", accessMode = Schema.AccessMode.READ_ONLY))
 	private List<ReadBy> readBy;
 
-	@ArraySchema(schema = @Schema(implementation = Attachment.class, description = "A list of attachments associated with the message.", accessMode = Schema.AccessMode.READ_ONLY))
-	private List<Attachment> attachments;
+	@ArraySchema(schema = @Schema(implementation = ConversationAttachment.class, description = "A list of attachments associated with the message.", accessMode = Schema.AccessMode.READ_ONLY))
+	private List<ConversationAttachment> attachments;
 
 }

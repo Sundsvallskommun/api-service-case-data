@@ -76,7 +76,7 @@ public class MessageExchangeSyncService {
 		}
 		final Attachment attachment;
 		try {
-			attachment = toAttachment(file.getBody().getContentAsByteArray(), file.getBody().getFilename(), file.getHeaders().getContentType().toString(), errandId, municipalityId, namespace);
+			attachment = toAttachment(file.getBody().getContentAsByteArray(), file.getHeaders().getContentDisposition().getFilename(), file.getHeaders().getContentType().toString(), errandId, municipalityId, namespace);
 		} catch (final IOException e) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert attachment from Message Exchange");
 		}

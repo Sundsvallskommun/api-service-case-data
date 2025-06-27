@@ -43,7 +43,7 @@ class MessageTest {
 		final var createdBy = Identifier.builder().build();
 		final var content = "Hello, how can I help you?";
 		final var readBy = List.of(ReadBy.builder().build());
-		final var attachments = List.of(Attachment.builder().build());
+		final var attachments = List.of(ConversationAttachment.builder().build());
 		// Act
 		final var result = Message.builder()
 			.withId(id)
