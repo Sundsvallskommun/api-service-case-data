@@ -10,7 +10,6 @@ import generated.se.sundsvall.relation.ResourceIdentifier;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -36,11 +35,10 @@ public class MessageExchangeWorker {
 	private final RelationClient relationClient;
 	private final ErrandRepository errandRepository;
 	private final MessageExchangeSyncService messageExchangeSyncService;
-	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public MessageExchangeWorker(final MessageExchangeClient messageExchangeClient, final MessageExchangeSyncRepository messageExchangeSyncRepository,
 		final ConversationRepository conversationRepository,
-		final RelationClient relationClient, final ErrandRepository errandRepository, final MessageExchangeSyncService messageExchangeSyncService, final ApplicationEventPublisher applicationEventPublisher) {
+		final RelationClient relationClient, final ErrandRepository errandRepository, final MessageExchangeSyncService messageExchangeSyncService) {
 
 		this.messageExchangeClient = messageExchangeClient;
 		this.messageExchangeSyncRepository = messageExchangeSyncRepository;
@@ -48,7 +46,6 @@ public class MessageExchangeWorker {
 		this.relationClient = relationClient;
 		this.errandRepository = errandRepository;
 		this.messageExchangeSyncService = messageExchangeSyncService;
-		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	public List<MessageExchangeSyncEntity> getActiveSyncEntities() {

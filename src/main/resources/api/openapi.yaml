@@ -5,7 +5,7 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.5"
+  version: "11.6"
 servers:
   - url: http://localhost:54043
     description: Generated server url
