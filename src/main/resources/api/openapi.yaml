@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.5"
+  version: "11.6"
 servers:
-  - url: http://localhost:63048
+  - url: http://localhost:54043
     description: Generated server url
 tags:
   - name: Notes
@@ -4135,12 +4135,12 @@ components:
     Problem:
       type: object
       properties:
+        status:
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
         instance:
           type: string
           format: uri
@@ -4154,11 +4154,11 @@ components:
     StatusType:
       type: object
       properties:
+        reasonPhrase:
+          type: string
         statusCode:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -4270,12 +4270,12 @@ components:
                 type: boolean
         message:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
         instance:
           type: string
           format: uri
@@ -5260,6 +5260,32 @@ components:
           items:
             type: string
       description: KeyValues model
+    ConversationAttachment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ConversationAttachment ID
+          example: cb20c51f-fcf3-42c0-b613-de563634a8ec
+        fileName:
+          type: string
+          description: Name of the file
+          example: my-file.txt
+        fileSize:
+          type: integer
+          description: Size of the file in bytes
+          format: int32
+          example: 1024
+        mimeType:
+          type: string
+          description: Mime type of the file
+        created:
+          type: string
+          description: The attachment created date
+          format: date-time
+          example: 2023-01-01T00:00:00+01:00
+      description: ConversationAttachment model
+      readOnly: true
     Message:
       required:
         - content
@@ -5295,7 +5321,7 @@ components:
           type: array
           readOnly: true
           items:
-            $ref: "#/components/schemas/Attachment"
+            $ref: "#/components/schemas/ConversationAttachment"
       description: Message model
     ReadBy:
       type: object
@@ -5495,23 +5521,21 @@ components:
     PageErrand:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        sort:
-          $ref: "#/components/schemas/SortObject"
+        totalPages:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
         first:
           type: boolean
         last:
           type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         size:
           type: integer
           format: int32
@@ -5522,6 +5546,8 @@ components:
         number:
           type: integer
           format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
         empty:
           type: boolean
     PageableObject:
@@ -5537,11 +5563,11 @@ components:
           format: int32
         unpaged:
           type: boolean
-        sort:
-          $ref: "#/components/schemas/SortObject"
         offset:
           type: integer
           format: int64
+        sort:
+          $ref: "#/components/schemas/SortObject"
     SortObject:
       type: object
       properties:
@@ -5760,23 +5786,21 @@ components:
     PageMessage:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        sort:
-          $ref: "#/components/schemas/SortObject"
+        totalPages:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
         first:
           type: boolean
         last:
           type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         size:
           type: integer
           format: int32
@@ -5787,6 +5811,8 @@ components:
         number:
           type: integer
           format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
         empty:
           type: boolean
   securitySchemes: { }

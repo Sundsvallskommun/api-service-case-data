@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(setterPrefix = "with")
-@Schema(description = "Attachment model")
-public class Attachment {
+@Schema(description = "ConversationAttachment model")
+public class ConversationAttachment {
 
-	@Schema(description = "Attachment ID", example = "cb20c51f-fcf3-42c0-b613-de563634a8ec")
+	@Schema(description = "ConversationAttachment ID", example = "cb20c51f-fcf3-42c0-b613-de563634a8ec")
 	private String id;
 
 	@Schema(description = "Name of the file", example = "my-file.txt")

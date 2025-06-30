@@ -15,8 +15,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 import org.zalando.problem.Problem;
-import se.sundsvall.casedata.api.model.conversation.Attachment;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
+import se.sundsvall.casedata.api.model.conversation.ConversationAttachment;
 import se.sundsvall.casedata.api.model.conversation.ConversationType;
 import se.sundsvall.casedata.api.model.conversation.Identifier;
 import se.sundsvall.casedata.api.model.conversation.KeyValues;
@@ -163,9 +163,9 @@ public final class ConversationMapper {
 			.toList();
 	}
 
-	static List<Attachment> toAttachments(@Valid final List<generated.se.sundsvall.messageexchange.@Valid Attachment> attachments) {
+	static List<ConversationAttachment> toAttachments(@Valid final List<generated.se.sundsvall.messageexchange.@Valid Attachment> attachments) {
 		return attachments.stream()
-			.map(attachment -> Attachment.builder()
+			.map(attachment -> ConversationAttachment.builder()
 				.withId(attachment.getId())
 				.withFileName(attachment.getFileName())
 				.withMimeType(attachment.getMimeType())
