@@ -2,7 +2,6 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 
 import jakarta.validation.Valid;
@@ -12,6 +11,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.lang3.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 import org.zalando.problem.Problem;
@@ -193,7 +193,7 @@ public final class ConversationMapper {
 
 	private static List<String> toStringList(final List<KeyValues> keyValueList, final String key) {
 		return new ArrayList<>(Optional.ofNullable(keyValueList).orElse(Collections.emptyList()).stream()
-			.filter(keyValues -> equalsIgnoreCase(keyValues.getKey(), key))
+			.filter(keyValues -> Strings.CI.equals(keyValues.getKey(), key))
 			.flatMap(keyValues -> keyValues.getValues().stream())
 			.toList());
 	}
