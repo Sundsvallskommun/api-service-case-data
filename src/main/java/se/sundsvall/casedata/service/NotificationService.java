@@ -150,7 +150,7 @@ public class NotificationService {
 		}
 
 		// If executingUser is set, use this to populate "createdBy" and createdByFullName (but only if createdBy is empty).
-		if (StringUtils.hasText(executingUser)) {
+		if (hasText(executingUser)) {
 			final var createdByFullName = Optional.ofNullable(getPortalPersonData(municipalityId, executingUser))
 				.map(PortalPersonData::getFullname)
 				.orElse(null);
