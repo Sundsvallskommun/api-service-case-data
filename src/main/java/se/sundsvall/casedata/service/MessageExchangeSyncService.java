@@ -71,7 +71,7 @@ public class MessageExchangeSyncService {
 	}
 
 	void saveAttachment(final Long errandId, final String municipalityId, final String namespace, final ResponseEntity<InputStreamResource> file) {
-		if (file.getBody() == null || file.getHeaders().getContentType() == null) {
+		if (file == null || file.getBody() == null || file.getHeaders().getContentType() == null) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve attachment from Message Exchange");
 		}
 		final Attachment attachment;

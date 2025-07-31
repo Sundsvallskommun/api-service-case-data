@@ -7,6 +7,7 @@ import static java.util.Optional.ofNullable;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
+import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -93,7 +94,7 @@ public final class EntityMapper {
 			.map(obj -> ErrandEntity.builder()
 				.withErrandNumber(errand.getErrandNumber())
 				.withExternalCaseId(errand.getExternalCaseId())
-				.withCaseType(errand.getCaseType())
+				.withCaseType(sanitizeForLogging(errand.getCaseType()))
 				.withChannel(errand.getChannel())
 				.withPriority(errand.getPriority())
 				.withDescription(errand.getDescription())
