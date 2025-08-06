@@ -1,9 +1,7 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Collections.emptyList;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toAttachment;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversation;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationEntity;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationList;
@@ -19,7 +17,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,31 +27,27 @@ import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
-import se.sundsvall.casedata.service.util.ConversationEvent;
-import se.sundsvall.dept44.requestid.RequestId;
+import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeScheduler;
 
 @Service
 public class ConversationService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConversationService.class);
+
 	private final ConversationRepository conversationRepository;
 	private final MessageExchangeClient messageExchangeClient;
-	private final AttachmentService attachmentService;
 	private final MessageService messageService;
-	private final MessageExchangeSyncService messageExchangeSyncService;
-	private final ApplicationEventPublisher applicationEventPublisher;
+	private final MessageExchangeScheduler messageExchangeScheduler;
 
 	@Value("${integration.message-exchange.namespace:casedata}")
 	private String messageExchangeNamespace;
 
-	public ConversationService(final ConversationRepository conversationRepository, final MessageExchangeClient messageExchangeClient, final AttachmentService attachmentService, final MessageService messageService,
-		final MessageExchangeSyncService messageExchangeSyncService, final ApplicationEventPublisher applicationEventPublisher) {
+	public ConversationService(final ConversationRepository conversationRepository, final MessageExchangeClient messageExchangeClient, final MessageService messageService,
+		final MessageExchangeScheduler messageExchangeScheduler) {
 		this.conversationRepository = conversationRepository;
 		this.messageExchangeClient = messageExchangeClient;
-		this.attachmentService = attachmentService;
 		this.messageService = messageService;
-		this.messageExchangeSyncService = messageExchangeSyncService;
-		this.applicationEventPublisher = applicationEventPublisher;
+		this.messageExchangeScheduler = messageExchangeScheduler;
 	}
 
 	public String createConversation(final String municipalityId, final String namespace, final Long errandId, final Conversation conversation) {
@@ -69,7 +62,6 @@ public class ConversationService {
 			.map(location -> location.getPath().substring(location.getPath().lastIndexOf('/') + 1))
 			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create conversation in Message Exchange"));
 
-		// TODO: Create notification
 		final var conversationEntity = toConversationEntity(conversation, municipalityId, namespace, errandId, messageExchangeId);
 		return conversationRepository.save(conversationEntity).getId();
 	}
@@ -88,7 +80,9 @@ public class ConversationService {
 			throw Problem.valueOf(NOT_FOUND, "Conversation not found in Message Exchange");
 		}
 
-		return messageExchangeSyncService.syncConversation(entity, response.getBody());
+		messageExchangeScheduler.triggerSyncConversationsAsync();
+
+		return toConversation(updateConversationEntity(entity, response.getBody()), response.getBody());
 	}
 
 	public List<Conversation> getConversations(final String municipalityId, final String namespace, final Long errandId) {
@@ -107,7 +101,7 @@ public class ConversationService {
 		if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to update conversation in Message Exchange");
 		}
-		// TODO: Create notification
+
 		updateConversationEntity(entity, request);
 		conversationRepository.save(entity);
 		return toConversation(entity, response.getBody());
@@ -120,7 +114,7 @@ public class ConversationService {
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message in Message Exchange");
 		}
-		Optional.ofNullable(attachments).orElse(emptyList()).forEach(attachment -> saveAttachment(errandId, municipalityId, namespace, attachment));
+		Optional.ofNullable(attachments).ifPresent(attachment -> messageExchangeScheduler.triggerSyncConversationsAsync());
 
 		try {
 			messageService.sendMessageNotification(municipalityId, namespace, errandId);
@@ -135,18 +129,13 @@ public class ConversationService {
 		if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve messages from Message Exchange");
 		}
-		applicationEventPublisher.publishEvent(ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(RequestId.get()).build());
+		messageExchangeScheduler.triggerSyncConversationsAsync();
 		return toMessagePage(response.getBody());
 	}
 
 	private ConversationEntity getConversationEntity(final String municipalityId, final String namespace, final Long errandId, final String conversationId) {
 		return conversationRepository.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, errandId.toString(), conversationId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Conversation not found in local database"));
-	}
-
-	private void saveAttachment(final Long errandId, final String municipalityId, final String namespace, final MultipartFile attachment) {
-
-		attachmentService.create(errandId, toAttachment(attachment, errandId, municipalityId, namespace), municipalityId, namespace);
 	}
 
 	public void getConversationMessageAttachment(
@@ -159,7 +148,6 @@ public class ConversationService {
 		if (exchangeId == null) {
 			throw Problem.valueOf(NOT_FOUND, "Conversation not found in local database");
 		}
-		applicationEventPublisher.publishEvent(ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(RequestId.get()).build());
 
 		final var attachmentResponse = messageExchangeClient.readErrandAttachment(
 			municipalityId, messageExchangeNamespace, exchangeId, messageId, attachmentId);
