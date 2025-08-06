@@ -32,6 +32,7 @@ public final class MessagingMapper {
 					.sms(new Sms()
 						.name(senderInfo.getSmsSender()))
 					.email(new Email()
+						.name(senderInfo.getContactInformationEmail())
 						.address(senderInfo.getContactInformationEmail())))));
 
 	}
