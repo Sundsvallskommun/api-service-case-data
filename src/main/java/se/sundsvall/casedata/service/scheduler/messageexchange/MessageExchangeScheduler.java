@@ -2,7 +2,11 @@ package se.sundsvall.casedata.service.scheduler.messageexchange;
 
 import generated.se.sundsvall.messageexchange.Conversation;
 import java.util.Comparator;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -10,13 +14,23 @@ import se.sundsvall.casedata.integration.db.model.MessageExchangeSyncEntity;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 
 @Service
-@ConditionalOnProperty(prefix = "scheduler.messageexchange", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class MessageExchangeScheduler {
 
-	private final MessageExchangeWorker messageExchangeWorker;
+	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(MessageExchangeScheduler.class);
 
-	public MessageExchangeScheduler(final MessageExchangeWorker messageExchangeWorker) {
+	@Value("${scheduler.messageexchange.enabled:true}")
+	private boolean isSchedulerEnabled;
+	private final MessageExchangeWorker messageExchangeWorker;
+	private final AsyncTaskExecutor asyncTaskExecutor;
+	private final MessageExchangeScheduler self;
+
+	public MessageExchangeScheduler(final MessageExchangeWorker messageExchangeWorker,
+		@Qualifier("taskScheduler") final AsyncTaskExecutor asyncTaskExecutor,
+		@Lazy final MessageExchangeScheduler self) {
+
 		this.messageExchangeWorker = messageExchangeWorker;
+		this.asyncTaskExecutor = asyncTaskExecutor;
+		this.self = self;
 	}
 
 	@Dept44Scheduled(
@@ -25,6 +39,11 @@ public class MessageExchangeScheduler {
 		lockAtMostFor = "${scheduler.messageexchange.shedlock-lock-at-most-for}",
 		maximumExecutionTime = "${scheduler.messageexchange.maximum-execution-time}")
 	void syncConversations() {
+		if (!isSchedulerEnabled) {
+			LOGGER.info("scheduler.messageexchange.enabled=false skipping scheduled execution");
+			return;
+		}
+
 		messageExchangeWorker.getActiveSyncEntities()
 			.forEach(syncEntity -> {
 				var page = processConversationPage(messageExchangeWorker.getConversations(syncEntity, Pageable.ofSize(100)), syncEntity);
@@ -52,4 +71,14 @@ public class MessageExchangeScheduler {
 		return conversationPage;
 	}
 
+	public void triggerSyncConversationsAsync() {
+		if (!isSchedulerEnabled) {
+			LOGGER.info("scheduler.messageexchange.enable=false skipping triggered execution");
+			return;
+		}
+
+		LOGGER.info("Initiating async trigger for syncConversations");
+		asyncTaskExecutor.execute(self::syncConversations);
+		LOGGER.info("Async trigger for syncConversations initiated successfully. Calling thread continues.");
+	}
 }

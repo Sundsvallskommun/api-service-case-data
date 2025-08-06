@@ -4,15 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.api.model.conversation.ConversationType.INTERNAL;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 
 import generated.se.sundsvall.messageexchange.Conversation;
 import generated.se.sundsvall.messageexchange.Identifier;
 import generated.se.sundsvall.messageexchange.KeyValues;
+import generated.se.sundsvall.messageexchange.Message;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -20,13 +22,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.casedata.service.util.ConversationEvent;
 
@@ -40,7 +45,9 @@ class MessageExchangeSyncServiceTest {
 	@Mock
 	private ConversationRepository conversationRepositoryMock;
 	@Mock
-	private ApplicationEventPublisher applicationEventPublisherMock;
+	private NotificationService notificationServiceMock;
+	@Mock
+	private ErrandRepository errandRepositoryMock;
 	@InjectMocks
 	private MessageExchangeSyncService service;
 
@@ -50,7 +57,7 @@ class MessageExchangeSyncServiceTest {
 		// Arrange
 		final var id = "id";
 		final var messageExchangeId = "messageExchangeId";
-		final var errandId = "errandId";
+		final var errandId = "1";
 		final var namespace = "namespace";
 		final var municipalityId = "municipalityId";
 		final var topic = "topic";
@@ -59,8 +66,16 @@ class MessageExchangeSyncServiceTest {
 		final var latestSyncedSequenceNumber = 123L;
 		final var targetRelationId = "targetRelationId";
 		final var newLatestSyncedSequenceNumber = 456L;
+		final var adAccount = "adAccount";
 
-		final var entity = ConversationEntity.builder()
+		final var errandEntity = ErrandEntity.builder()
+			.withId(Long.parseLong(errandId))
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.withStakeholders(List.of(StakeholderEntity.builder().withAdAccount(adAccount).withRoles(List.of(ADMINISTRATOR.name())).build()))
+			.build();
+
+		final var conversationEntity = ConversationEntity.builder()
 			.withId(id)
 			.withMessageExchangeId(messageExchangeId)
 			.withErrandId(errandId)
@@ -77,55 +92,89 @@ class MessageExchangeSyncServiceTest {
 			.id(id)
 			.namespace(namespace)
 			.municipalityId(municipalityId)
-			.participants(List.of(new Identifier().type("relation").value(relationIds.getFirst())))
+			.participants(List.of(new Identifier().type("identifier").value("identifierValue")))
 			.externalReferences(List.of(new KeyValues().key("relationId").values(List.of(relationIds.getFirst()))))
-			.metadata(List.of(new KeyValues().key("latestSyncedSequenceNumber").values(List.of(String.valueOf(newLatestSyncedSequenceNumber)))))
+			.metadata(List.of(new KeyValues().key("metadata").values(List.of("metadataValue"))))
 			.topic(topic)
 			.latestSequenceNumber(newLatestSyncedSequenceNumber);
 
-		when(conversationRepositoryMock.save(entity)).thenReturn(entity);
+		final var message = new Message()
+			.createdBy(new Identifier(adAccount));
+
+		when(errandRepositoryMock.getReferenceById(any())).thenReturn(errandEntity);
+		when(messageExchangeClientMock.getMessages(any(), any(), any(), any(), any())).thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message()))));
+		when(conversationRepositoryMock.save(conversationEntity)).thenReturn(conversationEntity);
 
 		// Act
-		final var result = service.syncConversation(entity, conversation);
+		service.syncConversation(conversationEntity, conversation);
 
 		// Assert
-		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(result.getId()).isEqualTo(id);
-		assertThat(result.getTopic()).isEqualTo(topic);
-		assertThat(result.getType()).isEqualTo(INTERNAL);
-		assertThat(result.getRelationIds()).isEqualTo(relationIds);
-		assertThat(result.getParticipants()).hasSize(1);
-		assertThat(result.getMetadata()).hasSize(1);
+		verify(errandRepositoryMock).getReferenceById(1L);
+		verify(messageExchangeClientMock).getMessages(municipalityId, namespace, messageExchangeId, "sequenceNumber.id >123", Pageable.unpaged());
+		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), any(), same(errandEntity));
+		verify(conversationRepositoryMock).save(conversationEntity);
 
-		verify(conversationRepositoryMock).save(entity);
-		verify(applicationEventPublisherMock).publishEvent(any(ConversationEvent.class));
-
-		verifyNoMoreInteractions(conversationRepositoryMock, applicationEventPublisherMock);
-		verifyNoInteractions(messageExchangeClientMock, attachmentServiceMock);
+		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
+		verifyNoInteractions(attachmentServiceMock);
 	}
 
 	@Test
-	void syncMessages() {
+	void syncMessagesAllMatchAdministratorOwner() {
 		// Arrange
 		final var errandId = 123L;
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
+		final var messageExchangeId = "messageExchangeId";
+		final var errandAdministratorOwnerId = "errandAdministratorOwnerId";
 		final var conversationEntity = ConversationEntity.builder()
 			.withErrandId(String.valueOf(errandId))
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
+			.withMessageExchangeId(messageExchangeId)
+			.withLatestSyncedSequenceNumber(123L)
 			.build();
-		final var requestId = "requestId";
-		final var conversationEvent = ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(requestId).build();
 
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(namespace), any(), any(), any()))
-			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message()))));
+			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier(errandAdministratorOwnerId))))));
 
 		// Act
-		service.syncMessages(conversationEvent);
+		var result = service.syncMessages(conversationEntity, errandAdministratorOwnerId);
 
 		// Assert
-		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), any(), any(), any());
+		assertThat(result).isTrue();
+		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), eq(messageExchangeId), eq("sequenceNumber.id >123"), eq(Pageable.unpaged()));
+		verifyNoMoreInteractions(messageExchangeClientMock);
+		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock);
+	}
+
+	@Test
+	void syncMessagesNotAllMatchAdministratorOwner() {
+		// Arrange
+		final var errandId = 123L;
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var messageExchangeId = "messageExchangeId";
+		final var errandAdministratorOwnerId = "errandAdministratorOwnerId";
+		final var conversationEntity = ConversationEntity.builder()
+			.withErrandId(String.valueOf(errandId))
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.withMessageExchangeId(messageExchangeId)
+			.withLatestSyncedSequenceNumber(123L)
+			.build();
+		final var requestId = "requestId";
+
+		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(namespace), any(), any(), any()))
+			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(
+				new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier(errandAdministratorOwnerId)),
+				new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier("otherUserId"))))));
+
+		// Act
+		var result = service.syncMessages(conversationEntity, errandAdministratorOwnerId);
+
+		// Assert
+		assertThat(result).isFalse();
+		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), eq(messageExchangeId), eq("sequenceNumber.id >123"), eq(Pageable.unpaged()));
 		verifyNoMoreInteractions(messageExchangeClientMock);
 		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock);
 	}
@@ -136,22 +185,25 @@ class MessageExchangeSyncServiceTest {
 		final var errandId = 123L;
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
+		final var messageExchangeId = "messageExchangeId";
+		final var errandAdministratorOwnerId = "errandAdministratorOwnerId";
 		final var conversationEntity = ConversationEntity.builder()
 			.withErrandId(String.valueOf(errandId))
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
+			.withMessageExchangeId(messageExchangeId)
+			.withLatestSyncedSequenceNumber(123L)
 			.build();
-		final var requestId = "requestId";
-		final var conversationEvent = ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(requestId).build();
 
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(namespace), any(), any(), any()))
 			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of())));
 
 		// Act
-		service.syncMessages(conversationEvent);
+		var result = service.syncMessages(conversationEntity, errandAdministratorOwnerId);
 
 		// Assert
-		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), any(), any(), any());
+		assertThat(result).isTrue();
+		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), eq(messageExchangeId), eq("sequenceNumber.id >123"), eq(Pageable.unpaged()));
 		verifyNoMoreInteractions(messageExchangeClientMock);
 		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock);
 	}
@@ -162,10 +214,14 @@ class MessageExchangeSyncServiceTest {
 		final var errandId = 123L;
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
+		final var messageExchangeId = "messageExchangeId";
+		final var errandAdministratorOwnerId = "errandAdministratorOwnerId";
 		final var conversationEntity = ConversationEntity.builder()
 			.withErrandId(String.valueOf(errandId))
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
+			.withMessageExchangeId(messageExchangeId)
+			.withLatestSyncedSequenceNumber(123L)
 			.build();
 
 		final var requestId = "requestId";
@@ -175,11 +231,11 @@ class MessageExchangeSyncServiceTest {
 			.thenReturn(null);
 
 		// Act & Assert
-		assertThatThrownBy(() -> service.syncMessages(conversationEvent))
+		assertThatThrownBy(() -> service.syncMessages(conversationEntity, errandAdministratorOwnerId))
 			.isInstanceOf(Problem.class)
 			.hasMessageContaining("Failed to retrieve messages from Message Exchange");
 
-		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), any(), any(), any());
+		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), eq(messageExchangeId), eq("sequenceNumber.id >123"), eq(Pageable.unpaged()));
 		verifyNoMoreInteractions(messageExchangeClientMock);
 		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock);
 	}

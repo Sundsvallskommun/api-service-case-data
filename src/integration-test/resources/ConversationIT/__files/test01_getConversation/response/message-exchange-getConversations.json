@@ -14,6 +14,12 @@
 			"values": [
 				"external-value-1"
 			]
+		},
+		{
+			"key": "relationIds",
+			"values": [
+				"RELATION-ID-1"
+			]
 		}
 	],
 	"metadata": [

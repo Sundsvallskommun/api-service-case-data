@@ -1,9 +1,11 @@
 package se.sundsvall.casedata.service;
 
+import static java.util.Optional.ofNullable;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toAttachment;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversation;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.updateConversationEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 import generated.se.sundsvall.messageexchange.Message;
 import java.io.IOException;
@@ -13,48 +15,56 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.event.TransactionalEventListener;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
-import se.sundsvall.casedata.service.util.ConversationEvent;
-import se.sundsvall.dept44.requestid.RequestId;
 
 @Service
 public class MessageExchangeSyncService {
 
+	private static final String NOTIFICATION_TYPE_UPDATE = "UPDATE";
+	private static final String NOTIFICATION_DESCRIPTION = "Ny händelse i konversation %s";
+
 	private final MessageExchangeClient messageExchangeClient;
 	private final AttachmentService attachmentService;
 	private final ConversationRepository conversationRepository;
-	private final ApplicationEventPublisher applicationEventPublisher;
+	private final ErrandRepository errandRepository;
+	private final NotificationService notificationService;
 
 	@Value("${integration.message-exchange.namespace:casedata}")
 	private String messageExchangeNamespace;
 
-	public MessageExchangeSyncService(final MessageExchangeClient messageExchangeClient, final AttachmentService attachmentService, final ConversationRepository conversationRepository, final ApplicationEventPublisher applicationEventPublisher) {
+	public MessageExchangeSyncService(final MessageExchangeClient messageExchangeClient, final AttachmentService attachmentService, final ConversationRepository conversationRepository, final ApplicationEventPublisher applicationEventPublisher,
+		final ErrandRepository errandRepository, final NotificationService notificationService) {
+
 		this.messageExchangeClient = messageExchangeClient;
 		this.attachmentService = attachmentService;
 		this.conversationRepository = conversationRepository;
-		this.applicationEventPublisher = applicationEventPublisher;
+		this.notificationService = notificationService;
+		this.errandRepository = errandRepository;
 	}
 
-	public Conversation syncConversation(final ConversationEntity conversationEntity, final generated.se.sundsvall.messageexchange.Conversation conversation) {
-		// TODO: Create notification if sequence number is not the latest
-		applicationEventPublisher.publishEvent(ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(RequestId.get()).build());
-		final var updatedConversation = toConversation(conversationEntity, conversation);
+	public void syncConversation(final ConversationEntity conversationEntity, final generated.se.sundsvall.messageexchange.Conversation conversation) {
+		if (ofNullable(conversationEntity.getLatestSyncedSequenceNumber()).orElse(0L) < ofNullable(conversation.getLatestSequenceNumber()).orElse(0L)) {
+			final var errandEntity = errandRepository.getReferenceById(Long.parseLong(conversationEntity.getErrandId()));
+			final var notification = toNotification(errandEntity, NOTIFICATION_TYPE_UPDATE, NOTIFICATION_DESCRIPTION.formatted(conversation.getTopic()), MESSAGE);
+			final var acknowledgeNotification = syncMessages(conversationEntity, notification.getOwnerId());
+			if (acknowledgeNotification) {
+				notification.setAcknowledged(true);
+			}
+			notificationService.create(errandEntity.getMunicipalityId(), errandEntity.getNamespace(), notification, errandEntity);
+		}
+
 		conversationRepository.save(updateConversationEntity(conversationEntity, conversation));
-		return updatedConversation;
 	}
 
-	@TransactionalEventListener
-	void syncMessages(final ConversationEvent conversationEvent) {
-		final var conversationEntity = conversationEvent.getConversationEntity();
-		RequestId.init(conversationEvent.getRequestId());
+	boolean syncMessages(final ConversationEntity conversationEntity, String errandAdministratorOwnerId) {
 
-		final var filter = "sequenceNumber >" + conversationEntity.getLatestSyncedSequenceNumber();
+		final var filter = "sequenceNumber.id >" + conversationEntity.getLatestSyncedSequenceNumber();
 
 		final var response = messageExchangeClient.getMessages(conversationEntity.getMunicipalityId(), conversationEntity.getNamespace(), conversationEntity.getMessageExchangeId(), filter, Pageable.unpaged());
 
@@ -63,6 +73,9 @@ public class MessageExchangeSyncService {
 		}
 
 		response.getBody().forEach(message -> message.getAttachments().forEach(attachment -> syncAttachment(conversationEntity, message, attachment)));
+
+		return response.getBody().stream()
+			.allMatch(message -> message.getCreatedBy() != null && message.getCreatedBy().getValue().equals(errandAdministratorOwnerId));
 	}
 
 	void syncAttachment(final ConversationEntity conversationEntity, final Message message, final generated.se.sundsvall.messageexchange.Attachment attachment) {

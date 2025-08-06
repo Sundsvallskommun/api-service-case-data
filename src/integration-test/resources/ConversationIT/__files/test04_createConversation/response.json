@@ -3,7 +3,8 @@
 	"topic": "Topic 1",
 	"type": "INTERNAL",
 	"relationIds": [
-		"1a1b2c3-d4e6-f6aa-b8c9-d0e1f2a3b4c5"
+		"1a1b2c3-d4e6-f6aa-b8c9-d0e1f2a3b4c5",
+		"RELATION-ID-NEW"
 	],
 	"participants": [
 		{
