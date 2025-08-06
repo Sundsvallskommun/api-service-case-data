@@ -15,8 +15,10 @@ import generated.se.sundsvall.messageexchange.Conversation;
 import generated.se.sundsvall.messageexchange.Identifier;
 import generated.se.sundsvall.messageexchange.KeyValues;
 import generated.se.sundsvall.messageexchange.Message;
+
 import java.io.ByteArrayInputStream;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -98,9 +100,6 @@ class MessageExchangeSyncServiceTest {
 			.topic(topic)
 			.latestSequenceNumber(newLatestSyncedSequenceNumber);
 
-		final var message = new Message()
-			.createdBy(new Identifier(adAccount));
-
 		when(errandRepositoryMock.getReferenceById(any())).thenReturn(errandEntity);
 		when(messageExchangeClientMock.getMessages(any(), any(), any(), any(), any())).thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message()))));
 		when(conversationRepositoryMock.save(conversationEntity)).thenReturn(conversationEntity);
@@ -142,7 +141,7 @@ class MessageExchangeSyncServiceTest {
 
 		// Assert
 		assertThat(result).isTrue();
-		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), eq(messageExchangeId), eq("sequenceNumber.id >123"), eq(Pageable.unpaged()));
+		verify(messageExchangeClientMock).getMessages(municipalityId, namespace, messageExchangeId, "sequenceNumber.id >123", Pageable.unpaged());
 		verifyNoMoreInteractions(messageExchangeClientMock);
 		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock);
 	}
@@ -162,7 +161,6 @@ class MessageExchangeSyncServiceTest {
 			.withMessageExchangeId(messageExchangeId)
 			.withLatestSyncedSequenceNumber(123L)
 			.build();
-		final var requestId = "requestId";
 
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(namespace), any(), any(), any()))
 			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(
@@ -174,7 +172,7 @@ class MessageExchangeSyncServiceTest {
 
 		// Assert
 		assertThat(result).isFalse();
-		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), eq(messageExchangeId), eq("sequenceNumber.id >123"), eq(Pageable.unpaged()));
+		verify(messageExchangeClientMock).getMessages(municipalityId, namespace, messageExchangeId, "sequenceNumber.id >123", Pageable.unpaged());
 		verifyNoMoreInteractions(messageExchangeClientMock);
 		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock);
 	}
@@ -203,7 +201,7 @@ class MessageExchangeSyncServiceTest {
 
 		// Assert
 		assertThat(result).isTrue();
-		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), eq(messageExchangeId), eq("sequenceNumber.id >123"), eq(Pageable.unpaged()));
+		verify(messageExchangeClientMock).getMessages(municipalityId, namespace, messageExchangeId, "sequenceNumber.id >123", Pageable.unpaged());
 		verifyNoMoreInteractions(messageExchangeClientMock);
 		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock);
 	}
@@ -224,9 +222,6 @@ class MessageExchangeSyncServiceTest {
 			.withLatestSyncedSequenceNumber(123L)
 			.build();
 
-		final var requestId = "requestId";
-		final var conversationEvent = ConversationEvent.builder().withConversationEntity(conversationEntity).withRequestId(requestId).build();
-
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(namespace), any(), any(), any()))
 			.thenReturn(null);
 
@@ -235,7 +230,7 @@ class MessageExchangeSyncServiceTest {
 			.isInstanceOf(Problem.class)
 			.hasMessageContaining("Failed to retrieve messages from Message Exchange");
 
-		verify(messageExchangeClientMock).getMessages(eq(municipalityId), eq(namespace), eq(messageExchangeId), eq("sequenceNumber.id >123"), eq(Pageable.unpaged()));
+		verify(messageExchangeClientMock).getMessages(municipalityId, namespace, messageExchangeId, "sequenceNumber.id >123", Pageable.unpaged());
 		verifyNoMoreInteractions(messageExchangeClientMock);
 		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock);
 	}

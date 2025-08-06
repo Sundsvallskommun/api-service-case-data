@@ -10,7 +10,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotifica
 import generated.se.sundsvall.messageexchange.Message;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +37,7 @@ public class MessageExchangeSyncService {
 	@Value("${integration.message-exchange.namespace:casedata}")
 	private String messageExchangeNamespace;
 
-	public MessageExchangeSyncService(final MessageExchangeClient messageExchangeClient, final AttachmentService attachmentService, final ConversationRepository conversationRepository, final ApplicationEventPublisher applicationEventPublisher,
+	public MessageExchangeSyncService(final MessageExchangeClient messageExchangeClient, final AttachmentService attachmentService, final ConversationRepository conversationRepository,
 		final ErrandRepository errandRepository, final NotificationService notificationService) {
 
 		this.messageExchangeClient = messageExchangeClient;
