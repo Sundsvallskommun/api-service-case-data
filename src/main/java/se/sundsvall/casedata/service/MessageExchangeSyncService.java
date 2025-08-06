@@ -63,9 +63,9 @@ public class MessageExchangeSyncService {
 
 	boolean syncMessages(final ConversationEntity conversationEntity, String errandAdministratorOwnerId) {
 
-		final var filter = "sequenceNumber.id >" + conversationEntity.getLatestSyncedSequenceNumber();
+		final var filter = "sequenceNumber.id >" + ofNullable(conversationEntity.getLatestSyncedSequenceNumber()).orElse(0L);
 
-		final var response = messageExchangeClient.getMessages(conversationEntity.getMunicipalityId(), conversationEntity.getNamespace(), conversationEntity.getMessageExchangeId(), filter, Pageable.unpaged());
+		final var response = messageExchangeClient.getMessages(conversationEntity.getMunicipalityId(), messageExchangeNamespace, conversationEntity.getMessageExchangeId(), filter, Pageable.unpaged());
 
 		if (response == null || !response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve messages from Message Exchange");
