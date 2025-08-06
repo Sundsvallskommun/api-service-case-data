@@ -15,10 +15,8 @@ import generated.se.sundsvall.messageexchange.Conversation;
 import generated.se.sundsvall.messageexchange.Identifier;
 import generated.se.sundsvall.messageexchange.KeyValues;
 import generated.se.sundsvall.messageexchange.Message;
-
 import java.io.ByteArrayInputStream;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,7 +33,6 @@ import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
-import se.sundsvall.casedata.service.util.ConversationEvent;
 
 @ExtendWith(MockitoExtension.class)
 class MessageExchangeSyncServiceTest {
