@@ -18,6 +18,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.dept44.support.Identifier.Type.PARTY_ID;
 
 import generated.se.sundsvall.messaging.MessageResult;
 import generated.se.sundsvall.messagingsettings.SenderInfoResponse;
@@ -56,6 +57,7 @@ import se.sundsvall.casedata.integration.messaging.MessagingClient;
 import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsClient;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.casedata.service.util.BlobBuilder;
+import se.sundsvall.dept44.support.Identifier;
 
 @ExtendWith(MockitoExtension.class)
 class MessageServiceTest {
@@ -384,6 +386,9 @@ class MessageServiceTest {
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.build();
+
+		Identifier.set(Identifier.create().withType(PARTY_ID).withValue("e82c8029-7676-467d-8ebb-8638d0abd2b4"));
+
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE)).thenReturn(new SenderInfoResponse());
 		when(messagingClientMock.sendMessage(eq(MUNICIPALITY_ID), any())).thenReturn(null);

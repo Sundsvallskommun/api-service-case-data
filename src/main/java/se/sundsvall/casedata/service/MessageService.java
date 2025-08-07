@@ -11,11 +11,15 @@ import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ATTACHMENT_EN
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
+import generated.se.sundsvall.messaging.Message;
+import generated.se.sundsvall.messaging.MessageParty;
 import generated.se.sundsvall.messagingsettings.SenderInfoResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
@@ -29,6 +33,7 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.messaging.MessagingClient;
 import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsClient;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
+import se.sundsvall.dept44.support.Identifier;
 
 @Service
 @Transactional
@@ -138,10 +143,19 @@ public class MessageService {
 
 		final var request = toMessagingMessageRequest(errandEntity, senderInfo);
 
-		final var message = messagingClient.sendMessage(errandEntity.getMunicipalityId(), request);
+		final var partyId = Optional.ofNullable(request.getMessages())
+			.map(List::getFirst)
+			.map(Message::getParty)
+			.map(MessageParty::getPartyId)
+			.map(UUID::toString)
+			.orElse(null);
 
-		if (message == null) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message notification");
+		if (Identifier.get() != null && !Identifier.get().getValue().equals(partyId)) {
+			final var message = messagingClient.sendMessage(errandEntity.getMunicipalityId(), request);
+
+			if (message == null) {
+				throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message notification");
+			}
 		}
 
 	}
