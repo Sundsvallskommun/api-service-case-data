@@ -82,7 +82,10 @@ spring:
             provider: message-exchange
             client-id: ${config.relation.client-id}
             client-secret: ${config.relation.client-secret}
-
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: -1
 #----------------------------------------
 # Open API
 #----------------------------------------
