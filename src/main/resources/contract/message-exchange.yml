@@ -1,14 +1,11 @@
 openapi: 3.0.1
 info:
   title: message-exchange
-  contact: { }
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "1.0"
-servers:
-  - url: http://localhost:50672
-    description: Generated server url
+  version: "1.1"
 tags:
   - name: Message resource
     description: Message operations
@@ -40,7 +37,7 @@ paths:
         - name: filter
           in: query
           description: "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)"
-          required: true
+          required: false
           schema:
             type: string
           example: topic:'My topic' and messages.createdBy.value:'joe01doe' and messages.created>'2023-01-01T00:00:00Z'
@@ -141,6 +138,15 @@ paths:
       description: "Get all messages for a conversation, paginated."
       operationId: getMessages
       parameters:
+        - name: X-Sent-By
+          in: header
+          description: "User ID of the request sender, used to log who read the message.\
+          \ The value must follow the format: type=TYPE; VALUE. Valid types are 'adAccount'\
+          \ and 'partyId'."
+          required: false
+          schema:
+            type: string
+          example: type=adAccount; joe01doe
         - name: municipalityId
           in: path
           description: Municipality ID
@@ -162,6 +168,13 @@ paths:
           schema:
             type: string
           example: b82bd8ac-1507-4d9a-958d-369261eecc15
+        - name: filter
+          in: query
+          description: "Syntax description: [spring-filter](https://github.com/turkraft/spring-filter/blob/85730f950a5f8623159cc0eb4d737555f9382bb7/README.md#syntax)"
+          required: false
+          schema:
+            type: string
+          example: content:'My content' and createdBy.value:'joe01doe' and created>'2023-01-01T00:00:00Z'
         - name: page
           in: query
           description: Zero-based page index (0..N)
@@ -220,6 +233,15 @@ paths:
       description: Post a message with attachment
       operationId: postMessage
       parameters:
+        - name: X-Sent-By
+          in: header
+          description: "User ID of the request sender, used to log who sent the message.\
+          \ The value must follow the format: type=TYPE; VALUE. Valid types are 'adAccount'\
+          \ and 'partyId'."
+          required: false
+          schema:
+            type: string
+          example: type=adAccount; joe01doe
         - name: municipalityId
           in: path
           description: Municipality ID
@@ -683,11 +705,11 @@ components:
     StatusType:
       type: object
       properties:
-        reasonPhrase:
-          type: string
         statusCode:
           type: integer
           format: int32
+        reasonPhrase:
+          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -923,6 +945,13 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Attachment"
+        type:
+          type: string
+          description: Type of message (user or system created)
+          readOnly: true
+          enum:
+            - USER_CREATED
+            - SYSTEM_CREATED
       description: "Represents a message within a conversation, including metadata\
         \ and content."
     ReadBy:
@@ -939,16 +968,18 @@ components:
     PageConversation:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         first:
           type: boolean
         last:
           type: boolean
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         size:
           type: integer
           format: int32
@@ -964,18 +995,11 @@ components:
         numberOfElements:
           type: integer
           format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageableObject:
       type: object
       properties:
-        offset:
-          type: integer
-          format: int64
-        sort:
-          $ref: "#/components/schemas/SortObject"
         paged:
           type: boolean
         pageNumber:
@@ -984,30 +1008,37 @@ components:
         pageSize:
           type: integer
           format: int32
+        offset:
+          type: integer
+          format: int64
+        sort:
+          $ref: "#/components/schemas/SortObject"
         unpaged:
           type: boolean
     SortObject:
       type: object
       properties:
-        empty:
-          type: boolean
         sorted:
+          type: boolean
+        empty:
           type: boolean
         unsorted:
           type: boolean
     PageMessage:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         first:
           type: boolean
         last:
           type: boolean
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         size:
           type: integer
           format: int32
@@ -1023,8 +1054,6 @@ components:
         numberOfElements:
           type: integer
           format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
-  securitySchemes: { }
+  securitySchemes: {}
