@@ -44,6 +44,8 @@ class MessageTest {
 		final var content = "Hello, how can I help you?";
 		final var readBy = List.of(ReadBy.builder().build());
 		final var attachments = List.of(ConversationAttachment.builder().build());
+		final var type = MessageType.USER_CREATED;
+
 		// Act
 		final var result = Message.builder()
 			.withId(id)
@@ -53,8 +55,9 @@ class MessageTest {
 			.withContent(content)
 			.withReadBy(readBy)
 			.withAttachments(attachments)
-
+			.withType(type)
 			.build();
+
 		// Assert
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(result.getId()).isEqualTo(id);
@@ -64,6 +67,7 @@ class MessageTest {
 		assertThat(result.getContent()).isEqualTo(content);
 		assertThat(result.getReadBy()).isEqualTo(readBy);
 		assertThat(result.getAttachments()).isEqualTo(attachments);
+		assertThat(result.getType()).isEqualTo(type);
 
 	}
 

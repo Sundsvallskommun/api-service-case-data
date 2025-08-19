@@ -486,7 +486,7 @@ class ConversationServiceTest {
 			.thenReturn(Optional.ofNullable(conversationEntity));
 
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any()))
-			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message()))));
+			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message().type(generated.se.sundsvall.messageexchange.Message.TypeEnum.USER_CREATED)))));
 
 		// Act
 		final var result = conversationService.getMessages(municipalityId, namespace, errandId, conversationId, pageable);

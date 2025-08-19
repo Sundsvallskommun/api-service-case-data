@@ -24,7 +24,8 @@
 					"fileSize": 5068,
 					"mimeType": "image/jpeg"
 				}
-			]
+			],
+			"type": "USER_CREATED"
 		},
 		{
 			"id": "m2a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6",
@@ -51,7 +52,8 @@
 					"fileSize": 2048,
 					"mimeType": "text/plain"
 				}
-			]
+			],
+			"type": "USER_CREATED"
 		}
 	],
 	"pageable": {

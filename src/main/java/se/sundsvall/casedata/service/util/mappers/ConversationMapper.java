@@ -21,6 +21,7 @@ import se.sundsvall.casedata.api.model.conversation.ConversationType;
 import se.sundsvall.casedata.api.model.conversation.Identifier;
 import se.sundsvall.casedata.api.model.conversation.KeyValues;
 import se.sundsvall.casedata.api.model.conversation.Message;
+import se.sundsvall.casedata.api.model.conversation.MessageType;
 import se.sundsvall.casedata.api.model.conversation.ReadBy;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 
@@ -151,6 +152,7 @@ public final class ConversationMapper {
 			.withContent(message.getContent())
 			.withReadBy(ConversationMapper.toReadBy(message.getReadBy()))
 			.withAttachments(ConversationMapper.toAttachments(message.getAttachments()))
+			.withType(MessageType.valueOf(message.getType().name()))
 			.build());
 	}
 

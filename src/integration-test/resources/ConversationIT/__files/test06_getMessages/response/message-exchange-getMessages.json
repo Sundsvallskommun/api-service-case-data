@@ -26,7 +26,8 @@
 					"mimeType": "image/jpeg",
 					"created": "2023-01-01T10:05:00+01:00"
 				}
-			]
+			],
+			"type": "USER_CREATED"
 		},
 		{
 			"id": "m2a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6",
@@ -55,7 +56,8 @@
 					"mimeType": "text/plain",
 					"created": "2023-01-01T11:05:00+01:00"
 				}
-			]
+			],
+			"type": "USER_CREATED"
 		}
 	],
 	"pageable": {
