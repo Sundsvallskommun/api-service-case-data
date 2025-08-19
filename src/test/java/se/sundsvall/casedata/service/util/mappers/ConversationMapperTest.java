@@ -9,6 +9,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
 
+import generated.se.sundsvall.messageexchange.Message;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
@@ -23,6 +24,7 @@ import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.ConversationType;
 import se.sundsvall.casedata.api.model.conversation.Identifier;
 import se.sundsvall.casedata.api.model.conversation.KeyValues;
+import se.sundsvall.casedata.api.model.conversation.MessageType;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 
 class ConversationMapperTest {
@@ -342,8 +344,8 @@ class ConversationMapperTest {
 	@Test
 	void toMessagePage() {
 		// Arrange
-		final var message1 = new generated.se.sundsvall.messageexchange.Message().id("1").content("Message 1").inReplyToMessageId("0");
-		final var message2 = new generated.se.sundsvall.messageexchange.Message().id("2").content("Message 2").inReplyToMessageId("1");
+		final var message1 = new generated.se.sundsvall.messageexchange.Message().id("1").content("Message 1").inReplyToMessageId("0").type(Message.TypeEnum.USER_CREATED);
+		final var message2 = new generated.se.sundsvall.messageexchange.Message().id("2").content("Message 2").inReplyToMessageId("1").type(Message.TypeEnum.SYSTEM_CREATED);
 		final var messages = List.of(message1, message2);
 		final var page = new org.springframework.data.domain.PageImpl<>(messages);
 
@@ -356,9 +358,11 @@ class ConversationMapperTest {
 		assertThat(result.getContent().getFirst().getId()).isEqualTo("1");
 		assertThat(result.getContent().getFirst().getContent()).isEqualTo("Message 1");
 		assertThat(result.getContent().getFirst().getInReplyToMessageId()).isEqualTo("0");
+		assertThat(result.getContent().getFirst().getType()).isEqualTo(MessageType.USER_CREATED);
 		assertThat(result.getContent().getLast().getId()).isEqualTo("2");
 		assertThat(result.getContent().getLast().getContent()).isEqualTo("Message 2");
 		assertThat(result.getContent().getLast().getInReplyToMessageId()).isEqualTo("1");
+		assertThat(result.getContent().getLast().getType()).isEqualTo(MessageType.SYSTEM_CREATED);
 	}
 
 	@Test

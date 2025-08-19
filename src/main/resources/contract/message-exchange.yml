@@ -1,11 +1,14 @@
 openapi: 3.0.1
 info:
   title: message-exchange
-  contact: {}
+  contact: { }
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
   version: "1.1"
+servers:
+  - url: https://message-exchange-af-message-exchange.apps.ocp201.sundsvall.se
+    description: Generated server url
 tags:
   - name: Message resource
     description: Message operations
@@ -968,12 +971,12 @@ components:
     PageConversation:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         first:
           type: boolean
         last:
@@ -1027,12 +1030,12 @@ components:
     PageMessage:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         first:
           type: boolean
         last:
@@ -1056,4 +1059,4 @@ components:
           format: int32
         empty:
           type: boolean
-  securitySchemes: {}
+  securitySchemes: { }
