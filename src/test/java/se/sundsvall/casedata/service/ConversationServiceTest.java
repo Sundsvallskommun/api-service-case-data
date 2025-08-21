@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.api.model.conversation.ConversationType.EXTERNAL;
 
 import generated.se.sundsvall.messageexchange.KeyValues;
 import java.io.IOException;
@@ -427,7 +428,7 @@ class ConversationServiceTest {
 		final var attachment = new MockMultipartFile("attachments", "attachment.txt".getBytes());
 
 		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
-			.thenReturn(Optional.ofNullable(ConversationEntity.builder().withMessageExchangeId(messageExchangeId).build()));
+			.thenReturn(Optional.ofNullable(ConversationEntity.builder().withType(EXTERNAL.name()).withMessageExchangeId(messageExchangeId).build()));
 
 		when(messageExchangeClientMock.createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any()))
 			.thenReturn(ResponseEntity.ok().build());
