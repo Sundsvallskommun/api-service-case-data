@@ -6,6 +6,9 @@ import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.SYSTEM;
+import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildMunicipalityIdFilter;
+import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildNamespaceFilter;
+import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.distinct;
 import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
 import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
@@ -66,27 +69,21 @@ public class ErrandService {
 		return toErrand(errandEntity);
 	}
 
-	/**
-	 * @return Page of Errand without duplicates
-	 */
 	public Page<Errand> findAll(final Specification<ErrandEntity> specification, final String municipalityId, final String namespace, final Pageable pageable) {
-		// Extract all ID's and remove duplicates
 		try {
-			final List<Long> allIds = errandRepository.findAll(specification).stream()
-				.filter(errand -> municipalityId.equals(errand.getMunicipalityId()))
-				.filter(errand -> namespace.equals(errand.getNamespace()))
-				.map(ErrandEntity::getId)
-				.distinct()
-				.toList();
-
-			return errandRepository.findAllByIdInAndMunicipalityIdAndNamespace(allIds, municipalityId, namespace, pageable).map(EntityMapper::toErrand);
+			return errandRepository.findAll(Specification
+				.allOf(buildMunicipalityIdFilter(municipalityId)
+					.and(buildNamespaceFilter(namespace))
+					.and(specification)
+					.and(distinct())), pageable)
+				.map(EntityMapper::toErrand);
 		} catch (final PropertyReferenceException | PathElementException | InvalidDataAccessApiUsageException e) {
 			throw Problem.valueOf(BAD_REQUEST, "Invalid filter parameter: " + e.getMessage());
 		}
 	}
 
 	/**
-	 * Saves errand and update the process in ParkingPermit if it's a parking permit errand
+	 * Saves an errand and update the process in ParkingPermit if it's a parking permit errand
 	 */
 	public Errand create(final Errand errand, final String municipalityId, final String namespace) {
 
@@ -146,15 +143,12 @@ public class ErrandService {
 	}
 
 	public Page<Errand> findAllWithoutNamespace(final Specification<ErrandEntity> specification, final String municipalityId, final Pageable pageable) {
-		// Extract all ID's and remove duplicates
 		try {
-			final List<Long> allIds = errandRepository.findAll(specification).stream()
-				.filter(errand -> municipalityId.equals(errand.getMunicipalityId()))
-				.map(ErrandEntity::getId)
-				.distinct()
-				.toList();
-
-			return errandRepository.findAllByIdInAndMunicipalityId(allIds, municipalityId, pageable).map(EntityMapper::toErrand);
+			return errandRepository.findAll(Specification
+				.allOf(buildMunicipalityIdFilter(municipalityId)
+					.and(specification)
+					.and(distinct())), pageable)
+				.map(EntityMapper::toErrand);
 		} catch (final PropertyReferenceException | PathElementException | InvalidDataAccessApiUsageException e) {
 			throw Problem.valueOf(BAD_REQUEST, "Invalid filter parameter: " + e.getMessage());
 		}
