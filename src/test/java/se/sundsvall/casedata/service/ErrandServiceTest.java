@@ -4,7 +4,6 @@ import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.never;
@@ -237,20 +236,19 @@ class ErrandServiceTest {
 		returnErrands.forEach(
 			errandEntity -> errandEntity.setId(errandDTO.getId()));
 
-		when(errandRepositoryMock.findAll(ArgumentMatchers.<Specification<ErrandEntity>>any())).thenReturn(returnErrands);
-		when(errandRepositoryMock.findAllByIdInAndMunicipalityIdAndNamespace(anyList(), eq(MUNICIPALITY_ID), eq(NAMESPACE), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(returnErrands.getFirst())));
+		when(errandRepositoryMock.findAll(ArgumentMatchers.<Specification<ErrandEntity>>any(), any(Pageable.class))).thenReturn(new PageImpl<>(returnErrands));
 
 		final Specification<ErrandEntity> filterSpecification = filterSpecificationConverterSpy.convert("stakeholders.firstName '*kim*' or stakeholders.lastName ~ '*kim*' or stakeholders.contactInformation.value ~ '*kim*'");
 		final Pageable pageable = PageRequest.of(0, 20);
 
 		// Act
-		errandService.findAll(filterSpecification, MUNICIPALITY_ID, NAMESPACE, pageable);
+		final var result = errandService.findAll(filterSpecification, MUNICIPALITY_ID, NAMESPACE, pageable);
 
 		// Assert
-		verify(errandRepositoryMock).findAllByIdInAndMunicipalityIdAndNamespace(idListCapture.capture(), eq(MUNICIPALITY_ID), eq(NAMESPACE), any(Pageable.class));
+		verify(errandRepositoryMock).findAll(ArgumentMatchers.<Specification<ErrandEntity>>any(), any(Pageable.class));
 
-		assertThat(idListCapture.getValue()).hasSize(1);
-		assertThat(idListCapture.getValue().getFirst()).isEqualTo(errandDTO.getId());
+		assertThat(result).hasSize(5);
+		assertThat(result.getContent().getFirst().getId()).isEqualTo(errandDTO.getId());
 	}
 
 	@Test
@@ -265,20 +263,19 @@ class ErrandServiceTest {
 		returnErrands.forEach(
 			errandEntity -> errandEntity.setId(errandDTO.getId()));
 
-		when(errandRepositoryMock.findAll(ArgumentMatchers.<Specification<ErrandEntity>>any())).thenReturn(returnErrands);
-		when(errandRepositoryMock.findAllByIdInAndMunicipalityId(anyList(), eq(MUNICIPALITY_ID), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(returnErrands.getFirst())));
+		when(errandRepositoryMock.findAll(ArgumentMatchers.<Specification<ErrandEntity>>any(), any(Pageable.class))).thenReturn(new PageImpl<>(returnErrands));
 
 		final Specification<ErrandEntity> filterSpecification = filterSpecificationConverterSpy.convert("stakeholders.firstName '*kim*' or stakeholders.lastName ~ '*kim*' or stakeholders.contactInformation.value ~ '*kim*'");
 		final Pageable pageable = PageRequest.of(0, 20);
 
 		// Act
-		errandService.findAllWithoutNamespace(filterSpecification, MUNICIPALITY_ID, pageable);
+		final var result = errandService.findAllWithoutNamespace(filterSpecification, MUNICIPALITY_ID, pageable);
 
 		// Assert
-		verify(errandRepositoryMock).findAllByIdInAndMunicipalityId(idListCapture.capture(), eq(MUNICIPALITY_ID), any(Pageable.class));
+		verify(errandRepositoryMock).findAll(ArgumentMatchers.<Specification<ErrandEntity>>any(), any(Pageable.class));
 
-		assertThat(idListCapture.getValue()).hasSize(1);
-		assertThat(idListCapture.getValue().getFirst()).isEqualTo(errandDTO.getId());
+		assertThat(result).hasSize(5);
+		assertThat(result.getContent().getFirst().getId()).isEqualTo(errandDTO.getId());
 	}
 
 	@Test
