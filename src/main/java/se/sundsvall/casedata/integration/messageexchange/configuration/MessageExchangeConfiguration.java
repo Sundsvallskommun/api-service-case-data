@@ -2,6 +2,8 @@ package se.sundsvall.casedata.integration.messageexchange.configuration;
 
 import static java.util.Optional.ofNullable;
 
+import feign.codec.Encoder;
+import feign.form.FormEncoder;
 import feign.form.spring.SpringFormEncoder;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
@@ -28,10 +30,27 @@ public class MessageExchangeConfiguration {
 	}
 
 	@Bean
+	public Encoder feignFormEncoder(ObjectProvider<HttpMessageConverters> messageConverters) {
+
+		// 1. This is the delegate encoder. It's an encoder that uses Spring's
+		// HttpMessageConverters, allowing it to handle various data types like JSON.
+		// This encoder handles everything that isn't a form.
+		Encoder delegate = new SpringEncoder(messageConverters);
+
+		// 2. This encoder wraps the delegate to specifically handle Spring's
+		// MultipartFile. It is implemented to stream the file content.
+		SpringFormEncoder springFormEncoder = new SpringFormEncoder(delegate);
+
+		// 3. This is the top-level encoder. It's the one that knows how to process
+		// form data (both form-urlencoded and multipart).
+		return new FormEncoder(springFormEncoder);
+	}
+
+	@Bean
 	FeignBuilderCustomizer feignBuilderCustomizer(final ClientRegistrationRepository clientRepository, final MessageExchangeProperties messageExchangeProperties, ObjectProvider<HttpMessageConverters> messageConverters) {
 		return FeignMultiCustomizer.create()
 			.withErrorDecoder(new ProblemErrorDecoder(CLIENT_ID))
-			.withEncoder(new SpringFormEncoder(new SpringEncoder(messageConverters)))
+			.withEncoder(new FormEncoder(new SpringFormEncoder(new SpringEncoder(messageConverters))))
 			.withRequestInterceptor(builder -> builder.header(Identifier.HEADER_NAME, createSentByHeaderValue(Identifier.get())))
 			.withRequestTimeoutsInSeconds(messageExchangeProperties.connectTimeout(), messageExchangeProperties.readTimeout())
 			.withRetryableOAuth2InterceptorForClientRegistration(clientRepository.findByRegistrationId(CLIENT_ID))

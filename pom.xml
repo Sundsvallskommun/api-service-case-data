@@ -92,6 +92,7 @@
 				<configuration>
 					<excludes>
 						<exclude>**/generated/**</exclude>
+						<exclude>se/sundsvall/casedata/configuration/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
