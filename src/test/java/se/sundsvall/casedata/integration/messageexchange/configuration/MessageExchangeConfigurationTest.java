@@ -15,6 +15,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.FeignBuilderCustomizer;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -39,6 +41,9 @@ class MessageExchangeConfigurationTest {
 	@Mock
 	private MessageExchangeProperties propertiesMock;
 
+	@Mock
+	private ObjectProvider<HttpMessageConverters> messageConvertersMock;
+
 	@Test
 	void testFeignBuilderCustomizer() {
 		final var configuration = new MessageExchangeConfiguration();
@@ -51,7 +56,7 @@ class MessageExchangeConfigurationTest {
 		try (final MockedStatic<FeignMultiCustomizer> feignMultiCustomizerMock = Mockito.mockStatic(FeignMultiCustomizer.class)) {
 			feignMultiCustomizerMock.when(FeignMultiCustomizer::create).thenReturn(feignMultiCustomizerSpy);
 
-			final var customizer = configuration.feignBuilderCustomizer(clientRegistrationRepositoryMock, propertiesMock);
+			final var customizer = configuration.feignBuilderCustomizer(clientRegistrationRepositoryMock, propertiesMock, messageConvertersMock);
 
 			final ArgumentCaptor<ProblemErrorDecoder> errorDecoderCaptor = ArgumentCaptor.forClass(ProblemErrorDecoder.class);
 
