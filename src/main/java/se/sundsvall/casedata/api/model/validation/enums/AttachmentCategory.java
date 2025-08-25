@@ -36,6 +36,15 @@ public enum AttachmentCategory {
 	SITUATION_PLAN, // Situationsplan
 	EMAIL, // E-post
 	LETTER, // Brev
-	MEDICAL_OPINION// Medicinskt utlåtande
+	MEDICAL_OPINION,// Medicinskt utlåtande
+
+	MEX_CONTRACT,  // Avtal
+	NEW_MEX_REQUEST,// Inkommen förfrågan
+	NOTICE,// Kallelse
+	REFERRAL_CONSULTATION,// Remiss/Samråd
+	STATEMENT,// Uttalande
+	IMAGE_PHOTO,// Bild/Foto
+	DECISION,// Beslut
+	COVER_LETTER// Följebrev
 
 }
