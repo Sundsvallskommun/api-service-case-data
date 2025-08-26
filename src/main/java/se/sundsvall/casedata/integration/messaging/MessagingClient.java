@@ -3,6 +3,7 @@ package se.sundsvall.casedata.integration.messaging;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static se.sundsvall.casedata.integration.messaging.configuration.MessagingConfiguration.CLIENT_ID;
 
+import generated.se.sundsvall.messaging.EmailRequest;
 import generated.se.sundsvall.messaging.MessageRequest;
 import generated.se.sundsvall.messaging.MessageResult;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -17,7 +18,7 @@ import se.sundsvall.casedata.integration.messaging.configuration.MessagingConfig
 public interface MessagingClient {
 
 	/**
-	 * Send a single e-mail
+	 * Send a message to a list of recipients as either sms or email.
 	 *
 	 * @param  municipalityId the id of the municipality to send the email to
 	 * @param  messageRequest containing message information
@@ -27,4 +28,16 @@ public interface MessagingClient {
 	MessageResult sendMessage(
 		@PathVariable("municipalityId") final String municipalityId,
 		@RequestBody final MessageRequest messageRequest);
+
+	/**
+	 * Send a email to a single recipient.
+	 *
+	 * @param municipalityId the id of the municipality to send the email to
+	 * @param emailRequest   containing email information
+	 */
+	@PostMapping(path = "/{municipalityId}/messages/email", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+	MessageResult sendEmail(
+		@PathVariable("municipalityId") final String municipalityId,
+		@RequestBody final EmailRequest emailRequest);
+
 }
