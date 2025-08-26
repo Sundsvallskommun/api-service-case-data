@@ -33,8 +33,8 @@ import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeSc
 @Service
 public class ConversationService {
 
+	static final String CONVERSATION_DEPARTMENT_ID = "CONVERSATION";
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConversationService.class);
-
 	private final ConversationRepository conversationRepository;
 	private final MessageExchangeClient messageExchangeClient;
 	private final MessageService messageService;
@@ -119,7 +119,7 @@ public class ConversationService {
 
 		try {
 			if (EXTERNAL.name().equals(entity.getType())) {
-				messageService.sendMessageNotification(municipalityId, namespace, errandId);
+				messageService.sendMessageNotification(municipalityId, namespace, errandId, CONVERSATION_DEPARTMENT_ID);
 			}
 		} catch (final Exception e) {
 			LOGGER.error("Failed to send message notification", e);

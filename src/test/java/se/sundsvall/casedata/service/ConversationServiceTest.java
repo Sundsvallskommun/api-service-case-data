@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.api.model.conversation.ConversationType.EXTERNAL;
+import static se.sundsvall.casedata.service.ConversationService.CONVERSATION_DEPARTMENT_ID;
 
 import generated.se.sundsvall.messageexchange.KeyValues;
 import java.io.IOException;
@@ -440,7 +441,7 @@ class ConversationServiceTest {
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(messageExchangeClientMock).createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any());
 		verify(messageExchangeSchedulerMock).triggerSyncConversationsAsync();
-		verify(messageServiceMock).sendMessageNotification(municipalityId, namespace, errandId);
+		verify(messageServiceMock).sendMessageNotification(municipalityId, namespace, errandId, CONVERSATION_DEPARTMENT_ID);
 		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock, messageExchangeSchedulerMock, messageServiceMock);
 	}
 

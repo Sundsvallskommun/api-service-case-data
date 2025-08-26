@@ -1,10 +1,13 @@
 package se.sundsvall.casedata.service;
 
+import static java.util.Collections.emptyList;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailRequest;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toMessagingMessageRequest;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND;
@@ -26,10 +29,12 @@ import org.springframework.util.StreamUtils;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
+import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.messaging.MessagingClient;
 import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsClient;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
@@ -39,6 +44,7 @@ import se.sundsvall.dept44.support.Identifier;
 @Transactional
 public class MessageService {
 
+	static final String PARATRANSIT_DEPARTMENT_ID = "PARATRANSIT";
 	private static final String NOTIFICATION_TYPE = "UPDATE";
 	private static final String NOTIFICATION_DESCRIPTION = "Meddelande skickat";
 	private final MessageRepository messageRepository;
@@ -77,11 +83,17 @@ public class MessageService {
 	}
 
 	public MessageResponse create(final Long errandId, final MessageRequest request, final String municipalityId, final String namespace) {
-		final var errand = errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+		final var errandEntity = errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 
 		final var messageEntity = messageRepository.save(mapper.toMessageEntity(request, errandId, municipalityId, namespace));
-		notificationService.create(municipalityId, namespace, toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errand);
+		notificationService.create(municipalityId, namespace, toNotification(errandEntity, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errandEntity);
+
+		final var stakeholderEntity = getReporterStakeholder(errandEntity);
+
+		if (CaseType.getParatransitCaseTypes().contains(CaseType.valueOf(errandEntity.getCaseType())) && stakeholderEntity != null && !stakeholderEntity.getAdAccount().equals(request.getUsername())) {
+			sendEmailNotification(municipalityId, namespace, errandEntity, stakeholderEntity, PARATRANSIT_DEPARTMENT_ID);
+		}
 
 		return mapper.toMessageResponse(messageEntity, true);
 	}
@@ -120,18 +132,19 @@ public class MessageService {
 		}
 	}
 
-	public void sendMessageNotification(final String municipalityId, final String namespace, final Long errandId) {
+	public void sendMessageNotification(final String municipalityId, final String namespace, final Long errandId, final String departmentId) {
 
-		final var errand = errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+		final var errandEntity = errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 
-		final var senderInfo = getSenderInfo(municipalityId, namespace);
+		final var senderInfo = getSenderInfo(municipalityId, namespace, departmentId);
+		final var request = toMessagingMessageRequest(errandEntity, senderInfo);
 
-		sendMessageNotification(errand, senderInfo);
+		sendMessageNotification(errandEntity, request);
 	}
 
-	private SenderInfoResponse getSenderInfo(final String municipalityId, final String namespace) {
-		final var senderInfo = messagingSettingsClient.getSenderInfo(municipalityId, namespace);
+	private SenderInfoResponse getSenderInfo(final String municipalityId, final String namespace, final String departmentId) {
+		final var senderInfo = messagingSettingsClient.getSenderInfo(municipalityId, namespace, departmentId);
 
 		if (senderInfo == null) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve sender information for municipality '%s' and namespace '%s'".formatted(municipalityId, namespace));
@@ -139,9 +152,7 @@ public class MessageService {
 		return senderInfo;
 	}
 
-	public void sendMessageNotification(final ErrandEntity errandEntity, final SenderInfoResponse senderInfo) {
-
-		final var request = toMessagingMessageRequest(errandEntity, senderInfo);
+	public void sendMessageNotification(final ErrandEntity errandEntity, final generated.se.sundsvall.messaging.MessageRequest request) {
 
 		final var partyId = Optional.ofNullable(request.getMessages())
 			.map(List::getFirst)
@@ -158,6 +169,23 @@ public class MessageService {
 			}
 		}
 
+	}
+
+	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentId) {
+
+		final var senderInfo = getSenderInfo(municipalityId, namespace, departmentId);
+		final var request = toEmailRequest(errandEntity, senderInfo, stakeholderEntity);
+
+		messagingClient.sendEmail(errandEntity.getMunicipalityId(), request);
+	}
+
+	private StakeholderEntity getReporterStakeholder(final ErrandEntity errandEntity) {
+		return Optional.ofNullable(errandEntity.getStakeholders())
+			.orElse(emptyList())
+			.stream()
+			.filter(stakeholder -> stakeholder.getRoles().contains(REPORTER.name()))
+			.findFirst()
+			.orElse(null);
 	}
 
 }
