@@ -6,6 +6,8 @@ import static se.sundsvall.casedata.api.model.validation.enums.CaseType.LOST_PAR
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_APPLICATION_FOR_ROAD_ALLOWANCE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUILDING_PERMIT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY_BUSINESS;
+import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY_PRIVATE;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_SMALL_HOUSE_PLOT;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_EARLY_DIALOG_PLAN_NOTIFICATION;
 import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_EASEMENT;
@@ -99,6 +101,8 @@ class CaseTypeTest {
 			MEX_ROAD_ASSOCIATION,
 			MEX_RETURNED_TO_CONTACT_SUNDSVALL,
 			MEX_SMALL_BOAT_HARBOR_DOCK_PORT,
+			MEX_BUY_LAND_FROM_THE_MUNICIPALITY_PRIVATE,
+			MEX_BUY_LAND_FROM_THE_MUNICIPALITY_BUSINESS,
 			MEX_SELL_LAND_TO_THE_MUNICIPALITY_PRIVATE,
 			MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS,
 			MEX_TRAINING_SEMINAR,
@@ -183,6 +187,8 @@ class CaseTypeTest {
 			MEX_ROAD_ASSOCIATION,
 			MEX_RETURNED_TO_CONTACT_SUNDSVALL,
 			MEX_SMALL_BOAT_HARBOR_DOCK_PORT,
+			MEX_BUY_LAND_FROM_THE_MUNICIPALITY_PRIVATE,
+			MEX_BUY_LAND_FROM_THE_MUNICIPALITY_BUSINESS,
 			MEX_SELL_LAND_TO_THE_MUNICIPALITY_PRIVATE,
 			MEX_SELL_LAND_TO_THE_MUNICIPALITY_BUSINESS,
 			MEX_TRAINING_SEMINAR,
