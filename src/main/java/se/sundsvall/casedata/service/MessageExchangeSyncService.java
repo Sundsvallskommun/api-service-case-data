@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Attachment;
-import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
@@ -26,7 +25,7 @@ import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 public class MessageExchangeSyncService {
 
 	private static final String NOTIFICATION_TYPE_UPDATE = "UPDATE";
-	private static final String NOTIFICATION_DESCRIPTION = "Ny händelse i konversation %s";
+	private static final String NOTIFICATION_DESCRIPTION = "Ny händelse för %s";
 
 	private final MessageExchangeClient messageExchangeClient;
 	private final AttachmentService attachmentService;
@@ -37,8 +36,12 @@ public class MessageExchangeSyncService {
 	@Value("${integration.message-exchange.namespace:casedata}")
 	private String messageExchangeNamespace;
 
-	public MessageExchangeSyncService(final MessageExchangeClient messageExchangeClient, final AttachmentService attachmentService, final ConversationRepository conversationRepository,
-		final ErrandRepository errandRepository, final NotificationService notificationService) {
+	public MessageExchangeSyncService(
+		final MessageExchangeClient messageExchangeClient,
+		final AttachmentService attachmentService,
+		final ConversationRepository conversationRepository,
+		final ErrandRepository errandRepository,
+		final NotificationService notificationService) {
 
 		this.messageExchangeClient = messageExchangeClient;
 		this.attachmentService = attachmentService;
