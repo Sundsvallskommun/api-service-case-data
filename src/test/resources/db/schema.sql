@@ -24,6 +24,12 @@
         primary key (attachment_id, extra_parameter_key)
     ) engine=InnoDB;
 
+    create table case_type (
+        display_name varchar(255),
+        type varchar(255) not null,
+        primary key (type)
+    ) engine=InnoDB;
+
     create table conversation (
         municipality_id varchar(4) not null,
         latest_synced_sequence_number bigint,
