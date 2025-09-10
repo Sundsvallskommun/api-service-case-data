@@ -14,7 +14,6 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.A
 import generated.se.sundsvall.messageexchange.Conversation;
 import generated.se.sundsvall.messageexchange.Identifier;
 import generated.se.sundsvall.messageexchange.KeyValues;
-import generated.se.sundsvall.messageexchange.Message;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,14 +40,19 @@ class MessageExchangeSyncServiceTest {
 
 	@Mock
 	private MessageExchangeClient messageExchangeClientMock;
+
 	@Mock
 	private AttachmentService attachmentServiceMock;
+
 	@Mock
 	private ConversationRepository conversationRepositoryMock;
+
 	@Mock
 	private NotificationService notificationServiceMock;
+
 	@Mock
 	private ErrandRepository errandRepositoryMock;
+
 	@InjectMocks
 	private MessageExchangeSyncService service;
 
@@ -116,7 +120,15 @@ class MessageExchangeSyncServiceTest {
 		// Assert
 		verify(errandRepositoryMock).getReferenceById(1L);
 		verify(messageExchangeClientMock).getMessages(municipalityId, MESSAGE_EXCHANGE_NS, messageExchangeId, "sequenceNumber.id >123", Pageable.unpaged());
-		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), any(), same(errandEntity));
+		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), eq(se.sundsvall.casedata.api.model.Notification.builder()
+			.withType("UPDATE")
+			.withSubType("MESSAGE")
+			.withDescription("Ny händelse för topic")
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.withErrandId(Long.parseLong(errandId))
+			.withOwnerId(adAccount)
+			.build()), same(errandEntity));
 		verify(conversationRepositoryMock).save(conversationEntity);
 
 		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
@@ -323,5 +335,4 @@ class MessageExchangeSyncServiceTest {
 
 		verifyNoInteractions(conversationRepositoryMock, messageExchangeClientMock);
 	}
-
 }
