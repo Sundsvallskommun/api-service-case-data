@@ -124,3 +124,11 @@ VALUES ('1', 'relation_id-1-1'),
 INSERT INTO message_exchange_sync(id, municipality_id, namespace, active)
 VALUES ('1', '2281', 'namespace-1', true),
        ('2', '2281', 'namespace-2', false);
+
+-------------------------------------
+-- CaseType
+-------------------------------------
+INSERT INTO case_type(type, display_name)
+    VALUES ('type-1', 'displayname-1'),
+           ('type-2', 'displayname-2'),
+           ('type-3', 'displayname-3');
