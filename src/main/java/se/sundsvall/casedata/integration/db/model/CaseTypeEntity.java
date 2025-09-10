@@ -18,8 +18,15 @@ import lombok.NoArgsConstructor;
 public class CaseTypeEntity {
 
 	@Id
+	@Column(name = "type", length = 100)
 	private String type;
 
 	@Column(name = "display_name")
 	private String displayName;
+
+	@Column(name = "namespace", length = 100)
+	private String namespace;
+
+	@Column(name = "municipality_id", length = 10)
+	private String municipalityId;
 }

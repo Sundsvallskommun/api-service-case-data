@@ -35,10 +35,14 @@ class CaseTypeRepositoryTest {
 		// Arrange
 		final var type = "TYPE-1";
 		final var displayName = "Display name 1";
+		final var namespace = "namespace";
+		final var municipalityId = "1234";
 
 		final var entity = CaseTypeEntity.builder()
 			.withType(type)
 			.withDisplayName(displayName)
+			.withNamespace(namespace)
+			.withMunicipalityId(municipalityId)
 			.build();
 
 		// Act
@@ -48,6 +52,8 @@ class CaseTypeRepositoryTest {
 		assertThat(persisted).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(persisted.getType()).isEqualTo(type);
 		assertThat(persisted.getDisplayName()).isEqualTo(displayName);
+		assertThat(persisted.getNamespace()).isEqualTo(namespace);
+		assertThat(persisted.getMunicipalityId()).isEqualTo(municipalityId);
 	}
 
 	@Test
