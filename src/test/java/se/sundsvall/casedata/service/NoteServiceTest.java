@@ -103,7 +103,7 @@ class NoteServiceTest {
 		noteService.update(errandId, noteId, MUNICIPALITY_ID, NAMESPACE, note);
 
 		// Assert
-		verify(noteRepositoryMock).save(entity);
+		verify(noteRepositoryMock).saveAndFlush(entity);
 		verifyNoMoreInteractions(noteRepositoryMock);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(errand));
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Notering uppdaterad");
@@ -191,7 +191,7 @@ class NoteServiceTest {
 
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(errandRepositoryMock).save(errand);
+		verify(errandRepositoryMock).saveAndFlush(errand);
 		verify(applicationEventPublisherMock).publishEvent(errand);
 		verifyNoMoreInteractions(errandRepositoryMock, applicationEventPublisherMock);
 	}
@@ -210,7 +210,7 @@ class NoteServiceTest {
 			.build();
 
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+		when(errandRepositoryMock.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
 		final var note = noteService.addNote(errand.getId(), MUNICIPALITY_ID, NAMESPACE, newNote);
@@ -219,7 +219,7 @@ class NoteServiceTest {
 		assertThat(note).isEqualTo(newNote);
 		assertThat(errand.getNotes()).isNotEmpty().hasSize(2);
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
-		verify(errandRepositoryMock).save(errand);
+		verify(errandRepositoryMock).saveAndFlush(errand);
 		verify(applicationEventPublisherMock).publishEvent(errand);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(errand));
 		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Notering skapad");

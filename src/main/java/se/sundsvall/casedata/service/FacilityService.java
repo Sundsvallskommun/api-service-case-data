@@ -50,7 +50,7 @@ public class FacilityService {
 		final var entity = toFacilityEntity(facility, municipalityId, namespace);
 		entity.setErrand(errand);
 
-		final var createdFacility = toFacility(facilityRepository.save(entity));
+		final var createdFacility = toFacility(facilityRepository.saveAndFlush(entity));
 
 		applicationEventPublisher.publishEvent(errand);
 
@@ -63,7 +63,7 @@ public class FacilityService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(facilityId, errandId)));
 
 		final var updatedFacility = patchFacility(facilityEntity, facility);
-		final var result = toFacility(facilityRepository.save(updatedFacility));
+		final var result = toFacility(facilityRepository.saveAndFlush(updatedFacility));
 		applicationEventPublisher.publishEvent(errand);
 
 		return result;
@@ -91,7 +91,7 @@ public class FacilityService {
 			return facility;
 		}).toList());
 
-		final var updatedErrand = errandRepository.save(oldErrand);
+		final var updatedErrand = errandRepository.saveAndFlush(oldErrand);
 		applicationEventPublisher.publishEvent(updatedErrand);
 	}
 
@@ -103,7 +103,7 @@ public class FacilityService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, FACILITY_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(facilityId, errandId)));
 
 		errand.getFacilities().remove(facilityToRemove);
-		errandRepository.save(errand);
+		errandRepository.saveAndFlush(errand);
 		applicationEventPublisher.publishEvent(errand);
 	}
 

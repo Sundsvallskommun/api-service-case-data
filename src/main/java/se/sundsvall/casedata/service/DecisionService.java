@@ -116,7 +116,7 @@ public class DecisionService {
 		final var errandEntity = findErrandEntity(errandId, municipalityId, namespace, true);
 		final var decisionEntity = toDecisionEntity(decision, errandEntity, municipalityId, namespace);
 		errandEntity.getDecisions().add(decisionEntity);
-		final var updatedErrand = errandRepository.save(errandEntity);
+		final var updatedErrand = errandRepository.saveAndFlush(errandEntity);
 		applicationEventPublisher.publishEvent(updatedErrand);
 
 		// Create notification
@@ -139,7 +139,7 @@ public class DecisionService {
 			.findAny()
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(decisionId, errandId)));
 		errand.getDecisions().remove(decisionToRemove);
-		errandRepository.save(errand);
+		errandRepository.saveAndFlush(errand);
 		applicationEventPublisher.publishEvent(errand);
 	}
 
