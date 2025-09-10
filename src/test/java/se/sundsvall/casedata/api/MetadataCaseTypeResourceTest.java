@@ -68,7 +68,7 @@ class MetadataCaseTypeResourceTest {
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isCreated()
-			.expectHeader().valueEquals("Location", "/" + MUNICIPALITY_ID + "/metadata/casetypes/" + body.getType())
+			.expectHeader().valueEquals("Location", "/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/metadata/casetypes/" + body.getType())
 			.expectHeader().contentType(ALL_VALUE);
 	}
 

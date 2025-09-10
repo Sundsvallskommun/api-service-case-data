@@ -77,8 +77,8 @@ class MetadataCaseTypeResource {
 
 		final var result = caseType;
 		return created(
-			fromPath("/{municipalityId}/metadata/casetypes/{type}")
-				.buildAndExpand(municipalityId, result.getType())
+			fromPath("/{municipalityId}/{namespace}/metadata/casetypes/{type}")
+				.buildAndExpand(municipalityId, namespace, result.getType())
 				.toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
