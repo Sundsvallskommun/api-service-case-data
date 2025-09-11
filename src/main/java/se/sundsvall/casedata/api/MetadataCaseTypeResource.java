@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.api;
 
-import static java.util.Collections.emptyList;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.ALL_VALUE;
@@ -32,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.api.model.CaseType;
+import se.sundsvall.casedata.service.MetadataService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
@@ -44,14 +44,20 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 @ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 class MetadataCaseTypeResource {
 
+	private final MetadataService metadataService;
+
+	MetadataCaseTypeResource(final MetadataService metadataService) {
+		this.metadataService = metadataService;
+	}
+
 	@GetMapping
 	@Operation(description = "Get all case types", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	List<CaseType> getCaseTypes(
+	ResponseEntity<List<CaseType>> getCaseTypes(
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace) {
-		return emptyList();
+		return ResponseEntity.ok(metadataService.getCaseTypes(municipalityId, namespace));
 	}
 
 	@GetMapping("/{type}")
@@ -59,11 +65,11 @@ class MetadataCaseTypeResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true),
 		@ApiResponse(responseCode = "404", description = "Not found", useReturnTypeSchema = true)
 	})
-	CaseType getCaseType(
+	ResponseEntity<CaseType> getCaseType(
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@Parameter(name = "type", description = "type ", example = "PARATRANSIT") @PathVariable final String type) {
-		return null;
+		return ResponseEntity.ok(metadataService.getCaseType(municipalityId, namespace, type));
 	}
 
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
@@ -75,11 +81,10 @@ class MetadataCaseTypeResource {
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@RequestBody final CaseType caseType) {
 
-		final var result = caseType;
-		return created(
-			fromPath("/{municipalityId}/{namespace}/metadata/casetypes/{type}")
-				.buildAndExpand(municipalityId, namespace, result.getType())
-				.toUri())
+		final var result = metadataService.createCaseType(municipalityId, namespace, caseType);
+		return created(fromPath("/{municipalityId}/{namespace}/metadata/casetypes/{type}")
+			.buildAndExpand(municipalityId, namespace, result)
+			.toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
@@ -93,6 +98,7 @@ class MetadataCaseTypeResource {
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@Parameter(name = "type", description = "type ", example = "PARATRANSIT") @PathVariable final String type) {
+		metadataService.deleteCaseType(municipalityId, namespace, type);
 		return ResponseEntity.noContent().build();
 	}
 

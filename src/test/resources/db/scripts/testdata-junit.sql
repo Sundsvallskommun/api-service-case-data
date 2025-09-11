@@ -128,7 +128,7 @@ VALUES ('1', '2281', 'namespace-1', true),
 -------------------------------------
 -- CaseType
 -------------------------------------
-INSERT INTO case_type(type, display_name)
-    VALUES ('type-1', 'displayname-1'),
-           ('type-2', 'displayname-2'),
-           ('type-3', 'displayname-3');
+INSERT INTO case_type(type, display_name, namespace, municipality_id)
+    VALUES ('type-1', 'displayname-1', 'namespace-1', '2281'),
+           ('type-2', 'displayname-2', 'namespace-2', '2281'),
+           ('type-3', 'displayname-3', 'namespace-3', '2281');;
