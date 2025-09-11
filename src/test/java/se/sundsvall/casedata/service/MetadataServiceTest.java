@@ -1,7 +1,7 @@
 package se.sundsvall.casedata.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -97,12 +97,12 @@ class MetadataServiceTest {
 		when(caseTypeRepositoryMock.findByMunicipalityIdAndNamespaceAndType(MUNICIPALITY_ID, NAMESPACE, type))
 			.thenReturn(Optional.empty());
 
-		// Act
-		final var exception = assertThrows(ThrowableProblem.class, () -> metadataService.getCaseType(MUNICIPALITY_ID, NAMESPACE, type));
+		// Act & Assert
+		assertThatThrownBy(() -> metadataService.getCaseType(MUNICIPALITY_ID, NAMESPACE, type))
+			.isInstanceOf(ThrowableProblem.class)
+			.hasMessage("Not Found: CaseType not found in database")
+			.satisfies(e -> assertThat(((ThrowableProblem) e).getStatus()).isEqualTo(Status.NOT_FOUND));
 
-		// Assert
-		assertThat(exception.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(exception.getMessage()).isEqualTo("Not Found: CaseType not found in database");
 		verify(caseTypeRepositoryMock).findByMunicipalityIdAndNamespaceAndType(MUNICIPALITY_ID, NAMESPACE, type);
 		verifyNoMoreInteractions(caseTypeRepositoryMock);
 	}
@@ -169,12 +169,12 @@ class MetadataServiceTest {
 		when(caseTypeRepositoryMock.findByMunicipalityIdAndNamespaceAndType(MUNICIPALITY_ID, NAMESPACE, type))
 			.thenReturn(Optional.empty());
 
-		// Act
-		final var exception = assertThrows(ThrowableProblem.class, () -> metadataService.deleteCaseType(MUNICIPALITY_ID, NAMESPACE, type));
+		// Act & Assert
+		assertThatThrownBy(() -> metadataService.deleteCaseType(MUNICIPALITY_ID, NAMESPACE, type))
+			.isInstanceOf(ThrowableProblem.class)
+			.hasMessage("Not Found: CaseType not found in database")
+			.satisfies(e -> assertThat(((ThrowableProblem) e).getStatus()).isEqualTo(Status.NOT_FOUND));
 
-		// Assert
-		assertThat(exception.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(exception.getMessage()).isEqualTo("Not Found: CaseType not found in database");
 		verify(caseTypeRepositoryMock).findByMunicipalityIdAndNamespaceAndType(MUNICIPALITY_ID, NAMESPACE, type);
 		verify(caseTypeRepositoryMock, never()).delete(any());
 		verifyNoMoreInteractions(caseTypeRepositoryMock);
