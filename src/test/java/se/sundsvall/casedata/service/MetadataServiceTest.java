@@ -11,6 +11,7 @@ import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -76,7 +77,7 @@ class MetadataServiceTest {
 			.build();
 
 		when(caseTypeRepositoryMock.findByMunicipalityIdAndNamespaceAndType(MUNICIPALITY_ID, NAMESPACE, type))
-			.thenReturn(entity);
+			.thenReturn(Optional.of(entity));
 
 		// Act
 		final var result = metadataService.getCaseType(MUNICIPALITY_ID, NAMESPACE, type);
@@ -94,7 +95,7 @@ class MetadataServiceTest {
 		// Arrange
 		final var type = "MISSING";
 		when(caseTypeRepositoryMock.findByMunicipalityIdAndNamespaceAndType(MUNICIPALITY_ID, NAMESPACE, type))
-			.thenReturn(null);
+			.thenReturn(Optional.empty());
 
 		// Act
 		final var exception = assertThrows(ThrowableProblem.class, () -> metadataService.getCaseType(MUNICIPALITY_ID, NAMESPACE, type));
@@ -150,7 +151,7 @@ class MetadataServiceTest {
 			.build();
 
 		when(caseTypeRepositoryMock.findByMunicipalityIdAndNamespaceAndType(MUNICIPALITY_ID, NAMESPACE, type))
-			.thenReturn(entity);
+			.thenReturn(Optional.of(entity));
 
 		// Act
 		metadataService.deleteCaseType(MUNICIPALITY_ID, NAMESPACE, type);
@@ -166,7 +167,7 @@ class MetadataServiceTest {
 		// Arrange
 		final var type = "MISSING";
 		when(caseTypeRepositoryMock.findByMunicipalityIdAndNamespaceAndType(MUNICIPALITY_ID, NAMESPACE, type))
-			.thenReturn(null);
+			.thenReturn(Optional.empty());
 
 		// Act
 		final var exception = assertThrows(ThrowableProblem.class, () -> metadataService.deleteCaseType(MUNICIPALITY_ID, NAMESPACE, type));

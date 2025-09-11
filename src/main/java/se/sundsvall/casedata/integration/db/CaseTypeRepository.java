@@ -2,6 +2,7 @@ package se.sundsvall.casedata.integration.db;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import se.sundsvall.casedata.integration.db.model.CaseTypeEntity;
 
@@ -10,5 +11,5 @@ public interface CaseTypeRepository extends JpaRepository<CaseTypeEntity, String
 
 	List<CaseTypeEntity> findAllByMunicipalityIdAndNamespace(String municipalityId, String namespace);
 
-	CaseTypeEntity findByMunicipalityIdAndNamespaceAndType(String municipalityId, String namespace, String type);
+	Optional<CaseTypeEntity> findByMunicipalityIdAndNamespaceAndType(String municipalityId, String namespace, String type);
 }

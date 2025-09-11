@@ -6,7 +6,6 @@ import static se.sundsvall.casedata.service.util.mappers.MetadataMapper.toCaseTy
 import static se.sundsvall.casedata.service.util.mappers.MetadataMapper.toCaseTypes;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.CaseType;
@@ -26,7 +25,7 @@ public class MetadataService {
 	}
 
 	public CaseType getCaseType(final String municipalityId, final String namespace, final String type) {
-		return toCaseType(Optional.ofNullable(caseTypeRepository.findByMunicipalityIdAndNamespaceAndType(municipalityId, namespace, type))
+		return toCaseType(caseTypeRepository.findByMunicipalityIdAndNamespaceAndType(municipalityId, namespace, type)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "CaseType not found in database")));
 	}
 
@@ -35,7 +34,7 @@ public class MetadataService {
 	}
 
 	public void deleteCaseType(final String municipalityId, final String namespace, final String type) {
-		caseTypeRepository.delete(Optional.ofNullable(caseTypeRepository.findByMunicipalityIdAndNamespaceAndType(municipalityId, namespace, type))
+		caseTypeRepository.delete(caseTypeRepository.findByMunicipalityIdAndNamespaceAndType(municipalityId, namespace, type)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "CaseType not found in database")));
 	}
 }
