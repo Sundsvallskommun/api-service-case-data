@@ -137,7 +137,7 @@ class DecisionServiceTest {
 
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(errandRepositoryMock).save(errand);
+		verify(errandRepositoryMock).saveAndFlush(errand);
 		verify(applicationEventPublisherMock).publishEvent(errand);
 		verifyNoMoreInteractions(errandRepositoryMock, applicationEventPublisherMock);
 	}
@@ -188,7 +188,7 @@ class DecisionServiceTest {
 			.build();
 
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+		when(errandRepositoryMock.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
 		final var decisionDTO = decisionService.addToErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, newDecision);
@@ -197,7 +197,7 @@ class DecisionServiceTest {
 		assertThat(decisionDTO).isEqualTo(newDecision);
 		assertThat(errand.getDecisions()).isNotEmpty().hasSize(2);
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
-		verify(errandRepositoryMock).save(errand);
+		verify(errandRepositoryMock).saveAndFlush(errand);
 		verify(applicationEventPublisherMock).publishEvent(errand);
 
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(errand));

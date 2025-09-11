@@ -250,14 +250,14 @@ class StakeholderServiceTest {
 		final var stakeholderEntities = stakeholders.stream().map(s -> toStakeholderEntity(s, MUNICIPALITY_ID, NAMESPACE)).toList();
 		errand.getStakeholders().addAll(stakeholderEntities);
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+		when(errandRepositoryMock.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
 		stakeholderService.replaceOnErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, stakeholders);
 
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
-		verify(errandRepositoryMock).save(errandCaptor.capture());
+		verify(errandRepositoryMock).saveAndFlush(errandCaptor.capture());
 		assertThat(errandCaptor.getValue().getStakeholders()).isNotEmpty().hasSize(1);
 		assertThat(errandCaptor.getValue().getStakeholders().getFirst())
 			.usingRecursiveComparison()
@@ -288,7 +288,7 @@ class StakeholderServiceTest {
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(applicationEventPublisherMock).publishEvent(errand);
-		verify(errandRepositoryMock).save(errand);
+		verify(errandRepositoryMock).saveAndFlush(errand);
 		verifyNoMoreInteractions(errandRepositoryMock, applicationEventPublisherMock);
 	}
 
@@ -311,7 +311,7 @@ class StakeholderServiceTest {
 			.withExtraParameters(createExtraParameters())
 			.build();
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		when(errandRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+		when(errandRepositoryMock.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
 		final var stakeholder = stakeholderService.addToErrand(errand.getId(), MUNICIPALITY_ID, NAMESPACE, newStakeholder);
@@ -321,7 +321,7 @@ class StakeholderServiceTest {
 		assertThat(errand.getStakeholders()).isNotEmpty().hasSize(2);
 
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
-		verify(errandRepositoryMock).save(errand);
+		verify(errandRepositoryMock).saveAndFlush(errand);
 		verify(applicationEventPublisherMock).publishEvent(errand);
 		verifyNoMoreInteractions(errandRepositoryMock, applicationEventPublisherMock);
 	}
