@@ -59,7 +59,7 @@ public class NoteService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(noteId, errandId)));
 
 		patchNote(noteEntity, updatedNote);
-		noteRepository.save(noteEntity);
+		noteRepository.saveAndFlush(noteEntity);
 		applicationEventPublisher.publishEvent(noteEntity.getErrand());
 
 		// Create notification
@@ -102,7 +102,7 @@ public class NoteService {
 			.findAny()
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(noteId, errandId)));
 		errand.getNotes().remove(noteToRemove);
-		errandRepository.save(errand);
+		errandRepository.saveAndFlush(errand);
 		applicationEventPublisher.publishEvent(errand);
 	}
 
@@ -111,7 +111,7 @@ public class NoteService {
 		final var noteEntity = toNoteEntity(note, municipalityId, namespace);
 		noteEntity.setErrand(oldErrand);
 		oldErrand.getNotes().add(noteEntity);
-		final var updatedErrand = errandRepository.save(oldErrand);
+		final var updatedErrand = errandRepository.saveAndFlush(oldErrand);
 		applicationEventPublisher.publishEvent(updatedErrand);
 
 		// Create notification

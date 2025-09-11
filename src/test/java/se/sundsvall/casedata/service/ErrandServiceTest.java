@@ -187,7 +187,7 @@ class ErrandServiceTest {
 		final var patch = createPatchErrand();
 		final var executingUserId = "executingUserId";
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		when(errandRepositoryMock.save(errand)).thenReturn(updatedErrand);
+		when(errandRepositoryMock.saveAndFlush(errand)).thenReturn(updatedErrand);
 
 		Identifier.set(Identifier.create().withType(Type.AD_ACCOUNT).withValue(executingUserId));
 
@@ -213,7 +213,7 @@ class ErrandServiceTest {
 		});
 
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
-		verify(errandRepositoryMock).save(errand);
+		verify(errandRepositoryMock).saveAndFlush(errand);
 		verify(applicationEventPublisherMock).publishEvent(updatedErrand);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(updatedErrand));
 
@@ -287,7 +287,7 @@ class ErrandServiceTest {
 		final var executingUserId = "executingUserId";
 		entity.setCaseType(PARKING_PERMIT_RENEWAL.name());
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
-		when(errandRepositoryMock.save(entity)).thenReturn(entity);
+		when(errandRepositoryMock.saveAndFlush(entity)).thenReturn(entity);
 
 		Identifier.set(Identifier.create().withType(Type.AD_ACCOUNT).withValue(executingUserId));
 
@@ -296,7 +296,7 @@ class ErrandServiceTest {
 
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE);
-		verify(errandRepositoryMock).save(entity);
+		verify(errandRepositoryMock).saveAndFlush(entity);
 		verify(applicationEventPublisherMock).publishEvent(entity);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(entity));
 

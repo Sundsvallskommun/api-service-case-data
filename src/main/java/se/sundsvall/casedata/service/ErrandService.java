@@ -104,7 +104,7 @@ public class ErrandService {
 
 	public void update(final Long errandId, final String municipalityId, final String namespace, final PatchErrand patchErrand) {
 		final var oldErrand = findErrandEntity(errandId, municipalityId, namespace);
-		final var updatedErrand = errandRepository.save(PatchMapper.patchErrand(oldErrand, patchErrand));
+		final var updatedErrand = errandRepository.saveAndFlush(PatchMapper.patchErrand(oldErrand, patchErrand));
 
 		applicationEventPublisher.publishEvent(updatedErrand);
 

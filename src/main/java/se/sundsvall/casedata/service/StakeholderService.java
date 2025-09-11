@@ -108,7 +108,7 @@ public class StakeholderService {
 			.findFirst().orElseThrow(() -> Problem.valueOf(NOT_FOUND, STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X.formatted(stakeholderId, errandId)));
 
 		errand.getStakeholders().remove(stakeholderToRemove);
-		errandRepository.save(errand);
+		errandRepository.saveAndFlush(errand);
 		applicationEventPublisher.publishEvent(errand);
 	}
 
@@ -118,7 +118,7 @@ public class StakeholderService {
 
 		stakeholderEntity.setErrand(oldErrand);
 		oldErrand.getStakeholders().add(stakeholderEntity);
-		final var updatedErrand = errandRepository.save(oldErrand);
+		final var updatedErrand = errandRepository.saveAndFlush(oldErrand);
 		applicationEventPublisher.publishEvent(updatedErrand);
 
 		return toStakeholder(stakeholderEntity);
@@ -136,7 +136,7 @@ public class StakeholderService {
 				oldErrand.getStakeholders().add(stakeholder);
 			});
 
-		final var updatedErrand = errandRepository.save(oldErrand);
+		final var updatedErrand = errandRepository.saveAndFlush(oldErrand);
 		applicationEventPublisher.publishEvent(updatedErrand);
 	}
 

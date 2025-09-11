@@ -29,7 +29,7 @@ public class StatusService {
 		final var statusEntity = toStatusEntity(status);
 		oldErrand.setStatus(statusEntity);
 		oldErrand.getStatuses().add(statusEntity);
-		final var updatedErrand = errandRepository.save(oldErrand);
+		final var updatedErrand = errandRepository.saveAndFlush(oldErrand);
 		applicationEventPublisher.publishEvent(updatedErrand);
 	}
 
