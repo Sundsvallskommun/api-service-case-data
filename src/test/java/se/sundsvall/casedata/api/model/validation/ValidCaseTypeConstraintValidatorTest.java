@@ -3,6 +3,7 @@ package se.sundsvall.casedata.api.model.validation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
@@ -18,7 +19,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -53,7 +53,7 @@ class ValidCaseTypeConstraintValidatorTest {
 		final var municipalityId = "municipalityId";
 		final var attributes = Map.of("namespace", namespace, "municipalityId", municipalityId);
 
-		try (final MockedStatic<RequestContextHolder> requestContextHolderMock = org.mockito.Mockito.mockStatic(RequestContextHolder.class)) {
+		try (final var requestContextHolderMock = mockStatic(RequestContextHolder.class)) {
 			requestContextHolderMock.when(RequestContextHolder::getRequestAttributes).thenReturn(requestAttributesMock);
 			when(requestAttributesMock.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, SCOPE_REQUEST)).thenReturn(attributes);
 			when(metadataService.getCaseTypes(municipalityId, namespace)).thenReturn(List.of(
@@ -71,7 +71,7 @@ class ValidCaseTypeConstraintValidatorTest {
 		final var municipalityId = "municipalityId";
 		final var attributes = Map.of("namespace", namespace, "municipalityId", municipalityId);
 
-		try (final MockedStatic<RequestContextHolder> requestContextHolderMock = org.mockito.Mockito.mockStatic(RequestContextHolder.class)) {
+		try (final var requestContextHolderMock = mockStatic(RequestContextHolder.class)) {
 			requestContextHolderMock.when(RequestContextHolder::getRequestAttributes).thenReturn(requestAttributesMock);
 			when(requestAttributesMock.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, SCOPE_REQUEST)).thenReturn(attributes);
 			when(metadataService.getCaseTypes(municipalityId, namespace)).thenReturn(List.of(
@@ -94,7 +94,7 @@ class ValidCaseTypeConstraintValidatorTest {
 	})
 	void isValidNullable(final Boolean nullable) {
 
-		try (final MockedStatic<RequestContextHolder> requestContextHolderMock = org.mockito.Mockito.mockStatic(RequestContextHolder.class)) {
+		try (final var requestContextHolderMock = mockStatic(RequestContextHolder.class)) {
 			requestContextHolderMock.when(RequestContextHolder::getRequestAttributes).thenReturn(requestAttributesMock);
 			validator.setNullable(nullable);
 			assertThat(validator.isValid(null, constraintValidatorContextMock)).isEqualTo(nullable);
@@ -107,7 +107,7 @@ class ValidCaseTypeConstraintValidatorTest {
 		final var municipalityId = "municipalityId";
 		final var attributes = Map.of("namespace", namespace, "municipalityId", municipalityId);
 
-		try (final MockedStatic<RequestContextHolder> requestContextHolderMock = org.mockito.Mockito.mockStatic(RequestContextHolder.class)) {
+		try (final var requestContextHolderMock = mockStatic(RequestContextHolder.class)) {
 			requestContextHolderMock.when(RequestContextHolder::getRequestAttributes).thenReturn(requestAttributesMock);
 			when(requestAttributesMock.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, SCOPE_REQUEST)).thenReturn(attributes);
 			when(metadataService.getCaseTypes(municipalityId, namespace)).thenReturn(List.of(
