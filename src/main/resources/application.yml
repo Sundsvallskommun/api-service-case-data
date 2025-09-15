@@ -106,10 +106,15 @@ integration:
     base-url: ${config.parkingpermit.base-url}
     connectTimeout: 5
     readTimeout: 20
+    supported-namespaces:
+      - SBK_PARKING_PERMIT
+      - ANGE_PARKING_PERMIT
   landandexploitation:
     base-url: ${config.landandexploitation.base-url}
     connectTimeout: 5
     readTimeout: 20
+    supported-namespaces:
+      - MY_MEX_NAMESPACE
   web-message-collector:
     base-url: ${config.web-message-collector.base-url}
     connectTimeout: 5

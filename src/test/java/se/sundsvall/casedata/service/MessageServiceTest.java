@@ -47,9 +47,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.Notification;
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
@@ -123,6 +123,9 @@ class MessageServiceTest {
 
 	@Captor
 	private ArgumentCaptor<EmailRequest> emailRequestCaptor;
+
+	@Mock
+	private MetadataService metadataserviceMock;
 
 	@Test
 	void findMessages() {
@@ -272,9 +275,10 @@ class MessageServiceTest {
 			.withCaseTitleAddition("Case Title Addition")
 			.withErrandNumber("123456789")
 			.withStakeholders(List.of(stakeholder, stakholderReporter))
-			.withCaseType(CaseType.PARATRANSIT.name())
+			.withCaseType(PARATRANSIT_DEPARTMENT_ID)
 			.build();
 
+		when(metadataserviceMock.getCaseType(MUNICIPALITY_ID, NAMESPACE, PARATRANSIT_DEPARTMENT_ID)).thenReturn(CaseType.builder().build());
 		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE, PARATRANSIT_DEPARTMENT_ID)).thenReturn(new SenderInfoResponse());
 		when(messageRepositoryMock.save(any(MessageEntity.class))).thenReturn(MessageEntity.builder().build());
 		when(messageMapperMock.toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(MessageEntity.builder().build());

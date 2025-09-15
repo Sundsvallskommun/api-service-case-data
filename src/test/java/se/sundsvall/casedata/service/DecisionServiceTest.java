@@ -17,7 +17,6 @@ import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createExtraParameters;
 import static se.sundsvall.casedata.TestUtil.createLaw;
 import static se.sundsvall.casedata.TestUtil.getRandomOffsetDateTime;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -126,7 +125,7 @@ class DecisionServiceTest {
 	void delete() {
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
-		errand.setCaseType(PARKING_PERMIT_RENEWAL.name());
+		errand.setCaseType("PARKING_PERMIT_RENEWAL");
 		errand.getDecisions().forEach(d -> d.setId(new Random().nextLong()));
 		final var errandId = new Random().nextLong(1, 1000);
 		final var decision = errand.getDecisions().getFirst();

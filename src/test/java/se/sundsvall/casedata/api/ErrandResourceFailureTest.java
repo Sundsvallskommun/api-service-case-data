@@ -1,7 +1,9 @@
 package se.sundsvall.casedata.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
@@ -12,6 +14,7 @@ import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 
 import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -22,10 +25,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.service.ErrandService;
+import se.sundsvall.casedata.service.MetadataService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -38,6 +43,16 @@ class ErrandResourceFailureTest {
 
 	@Autowired
 	private WebTestClient webTestClient;
+
+	@MockitoBean
+	private MetadataService metadataServiceMock;
+
+	@BeforeEach
+	void setupMock() {
+		when(metadataServiceMock.getCaseTypes(any(), any())).thenReturn(List.of(CaseType.builder()
+			.withType("PARKING_PERMIT")
+			.build()));
+	}
 
 	@Test
 	void postErrandWithExtraParameterTooLong() {

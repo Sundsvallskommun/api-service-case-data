@@ -71,21 +71,27 @@ class CaseTypeRepositoryTest {
 		final var type = "TYPE-2";
 		final var initialName = "Initial";
 		final var updatedName = "Updated";
+		final var namespace = "namespace";
+		final var municipalityId = "1234";
 
 		var entity = CaseTypeEntity.builder()
 			.withType(type)
 			.withDisplayName(initialName)
+			.withNamespace(namespace)
+			.withMunicipalityId(municipalityId)
 			.build();
-		repository.saveAndFlush(entity);
+		entity = repository.saveAndFlush(entity);
 
 		// Act
-		entity = repository.findById(type).orElseThrow();
+		entity = repository.findById(entity.getId()).orElseThrow(() -> new IllegalStateException("Entity not found!"));
 		entity.setDisplayName(updatedName);
 		repository.saveAndFlush(entity);
 
 		// Assert
-		final var reloaded = repository.findById(type).orElseThrow();
+		final var reloaded = repository.findById(entity.getId()).orElseThrow();
 		assertThat(reloaded.getType()).isEqualTo(type);
 		assertThat(reloaded.getDisplayName()).isEqualTo(updatedName);
+		assertThat(reloaded.getNamespace()).isEqualTo(namespace);
+		assertThat(reloaded.getMunicipalityId()).isEqualTo(municipalityId);
 	}
 }

@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.api;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -13,6 +14,7 @@ import static se.sundsvall.casedata.TestUtil.createFacility;
 
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -22,8 +24,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 import se.sundsvall.casedata.service.ErrandService;
+import se.sundsvall.casedata.service.MetadataService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -32,10 +36,20 @@ class ErrandResourceTest {
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands";
 
 	@MockitoBean
+	private MetadataService metadataServiceMock;
+
+	@MockitoBean
 	private ErrandService errandServiceMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
+
+	@BeforeEach
+	void setupMock() {
+		when(metadataServiceMock.getCaseTypes(any(), any())).thenReturn(List.of(CaseType.builder()
+			.withType("PARKING_PERMIT")
+			.build()));
+	}
 
 	@Test
 	void deleteErrand() {

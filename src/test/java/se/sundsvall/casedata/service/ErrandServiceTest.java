@@ -17,8 +17,6 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createPatchErrand;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
@@ -95,7 +93,7 @@ class ErrandServiceTest {
 	void createWhenParkingPermit() {
 		// Arrange
 		final var inputErrandDTO = createErrand();
-		inputErrandDTO.setCaseType(PARKING_PERMIT.name());
+		inputErrandDTO.setCaseType("PARKING_PERMIT");
 		final var inputErrand = toErrandEntity(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
 		inputErrand.setId(new Random().nextLong(1, 1000));
 
@@ -285,7 +283,7 @@ class ErrandServiceTest {
 		final var dto = new PatchErrand();
 		final var entity = new ErrandEntity();
 		final var executingUserId = "executingUserId";
-		entity.setCaseType(PARKING_PERMIT_RENEWAL.name());
+		entity.setCaseType("PARKING_PERMIT_RENEWAL");
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(1L, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
 		when(errandRepositoryMock.saveAndFlush(entity)).thenReturn(entity);
 

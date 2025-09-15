@@ -11,6 +11,14 @@ spring:
 #----------------------------------------
 # Integration settings
 #----------------------------------------
+integration:
+  parkingpermit:
+    supported-namespaces:
+      - MY_NAMESPACE
+      - SBK_PARKING_PERMIT
+  landandexploitation:
+    supported-namespaces:
+      - SBK_MEX
 config:
   parkingpermit:
     base-url: http://localhost:${wiremock.server.port:}/parkingpermit

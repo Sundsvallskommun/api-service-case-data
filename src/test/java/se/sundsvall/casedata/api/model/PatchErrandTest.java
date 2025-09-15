@@ -19,7 +19,6 @@ import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 class PatchErrandTest {
@@ -44,7 +43,7 @@ class PatchErrandTest {
 	void builderMethods() {
 		// Arrange
 		final var externalCaseId = UUID.randomUUID().toString();
-		final var caseType = CaseType.PARKING_PERMIT.name();
+		final var caseType = "PARKING_PERMIT";
 		final var priority = Priority.HIGH;
 		final var description = "abc";
 		final var caseTitleAddition = "abc";
