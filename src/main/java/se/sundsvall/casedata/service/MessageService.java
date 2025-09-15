@@ -29,7 +29,6 @@ import org.springframework.util.StreamUtils;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
@@ -53,17 +52,20 @@ public class MessageService {
 	private final MessagingClient messagingClient;
 	private final MessagingSettingsClient messagingSettingsClient;
 	private final NotificationService notificationService;
+	private final MetadataService metadataService;
 
 	private final MessageMapper mapper;
 
 	public MessageService(final MessageRepository messageRepository, final ErrandRepository errandRepository,
-		final MessageAttachmentRepository messageAttachmentRepository, final MessagingClient messagingClient, final MessagingSettingsClient messagingSettingsClient, final NotificationService notificationService, final MessageMapper mapper) {
+		final MessageAttachmentRepository messageAttachmentRepository, final MessagingClient messagingClient, final MessagingSettingsClient messagingSettingsClient, final NotificationService notificationService, final MetadataService metadataService,
+		final MessageMapper mapper) {
 		this.messageRepository = messageRepository;
 		this.errandRepository = errandRepository;
 		this.messageAttachmentRepository = messageAttachmentRepository;
 		this.messagingClient = messagingClient;
 		this.messagingSettingsClient = messagingSettingsClient;
 		this.notificationService = notificationService;
+		this.metadataService = metadataService;
 		this.mapper = mapper;
 	}
 
@@ -91,7 +93,7 @@ public class MessageService {
 
 		final var stakeholderEntity = getReporterStakeholder(errandEntity);
 
-		if (CaseType.getParatransitCaseTypes().contains(CaseType.valueOf(errandEntity.getCaseType())) && stakeholderEntity != null && !stakeholderEntity.getAdAccount().equals(request.getUsername())) {
+		if (doesCaseTypeExist(municipalityId, namespace, errandEntity.getCaseType()) && stakeholderEntity != null && !stakeholderEntity.getAdAccount().equals(request.getUsername())) {
 			sendEmailNotification(municipalityId, namespace, errandEntity, stakeholderEntity, PARATRANSIT_DEPARTMENT_ID);
 		}
 
@@ -186,6 +188,16 @@ public class MessageService {
 			.filter(stakeholder -> stakeholder.getRoles().contains(REPORTER.name()))
 			.findFirst()
 			.orElse(null);
+	}
+
+	private boolean doesCaseTypeExist(final String municpalityId, final String namespace, final String type) {
+		try {
+			metadataService.getCaseType(municpalityId, namespace, type);
+			return true;
+		} catch (final Exception ignored) {
+			return false;
+		}
+
 	}
 
 }

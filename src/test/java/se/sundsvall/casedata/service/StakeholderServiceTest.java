@@ -20,7 +20,6 @@ import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
 import static se.sundsvall.casedata.TestUtil.getRandomStakeholderRole;
 import static se.sundsvall.casedata.TestUtil.getRandomStakeholderType;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.PARKING_PERMIT_RENEWAL;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.DRIVER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.OPERATOR;
 import static se.sundsvall.casedata.integration.db.model.enums.StakeholderType.ORGANIZATION;
@@ -273,7 +272,7 @@ class StakeholderServiceTest {
 
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
-		errand.setCaseType(PARKING_PERMIT_RENEWAL.name());
+		errand.setCaseType("PARKING_PERMIT_RENEWAL");
 		// Set ID on every stakeholder
 		errand.getStakeholders().forEach(s -> s.setId(new Random().nextLong(1, 1000)));
 

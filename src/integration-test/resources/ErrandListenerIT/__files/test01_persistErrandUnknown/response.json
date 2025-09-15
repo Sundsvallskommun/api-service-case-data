@@ -5,7 +5,7 @@
 	"municipalityId": "2281",
 	"namespace": "SBK_PARKING_PERMIT",
 	"externalCaseId": "9527464e-c5a0-4971-a253-8b94a79e74c9",
-	"caseType": "APPEAL",
+	"caseType": "PARKING_PERMIT",
 	"channel": "EMAIL",
 	"priority": "HIGH",
 	"description": "Case description",

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -18,104 +19,121 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
+import se.sundsvall.casedata.integration.landandexploitation.configuration.LandAndExploitationProperties;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
+import se.sundsvall.casedata.integration.parkingpermit.configuration.ParkingPermitProperties;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessServiceTest {
 
 	@Mock
-	private LandAndExploitationIntegration landAndExploitationIntegration;
+	private ParkingPermitProperties parkingPermitPropertiesMock;
 
 	@Mock
-	private ParkingPermitIntegration parkingPermitIntegration;
+	private LandAndExploitationProperties landAndExploitationPropertiesMock;
+
+	@Mock
+	private LandAndExploitationIntegration landAndExploitationIntegrationMock;
+
+	@Mock
+	private ParkingPermitIntegration parkingPermitIntegrationMock;
 
 	@InjectMocks
 	private ProcessService processService;
 
 	private static Stream<Arguments> mexTypesProvider() {
-		return CaseType.getMexCaseTypes().stream()
-			.map(Object::toString)
-			.map(Arguments::of);
+		return Stream.of(
+			Arguments.of("MEX_TYPE_1"),
+			Arguments.of("MEX_TYPE_2"));
 	}
 
 	private static Stream<Arguments> parkingPermitTypesProvider() {
-		return CaseType.getParkingPermitCaseTypes().stream()
-			.map(Object::toString)
-			.map(Arguments::of);
+		return Stream.of(
+			Arguments.of("PARATRANSIT"),
+			Arguments.of("PARKING_PERMIT_RENEWAL"));
 	}
 
 	@ParameterizedTest
 	@MethodSource("parkingPermitTypesProvider")
-	void startProcess_whenParkingPermit(final String enumValue) {
+	void startProcess_whenParkingPermit(final String caseType) {
 		// Arrange
 		final var errand = createErrandEntity();
+		errand.setNamespace("SBK_PARKING_PERMIT");
+		errand.setCaseType(caseType);
 		final var processId = UUID.randomUUID().toString();
 		final var response = new StartProcessResponse().processId(processId);
-		errand.setCaseType(enumValue);
-		when(parkingPermitIntegration.startProcess(errand)).thenReturn(response);
+		when(parkingPermitIntegrationMock.startProcess(errand)).thenReturn(response);
+		when(parkingPermitPropertiesMock.supportedNamespaces()).thenReturn(List.of("SBK_PARKING_PERMIT"));
 
 		// Act
 		final var result = processService.startProcess(errand);
 
 		// Assert
 		assertThat(result).isEqualTo(processId);
-		verify(parkingPermitIntegration).startProcess(errand);
-		verifyNoMoreInteractions(parkingPermitIntegration);
-		verifyNoInteractions(landAndExploitationIntegration);
+		verify(parkingPermitIntegrationMock).startProcess(errand);
+		verifyNoMoreInteractions(parkingPermitIntegrationMock);
+		verifyNoInteractions(landAndExploitationIntegrationMock);
 	}
 
 	@ParameterizedTest
 	@MethodSource("mexTypesProvider")
-	void startProcess_whenMEX(final String enumValue) {
+	void startProcess_whenMEX(final String caseType) {
 		// Arrange
 		final var errand = createErrandEntity();
+		errand.setNamespace("SBK_MEX");
+		errand.setCaseType(caseType);
+
 		final var processId = UUID.randomUUID().toString();
 		final var response = new generated.se.sundsvall.mex.StartProcessResponse().processId(processId);
-		errand.setCaseType(enumValue);
-		when(landAndExploitationIntegration.startProcess(errand)).thenReturn(response);
+		when(landAndExploitationIntegrationMock.startProcess(errand)).thenReturn(response);
+		when(landAndExploitationPropertiesMock.supportedNamespaces()).thenReturn(List.of("SBK_MEX"));
 
 		// Act
 		final var result = processService.startProcess(errand);
 
 		// Assert
 		assertThat(result).isEqualTo(processId);
-		verify(landAndExploitationIntegration).startProcess(errand);
-		verifyNoMoreInteractions(landAndExploitationIntegration);
-		verifyNoInteractions(parkingPermitIntegration);
+		verify(landAndExploitationIntegrationMock).startProcess(errand);
+		verifyNoMoreInteractions(landAndExploitationIntegrationMock);
+		verifyNoInteractions(parkingPermitIntegrationMock);
 	}
 
 	@ParameterizedTest
 	@MethodSource("parkingPermitTypesProvider")
-	void updateProcess_whenParkingPermit(final String enumValue) {
+	void updateProcess_whenParkingPermit(final String caseType) {
 		// Arrange
 		final var errand = createErrandEntity();
-		errand.setCaseType(enumValue);
+		errand.setNamespace("SBK_PARKING_PERMIT");
+		errand.setCaseType(caseType);
+
+		when(parkingPermitPropertiesMock.supportedNamespaces()).thenReturn(List.of("SBK_PARKING_PERMIT"));
 
 		// Act
 		processService.updateProcess(errand);
 
 		// Assert
-		verify(parkingPermitIntegration).updateProcess(errand);
-		verifyNoMoreInteractions(parkingPermitIntegration);
-		verifyNoInteractions(landAndExploitationIntegration);
+		verify(parkingPermitIntegrationMock).updateProcess(errand);
+		verifyNoMoreInteractions(parkingPermitIntegrationMock);
+		verifyNoInteractions(landAndExploitationIntegrationMock);
 	}
 
 	@ParameterizedTest
 	@MethodSource("mexTypesProvider")
-	void updateProcess_whenMEX(final String enumValue) {
+	void updateProcess_whenMEX(final String caseType) {
 		// Arrange
 		final var errand = createErrandEntity();
-		errand.setCaseType(enumValue);
+		errand.setNamespace("SBK_MEX");
+		errand.setCaseType(caseType);
+		when(landAndExploitationPropertiesMock.supportedNamespaces()).thenReturn(List.of("SBK_MEX"));
 
 		// Act
 		processService.updateProcess(errand);
 
 		// Assert
-		verify(landAndExploitationIntegration).updateProcess(errand);
-		verifyNoMoreInteractions(landAndExploitationIntegration);
-		verifyNoInteractions(parkingPermitIntegration);
+		verify(landAndExploitationIntegrationMock).updateProcess(errand);
+		verifyNoMoreInteractions(landAndExploitationIntegrationMock);
+		verifyNoInteractions(parkingPermitIntegrationMock);
 	}
 
 	@Test
@@ -128,7 +146,7 @@ class ProcessServiceTest {
 		processService.updateProcess(errand);
 
 		// Assert
-		verifyNoInteractions(parkingPermitIntegration, landAndExploitationIntegration);
+		verifyNoInteractions(parkingPermitIntegrationMock, landAndExploitationIntegrationMock);
 	}
 
 }

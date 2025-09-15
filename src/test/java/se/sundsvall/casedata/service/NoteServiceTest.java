@@ -15,7 +15,6 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createExtraParameters;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_LAND_RIGHT;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 
 import java.util.List;
@@ -178,7 +177,7 @@ class NoteServiceTest {
 	void delete() {
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
-		errand.setCaseType(MEX_LAND_RIGHT.name());
+		errand.setCaseType("MEX_LAND_RIGHT");
 		// Set ID on every note
 		errand.getNotes().forEach(note -> note.setId(new Random().nextLong()));
 

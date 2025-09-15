@@ -16,6 +16,7 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 @WireMockAppTestSuite(files = "classpath:/RollbackIT", classes = Application.class)
 @Sql({
 	"/db/scripts/truncate.sql",
+	"/db/scripts/errandIT-testdata.sql"
 })
 class RollbackIT extends AbstractAppTest {
 

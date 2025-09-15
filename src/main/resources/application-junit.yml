@@ -35,6 +35,14 @@ integration:
       2281:
         internal:
           - 123
+  parkingpermit:
+    supported-namespaces:
+      - MY_NAMESPACE
+      - SBK_PARKING_PERMIT
+  landandexploitation:
+    supported-namespaces:
+      - MY_MEX_NAMESPACE
+
 config:
   web-message-collector:
     base-url: http://localhost:8080

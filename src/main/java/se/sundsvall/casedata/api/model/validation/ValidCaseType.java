@@ -10,7 +10,7 @@ import jakarta.validation.Payload;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
+import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.validation.impl.ValidCaseTypeConstraintValidator;
 
 /**

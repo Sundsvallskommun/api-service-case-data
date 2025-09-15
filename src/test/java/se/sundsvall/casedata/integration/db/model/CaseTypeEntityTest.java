@@ -8,6 +8,7 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
+import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +27,7 @@ class CaseTypeEntityTest {
 	@Test
 	void builder() {
 		// Arrange
+		final var id = UUID.randomUUID().toString();
 		final var type = "type";
 		final var displayName = "displayName";
 		final var namespace = "namespace";
@@ -33,6 +35,7 @@ class CaseTypeEntityTest {
 
 		// Act
 		final var result = CaseTypeEntity.builder()
+			.withId(id)
 			.withType(type)
 			.withDisplayName(displayName)
 			.withNamespace(namespace)
@@ -40,6 +43,7 @@ class CaseTypeEntityTest {
 			.build();
 		// Assert
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(result.getId()).isEqualTo(id);
 		assertThat(result.getType()).isEqualTo(type);
 		assertThat(result.getDisplayName()).isEqualTo(displayName);
 		assertThat(result.getNamespace()).isEqualTo(namespace);

@@ -2,7 +2,6 @@ package se.sundsvall.casedata;
 
 import static java.time.OffsetDateTime.now;
 import static java.util.UUID.randomUUID;
-import static se.sundsvall.casedata.api.model.validation.enums.CaseType.MEX_BUY_LAND_FROM_THE_MUNICIPALITY;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
 import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
@@ -41,7 +40,6 @@ import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.Status;
 import se.sundsvall.casedata.api.model.Suspension;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.enums.CaseType;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.AddressEntity;
@@ -81,7 +79,7 @@ public final class TestUtil {
 		return Errand.builder()
 			.withId(new Random().nextLong(1, 100000))
 			.withExternalCaseId(randomUUID().toString())
-			.withCaseType(CaseType.PARKING_PERMIT.name())
+			.withCaseType("PARKING_PERMIT")
 			.withChannel(Channel.EMAIL)
 			.withPriority(HIGH)
 			.withErrandNumber(RandomStringUtils.secure().next(10, true, true))
@@ -321,7 +319,7 @@ public final class TestUtil {
 	public static PatchErrand createPatchErrand() {
 		return PatchErrand.builder()
 			.withExternalCaseId("externalCaseId")
-			.withCaseType(MEX_BUY_LAND_FROM_THE_MUNICIPALITY.name())
+			.withCaseType("MEX_BUY_LAND_FROM_THE_MUNICIPALITY")
 			.withPriority(HIGH)
 			.withDescription("description")
 			.withCaseTitleAddition("caseTitleAddition")
@@ -634,7 +632,7 @@ public final class TestUtil {
 			.withVersion(1)
 			.withPriority(HIGH)
 			.withChannel(Channel.EMAIL)
-			.withCaseType(CaseType.PARKING_PERMIT.name())
+			.withCaseType("PARKING_PERMIT")
 			.withRelatesTo(new ArrayList<>(List.of(RelatedErrandEntity.builder().build())))
 			.withLabels(new ArrayList<>(List.of("label1", "label2")))
 			.build();

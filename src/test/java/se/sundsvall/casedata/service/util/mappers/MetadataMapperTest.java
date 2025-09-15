@@ -23,7 +23,7 @@ class MetadataMapperTest {
 		final var bean = MetadataMapper.toCaseTypeEntity(municipalityId, namespace, caseType);
 
 		// Assert
-		assertThat(bean).hasNoNullFieldsOrProperties();
+		assertThat(bean).hasNoNullFieldsOrPropertiesExcept("id");
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getNamespace()).isEqualTo(namespace);
 		assertThat(bean.getType()).isEqualTo(type);
