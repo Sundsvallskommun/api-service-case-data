@@ -114,7 +114,7 @@ integration:
     connectTimeout: 5
     readTimeout: 20
     supported-namespaces:
-      - MY_MEX_NAMESPACE
+      - SBK_MEX
   web-message-collector:
     base-url: ${config.web-message-collector.base-url}
     connectTimeout: 5
