@@ -15,6 +15,8 @@ import org.mariadb.jdbc.MariaDbBlob;
 
 class MessageAttachmentDataEntityTest {
 
+	private static final Random RANDOM = new Random();
+
 	@Test
 	void testBean() {
 		MatcherAssert.assertThat(MessageAttachmentDataEntity.class, allOf(
@@ -30,7 +32,7 @@ class MessageAttachmentDataEntityTest {
 		// Arrange
 		final var content = "content";
 		final var file = new MariaDbBlob(content.getBytes());
-		final var id = new Random().nextInt();
+		final var id = RANDOM.nextInt();
 
 		// Act
 		final var bean = MessageAttachmentDataEntity.builder()

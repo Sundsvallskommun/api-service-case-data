@@ -44,6 +44,8 @@ import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 @ExtendWith(MockitoExtension.class)
 class NoteServiceTest {
 
+	private static final Random RANDOM = new Random();
+
 	@Mock
 	private NoteRepository noteRepositoryMock;
 
@@ -181,7 +183,7 @@ class NoteServiceTest {
 		// Set ID on every note
 		errand.getNotes().forEach(note -> note.setId(new Random().nextLong()));
 
-		final var errandId = new Random().nextLong(1, 1000);
+		final var errandId = RANDOM.nextLong(1, 1000);
 		final var note = errand.getNotes().getFirst();
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 

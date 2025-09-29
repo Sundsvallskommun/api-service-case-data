@@ -50,6 +50,8 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 @ExtendWith(MockitoExtension.class)
 class DecisionServiceTest {
 
+	private static final Random RANDOM = new Random();
+
 	@Mock
 	private DecisionRepository decisionRepository;
 
@@ -79,7 +81,7 @@ class DecisionServiceTest {
 		decision.setId(123L);
 		final var mockDecision = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(decision), DecisionEntity.class);
 		mockDecision.setErrand(errand);
-		errand.setId(new Random().nextLong(1, 1000));
+		errand.setId(RANDOM.nextLong(1, 1000));
 
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(decisionRepository.save(any())).thenReturn(mockDecision);
@@ -127,7 +129,7 @@ class DecisionServiceTest {
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		errand.setCaseType("PARKING_PERMIT_RENEWAL");
 		errand.getDecisions().forEach(d -> d.setId(new Random().nextLong()));
-		final var errandId = new Random().nextLong(1, 1000);
+		final var errandId = RANDOM.nextLong(1, 1000);
 		final var decision = errand.getDecisions().getFirst();
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
@@ -145,7 +147,7 @@ class DecisionServiceTest {
 	void findDecisions() {
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
-		errand.setId(new Random().nextLong(1, 1000));
+		errand.setId(RANDOM.nextLong(1, 1000));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 
 		// Act
@@ -159,7 +161,7 @@ class DecisionServiceTest {
 	void findDecisionsNotFound() {
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
-		errand.setId(new Random().nextLong(1, 1000));
+		errand.setId(RANDOM.nextLong(1, 1000));
 		errand.setDecisions(new ArrayList<>());
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		final var id = errand.getId();

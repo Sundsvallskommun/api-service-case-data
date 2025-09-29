@@ -29,7 +29,7 @@ class ValidMapValueSizeValidatorTest {
 	}
 
 	@Test
-	void isValid_withValidMap() {
+	void isValidWithValidMap() {
 		final var validMap = new HashMap<String, String>();
 		validMap.put("key1", "value1");
 		validMap.put("key2", "value2");
@@ -38,7 +38,7 @@ class ValidMapValueSizeValidatorTest {
 	}
 
 	@Test
-	void isValid_withInvalidMap() {
+	void isValidWithInvalidMap() {
 		final var invalidMap = new HashMap<String, String>();
 		invalidMap.put("key1", "value1");
 		invalidMap.put("key2", "value with more than 10 characters");
@@ -47,9 +47,8 @@ class ValidMapValueSizeValidatorTest {
 	}
 
 	@Test
-	void isValid_withNullMap() {
+	void isValidWithNullMap() {
 		validator.setNullable(false);
 		assertThat(validator.isValid(null, context)).isFalse();
 	}
-
 }

@@ -40,8 +40,7 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 @ExtendWith(MockitoExtension.class)
 class FacilityServiceTest {
 
-	@InjectMocks
-	private FacilityService facilityService;
+	private static final Random RANDOM = new Random();
 
 	@Mock
 	private ErrandRepository errandRepositoryMock;
@@ -52,9 +51,12 @@ class FacilityServiceTest {
 	@Mock
 	private ApplicationEventPublisher applicationEventPublisherMock;
 
+	@InjectMocks
+	private FacilityService facilityService;
+
 	private ErrandEntity mockErrandFindByIdAndMunicipalityIdAndNamespace() {
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
-		errand.setId(new Random().nextLong(1, 1000));
+		errand.setId(RANDOM.nextLong(1, 1000));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		return errand;
 	}

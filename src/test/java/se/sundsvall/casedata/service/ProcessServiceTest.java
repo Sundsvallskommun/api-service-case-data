@@ -56,7 +56,7 @@ class ProcessServiceTest {
 
 	@ParameterizedTest
 	@MethodSource("parkingPermitTypesProvider")
-	void startProcess_whenParkingPermit(final String caseType) {
+	void startProcessWhenParkingPermit(final String caseType) {
 		// Arrange
 		final var errand = createErrandEntity();
 		errand.setNamespace("SBK_PARKING_PERMIT");
@@ -78,7 +78,7 @@ class ProcessServiceTest {
 
 	@ParameterizedTest
 	@MethodSource("mexTypesProvider")
-	void startProcess_whenMEX(final String caseType) {
+	void startProcessWhenMEX(final String caseType) {
 		// Arrange
 		final var errand = createErrandEntity();
 		errand.setNamespace("SBK_MEX");
@@ -101,7 +101,7 @@ class ProcessServiceTest {
 
 	@ParameterizedTest
 	@MethodSource("parkingPermitTypesProvider")
-	void updateProcess_whenParkingPermit(final String caseType) {
+	void updateProcessWhenParkingPermit(final String caseType) {
 		// Arrange
 		final var errand = createErrandEntity();
 		errand.setNamespace("SBK_PARKING_PERMIT");
@@ -120,7 +120,7 @@ class ProcessServiceTest {
 
 	@ParameterizedTest
 	@MethodSource("mexTypesProvider")
-	void updateProcess_whenMEX(final String caseType) {
+	void updateProcessWhenMEX(final String caseType) {
 		// Arrange
 		final var errand = createErrandEntity();
 		errand.setNamespace("SBK_MEX");
@@ -137,7 +137,7 @@ class ProcessServiceTest {
 	}
 
 	@Test
-	void updateProcess_CamundaUser() {
+	void updateProcessCamundaUser() {
 		// Arrange
 		final var errand = createErrandEntity();
 		errand.setUpdatedByClient("WSO2_Camunda");
@@ -148,5 +148,4 @@ class ProcessServiceTest {
 		// Assert
 		verifyNoInteractions(parkingPermitIntegrationMock, landAndExploitationIntegrationMock);
 	}
-
 }

@@ -66,8 +66,12 @@ import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 public final class TestUtil {
 
+	private static final Random RANDOM = new Random();
+
 	public static final String MUNICIPALITY_ID = "2281";
 	public static final String NAMESPACE = "MY_NAMESPACE";
+
+	private TestUtil() {}
 
 	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
 		.enable(SerializationFeature.INDENT_OUTPUT)
@@ -77,7 +81,7 @@ public final class TestUtil {
 
 	public static Errand createErrand() {
 		return Errand.builder()
-			.withId(new Random().nextLong(1, 100000))
+			.withId(RANDOM.nextLong(1, 100000))
 			.withExternalCaseId(randomUUID().toString())
 			.withCaseType("PARKING_PERMIT")
 			.withChannel(Channel.EMAIL)
@@ -101,7 +105,7 @@ public final class TestUtil {
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
 			.withStatus(Status.builder().withStatusType("test").withDescription("test").build())
-			.withRelatesTo(new ArrayList<>(List.of(RelatedErrand.builder().withErrandId(new Random().nextLong()).withErrandNumber("ErrandNumber").withRelationReason("Relation reason").build())))
+			.withRelatesTo(new ArrayList<>(List.of(RelatedErrand.builder().withErrandId(RANDOM.nextLong()).withErrandNumber("ErrandNumber").withRelationReason("Relation reason").build())))
 			.withNotes(new ArrayList<>(List.of(createNote(), createNote(), createNote())))
 			.withStakeholders(new ArrayList<>(List.of(
 				createStakeholder(StakeholderType.PERSON, new ArrayList<>(List.of(getRandomStakeholderRole(), getRandomStakeholderRole(), ADMINISTRATOR.toString()))),
@@ -117,15 +121,15 @@ public final class TestUtil {
 	}
 
 	public static String getRandomStakeholderRole() {
-		return StakeholderRole.values()[new Random().nextInt(StakeholderRole.values().length)].name();
+		return StakeholderRole.values()[RANDOM.nextInt(StakeholderRole.values().length)].name();
 	}
 
 	public static StakeholderType getRandomStakeholderType() {
-		return StakeholderType.values()[new Random().nextInt(StakeholderType.values().length)];
+		return StakeholderType.values()[RANDOM.nextInt(StakeholderType.values().length)];
 	}
 
 	public static OffsetDateTime getRandomOffsetDateTime() {
-		return toOffsetDateTimeWithLocalOffset(now().minusDays(new Random().nextInt(10000)).truncatedTo(ChronoUnit.MILLIS));
+		return toOffsetDateTimeWithLocalOffset(now().minusDays(RANDOM.nextInt(10000)).truncatedTo(ChronoUnit.MILLIS));
 	}
 
 	public static Status createStatus() {
@@ -180,14 +184,14 @@ public final class TestUtil {
 			.withNamespace(NAMESPACE)
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
-			.withId(new Random().nextLong(1, 100000))
+			.withId(RANDOM.nextLong(1, 100000))
 			.withCategory(category.toString())
 			.withName(RandomStringUtils.secure().next(10, true, false) + ".pdf")
 			.withNote(RandomStringUtils.secure().next(20, true, false))
 			.withExtension(".pdf")
 			.withMimeType("application/pdf")
 			.withFile("dGVzdA==")
-			.withErrandId(new Random().nextLong(1, 100000))
+			.withErrandId(RANDOM.nextLong(1, 100000))
 			.withExtraParameters(createExtraParameters())
 			.build();
 	}
@@ -257,7 +261,7 @@ public final class TestUtil {
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
 			.withType(StakeholderType.ORGANIZATION)
-			.withOrganizationNumber((new Random().nextInt(999999 - 111111) + 111111) + "-" + (new Random().nextInt(9999 - 1111) + 1111))
+			.withOrganizationNumber((RANDOM.nextInt(999999 - 111111) + 111111) + "-" + (RANDOM.nextInt(9999 - 1111) + 1111))
 			.withOrganizationName(RandomStringUtils.secure().next(20, true, false))
 			.withRoles(stakeholderRoles)
 			.withContactInformation(List.of(createContactInformation(ContactType.EMAIL), createContactInformation(ContactType.PHONE), createContactInformation(ContactType.CELLPHONE)))
@@ -295,8 +299,8 @@ public final class TestUtil {
 
 	public static Coordinates createCoordinates() {
 		return Coordinates.builder()
-			.withLatitude(new Random().nextDouble())
-			.withLongitude(new Random().nextDouble())
+			.withLatitude(RANDOM.nextDouble())
+			.withLongitude(RANDOM.nextDouble())
 			.build();
 	}
 
@@ -306,7 +310,7 @@ public final class TestUtil {
 			.withNamespace(NAMESPACE)
 			.withCreated(getRandomOffsetDateTime())
 			.withUpdated(getRandomOffsetDateTime())
-			.withId(new Random().nextLong(1, 100000))
+			.withId(RANDOM.nextLong(1, 100000))
 			.withTitle(RandomStringUtils.secure().next(10, true, false))
 			.withText(RandomStringUtils.secure().next(10, true, false))
 			.withExtraParameters(createExtraParameters())
@@ -595,14 +599,14 @@ public final class TestUtil {
 			.withNote("note")
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
-			.withErrandId(new Random().nextLong(1, 100000))
+			.withErrandId(RANDOM.nextLong(1, 100000))
 			.withCategory(AttachmentCategory.POLICE_REPORT.name())
 			.build();
 	}
 
 	public static ErrandEntity createErrandEntity() {
 		return ErrandEntity.builder()
-			.withId(new Random().nextLong(1, 1000))
+			.withId(RANDOM.nextLong(1, 1000))
 			.withStatuses(new ArrayList<>(List.of(createStatusEntity())))
 			.withNotes(new ArrayList<>(List.of(createNoteEntity())))
 			.withFacilities(new ArrayList<>(List.of(createFacilityEntity())))
@@ -639,7 +643,7 @@ public final class TestUtil {
 	}
 
 	public static List<NotificationEntity> createNotificationEntityList() {
-		return new ArrayList<NotificationEntity>(List.of(
+		return new ArrayList<>(List.of(
 			createNotificationEntity(n -> {}),
 			createNotificationEntity(n -> {}),
 			createNotificationEntity(n -> {})));

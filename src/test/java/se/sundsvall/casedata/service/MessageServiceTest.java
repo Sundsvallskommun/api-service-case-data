@@ -69,6 +69,7 @@ import se.sundsvall.dept44.support.Identifier;
 class MessageServiceTest {
 
 	private static final String DEPARTMENT_ID = "departmentId";
+	private static final Random RANDOM = new Random();
 
 	@Mock
 	private MessagingSettingsClient messagingSettingsClientMock;
@@ -131,7 +132,7 @@ class MessageServiceTest {
 	void findMessages() {
 
 		// Arrange
-		final var errandId = new Random().nextLong(1, 100000);
+		final var errandId = RANDOM.nextLong(1, 100000);
 		final var messages = List.of(MessageEntity.builder()
 			.withAttachments(List.of(MessageAttachmentEntity.builder().build()))
 			.build());
@@ -151,7 +152,7 @@ class MessageServiceTest {
 	void findExternalMessages() {
 
 		// Arrange
-		final var errandId = new Random().nextLong(1, 100000);
+		final var errandId = RANDOM.nextLong(1, 100000);
 		final var messages = List.of(MessageEntity.builder()
 			.withAttachments(List.of(MessageAttachmentEntity.builder().build()))
 			.build());

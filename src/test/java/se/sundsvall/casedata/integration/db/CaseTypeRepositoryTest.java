@@ -57,7 +57,7 @@ class CaseTypeRepositoryTest {
 	}
 
 	@Test
-	void findById_notFound() {
+	void findByIdNotFound() {
 		// Act
 		final var result = repository.findById("NON-EXISTING");
 

@@ -28,9 +28,6 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(properties = {
 	"scheduler.notification.cron=* * * * * *", // Setup to execute every second
 	"scheduler.notification.enabled=true",
-	"spring.flyway.enabled=true",
-	"spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
-	"spring.datasource.url=jdbc:tc:mariadb:10.6.4:////",
 	"server.shutdown=immediate",
 	"spring.lifecycle.timeout-per-shutdown-phase=0s"
 })

@@ -104,7 +104,7 @@ class EmailReaderWorkerTest {
 	}
 
 	@Test
-	void getEmails_emptyList() {
+	void getEmailsEmptyList() {
 		// Arrange
 		when(emailReaderPropertiesMock.municipalityId()).thenReturn("someMunicipalityId");
 		when(emailReaderPropertiesMock.namespace()).thenReturn("someNamespace");
@@ -177,7 +177,7 @@ class EmailReaderWorkerTest {
 	}
 
 	@Test
-	void save_emailAlreadyExists() {
+	void saveEmailAlreadyExists() {
 		// Arrange
 		final var email = new Email()
 			.id("someId")
@@ -220,7 +220,7 @@ class EmailReaderWorkerTest {
 	}
 
 	@Test
-	void save_errandNotFound() {
+	void saveErrandNotFound() {
 		// Arrange
 		final var email = new Email()
 			.id("someId")
@@ -249,7 +249,7 @@ class EmailReaderWorkerTest {
 	}
 
 	@Test
-	void save_exceptionThrown() {
+	void saveExceptionThrown() {
 		// Arrange
 		final var email = new Email()
 			.id("someId")
@@ -306,7 +306,7 @@ class EmailReaderWorkerTest {
 	}
 
 	@Test
-	void deleteMail_exceptionThrown() {
+	void deleteMailExceptionThrown() {
 		// Arrange
 		final var email = new Email()
 			.id("someId")
@@ -359,7 +359,7 @@ class EmailReaderWorkerTest {
 	}
 
 	@Test
-	void processAttachment_exceptionThrown() {
+	void processAttachmentExceptionThrown() {
 		// Arrange
 		final var attachment = new EmailAttachment();
 		final var messageId = "someMessageId";
@@ -397,7 +397,7 @@ class EmailReaderWorkerTest {
 	}
 
 	@Test
-	void processAttachmentData_exceptionThrown() {
+	void processAttachmentDataExceptionThrown() {
 		// Arrange
 		final var messageAttachment = MessageAttachmentEntity.builder().build();
 		final var attachmentEntity = new AttachmentEntity();
