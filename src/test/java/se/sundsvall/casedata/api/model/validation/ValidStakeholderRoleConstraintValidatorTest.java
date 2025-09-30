@@ -30,19 +30,19 @@ class ValidStakeholderRoleConstraintValidatorTest {
 
 	@ParameterizedTest
 	@EnumSource(StakeholderRole.class)
-	void isValid_withValidStakeholderRole(final StakeholderRole type) {
+	void isValidWithValidStakeholderRole(final StakeholderRole type) {
 		final var validStakeholderRole = List.of(type.name());
 		assertThat(validator.isValid(validStakeholderRole, context)).isTrue();
 	}
 
 	@Test
-	void isValid_withValidStakeholderRoles() {
+	void isValidWithValidStakeholderRoles() {
 		final var validStakeholderRoles = Arrays.stream(StakeholderRole.values()).map(StakeholderRole::name).toList();
 		assertThat(validator.isValid(validStakeholderRoles, context)).isTrue();
 	}
 
 	@Test
-	void isValid_withValidAndInvalidStakeholderRole() {
+	void isValidWithValidAndInvalidStakeholderRole() {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
 
@@ -51,7 +51,7 @@ class ValidStakeholderRoleConstraintValidatorTest {
 	}
 
 	@Test
-	void isValid_withInvalidStakeholderRole() {
+	void isValidWithInvalidStakeholderRole() {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
 
@@ -60,7 +60,7 @@ class ValidStakeholderRoleConstraintValidatorTest {
 	}
 
 	@Test
-	void isValid_withNullStakeholderRole() {
+	void isValidWithNullStakeholderRole() {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
 
@@ -68,7 +68,7 @@ class ValidStakeholderRoleConstraintValidatorTest {
 	}
 
 	@Test
-	void isValid_withEmptyStakeholderRole() {
+	void isValidWithEmptyStakeholderRole() {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
 

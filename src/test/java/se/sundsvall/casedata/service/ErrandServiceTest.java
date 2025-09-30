@@ -53,6 +53,8 @@ import se.sundsvall.dept44.support.Identifier.Type;
 @ExtendWith(MockitoExtension.class)
 class ErrandServiceTest {
 
+	private static final Random RANDOM = new Random();
+
 	@InjectMocks
 	private ErrandService errandService;
 
@@ -79,7 +81,7 @@ class ErrandServiceTest {
 
 	private ErrandEntity mockErrandFindByIdAndMunicipalityIdAndNamespace() {
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
-		errand.setId(new Random().nextLong(1, 1000));
+		errand.setId(RANDOM.nextLong(1, 1000));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
 		return errand;
 	}
@@ -129,7 +131,7 @@ class ErrandServiceTest {
 		// Arrange
 		final var errandDTO = createErrand();
 		final var errand = toErrandEntity(errandDTO, MUNICIPALITY_ID, NAMESPACE);
-		errand.setId(new Random().nextLong(1, 1000));
+		errand.setId(RANDOM.nextLong(1, 1000));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.empty());
 
 		final var id = errand.getId();

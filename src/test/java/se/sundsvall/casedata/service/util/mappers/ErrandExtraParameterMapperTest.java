@@ -62,7 +62,7 @@ class ErrandExtraParameterMapperTest {
 	}
 
 	@Test
-	void testToErrandParameterEntityList_NullParameters() {
+	void testToErrandParameterEntityListNullParameters() {
 		// Arrange
 		final ErrandEntity errandEntity = new ErrandEntity();
 

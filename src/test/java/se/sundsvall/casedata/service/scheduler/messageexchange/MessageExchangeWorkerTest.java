@@ -114,9 +114,9 @@ class MessageExchangeWorkerTest {
 			.build());
 
 		when(conversationRepositoryMock.findByMessageExchangeId(any())).thenReturn(conversationEntities);
-		when(relationClientMock.getRelation(any(), any())).thenReturn(
-			ResponseEntity.ok(new Relation(null, new ResourceIdentifier().resourceId("other-id"), new ResourceIdentifier().resourceId("123").service("case-data"))), // relation 1
-			ResponseEntity.ok(new Relation(null, new ResourceIdentifier().resourceId("existingConversationEntityId"), new ResourceIdentifier().resourceId("other-id")))); // relation 2
+		when(relationClientMock.getRelation(any(), any()))
+			.thenReturn(ResponseEntity.ok(new Relation(null, new ResourceIdentifier().resourceId("other-id"), new ResourceIdentifier().resourceId("123").service("case-data")))) // relation 1
+			.thenReturn(ResponseEntity.ok(new Relation(null, new ResourceIdentifier().resourceId("existingConversationEntityId"), new ResourceIdentifier().resourceId("other-id")))); // relation 2
 		when(errandRepositoryMock.findById(123L)).thenReturn(Optional.of(ErrandEntity.builder().withMunicipalityId("municipalityId").withNamespace("case-data-namespace").withId(123L).build()));
 
 		messageExchangeWorker.processConversation(conversation);

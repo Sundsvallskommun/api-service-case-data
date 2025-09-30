@@ -51,7 +51,7 @@ class ValidMessageTypeConstraintValidatorTest {
 	@ValueSource(booleans = {
 		true, false
 	})
-	void isValid_Nullable(final Boolean nullable) {
+	void isValidNullable(final Boolean nullable) {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
 		validator.setNullable(nullable);
@@ -59,12 +59,11 @@ class ValidMessageTypeConstraintValidatorTest {
 	}
 
 	@Test
-	void isValid_withEmptyMessageType() {
+	void isValidWithEmptyMessageType() {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
 
 		final var emptyType = "";
 		assertThat(validator.isValid(emptyType, context)).isFalse();
 	}
-
 }

@@ -30,13 +30,13 @@ class ValidTimelinessReviewValueConstraintValidatorTest {
 
 	@ParameterizedTest
 	@EnumSource(TimelinessReview.class)
-	void isValid_withValidValue(final TimelinessReview status) {
+	void isValidWithValidValue(final TimelinessReview status) {
 		final var validValue = status.toString();
 		assertThat(validator.isValid(validValue, contextMock)).isTrue();
 	}
 
 	@Test
-	void isNotValid_withInvalidValue() {
+	void isNotValidWithInvalidValue() {
 		final var builderMock = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(contextMock.buildConstraintViolationWithTemplate(anyString())).thenReturn(builderMock);
 
@@ -50,7 +50,7 @@ class ValidTimelinessReviewValueConstraintValidatorTest {
 
 	@ParameterizedTest
 	@NullAndEmptySource
-	void isNotValid_withNullOrEmptyStatus(String value) {
+	void isNotValidWithNullOrEmptyStatus(String value) {
 		final var builderMock = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(contextMock.buildConstraintViolationWithTemplate(anyString())).thenReturn(builderMock);
 

@@ -1,10 +1,9 @@
 spring:
-  flyway:
-    enabled: true
-
   #----------------------------------------
   # Db settings
   #----------------------------------------
+  flyway:
+    enabled: true
   jpa:
     properties:
       jakarta:
@@ -24,7 +23,7 @@ spring:
         format_sql: 'true'
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:mariadb:10.6.4:///junit
+    url: jdbc:tc:mariadb:10.6:///junit
 
 #----------------------------------------
 # Integration settings

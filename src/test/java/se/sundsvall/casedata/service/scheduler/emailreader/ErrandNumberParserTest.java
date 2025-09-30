@@ -25,7 +25,7 @@ class ErrandNumberParserTest {
 	@ValueSource(strings = {
 		"PRH-2022-01", "PRH-2022-000001", "PH-2022-000001", "PRH-2022-011111111111", "##PRH-2022-011111111111", "asd"
 	})
-	void parseSubject_WithNoSpaceAfterErrandNUmber(final String errandNumber) {
+	void parseSubjectWithNoSpaceAfterErrandNUmber(final String errandNumber) {
 
 		final var result = ErrandNumberParser.parseSubject(MessageFormat.format("Ärende #{0}", errandNumber));
 

@@ -58,6 +58,8 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 @ExtendWith(MockitoExtension.class)
 class StakeholderServiceTest {
 
+	private static final Random RANDOM = new Random();
+
 	@Mock
 	private StakeholderRepository stakeholderRepositoryMock;
 
@@ -276,7 +278,7 @@ class StakeholderServiceTest {
 		// Set ID on every stakeholder
 		errand.getStakeholders().forEach(s -> s.setId(new Random().nextLong(1, 1000)));
 
-		final var errandId = new Random().nextLong(1, 1000);
+		final var errandId = RANDOM.nextLong(1, 1000);
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		final var stakeholder = errand.getStakeholders().getFirst();

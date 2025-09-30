@@ -62,7 +62,7 @@ class MessageExchangeSchedulerTest {
 	void syncConversation() {
 		when(messageExchangeWorkerMock.getActiveSyncEntities()).thenReturn(List.of(messageExchangeSyncEntityMock));
 		when(messageExchangeWorkerMock.getConversations(any(), any())).thenReturn(pageMock);
-		when(pageMock.stream()).thenReturn(Stream.of(conversationMock), Stream.of(conversationMock));
+		when(pageMock.stream()).thenReturn(Stream.of(conversationMock)).thenReturn(Stream.of(conversationMock));
 		when(messageExchangeWorkerMock.processConversation(any())).thenReturn(conversationMock);
 		when(messageExchangeSyncEntityMock.getLatestSyncedSequenceNumber()).thenReturn(0L);
 		when(conversationMock.getLatestSequenceNumber()).thenReturn(2L, 4L);
@@ -92,7 +92,7 @@ class MessageExchangeSchedulerTest {
 		ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
 		when(messageExchangeWorkerMock.getActiveSyncEntities()).thenReturn(List.of(messageExchangeSyncEntityMock));
 		when(messageExchangeWorkerMock.getConversations(any(), any())).thenReturn(pageMock);
-		when(pageMock.stream()).thenReturn(Stream.of(conversationMock), Stream.of(conversationMock));
+		when(pageMock.stream()).thenReturn(Stream.of(conversationMock)).thenReturn(Stream.of(conversationMock));
 		when(messageExchangeWorkerMock.processConversation(any())).thenReturn(conversationMock);
 		when(messageExchangeSyncEntityMock.getLatestSyncedSequenceNumber()).thenReturn(0L);
 		when(conversationMock.getLatestSequenceNumber()).thenReturn(2L, 4L);

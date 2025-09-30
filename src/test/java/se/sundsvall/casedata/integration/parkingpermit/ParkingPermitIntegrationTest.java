@@ -38,7 +38,7 @@ class ParkingPermitIntegrationTest {
 	}
 
 	@Test
-	void startProcess_whenThrowsTest() {
+	void startProcessWhenThrowsTest() {
 		final var errand = createErrandEntity();
 		when(parkingPermitClient.startProcess(errand.getMunicipalityId(), errand.getNamespace(), errand.getId())).thenThrow(new AbstractThrowableProblem() {
 
@@ -62,7 +62,7 @@ class ParkingPermitIntegrationTest {
 	}
 
 	@Test
-	void updateProcess_whenThrowsTest() {
+	void updateProcessWhenThrowsTest() {
 		final var errand = createErrandEntity();
 		when(parkingPermitClient.updateProcess(errand.getMunicipalityId(), errand.getNamespace(), errand.getProcessId())).thenThrow(new AbstractThrowableProblem() {
 
@@ -76,5 +76,4 @@ class ParkingPermitIntegrationTest {
 
 		verify(parkingPermitClient).updateProcess(errand.getMunicipalityId(), errand.getNamespace(), errand.getProcessId());
 	}
-
 }

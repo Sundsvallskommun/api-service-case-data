@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.scheduler;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.UUID.randomUUID;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 
@@ -8,7 +9,6 @@ import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import java.sql.Blob;
-import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +45,7 @@ public class MessageMapper {
 			.withExternalCaseId(dto.getExternalCaseId())
 			.withFamilyId(dto.getFamilyId())
 			.withTextmessage(dto.getMessage())
-			.withDirection(Direction.valueOf(dto.getDirection().name()))
+			.withDirection(Optional.ofNullable(dto.getDirection()).map(direction -> Direction.valueOf(direction.name())).orElse(null))
 			.withSent(dto.getSent())
 			.withFirstName(dto.getFirstName())
 			.withLastName(dto.getLastName())
@@ -265,7 +265,7 @@ public class MessageMapper {
 			.withRecipients(email.getRecipients())
 			.withSubject(email.getSubject())
 			.withTextmessage(email.getMessage())
-			.withSent(email.getReceivedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+			.withSent(Optional.ofNullable(email.getReceivedAt()).map(date -> date.format(ofPattern("yyyy-MM-dd HH:mm:ss"))).orElse(null))
 			.withMessageType(MessageType.EMAIL.name())
 			.withEmail(email.getSender())
 			.withHeaders(toEmailHeaders(email.getHeaders()))

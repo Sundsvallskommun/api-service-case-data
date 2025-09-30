@@ -28,13 +28,13 @@ class ValidFacilityTypeConstraintValidatorTest {
 
 	@ParameterizedTest
 	@EnumSource(FacilityType.class)
-	void isValid_withValidFacilityType(final FacilityType type) {
+	void isValidWithValidFacilityType(final FacilityType type) {
 		final var validFacilityType = type.name();
 		assertThat(validator.isValid(validFacilityType, context)).isTrue();
 	}
 
 	@Test
-	void isValid_withInvalidFacilityType() {
+	void isValidWithInvalidFacilityType() {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
 
@@ -46,7 +46,7 @@ class ValidFacilityTypeConstraintValidatorTest {
 	@ValueSource(booleans = {
 		true, false
 	})
-	void isValid_Nullable(final Boolean nullable) {
+	void isValidNullable(final Boolean nullable) {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
 		validator.setNullable(nullable);
@@ -54,12 +54,11 @@ class ValidFacilityTypeConstraintValidatorTest {
 	}
 
 	@Test
-	void isValid_withEmptyFacilityType() {
+	void isValidWithEmptyFacilityType() {
 		final var builder = mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 		when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
 
 		final var emptyType = "";
 		assertThat(validator.isValid(emptyType, context)).isFalse();
 	}
-
 }

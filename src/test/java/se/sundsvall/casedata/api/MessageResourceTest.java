@@ -34,6 +34,8 @@ class MessageResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands/{errandId}/messages";
 
+	private static final Random RANDOM = new Random();
+
 	@MockitoBean
 	private MessageService messageServiceMock;
 
@@ -44,7 +46,7 @@ class MessageResourceTest {
 	void getMessages() {
 
 		// Arrange
-		final var errandId = new Random().nextLong(1, 100000);
+		final var errandId = RANDOM.nextLong(1, 100000);
 		final var messages = List.of(MessageResponse.builder().build());
 
 		when(messageServiceMock.findMessages(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
@@ -69,7 +71,7 @@ class MessageResourceTest {
 	void getExternalMessages() {
 
 		// Arrange
-		final var errandId = new Random().nextLong(1, 100000);
+		final var errandId = RANDOM.nextLong(1, 100000);
 		final var messages = List.of(MessageResponse.builder().build());
 
 		when(messageServiceMock.findExternalMessages(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(messages);
@@ -94,7 +96,7 @@ class MessageResourceTest {
 	void getMessageById() {
 
 		// Arrange
-		final var errandId = new Random().nextLong(1, 100000);
+		final var errandId = RANDOM.nextLong(1, 100000);
 		final var messageId = randomUUID().toString();
 		final var message = MessageResponse.builder().build();
 
@@ -146,7 +148,7 @@ class MessageResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var messageId = RandomStringUtils.secure().nextAlphabetic(10);
-		final var isViewed = new Random().nextBoolean();
+		final var isViewed = RANDOM.nextBoolean();
 
 		// Act
 		webTestClient.put()

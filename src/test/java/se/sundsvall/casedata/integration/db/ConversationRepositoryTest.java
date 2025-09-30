@@ -85,14 +85,11 @@ class ConversationRepositoryTest {
 	void findByMessageExchangeId() {
 		var conversations = repository.findByMessageExchangeId("message_exchange_id-3");
 
-		assertThat(conversations).hasSize(1).first().satisfies(conversation -> {
-			assertThat(conversation).extracting(
-				ConversationEntity::getId,
-				ConversationEntity::getMunicipalityId,
-				ConversationEntity::getNamespace,
-				ConversationEntity::getErrandId,
-				ConversationEntity::getMessageExchangeId)
-				.containsExactly("3", "2281", "namespace-1", "errand_id-3", "message_exchange_id-3");
-		});
+		assertThat(conversations).hasSize(1).first().satisfies(conversation -> assertThat(conversation).extracting(
+			ConversationEntity::getId,
+			ConversationEntity::getMunicipalityId,
+			ConversationEntity::getNamespace,
+			ConversationEntity::getErrandId,
+			ConversationEntity::getMessageExchangeId).containsExactly("3", "2281", "namespace-1", "errand_id-3", "message_exchange_id-3"));
 	}
 }

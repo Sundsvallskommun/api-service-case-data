@@ -23,7 +23,7 @@ class EmailReaderSchedulerTest {
 	private EmailReaderScheduler emailReaderScheduler;
 
 	@Test
-	void getAndProcessEmails_success() {
+	void getAndProcessEmailsSuccess() {
 		// Arrange
 		final var email = new Email(); // Assuming Email is a class used in EmailReaderWorker
 		when(emailReaderWorkerMock.getEmails()).thenReturn(Collections.singletonList(email));
@@ -40,7 +40,7 @@ class EmailReaderSchedulerTest {
 	}
 
 	@Test
-	void getAndProcessEmails_saveFails() {
+	void getAndProcessEmailsSaveFails() {
 		// Arrange
 		final var email = new Email(); // Assuming Email is a class used in EmailReaderWorker
 		when(emailReaderWorkerMock.getEmails()).thenReturn(Collections.singletonList(email));
@@ -57,7 +57,7 @@ class EmailReaderSchedulerTest {
 	}
 
 	@Test
-	void getAndProcessEmails_noEmails() {
+	void getAndProcessEmailsNoEmails() {
 		// Arrange
 		when(emailReaderWorkerMock.getEmails()).thenReturn(Collections.emptyList());
 
