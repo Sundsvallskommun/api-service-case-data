@@ -55,7 +55,7 @@ public class MessageRequest {
 	@Schema(description = "The message was delivered by", example = "EMAIL")
 	private String messageType;
 
-	@Schema(description = "The mobile number of the recipient", example = "+46701234567")
+	@Schema(description = "The mobile number of the recipient", example = "+46701740605")
 	private String mobileNumber;
 
 	@Schema(description = "The email of the user that sent the message", example = "kalle.anka@ankeborg.se")

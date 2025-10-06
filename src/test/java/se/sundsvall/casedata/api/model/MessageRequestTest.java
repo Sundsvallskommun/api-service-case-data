@@ -40,7 +40,7 @@ class MessageRequestTest {
 		final var firstName = "Kalle";
 		final var lastName = "Anka";
 		final var messageType = "EMAIL";
-		final var mobileNumber = "+46701234567";
+		final var mobileNumber = "+46701740605";
 		final var email = "email@sundsvall.se";
 		final var recipients = List.of("email@sundsvall.se");
 		final var userId = "12";
