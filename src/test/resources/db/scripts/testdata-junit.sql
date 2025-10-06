@@ -55,7 +55,7 @@ VALUES (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 0, 'AD-1', NULL
 
 INSERT INTO stakeholder_contact_information (stakeholder_id, contact_type, value,
                                              contact_information_order)
-VALUES (2, 'PHONE', '0701112223', 0),
+VALUES (2, 'PHONE', '0701740605', 0),
        (2, 'EMAIL', 'a.b@test.se', 1);
 
 INSERT INTO stakeholder_roles (stakeholder_id, roles, role_order)
