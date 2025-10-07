@@ -12,35 +12,41 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Base64;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@Getter
 @Component
 public class IncomingRequestFilter extends OncePerRequestFilter {
 
-	// WSO2-subscriber
-	private String subscriber;
+	private static final ThreadLocal<String> THREAD_LOCAL_INSTANCE = new ThreadLocal<>();
 
 	@Override
 	protected void doFilterInternal(@NotNull final HttpServletRequest request, @NotNull final HttpServletResponse response, final FilterChain filterChain) throws IOException, ServletException {
 		// Extract sub from x-jwt-assertion header
-		extractSubscriber(request);
-
-		filterChain.doFilter(request, response);
+		try {
+			extractSubscriber(request);
+			filterChain.doFilter(request, response);
+		} finally {
+			if (THREAD_LOCAL_INSTANCE.get() != null) {
+				THREAD_LOCAL_INSTANCE.remove();
+			}
+		}
 	}
 
 	private void extractSubscriber(final HttpServletRequest request) throws JsonProcessingException {
 		final var jwtHeader = request.getHeader(X_JWT_ASSERTION_HEADER_KEY);
 
 		if (isNull(jwtHeader) || jwtHeader.isBlank()) {
-			subscriber = UNKNOWN;
+			THREAD_LOCAL_INSTANCE.set(UNKNOWN);
 		} else {
 			final String[] jwtParts = jwtHeader.split("\\.");
 			final String jwtPayload = new String(Base64.getUrlDecoder().decode(jwtParts[1]));
-			subscriber = new ObjectMapper().readTree(jwtPayload).findValue("sub").asText();
+			THREAD_LOCAL_INSTANCE.set(new ObjectMapper().readTree(jwtPayload).findValue("sub").asText());
 		}
+	}
+
+	public String getSubscriber() {
+		return THREAD_LOCAL_INSTANCE.get();
 	}
 }
