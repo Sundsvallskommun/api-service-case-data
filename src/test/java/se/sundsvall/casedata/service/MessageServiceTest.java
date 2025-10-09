@@ -20,7 +20,7 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
 import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
-import static se.sundsvall.casedata.service.MessageService.PARATRANSIT_DEPARTMENT_ID;
+import static se.sundsvall.casedata.service.MessageService.PARATRANSIT_DEPARTMENT_NAME;
 import static se.sundsvall.dept44.support.Identifier.Type.PARTY_ID;
 
 import generated.se.sundsvall.messaging.EmailRequest;
@@ -276,11 +276,11 @@ class MessageServiceTest {
 			.withCaseTitleAddition("Case Title Addition")
 			.withErrandNumber("123456789")
 			.withStakeholders(List.of(stakeholder, stakholderReporter))
-			.withCaseType(PARATRANSIT_DEPARTMENT_ID)
+			.withCaseType(PARATRANSIT_DEPARTMENT_NAME)
 			.build();
 
-		when(metadataserviceMock.getCaseType(MUNICIPALITY_ID, NAMESPACE, PARATRANSIT_DEPARTMENT_ID)).thenReturn(CaseType.builder().build());
-		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE, PARATRANSIT_DEPARTMENT_ID)).thenReturn(new SenderInfoResponse());
+		when(metadataserviceMock.getCaseType(MUNICIPALITY_ID, NAMESPACE, PARATRANSIT_DEPARTMENT_NAME)).thenReturn(CaseType.builder().build());
+		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE, PARATRANSIT_DEPARTMENT_NAME)).thenReturn(List.of(new SenderInfoResponse()));
 		when(messageRepositoryMock.save(any(MessageEntity.class))).thenReturn(MessageEntity.builder().build());
 		when(messageMapperMock.toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(MessageEntity.builder().build());
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
@@ -358,7 +358,7 @@ class MessageServiceTest {
 			.withNamespace(NAMESPACE)
 			.build();
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(new SenderInfoResponse());
+		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(List.of(new SenderInfoResponse()));
 		when(messagingClientMock.sendMessage(eq(MUNICIPALITY_ID), any())).thenReturn(
 			new MessageResult().messageId(messageId));
 		// Act
@@ -424,7 +424,7 @@ class MessageServiceTest {
 		Identifier.set(Identifier.create().withType(PARTY_ID).withValue("e82c8029-7676-467d-8ebb-8638d0abd2b4"));
 
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(new SenderInfoResponse());
+		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(List.of(new SenderInfoResponse()));
 		when(messagingClientMock.sendMessage(eq(MUNICIPALITY_ID), any())).thenReturn(null);
 
 		// Act & Assert

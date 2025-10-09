@@ -43,7 +43,7 @@ import se.sundsvall.dept44.support.Identifier;
 @Transactional
 public class MessageService {
 
-	static final String PARATRANSIT_DEPARTMENT_ID = "PARATRANSIT";
+	static final String PARATRANSIT_DEPARTMENT_NAME = "PARATRANSIT";
 	private static final String NOTIFICATION_TYPE = "UPDATE";
 	private static final String NOTIFICATION_DESCRIPTION = "Meddelande skickat";
 	private final MessageRepository messageRepository;
@@ -94,7 +94,7 @@ public class MessageService {
 		final var stakeholderEntity = getReporterStakeholder(errandEntity);
 
 		if (doesCaseTypeExist(municipalityId, namespace, errandEntity.getCaseType()) && stakeholderEntity != null && !stakeholderEntity.getAdAccount().equals(request.getUsername())) {
-			sendEmailNotification(municipalityId, namespace, errandEntity, stakeholderEntity, PARATRANSIT_DEPARTMENT_ID);
+			sendEmailNotification(municipalityId, namespace, errandEntity, stakeholderEntity, PARATRANSIT_DEPARTMENT_NAME);
 		}
 
 		return mapper.toMessageResponse(messageEntity, true);
@@ -134,24 +134,24 @@ public class MessageService {
 		}
 	}
 
-	public void sendMessageNotification(final String municipalityId, final String namespace, final Long errandId, final String departmentId) {
+	public void sendMessageNotification(final String municipalityId, final String namespace, final Long errandId, final String departmentName) {
 
 		final var errandEntity = errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 
-		final var senderInfo = getSenderInfo(municipalityId, namespace, departmentId);
+		final var senderInfo = getSenderInfo(municipalityId, namespace, departmentName);
 		final var request = toMessagingMessageRequest(errandEntity, senderInfo);
 
 		sendMessageNotification(errandEntity, request);
 	}
 
-	private SenderInfoResponse getSenderInfo(final String municipalityId, final String namespace, final String departmentId) {
-		final var senderInfo = messagingSettingsClient.getSenderInfo(municipalityId, namespace, departmentId);
+	private SenderInfoResponse getSenderInfo(final String municipalityId, final String namespace, final String departmentName) {
+		final var senderInfo = Optional.ofNullable(messagingSettingsClient.getSenderInfo(municipalityId, namespace, departmentName)).orElse(emptyList());
 
-		if (senderInfo == null) {
+		if (senderInfo.isEmpty()) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve sender information for municipality '%s' and namespace '%s'".formatted(municipalityId, namespace));
 		}
-		return senderInfo;
+		return senderInfo.getFirst();
 	}
 
 	public void sendMessageNotification(final ErrandEntity errandEntity, final generated.se.sundsvall.messaging.MessageRequest request) {
@@ -173,9 +173,9 @@ public class MessageService {
 
 	}
 
-	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentId) {
+	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName) {
 
-		final var senderInfo = getSenderInfo(municipalityId, namespace, departmentId);
+		final var senderInfo = getSenderInfo(municipalityId, namespace, departmentName);
 		final var request = toEmailRequest(errandEntity, senderInfo, stakeholderEntity);
 
 		messagingClient.sendEmail(errandEntity.getMunicipalityId(), request);
