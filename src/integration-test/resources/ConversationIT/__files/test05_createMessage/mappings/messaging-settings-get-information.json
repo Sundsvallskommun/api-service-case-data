@@ -1,7 +1,7 @@
 {
 	"request": {
 		"method": "GET",
-		"url": "/messaging-settings/2281/MY_NAMESPACE/CONVERSATION/sender-info"
+		"url": "/messaging-settings/2281/sender-info?namespace=MY_NAMESPACE&departmentName=CONVERSATION"
 	},
 	"response": {
 		"headers": {
