@@ -49,6 +49,9 @@ public class MessageResponse {
 	@Schema(description = "The message", example = "Hello world")
 	private String message;
 
+	@Schema(description = "The message in HTML format", example = "<p>Hello world</p>")
+	private String htmlMessage;
+
 	@Schema(description = "The time the message was sent", example = "2020-01-01 12:00:00")
 	private String sent;
 

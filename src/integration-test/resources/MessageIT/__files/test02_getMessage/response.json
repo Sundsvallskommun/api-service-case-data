@@ -5,6 +5,7 @@
 	"familyId": "387",
 	"externalCaseId": "1234",
 	"message": "Message",
+	"htmlMessage": "<p>Message</p>",
 	"sent": "2024-01-01T12:00:00.000000",
 	"subject": "Subject",
 	"username": "kctest",

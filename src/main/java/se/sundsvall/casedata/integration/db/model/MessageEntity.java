@@ -73,6 +73,9 @@ public class MessageEntity {
 	@Column(name = "message", length = Length.LONG32)
 	private String textmessage;
 
+	@Column(name = "html_message", length = Length.LONG32)
+	private String htmlMessage;
+
 	@Column(name = "sent")
 	private String sent;
 

@@ -48,6 +48,7 @@ class MessageResponseTest {
 		final var firstName = "firstName";
 		final var lastName = "lastName";
 		final var message = "message";
+		final var htmlMessage = "htmlMessage";
 		final var messageId = "messageId";
 		final var messageType = MessageType.EMAIL;
 		final var mobileNumber = "mobileNumber";
@@ -78,6 +79,7 @@ class MessageResponseTest {
 			.withFirstName(firstName)
 			.withLastName(lastName)
 			.withMessage(message)
+			.withHtmlMessage(htmlMessage)
 			.withMessageId(messageId)
 			.withMessageType(messageType.name())
 			.withMobileNumber(mobileNumber)
@@ -105,6 +107,7 @@ class MessageResponseTest {
 		assertThat(bean.getFirstName()).isEqualTo(firstName);
 		assertThat(bean.getLastName()).isEqualTo(lastName);
 		assertThat(bean.getMessage()).isEqualTo(message);
+		assertThat(bean.getHtmlMessage()).isEqualTo(htmlMessage);
 		assertThat(bean.getMessageId()).isEqualTo(messageId);
 		assertThat(bean.getMessageType()).isEqualTo(messageType.name());
 		assertThat(bean.getMobileNumber()).isEqualTo(mobileNumber);

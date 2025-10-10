@@ -34,6 +34,7 @@ class MessageRequestTest {
 		final var familyId = "12";
 		final var externalCaseId = "12";
 		final var message = "Hello world";
+		final var htmlMessage = "Hello world";
 		final var sent = "2020-01-01 12:00:00";
 		final var subject = "Hello world";
 		final var username = "username";
@@ -55,6 +56,7 @@ class MessageRequestTest {
 			.withFamilyId(familyId)
 			.withExternalCaseId(externalCaseId)
 			.withMessage(message)
+			.withHtmlMessage(htmlMessage)
 			.withSent(sent)
 			.withSubject(subject)
 			.withUsername(username)
@@ -77,6 +79,7 @@ class MessageRequestTest {
 		assertThat(result.getFamilyId()).isEqualTo(familyId);
 		assertThat(result.getExternalCaseId()).isEqualTo(externalCaseId);
 		assertThat(result.getMessage()).isEqualTo(message);
+		assertThat(result.getHtmlMessage()).isEqualTo(htmlMessage);
 		assertThat(result.getSent()).isEqualTo(sent);
 		assertThat(result.getSubject()).isEqualTo(subject);
 		assertThat(result.getUsername()).isEqualTo(username);
