@@ -217,6 +217,7 @@
         username varchar(255),
         classification enum ('COMPLETION_REQUEST','INFORMATION','INTERNAL_COMMUNICATION','OBTAIN_OPINION','OTHER'),
         direction enum ('INBOUND','OUTBOUND'),
+        html_message longtext,
         message longtext,
         primary key (messageid)
     ) engine=InnoDB;

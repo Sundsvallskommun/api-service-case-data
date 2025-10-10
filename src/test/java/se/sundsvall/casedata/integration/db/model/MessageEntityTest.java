@@ -45,6 +45,7 @@ class MessageEntityTest {
 		final var sent = "sent";
 		final var subject = "subject";
 		final var textmessage = "textmessage";
+		final var htmlmessage = "htmlmessage";
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
 		final var userId = "userId";
@@ -76,6 +77,7 @@ class MessageEntityTest {
 			.withSent(sent)
 			.withSubject(subject)
 			.withTextmessage(textmessage)
+			.withHtmlMessage(htmlmessage)
 			.withUserId(userId)
 			.withUsername(username)
 			.withViewed(viewed)
@@ -103,6 +105,7 @@ class MessageEntityTest {
 		assertThat(bean.getSent()).isEqualTo(sent);
 		assertThat(bean.getSubject()).isEqualTo(subject);
 		assertThat(bean.getTextmessage()).isEqualTo(textmessage);
+		assertThat(bean.getHtmlMessage()).isEqualTo(htmlmessage);
 		assertThat(bean.getUserId()).isEqualTo(userId);
 		assertThat(bean.getUsername()).isEqualTo(username);
 		assertThat(bean.isViewed()).isEqualTo(viewed);
