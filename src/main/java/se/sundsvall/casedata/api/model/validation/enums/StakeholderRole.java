@@ -64,5 +64,10 @@ public enum StakeholderRole {
 	// Sekreterare
 	SECRETARY,
 	// Anmälare
-	REPORTER
+	REPORTER,
+	RELATIVE,
+	LEGAL_GUARDIAN,
+	LEGAL_REPRESENTATIVE,
+	HEALTHCARE_PERSONNEL,
+	OTHER
 }

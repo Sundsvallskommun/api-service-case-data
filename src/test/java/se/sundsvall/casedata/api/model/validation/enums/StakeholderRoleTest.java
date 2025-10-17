@@ -18,15 +18,20 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.D
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.DRIVER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.FELLOW_APPLICANT;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.GRANTOR;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.HEALTHCARE_PERSONNEL;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.INVOICE_RECIPIENT;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.LAND_RIGHT_OWNER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.LEASEHOLDER;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.LEGAL_GUARDIAN;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.LEGAL_REPRESENTATIVE;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.OPERATOR;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ORGANIZATION;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.OTHER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.PASSENGER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.PAYMENT_PERSON;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.PERSON;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.PROPERTY_OWNER;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.RELATIVE;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.RIGHTS_HOLDER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.SECRETARY;
@@ -42,7 +47,7 @@ class StakeholderRoleTest {
 	@Test
 	void enumValues() {
 
-		assertThat(values()).hasSize(32);
+		assertThat(values()).hasSize(37);
 
 		assertThat(values()).containsExactlyInAnyOrder(
 			CONTROL_OFFICIAL,
@@ -76,6 +81,11 @@ class StakeholderRoleTest {
 			SECTION_HEAD,
 			ALTERNATE,
 			SECRETARY,
-			REPORTER);
+			REPORTER,
+			RELATIVE,
+			LEGAL_GUARDIAN,
+			LEGAL_REPRESENTATIVE,
+			HEALTHCARE_PERSONNEL,
+			OTHER);
 	}
 }
