@@ -206,4 +206,9 @@ public class ErrandEntity {
 	@OneToMany(mappedBy = "errand", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExtraParameterEntity> extraParameters;
 
+	public ErrandEntity withExtraParameters(final List<ExtraParameterEntity> extraParameters) {
+		this.extraParameters = extraParameters;
+		return this;
+	}
+
 }

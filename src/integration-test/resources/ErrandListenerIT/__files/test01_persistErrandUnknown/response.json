@@ -294,13 +294,15 @@
 	"suspension": {},
 	"extraParameters": [
 		{
-			"key": "test7",
-			"displayName": "Test 7",
+			"id": "${json-unit.any-string}",
+			"key": "test9",
+			"displayName": "Test 9",
 			"values": [
-				"test7"
+				"test9"
 			]
 		},
 		{
+			"id": "${json-unit.any-string}",
 			"key": "test8",
 			"displayName": "Test 8",
 			"values": [
@@ -308,10 +310,11 @@
 			]
 		},
 		{
-			"key": "test9",
-			"displayName": "Test 9",
+			"id": "${json-unit.any-string}",
+			"key": "test7",
+			"displayName": "Test 7",
 			"values": [
-				"test9"
+				"test7"
 			]
 		}
 	],

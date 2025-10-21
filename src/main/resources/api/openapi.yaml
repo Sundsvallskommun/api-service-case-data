@@ -5,35 +5,37 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.9"
+  version: "11.10"
 servers:
-- url: http://localhost:55704
+- url: http://localhost:51563
   description: Generated server url
 tags:
+- name: Notifications
+  description: User notification operations
+- name: History
+  description: History operations
+- name: Conversations
+  description: Conversation operations
+- name: Metadata for caseTypes
+  description: Metadata caseTypes operations
+- name: Facilities
+  description: Errand facilities operations
+- name: Errands extra parameters
+  description: Errand extra parameters operations
 - name: Notes
   description: Note operations
 - name: Status
   description: Errand status operations
-- name: Notifications
-  description: User notification operations
 - name: Messages
   description: Message operations
-- name: History
-  description: History operations
 - name: Decisions
   description: Decision operations
-- name: Conversations
-  description: Conversation operations
 - name: Stakeholders
   description: Stakeholder operations
-- name: Metadata for caseTypes
-  description: Metadata caseTypes operations
 - name: Errands
   description: Errand operations
 - name: Attachments
   description: Attachment operations
-- name: Facilities
-  description: Errand facilities operations
 paths:
   /{municipalityId}/{namespace}/errands/{errandId}/stakeholders:
     get:
@@ -2952,6 +2954,338 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/extraparameters:
+    get:
+      tags:
+      - Errands extra parameters
+      summary: Find errand parameters
+      description: Find the errand parameters that matches the provided attributes
+      operationId: findErrandParameters
+      parameters:
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: errandId
+        in: path
+        description: Errand id
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: b82bd8ac-1507-4d9a-958d-369261eecc15
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExtraParameter"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    patch:
+      tags:
+      - Errands extra parameters
+      summary: Update errand parameters
+      description: Creates a new errand extra parameter based on the supplied attributes
+      operationId: updateErrandParameters
+      parameters:
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: errandId
+        in: path
+        description: Errand id
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: b82bd8ac-1507-4d9a-958d-369261eecc15
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/ExtraParameter"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExtraParameter"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/extraparameters/{parameterKey}:
+    get:
+      tags:
+      - Errands extra parameters
+      summary: Read errand extra parameter
+      description: Fetches the errand extra parameter that matches the provided errand
+        id and parameter id
+      operationId: readErrandParameter
+      parameters:
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: errandId
+        in: path
+        description: Errand id
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: b82bd8ac-1507-4d9a-958d-369261eecc15
+      - name: parameterKey
+        in: path
+        description: Errand parameter key
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        example: propertyInfo
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    delete:
+      tags:
+      - Errands extra parameters
+      summary: Delete errand extra parameter
+      description: Deletes the errand extra parameter that matches the provided errand
+        id and parameter id
+      operationId: deleteErrandParameter
+      parameters:
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: errandId
+        in: path
+        description: Errand id
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: b82bd8ac-1507-4d9a-958d-369261eecc15
+      - name: parameterKey
+        in: path
+        description: Errand parameter key
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        example: propertyInfo
+      responses:
+        "204":
+          description: Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    patch:
+      tags:
+      - Errands extra parameters
+      summary: Update errand extra parameter
+      description: Updates the errand extra parameter matching provided errand id
+        and parameter id with the supplied attributes
+      operationId: updateErrandParameter
+      parameters:
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          pattern: "[\\w|\\-]+"
+          type: string
+        example: MY_NAMESPACE
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: errandId
+        in: path
+        description: Errand id
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: b82bd8ac-1507-4d9a-958d-369261eecc15
+      - name: parameterKey
+        in: path
+        description: Errand parameter key
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        example: propertyInfo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtraParameter"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/errands/{errandId}/decisions:
     get:
       tags:
@@ -4353,11 +4687,11 @@ components:
     StatusType:
       type: object
       properties:
+        reasonPhrase:
+          type: string
         statusCode:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -5011,6 +5345,9 @@ components:
       - key
       type: object
       properties:
+        id:
+          type: string
+          description: Parameter id
         key:
           minLength: 1
           type: string
@@ -5751,6 +6088,8 @@ components:
           format: int64
         pageable:
           $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         numberOfElements:
           type: integer
           format: int32
@@ -5768,15 +6107,11 @@ components:
         number:
           type: integer
           format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
         empty:
           type: boolean
     PageableObject:
       type: object
       properties:
-        unpaged:
-          type: boolean
         paged:
           type: boolean
         pageNumber:
@@ -5785,17 +6120,19 @@ components:
         pageSize:
           type: integer
           format: int32
+        unpaged:
+          type: boolean
+        sort:
+          $ref: "#/components/schemas/SortObject"
         offset:
           type: integer
           format: int64
-        sort:
-          $ref: "#/components/schemas/SortObject"
     SortObject:
       type: object
       properties:
-        unsorted:
-          type: boolean
         sorted:
+          type: boolean
+        unsorted:
           type: boolean
         empty:
           type: boolean
@@ -6020,6 +6357,8 @@ components:
           format: int64
         pageable:
           $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         numberOfElements:
           type: integer
           format: int32
@@ -6037,8 +6376,6 @@ components:
         number:
           type: integer
           format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
         empty:
           type: boolean
   securitySchemes: {}
