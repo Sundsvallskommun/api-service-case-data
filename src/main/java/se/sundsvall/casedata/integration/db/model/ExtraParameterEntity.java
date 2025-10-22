@@ -53,6 +53,11 @@ public class ExtraParameterEntity {
 	@Column(name = "value")
 	private List<String> values;
 
+	public ExtraParameterEntity withValues(final List<String> values) {
+		this.values = values;
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		final var errandId = Objects.requireNonNullElse(errand, new ErrandEntity()).getId() == null ? 0 : errand.getId();

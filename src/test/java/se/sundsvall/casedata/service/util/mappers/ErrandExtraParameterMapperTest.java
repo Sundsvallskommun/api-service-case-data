@@ -95,6 +95,7 @@ class ErrandExtraParameterMapperTest {
 	void testToParameterExtraParameter() {
 		// Arrange
 		final ExtraParameterEntity parameterEntity = ExtraParameterEntity.builder()
+			.withId("id")
 			.withDisplayName("Test Display Name")
 			.withKey("TestKey")
 			.withValues(List.of("Value1", "Value2"))
@@ -104,6 +105,7 @@ class ErrandExtraParameterMapperTest {
 		final ExtraParameter result = ErrandExtraParameterMapper.toParameter(parameterEntity);
 
 		// Assert
+		assertThat(result.getId()).isEqualTo("id");
 		assertThat(result.getDisplayName()).isEqualTo("Test Display Name");
 		assertThat(result.getKey()).isEqualTo("TestKey");
 		assertThat(result.getValues()).containsExactly("Value1", "Value2");

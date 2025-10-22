@@ -14,6 +14,9 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 public class ExtraParameter {
 
+	@Schema(description = "Parameter id")
+	private String id;
+
 	@Schema(description = "Parameter key")
 	@NotBlank
 	private String key;

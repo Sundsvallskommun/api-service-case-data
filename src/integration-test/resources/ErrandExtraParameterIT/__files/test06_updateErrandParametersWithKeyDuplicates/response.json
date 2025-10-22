@@ -1,0 +1,13 @@
+[
+	{
+		"id": "${json-unit.any-string}",
+		"key": "key1",
+		"displayName": "display name A",
+		"values": [
+			"value1",
+			"value2",
+			"value3",
+			"value4"
+		]
+	}
+]

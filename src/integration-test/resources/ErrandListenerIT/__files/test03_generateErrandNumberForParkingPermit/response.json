@@ -66,22 +66,25 @@
 	"applicationReceived": "2000-09-23T11:04:04.317+02:00",
 	"extraParameters": [
 		{
-			"values": [
-				"test7"
-			],
-			"key": "test7"
-		},
-		{
+			"id": "${json-unit.any-string}",
+			"key": "test8",
 			"values": [
 				"test8"
-			],
-			"key": "test8"
+			]
 		},
 		{
+			"id": "${json-unit.any-string}",
+			"key": "test7",
+			"values": [
+				"test7"
+			]
+		},
+		{
+			"id": "${json-unit.any-string}",
+			"key": "test9",
 			"values": [
 				"test9"
-			],
-			"key": "test9"
+			]
 		}
 	],
 	"stakeholders": [

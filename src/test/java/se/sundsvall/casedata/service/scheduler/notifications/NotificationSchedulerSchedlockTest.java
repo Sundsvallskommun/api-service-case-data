@@ -23,8 +23,10 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+@DirtiesContext
 @SpringBootTest(properties = {
 	"scheduler.notification.cron=* * * * * *", // Setup to execute every second
 	"scheduler.notification.enabled=true",
@@ -77,10 +79,10 @@ class NotificationSchedulerSchedlockTest {
 
 			final var mockBean = Mockito.mock(NotificationWorker.class);
 
-			// Let mock hang
+			// Let mock delay briefly instead of hanging forever
 			doAnswer(invocation -> {
 				mockCalledTime = LocalDateTime.now();
-				await().forever()
+				await().atMost(3, SECONDS)
 					.until(() -> false);
 				return null;
 			}).when(mockBean).cleanUpNotifications();

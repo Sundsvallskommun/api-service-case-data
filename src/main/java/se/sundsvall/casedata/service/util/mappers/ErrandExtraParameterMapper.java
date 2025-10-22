@@ -17,7 +17,7 @@ public final class ErrandExtraParameterMapper {
 		// Intentionally empty
 	}
 
-	public static List<ExtraParameterEntity> toErrandParameterEntityList(List<ExtraParameter> parameters, ErrandEntity entity) {
+	public static List<ExtraParameterEntity> toErrandParameterEntityList(final List<ExtraParameter> parameters, final ErrandEntity entity) {
 		return new ArrayList<>(toUniqueKeyList(parameters).stream()
 			.map(parameter -> toErrandParameterEntity(parameter).withErrand(entity))
 			.toList());
@@ -33,6 +33,7 @@ public final class ErrandExtraParameterMapper {
 
 	public static ExtraParameter toParameter(final ExtraParameterEntity parameter) {
 		return ExtraParameter.builder()
+			.withId(parameter.getId())
 			.withDisplayName(parameter.getDisplayName())
 			.withKey(parameter.getKey())
 			.withValues(parameter.getValues())
@@ -45,7 +46,7 @@ public final class ErrandExtraParameterMapper {
 			.toList();
 	}
 
-	public static List<ExtraParameter> toUniqueKeyList(List<ExtraParameter> parameterList) {
+	public static List<ExtraParameter> toUniqueKeyList(final List<ExtraParameter> parameterList) {
 		return new ArrayList<>(Optional.ofNullable(parameterList).orElse(emptyList()).stream()
 			.collect(groupingBy(ExtraParameter::getKey))
 			.entrySet()
