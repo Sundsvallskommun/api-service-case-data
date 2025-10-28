@@ -1,5 +1,7 @@
 package se.sundsvall.casedata.service.util;
 
+import java.util.List;
+
 public final class Constants {
 	public static final String ERRAND_ENTITY_NOT_FOUND = "Errand with id:'%s' not found in namespace:'%s' for municipality with id:'%s'";
 
@@ -31,6 +33,11 @@ public final class Constants {
 	public static final String NOTIFICATION_NOTE_UPDATED = "Notering uppdaterad";
 	public static final String NOTIFICATION_DECISION_CREATED = "Beslut skapat";
 	public static final String NOTIFICATION_DECISION_UPDATED = "Beslut uppdaterat";
+
+	public static final List<String> PARKIKNG_PERMIT_CASE_TYPES = List.of(
+		"PARKING_PERMIT",
+		"LOST_PARKING_PERMIT",
+		"PARKING_PERMIT_RENEWAL");
 
 	private Constants() {
 		// Prevent instantiation

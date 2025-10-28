@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.landandexploitation.configuration.LandAndExploitationProperties;
+import se.sundsvall.casedata.integration.paratransit.ParatransitIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.configuration.ParkingPermitProperties;
 
@@ -39,6 +40,9 @@ class ProcessServiceTest {
 	@Mock
 	private ParkingPermitIntegration parkingPermitIntegrationMock;
 
+	@Mock
+	private ParatransitIntegration paratransitIntegrationMock;
+
 	@InjectMocks
 	private ProcessService processService;
 
@@ -48,9 +52,16 @@ class ProcessServiceTest {
 			Arguments.of("MEX_TYPE_2"));
 	}
 
-	private static Stream<Arguments> parkingPermitTypesProvider() {
+	private static Stream<Arguments> paratransitTypesProvider() {
 		return Stream.of(
 			Arguments.of("PARATRANSIT"),
+			Arguments.of("PARATRANSIT_RENEWAL"));
+	}
+
+	private static Stream<Arguments> parkingPermitTypesProvider() {
+		return Stream.of(
+			Arguments.of("PARKING_PERMIT"),
+			Arguments.of("LOST_PARKING_PERMIT"),
 			Arguments.of("PARKING_PERMIT_RENEWAL"));
 	}
 
@@ -62,8 +73,9 @@ class ProcessServiceTest {
 		errand.setNamespace("SBK_PARKING_PERMIT");
 		errand.setCaseType(caseType);
 		final var processId = UUID.randomUUID().toString();
-		final var response = new StartProcessResponse().processId(processId);
-		when(parkingPermitIntegrationMock.startProcess(errand)).thenReturn(response);
+		final var responseParkingPermit = new StartProcessResponse().processId(processId);
+
+		when(parkingPermitIntegrationMock.startProcess(errand)).thenReturn(responseParkingPermit);
 		when(parkingPermitPropertiesMock.supportedNamespaces()).thenReturn(List.of("SBK_PARKING_PERMIT"));
 
 		// Act
@@ -116,6 +128,25 @@ class ProcessServiceTest {
 		verify(parkingPermitIntegrationMock).updateProcess(errand);
 		verifyNoMoreInteractions(parkingPermitIntegrationMock);
 		verifyNoInteractions(landAndExploitationIntegrationMock);
+	}
+
+	@ParameterizedTest
+	@MethodSource("paratransitTypesProvider")
+	void updateProcessWhenParatransit(final String caseType) {
+		// Arrange
+		final var errand = createErrandEntity();
+		errand.setNamespace("SBK_PARKING_PERMIT");
+		errand.setCaseType(caseType);
+
+		when(parkingPermitPropertiesMock.supportedNamespaces()).thenReturn(List.of("SBK_PARKING_PERMIT"));
+
+		// Act
+		processService.updateProcess(errand);
+
+		// Assert
+		verify(paratransitIntegrationMock).updateProcess(errand);
+		verifyNoMoreInteractions(paratransitIntegrationMock);
+		verifyNoInteractions(landAndExploitationIntegrationMock, parkingPermitIntegrationMock);
 	}
 
 	@ParameterizedTest
