@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -19,6 +20,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
+import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.landandexploitation.configuration.LandAndExploitationProperties;
 import se.sundsvall.casedata.integration.paratransit.ParatransitIntegration;
@@ -178,5 +182,68 @@ class ProcessServiceTest {
 
 		// Assert
 		verifyNoInteractions(parkingPermitIntegrationMock, landAndExploitationIntegrationMock);
+	}
+
+	@Test
+	void startProcessWhenParkingPermitThrowsException() {
+		// Arrange
+		final var thrownException = Problem.valueOf(Status.I_AM_A_TEAPOT, "Big and stout");
+		final var errand = createErrandEntity();
+		errand.setNamespace("SBK_PARKING_PERMIT");
+		errand.setCaseType("PARKING_PERMIT");
+
+		when(parkingPermitPropertiesMock.supportedNamespaces()).thenReturn(List.of("SBK_PARKING_PERMIT"));
+		when(parkingPermitIntegrationMock.startProcess(errand)).thenThrow(thrownException);
+
+		// Act
+		final var exception = assertThrows(ThrowableProblem.class, () -> processService.startProcess(errand));
+
+		// Assert
+		assertThat(exception).isEqualTo(thrownException);
+		verify(parkingPermitIntegrationMock).startProcess(errand);
+		verifyNoMoreInteractions(parkingPermitIntegrationMock);
+		verifyNoInteractions(landAndExploitationIntegrationMock, paratransitIntegrationMock);
+	}
+
+	@Test
+	void startProcessWhenParatransitThrowsException() {
+		// Arrange
+		final var thrownException = Problem.valueOf(Status.I_AM_A_TEAPOT, "Big and stout");
+		final var errand = createErrandEntity();
+		errand.setNamespace("SBK_PARKING_PERMIT");
+		errand.setCaseType("PARATRANSIT");
+
+		when(parkingPermitPropertiesMock.supportedNamespaces()).thenReturn(List.of("SBK_PARKING_PERMIT"));
+		when(paratransitIntegrationMock.startProcess(errand)).thenThrow(thrownException);
+
+		// Act
+		final var exception = assertThrows(ThrowableProblem.class, () -> processService.startProcess(errand));
+
+		// Assert
+		assertThat(exception).isEqualTo(thrownException);
+		verify(paratransitIntegrationMock).startProcess(errand);
+		verifyNoMoreInteractions(paratransitIntegrationMock);
+		verifyNoInteractions(landAndExploitationIntegrationMock, parkingPermitIntegrationMock);
+	}
+
+	@Test
+	void startProcessWhenMexThrowsException() {
+		// Arrange
+		final var thrownException = Problem.valueOf(Status.I_AM_A_TEAPOT, "Big and stout");
+		final var errand = createErrandEntity();
+		errand.setNamespace("SBK_MEX");
+		errand.setCaseType("MEX_TYPE_1");
+
+		when(landAndExploitationPropertiesMock.supportedNamespaces()).thenReturn(List.of("SBK_MEX"));
+		when(landAndExploitationIntegrationMock.startProcess(errand)).thenThrow(thrownException);
+
+		// Act
+		final var exception = assertThrows(ThrowableProblem.class, () -> processService.startProcess(errand));
+
+		// Assert
+		assertThat(exception).isEqualTo(thrownException);
+		verify(landAndExploitationIntegrationMock).startProcess(errand);
+		verifyNoMoreInteractions(landAndExploitationIntegrationMock);
+		verifyNoInteractions(paratransitIntegrationMock, parkingPermitIntegrationMock);
 	}
 }
