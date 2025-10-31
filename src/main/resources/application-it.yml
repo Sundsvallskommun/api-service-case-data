@@ -65,6 +65,11 @@ config:
     token-url: http://localhost:${wiremock.server.port:}/token
     client-id: client-id
     client-secret: client-secret
+  paratransit:
+    base-url: http://localhost:${wiremock.server.port:}/paratransit
+    token-url: http://localhost:${wiremock.server.port:}/token
+    client-id: client-id
+    client-secret: client-secret
 
 #----------------------------------------
 # Scheduler settings

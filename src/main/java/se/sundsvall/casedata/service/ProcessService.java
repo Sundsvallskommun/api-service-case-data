@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
+import static se.sundsvall.casedata.service.util.Constants.PARKIKNG_PERMIT_CASE_TYPES;
 import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.landandexploitation.configuration.LandAndExploitationProperties;
+import se.sundsvall.casedata.integration.paratransit.ParatransitIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.configuration.ParkingPermitProperties;
 
@@ -20,13 +22,15 @@ public class ProcessService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessService.class);
 
 	private final ParkingPermitIntegration parkingPermitIntegration;
+	private final ParatransitIntegration paratransitIntegration;
 	private final LandAndExploitationIntegration landAndExploitationIntegration;
 	private final ParkingPermitProperties parkingPermitProperties;
 	private final LandAndExploitationProperties landAndExploitationProperties;
 
-	public ProcessService(final ParkingPermitIntegration parkingPermitIntegration,
+	public ProcessService(final ParkingPermitIntegration parkingPermitIntegration, final ParatransitIntegration paratransitIntegration,
 		final LandAndExploitationIntegration landAndExploitationIntegration, final ParkingPermitProperties parkingPermitProperties, final LandAndExploitationProperties landAndExploitationProperties) {
 		this.parkingPermitIntegration = parkingPermitIntegration;
+		this.paratransitIntegration = paratransitIntegration;
 		this.landAndExploitationIntegration = landAndExploitationIntegration;
 		this.parkingPermitProperties = parkingPermitProperties;
 		this.landAndExploitationProperties = landAndExploitationProperties;
@@ -35,7 +39,11 @@ public class ProcessService {
 	public String startProcess(final ErrandEntity errand) {
 
 		if (parkingPermitProperties.supportedNamespaces().contains(errand.getNamespace())) {
-			return parkingPermitIntegration.startProcess(errand).getProcessId();
+			// It's same namespace for parking permit and paratransit
+			if (PARKIKNG_PERMIT_CASE_TYPES.contains(errand.getCaseType())) {
+				return parkingPermitIntegration.startProcess(errand).getProcessId();
+			}
+			return paratransitIntegration.startProcess(errand).getProcessId();
 		}
 		if (landAndExploitationProperties.supportedNamespaces().contains(errand.getNamespace())) {
 			return landAndExploitationIntegration.startProcess(errand).getProcessId();
@@ -52,10 +60,12 @@ public class ProcessService {
 			LOGGER.warn("Errand with id: {} was updated by camunda user, no need to update process", errand.getId());
 			return;
 		}
+
 		if (isValidParkingPermitCase(errand)) {
 			parkingPermitIntegration.updateProcess(errand);
-		}
-		if (isValidMexCase(errand)) {
+		} else if (isValidParatransitCase(errand)) {
+			paratransitIntegration.updateProcess(errand);
+		} else if (isValidMexCase(errand)) {
 			landAndExploitationIntegration.updateProcess(errand);
 		} else {
 			final var sanitizedNamespace = sanitizeForLogging(errand.getNamespace());
@@ -64,7 +74,11 @@ public class ProcessService {
 	}
 
 	private boolean isValidParkingPermitCase(final ErrandEntity errand) {
-		return parkingPermitProperties.supportedNamespaces().contains(errand.getNamespace()) && isNotEmpty(errand.getProcessId());
+		return parkingPermitProperties.supportedNamespaces().contains(errand.getNamespace()) && isNotEmpty(errand.getProcessId()) && PARKIKNG_PERMIT_CASE_TYPES.contains(errand.getCaseType());
+	}
+
+	private boolean isValidParatransitCase(final ErrandEntity errand) {
+		return parkingPermitProperties.supportedNamespaces().contains(errand.getNamespace()) && isNotEmpty(errand.getProcessId()) && !PARKIKNG_PERMIT_CASE_TYPES.contains(errand.getCaseType());
 	}
 
 	private boolean isValidMexCase(final ErrandEntity errand) {
