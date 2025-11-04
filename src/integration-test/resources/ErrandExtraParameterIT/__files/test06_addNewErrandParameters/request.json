@@ -1,0 +1,10 @@
+[
+	{
+		"displayName": "New key displayname",
+		"values": [
+			"value1",
+			"value2"
+		],
+		"key": "key2"
+	}
+]

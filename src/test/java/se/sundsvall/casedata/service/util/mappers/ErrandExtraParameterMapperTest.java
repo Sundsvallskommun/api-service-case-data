@@ -64,10 +64,10 @@ class ErrandExtraParameterMapperTest {
 	@Test
 	void testToErrandParameterEntityListNullParameters() {
 		// Arrange
-		final ErrandEntity errandEntity = new ErrandEntity();
+		final var errandEntity = new ErrandEntity();
 
 		// Act
-		final List<ExtraParameterEntity> result = ErrandExtraParameterMapper.toErrandParameterEntityList(null, errandEntity);
+		final var result = ErrandExtraParameterMapper.toErrandParameterEntityList(null, errandEntity);
 
 		// Assert
 		assertThat(result).isEmpty();
@@ -76,17 +76,20 @@ class ErrandExtraParameterMapperTest {
 	@Test
 	void testToErrandParameterEntityExtraParameter() {
 		// Arrange
-		final ExtraParameter parameter = ExtraParameter.builder()
+		final var parameter = ExtraParameter.builder()
 			.withDisplayName("Test Display Name")
 			.withKey("TestKey")
 			.withValues(List.of("Value1", "Value2"))
 			.build();
+		final var errandEntity = ErrandEntity.builder().build();
 
 		// Act
-		final ExtraParameterEntity result = ErrandExtraParameterMapper.toErrandParameterEntity(parameter);
+		final var result = ErrandExtraParameterMapper.toErrandParameterEntity(parameter, errandEntity);
 
 		// Assert
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id");
 		assertThat(result.getDisplayName()).isEqualTo("Test Display Name");
+		assertThat(result.getErrand()).isSameAs(errandEntity);
 		assertThat(result.getKey()).isEqualTo("TestKey");
 		assertThat(result.getValues()).containsExactly("Value1", "Value2");
 	}
@@ -94,7 +97,7 @@ class ErrandExtraParameterMapperTest {
 	@Test
 	void testToParameterExtraParameter() {
 		// Arrange
-		final ExtraParameterEntity parameterEntity = ExtraParameterEntity.builder()
+		final var parameterEntity = ExtraParameterEntity.builder()
 			.withId("id")
 			.withDisplayName("Test Display Name")
 			.withKey("TestKey")
@@ -102,7 +105,7 @@ class ErrandExtraParameterMapperTest {
 			.build();
 
 		// Act
-		final ExtraParameter result = ErrandExtraParameterMapper.toParameter(parameterEntity);
+		final var result = ErrandExtraParameterMapper.toParameter(parameterEntity);
 
 		// Assert
 		assertThat(result.getId()).isEqualTo("id");
@@ -114,7 +117,7 @@ class ErrandExtraParameterMapperTest {
 	@Test
 	void testToParameterListExtraParameter() {
 		// Arrange
-		final ExtraParameterEntity parameterEntity = ExtraParameterEntity.builder()
+		final var parameterEntity = ExtraParameterEntity.builder()
 			.withDisplayName("Test Display Name")
 			.withKey("TestKey")
 			.withValues(List.of("Value1", "Value2"))
@@ -122,7 +125,7 @@ class ErrandExtraParameterMapperTest {
 		final List<ExtraParameterEntity> parameterEntities = List.of(parameterEntity);
 
 		// Act
-		final List<ExtraParameter> result = ErrandExtraParameterMapper.toParameterList(parameterEntities);
+		final var result = ErrandExtraParameterMapper.toParameterList(parameterEntities);
 
 		// Assert
 		assertThat(result).hasSize(1);
@@ -134,12 +137,12 @@ class ErrandExtraParameterMapperTest {
 	@Test
 	void testToUniqueKeyListExtraParameter() {
 		// Arrange
-		final ExtraParameter parameter1 = ExtraParameter.builder()
+		final var parameter1 = ExtraParameter.builder()
 			.withDisplayName("Test Display Name 1")
 			.withKey("TestKey")
 			.withValues(List.of("Value1"))
 			.build();
-		final ExtraParameter parameter2 = ExtraParameter.builder()
+		final var parameter2 = ExtraParameter.builder()
 			.withDisplayName("Test Display Name 2")
 			.withKey("TestKey")
 			.withValues(List.of("Value2"))
@@ -147,7 +150,7 @@ class ErrandExtraParameterMapperTest {
 		final List<ExtraParameter> parameters = List.of(parameter1, parameter2);
 
 		// Act
-		final List<ExtraParameter> result = ErrandExtraParameterMapper.toUniqueKeyList(parameters);
+		final var result = ErrandExtraParameterMapper.toUniqueKeyList(parameters);
 
 		// Assert
 		assertThat(result).hasSize(1);

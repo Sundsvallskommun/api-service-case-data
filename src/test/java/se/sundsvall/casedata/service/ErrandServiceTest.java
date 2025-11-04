@@ -207,8 +207,7 @@ class ErrandServiceTest {
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
 			assertThat(e.getExtraParameters())
 				.containsAll(patch.getExtraParameters().stream()
-					.map(parameter -> ErrandExtraParameterMapper.toErrandParameterEntity(parameter)
-						.withErrand(errand))
+					.map(parameter -> ErrandExtraParameterMapper.toErrandParameterEntity(parameter, errand))
 					.toList());
 		});
 

@@ -12,9 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -45,25 +50,45 @@ class ErrandExtraParameterServiceTest {
 	@InjectMocks
 	private ErrandExtraParameterService errandExtraParameterService;
 
-	@Test
-	void updateErrandExtraParameters() {
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("updateErrandExtraParametersArgumentProvider")
+	void updateErrandExtraParameters(String testDescription, List<ExtraParameterEntity> existingParameters, List<ExtraParameterEntity> expectedListInCapture) {
 
 		// Arrange
+		final var errandEntity = ErrandEntity.builder().withExtraParameters(existingParameters).build();
 		final var parameters = List.of(ExtraParameter.builder().withKey(PARAMETER_KEY).withValues(List.of(PARAMETER_VALUE)).build());
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(ErrandEntity.builder().withExtraParameters(new ArrayList<>()).build()));
-		when(errandRepositoryMock.save(any(ErrandEntity.class))).thenReturn(ErrandEntity.builder().build());
+
+		existingParameters.stream().forEach(e -> e.setErrand(errandEntity)); // Set connection to errandEntity for existing parameter entities
+		expectedListInCapture.stream().forEach(e -> e.setErrand(errandEntity)); // Set connection to errandEntity for expected list of parameter entities
+
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errandEntity));
+		when(errandRepositoryMock.save(any(ErrandEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
 		errandExtraParameterService.updateErrandExtraParameters(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, parameters);
 
 		// Assert
 		verify(errandRepositoryMock).save(errandEntityArgumentCaptor.capture());
-		final var errandEntity = errandEntityArgumentCaptor.getValue();
 
-		assertThat(errandEntity.getExtraParameters()).hasSize(1).allSatisfy(parameterEntity -> {
-			assertThat(parameterEntity.getKey()).isEqualTo(PARAMETER_KEY);
-			assertThat(parameterEntity.getValues()).containsExactly(PARAMETER_VALUE);
-		});
+		assertThat(errandEntityArgumentCaptor.getValue().getExtraParameters()).usingRecursiveComparison().isEqualTo(expectedListInCapture);
+	}
+
+	private static Stream<Arguments> updateErrandExtraParametersArgumentProvider() {
+		final var existingParameterEntityWithNonMatchingKey = ExtraParameterEntity.builder().withKey("key-that-should-be-untouched").withValues(new ArrayList<>(List.of("untouchedValue"))).build();
+		ExtraParameterEntity.builder().withKey(PARAMETER_KEY).withValues(new ArrayList<>(List.of("existingValue"))).build();
+		final var parameterEntitiesWithNullKey = new ArrayList<>(List.of(existingParameterEntityWithNonMatchingKey));
+		parameterEntitiesWithNullKey.addFirst(ExtraParameterEntity.builder().build());
+
+		return Stream.of(
+			Arguments.of("updateExtraParametersWhenKeyExistsWithOtherValue",
+				new ArrayList<>(List.of(existingParameterEntityWithNonMatchingKey, ExtraParameterEntity.builder().withKey(PARAMETER_KEY).withValues(new ArrayList<>(List.of("existingValue"))).build())),
+				List.of(existingParameterEntityWithNonMatchingKey, ExtraParameterEntity.builder().withKey(PARAMETER_KEY).withValues(new ArrayList<>(List.of(PARAMETER_VALUE))).build())),
+			Arguments.of("updateExtraParametersWhenKeyDoesNotExist",
+				new ArrayList<>(List.of(existingParameterEntityWithNonMatchingKey)),
+				List.of(existingParameterEntityWithNonMatchingKey, ExtraParameterEntity.builder().withKey(PARAMETER_KEY).withValues(new ArrayList<>(List.of(PARAMETER_VALUE))).build())),
+			Arguments.of("updateExtraParametersWhenNullKeyPresentInEntity",
+				parameterEntitiesWithNullKey,
+				List.of(ExtraParameterEntity.builder().build(), existingParameterEntityWithNonMatchingKey, ExtraParameterEntity.builder().withKey(PARAMETER_KEY).withValues(new ArrayList<>(List.of(PARAMETER_VALUE))).build())));
 	}
 
 	@Test
@@ -79,34 +104,33 @@ class ErrandExtraParameterServiceTest {
 
 		// Assert
 		assertThat(result).hasSize(1).containsExactly(PARAMETER_VALUE);
+		verify(spy).readErrandExtraParameter(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, PARAMETER_KEY);
 		verify(spy).findExistingErrand(ERRAND_ID, NAMESPACE, MUNICIPALITY_ID);
 		verify(spy).findParameterEntityOrElseThrow(errand, PARAMETER_KEY);
+
+		verifyNoMoreInteractions(errandRepositoryMock, spy);
 	}
 
 	@Test
 	void findErrandExtraParameters() {
 
 		// Arrange
-		final var spy = Mockito.spy(errandExtraParameterService);
 		final var errand = createErrandEntity().withExtraParameters(List.of(ExtraParameterEntity.builder().withKey(PARAMETER_KEY).withValues(List.of(PARAMETER_VALUE)).build()));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act
-		final var result = spy.findErrandExtraParameters(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID);
+		final var result = errandExtraParameterService.findErrandExtraParameters(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID);
 
 		// Assert
 		assertThat(result).hasSize(1).isEqualTo(List.of(ExtraParameter.builder().withKey(PARAMETER_KEY).withValues(List.of(PARAMETER_VALUE)).build()));
-		verify(spy).findErrandExtraParameters(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID);
-		verify(spy).findExistingErrand(ERRAND_ID, NAMESPACE, MUNICIPALITY_ID);
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE);
-		verifyNoMoreInteractions(errandRepositoryMock, spy);
+		verifyNoMoreInteractions(errandRepositoryMock);
 	}
 
 	@Test
 	void updateErrandExtraParameter() {
 
 		// Arrange
-		final var spy = Mockito.spy(errandExtraParameterService);
 		final var errand = createErrandEntity().withExtraParameters(List.of(ExtraParameterEntity.builder().withKey(PARAMETER_KEY).withValues(List.of(PARAMETER_VALUE)).build()));
 		final var errandExtraParameterValues = List.of("anotherValue");
 
@@ -114,29 +138,48 @@ class ErrandExtraParameterServiceTest {
 		when(errandRepositoryMock.save(errand)).thenReturn(errand);
 
 		// Act
-		final var result = spy.updateErrandExtraParameter(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, PARAMETER_KEY, errandExtraParameterValues);
+		final var result = errandExtraParameterService.updateErrandExtraParameter(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, PARAMETER_KEY, errandExtraParameterValues);
 
 		// Assert
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).save(errandEntityArgumentCaptor.capture());
+		verifyNoMoreInteractions(errandRepositoryMock);
+
 		assertThat(result).isNotNull();
 		assertThat(result.getValues()).isEqualTo(List.of("anotherValue"));
-		verify(spy).findExistingErrand(ERRAND_ID, NAMESPACE, MUNICIPALITY_ID);
-		verify(spy).updateErrandExtraParameter(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, PARAMETER_KEY, errandExtraParameterValues);
-		verifyNoMoreInteractions(errandRepositoryMock, spy);
+		assertThat(errandEntityArgumentCaptor.getValue().getExtraParameters()).satisfiesExactlyInAnyOrder(extraParameterEntity -> {
+			assertThat(extraParameterEntity.getKey()).isEqualTo(PARAMETER_KEY);
+			assertThat(extraParameterEntity.getValues()).containsExactly("anotherValue");
+		});
 	}
 
 	@Test
 	void deleteErrandExtraParameter() {
 		// Arrange
-		final var spy = Mockito.spy(errandExtraParameterService);
 		final var errand = createErrandEntity().withExtraParameters(new ArrayList<>(List.of(ExtraParameterEntity.builder().withKey(PARAMETER_KEY).withValues(List.of(PARAMETER_VALUE)).build())));
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act
-		spy.deleteErrandExtraParameter(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, PARAMETER_KEY);
+		errandExtraParameterService.deleteErrandExtraParameter(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, PARAMETER_KEY);
 
 		// Assert
 		verify(errandRepositoryMock).save(errandEntityArgumentCaptor.capture());
 		assertThat(errandEntityArgumentCaptor.getValue().getExtraParameters()).isEmpty();
+		verifyNoMoreInteractions(errandRepositoryMock);
+	}
+
+	@ParameterizedTest
+	@NullAndEmptySource
+	void deleteErrandExtraParameterWhenErrandHasNoParameters(List<ExtraParameterEntity> extraParameterEntities) {
+		// Arrange
+		final var errand = createErrandEntity().withExtraParameters(extraParameterEntities);
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+
+		// Act
+		errandExtraParameterService.deleteErrandExtraParameter(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, PARAMETER_KEY);
+
+		// Assert
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandRepositoryMock);
 	}
 

@@ -9,6 +9,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
+
 import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
@@ -92,7 +93,7 @@ class ErrandExtraParameterIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test06_updateErrandParametersWithKeyDuplicates() {
+	void test06_addNewErrandParameters() { // Test to verify that adding new extra parameters will still preserve old extra parameters
 		setupCall()
 			.withServicePath(PATH + ERRAND_ID + "/extraparameters")
 			.withHttpMethod(PATCH)
