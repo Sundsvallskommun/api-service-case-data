@@ -1,12 +1,13 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toCollection;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
@@ -18,14 +19,15 @@ public final class ErrandExtraParameterMapper {
 	}
 
 	public static List<ExtraParameterEntity> toErrandParameterEntityList(final List<ExtraParameter> parameters, final ErrandEntity entity) {
-		return new ArrayList<>(toUniqueKeyList(parameters).stream()
-			.map(parameter -> toErrandParameterEntity(parameter).withErrand(entity))
-			.toList());
+		return toUniqueKeyList(parameters).stream()
+			.map(parameter -> toErrandParameterEntity(parameter, entity))
+			.collect(toCollection(ArrayList::new));
 	}
 
-	public static ExtraParameterEntity toErrandParameterEntity(final ExtraParameter parameter) {
+	public static ExtraParameterEntity toErrandParameterEntity(final ExtraParameter parameter, final ErrandEntity errandEntity) {
 		return ExtraParameterEntity.builder()
 			.withDisplayName(parameter.getDisplayName())
+			.withErrand(errandEntity)
 			.withKey(parameter.getKey())
 			.withValues(parameter.getValues())
 			.build();
@@ -41,13 +43,13 @@ public final class ErrandExtraParameterMapper {
 	}
 
 	public static List<ExtraParameter> toParameterList(final List<ExtraParameterEntity> parameters) {
-		return Optional.ofNullable(parameters).orElse(emptyList()).stream()
+		return ofNullable(parameters).orElse(emptyList()).stream()
 			.map(ErrandExtraParameterMapper::toParameter)
 			.toList();
 	}
 
 	public static List<ExtraParameter> toUniqueKeyList(final List<ExtraParameter> parameterList) {
-		return new ArrayList<>(Optional.ofNullable(parameterList).orElse(emptyList()).stream()
+		return ofNullable(parameterList).orElse(emptyList()).stream()
 			.collect(groupingBy(ExtraParameter::getKey))
 			.entrySet()
 			.stream()
@@ -59,7 +61,7 @@ public final class ErrandExtraParameterMapper {
 					.filter(Objects::nonNull)
 					.flatMap(List::stream)
 					.toList())).build())
-			.toList());
+			.collect(toCollection(ArrayList::new));
 	}
 
 }

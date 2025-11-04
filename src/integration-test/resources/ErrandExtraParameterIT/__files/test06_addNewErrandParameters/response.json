@@ -1,0 +1,19 @@
+[
+	{
+		"id": "123e4567-e89b-12d3-a456-426614174000",
+		"key": "key1",
+		"displayName": "test1",
+		"values": [
+			"test1"
+		]
+	},
+	{
+		"id": "${json-unit.any-string}",
+		"displayName": "New key displayname",
+		"values": [
+			"value1",
+			"value2"
+		],
+		"key": "key2"
+	}
+]

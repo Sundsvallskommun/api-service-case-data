@@ -1,19 +1,25 @@
 package se.sundsvall.casedata.service;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toMap;
+import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntity;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameter;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import org.springframework.stereotype.Service;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 
 @Service
 public class ErrandExtraParameterService {
@@ -31,13 +37,25 @@ public class ErrandExtraParameterService {
 	public List<ExtraParameter> updateErrandExtraParameters(final String namespace, final String municipalityId, final Long errandId, final List<ExtraParameter> parameters) {
 		final var errandEntity = findExistingErrand(errandId, namespace, municipalityId);
 
-		if (errandEntity.getExtraParameters() != null) {
-			errandEntity.getExtraParameters().clear();
-		}
+		// Retrieve extra parameter keys as list for better performance
+		final var extraParameterEntityMap = errandEntity.getExtraParameters().stream()
+			.filter(entity -> nonNull(entity.getKey()))
+			.collect(toMap(ExtraParameterEntity::getKey, Function.identity()));
 
-		errandEntity.getExtraParameters().addAll(toErrandParameterEntityList(parameters, errandEntity));
+		// Process incoming list of parameters and update parameter if key already exists for errand or add if it is absent
+		ofNullable(parameters).orElse(emptyList()).stream()
+			.forEach(parameter -> processParameter(errandEntity, extraParameterEntityMap.get(parameter.getKey()), parameter));
 
 		return toParameterList(errandsRepository.save(errandEntity).getExtraParameters());
+	}
+
+	private void processParameter(final ErrandEntity errandEntity, ExtraParameterEntity extraParameterEntity, ExtraParameter parameter) {
+		if (nonNull(extraParameterEntity)) {
+			extraParameterEntity.setDisplayName(parameter.getDisplayName());
+			extraParameterEntity.setValues(parameter.getValues());
+		} else {
+			errandEntity.getExtraParameters().add(toErrandParameterEntity(parameter, errandEntity));
+		}
 	}
 
 	public List<String> readErrandExtraParameter(final String namespace, final String municipalityId, final Long errandId, final String parameterKey) {
@@ -68,7 +86,7 @@ public class ErrandExtraParameterService {
 	public void deleteErrandExtraParameter(final String namespace, final String municipalityId, final Long errandId, final String parameterKey) {
 		final var errandEntity = findExistingErrand(errandId, namespace, municipalityId);
 
-		if (errandEntity.getExtraParameters() == null) {
+		if (isEmpty(errandEntity.getExtraParameters())) {
 			return;
 		}
 
