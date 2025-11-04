@@ -2958,7 +2958,7 @@ paths:
     get:
       tags:
       - Errands extra parameters
-      summary: Find errand parameters
+      summary: Find errand extra parameters
       description: Find the errand parameters that matches the provided attributes
       operationId: findErrandParameters
       parameters:
@@ -3017,8 +3017,8 @@ paths:
     patch:
       tags:
       - Errands extra parameters
-      summary: Update errand parameters
-      description: Creates a new errand extra parameter based on the supplied attributes
+      summary: Update errand extra parameters
+      description: Adds new extra parameters to errand or updates value of existing parameters, based on the supplied attributes (the resource will not remove any existing extra parameters, for removal use the delete resource).
       operationId: updateErrandParameters
       parameters:
       - name: namespace
@@ -3215,7 +3215,7 @@ paths:
     patch:
       tags:
       - Errands extra parameters
-      summary: Update errand extra parameter
+      summary: Update single errand extra parameter
       description: Updates the errand extra parameter matching provided errand id
         and parameter id with the supplied attributes
       operationId: updateErrandParameter

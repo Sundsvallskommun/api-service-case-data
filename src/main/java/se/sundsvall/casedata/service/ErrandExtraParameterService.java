@@ -37,12 +37,13 @@ public class ErrandExtraParameterService {
 	public List<ExtraParameter> updateErrandExtraParameters(final String namespace, final String municipalityId, final Long errandId, final List<ExtraParameter> parameters) {
 		final var errandEntity = findExistingErrand(errandId, namespace, municipalityId);
 
-		// Retrieve extra parameter keys as list for better performance
+		// Retrieve extra parameter as map for better performance
 		final var extraParameterEntityMap = errandEntity.getExtraParameters().stream()
 			.filter(entity -> nonNull(entity.getKey()))
 			.collect(toMap(ExtraParameterEntity::getKey, Function.identity()));
 
-		// Process incoming list of parameters and update parameter if key already exists for errand or add if it is absent
+		// Process incoming list of parameters and update parameter values if key already exists for errand or add it as new
+		// parameter if key is absent
 		ofNullable(parameters).orElse(emptyList()).stream()
 			.forEach(parameter -> processParameter(errandEntity, extraParameterEntityMap.get(parameter.getKey()), parameter));
 

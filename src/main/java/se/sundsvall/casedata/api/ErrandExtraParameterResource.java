@@ -53,10 +53,12 @@ public class ErrandExtraParameterResource {
 	}
 
 	@PatchMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-	@Operation(summary = "Update errand parameters", description = "Creates a new errand extra parameter based on the supplied attributes", responses = {
-		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true),
-		@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
-	})
+	@Operation(summary = "Update errand extra parameters",
+		description = "Adds new extra parameters to errand or updates value of existing parameters, based on the supplied attributes (the resource will not remove any existing extra parameters, for removal use the delete resource).",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true),
+			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
+		})
 	ResponseEntity<List<ExtraParameter>> updateErrandParameters(
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
@@ -81,7 +83,7 @@ public class ErrandExtraParameterResource {
 	}
 
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
-	@Operation(summary = "Find errand parameters", description = "Find the errand parameters that matches the provided attributes", responses = {
+	@Operation(summary = "Find errand extra parameters", description = "Find the errand parameters that matches the provided attributes", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<List<ExtraParameter>> findErrandParameters(
@@ -93,7 +95,7 @@ public class ErrandExtraParameterResource {
 	}
 
 	@PatchMapping(path = "/{parameterKey}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-	@Operation(summary = "Update errand extra parameter", description = "Updates the errand extra parameter matching provided errand id and parameter id with the supplied attributes", responses = {
+	@Operation(summary = "Update single errand extra parameter", description = "Updates the errand extra parameter matching provided errand id and parameter id with the supplied attributes", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true),
 		@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
