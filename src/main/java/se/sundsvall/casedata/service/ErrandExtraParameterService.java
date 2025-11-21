@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -34,8 +35,9 @@ public class ErrandExtraParameterService {
 		this.errandsRepository = errandsRepository;
 	}
 
+	@Transactional
 	public List<ExtraParameter> updateErrandExtraParameters(final String namespace, final String municipalityId, final Long errandId, final List<ExtraParameter> parameters) {
-		final var errandEntity = findExistingErrand(errandId, namespace, municipalityId);
+		final var errandEntity = findExistingErrand(errandId, namespace, municipalityId, true);
 
 		// Retrieve extra parameter as map for better performance
 		final var extraParameterEntityMap = errandEntity.getExtraParameters().stream()
@@ -60,18 +62,19 @@ public class ErrandExtraParameterService {
 	}
 
 	public List<String> readErrandExtraParameter(final String namespace, final String municipalityId, final Long errandId, final String parameterKey) {
-		final var errand = findExistingErrand(errandId, namespace, municipalityId);
+		final var errand = findExistingErrand(errandId, namespace, municipalityId, false);
 		return findParameterEntityOrElseThrow(errand, parameterKey);
 	}
 
 	public List<ExtraParameter> findErrandExtraParameters(final String namespace, final String municipalityId, final Long errandId) {
-		final var errandEntity = findExistingErrand(errandId, namespace, municipalityId);
+		final var errandEntity = findExistingErrand(errandId, namespace, municipalityId, false);
 
 		return toParameterList(errandEntity.getExtraParameters());
 	}
 
+	@Transactional
 	public ExtraParameter updateErrandExtraParameter(final String namespace, final String municipalityId, final Long errandId, final String parameterKey, final List<String> parameterValues) {
-		final var errandEntity = findExistingErrand(errandId, namespace, municipalityId);
+		final var errandEntity = findExistingErrand(errandId, namespace, municipalityId, true);
 
 		final var parameterEntity = errandEntity.getExtraParameters().stream()
 			.filter(paramEntity -> Objects.equals(paramEntity.getKey(), parameterKey))
@@ -84,8 +87,9 @@ public class ErrandExtraParameterService {
 		return toParameter(parameterEntity);
 	}
 
+	@Transactional
 	public void deleteErrandExtraParameter(final String namespace, final String municipalityId, final Long errandId, final String parameterKey) {
-		final var errandEntity = findExistingErrand(errandId, namespace, municipalityId);
+		final var errandEntity = findExistingErrand(errandId, namespace, municipalityId, true);
 
 		if (isEmpty(errandEntity.getExtraParameters())) {
 			return;
@@ -101,7 +105,11 @@ public class ErrandExtraParameterService {
 		errandsRepository.save(errandEntity);
 	}
 
-	ErrandEntity findExistingErrand(final Long id, final String namespace, final String municipalityId) {
+	ErrandEntity findExistingErrand(final Long id, final String namespace, final String municipalityId, final boolean usePessimisticLocking) {
+		if (usePessimisticLocking) {
+			return errandsRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(id, municipalityId, namespace)
+				.orElseThrow(() -> Problem.valueOf(NOT_FOUND, String.format(ERRAND_ENTITY_NOT_FOUND, id, namespace, municipalityId)));
+		}
 		return errandsRepository.findByIdAndMunicipalityIdAndNamespace(id, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, String.format(ERRAND_ENTITY_NOT_FOUND, id, namespace, municipalityId)));
 	}
