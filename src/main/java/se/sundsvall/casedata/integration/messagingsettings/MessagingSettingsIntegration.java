@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toFilterString;
+import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 import generated.se.sundsvall.messagingsettings.MessagingSettingValue;
 import java.util.List;
@@ -48,7 +49,7 @@ public class MessagingSettingsIntegration {
 				.withSupportText(retrieveOptionalValue(KEY_SUPPORT_TEXT, messagingSettings).orElse(null)) // This is not a mandatory setting
 				.build();
 		} catch (final ThrowableProblem e) {
-			LOG.error("{} for namespace '{}' and department with name '{}' within municipality '{}'", e.getDetail(), namespace, departmentName, municipalityId);
+			LOG.error("{} for namespace '{}' and department with name '{}' within municipality '{}'", e.getDetail(), sanitizeForLogging(namespace), sanitizeForLogging(departmentName), sanitizeForLogging(municipalityId));
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "One or more mandatory settings %s are absent for namespace '%s' and department with name '%s' within municipality with id '%s'"
 				.formatted(List.of(KEY_CONTACT_INFORMATION_EMAIL, KEY_CONTACT_INFORMATION_URL, KEY_SMS_SENDER), namespace, departmentName, municipalityId));
 		}
