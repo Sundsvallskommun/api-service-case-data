@@ -61,7 +61,7 @@ class ErrandExtraParameterServiceTest {
 		existingParameters.stream().forEach(e -> e.setErrand(errandEntity)); // Set connection to errandEntity for existing parameter entities
 		expectedListInCapture.stream().forEach(e -> e.setErrand(errandEntity)); // Set connection to errandEntity for expected list of parameter entities
 
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errandEntity));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errandEntity));
 		when(errandRepositoryMock.save(any(ErrandEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
@@ -105,7 +105,7 @@ class ErrandExtraParameterServiceTest {
 		// Assert
 		assertThat(result).hasSize(1).containsExactly(PARAMETER_VALUE);
 		verify(spy).readErrandExtraParameter(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, PARAMETER_KEY);
-		verify(spy).findExistingErrand(ERRAND_ID, NAMESPACE, MUNICIPALITY_ID);
+		verify(spy).findExistingErrand(ERRAND_ID, NAMESPACE, MUNICIPALITY_ID, false);
 		verify(spy).findParameterEntityOrElseThrow(errand, PARAMETER_KEY);
 
 		verifyNoMoreInteractions(errandRepositoryMock, spy);
@@ -134,14 +134,14 @@ class ErrandExtraParameterServiceTest {
 		final var errand = createErrandEntity().withExtraParameters(List.of(ExtraParameterEntity.builder().withKey(PARAMETER_KEY).withValues(List.of(PARAMETER_VALUE)).build()));
 		final var errandExtraParameterValues = List.of("anotherValue");
 
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(errandRepositoryMock.save(errand)).thenReturn(errand);
 
 		// Act
 		final var result = errandExtraParameterService.updateErrandExtraParameter(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, PARAMETER_KEY, errandExtraParameterValues);
 
 		// Assert
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errandEntityArgumentCaptor.capture());
 		verifyNoMoreInteractions(errandRepositoryMock);
 
@@ -157,7 +157,7 @@ class ErrandExtraParameterServiceTest {
 	void deleteErrandExtraParameter() {
 		// Arrange
 		final var errand = createErrandEntity().withExtraParameters(new ArrayList<>(List.of(ExtraParameterEntity.builder().withKey(PARAMETER_KEY).withValues(List.of(PARAMETER_VALUE)).build())));
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act
 		errandExtraParameterService.deleteErrandExtraParameter(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, PARAMETER_KEY);
@@ -173,13 +173,13 @@ class ErrandExtraParameterServiceTest {
 	void deleteErrandExtraParameterWhenErrandHasNoParameters(List<ExtraParameterEntity> extraParameterEntities) {
 		// Arrange
 		final var errand = createErrandEntity().withExtraParameters(extraParameterEntities);
-		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act
 		errandExtraParameterService.deleteErrandExtraParameter(NAMESPACE, MUNICIPALITY_ID, ERRAND_ID, PARAMETER_KEY);
 
 		// Assert
-		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandRepositoryMock);
 	}
 
@@ -191,7 +191,7 @@ class ErrandExtraParameterServiceTest {
 		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 
 		// Act
-		final var result = errandExtraParameterService.findExistingErrand(ERRAND_ID, NAMESPACE, MUNICIPALITY_ID);
+		final var result = errandExtraParameterService.findExistingErrand(ERRAND_ID, NAMESPACE, MUNICIPALITY_ID, false);
 
 		// Assert
 		assertThat(result).isEqualTo(errand);
