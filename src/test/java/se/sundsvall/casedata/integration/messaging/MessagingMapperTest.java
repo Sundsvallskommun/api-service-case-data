@@ -4,12 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.APPLICANT;
 import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
 
-import generated.se.sundsvall.messagingsettings.SenderInfoResponse;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+import se.sundsvall.casedata.service.model.MessagingSettings;
 
 class MessagingMapperTest {
 
@@ -24,7 +24,6 @@ class MessagingMapperTest {
 		final var errandNumber = "123456789";
 		final var emailAddress = "test™@example.com";
 		final var emailName = "Test";
-		final var phoneNumber = "123456789";
 		final var supportText = """
 			Hej %s,
 			Du har fått ett nytt meddelande kopplat till ditt ärende gällande %s, %s
@@ -51,15 +50,16 @@ class MessagingMapperTest {
 				.withRoles(List.of(APPLICANT.name()))
 				.build()))
 			.build();
-		final var senderInfo = new SenderInfoResponse()
-			.supportText(supportText)
-			.contactInformationUrl(url)
-			.contactInformationPhoneNumber(phoneNumber)
-			.contactInformationEmailName(emailName)
-			.contactInformationEmail(emailAddress)
-			.smsSender(smsSender);
+		final var messagingSettings = MessagingSettings.builder()
+			.withSupportText(supportText)
+			.withContactInformationUrl(url)
+			.withContactInformationEmailName(emailName)
+			.withContactInformationEmail(emailAddress)
+			.withSmsSender(smsSender)
+			.build();
+
 		// Act
-		final var bean = MessagingMapper.toEmailRequest(errandEntity, senderInfo, errandEntity.getStakeholders().getFirst());
+		final var bean = MessagingMapper.toEmailRequest(errandEntity, messagingSettings, errandEntity.getStakeholders().getFirst());
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrPropertiesExcept("party", "htmlMessage");
@@ -85,7 +85,6 @@ class MessagingMapperTest {
 		final var caseTitleAddition = "Case Title Addition";
 		final var errandNumber = "123456789";
 		final var emailAddress = "test™@example.com";
-		final var phoneNumber = "123456789";
 		final var supportText = """
 			Hej %s,
 			Du har fått ett nytt meddelande kopplat till ditt ärende gällande %s, %s
@@ -108,15 +107,15 @@ class MessagingMapperTest {
 				.build()))
 			.build();
 
-		final var senderInfo = new SenderInfoResponse()
-			.supportText(supportText)
-			.contactInformationUrl(url)
-			.contactInformationPhoneNumber(phoneNumber)
-			.contactInformationEmail(emailAddress)
-			.smsSender(smsSender);
+		final var messagingSettings = MessagingSettings.builder()
+			.withSupportText(supportText)
+			.withContactInformationUrl(url)
+			.withContactInformationEmail(emailAddress)
+			.withSmsSender(smsSender)
+			.build();
 
 		// Act
-		final var bean = MessagingMapper.toMessagingMessageRequest(errandEntity, senderInfo);
+		final var bean = MessagingMapper.toMessagingMessageRequest(errandEntity, messagingSettings);
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
@@ -135,6 +134,15 @@ class MessagingMapperTest {
 		assertThat(bean.getMessages().getFirst().getSender().getEmail().getAddress()).isEqualTo(emailAddress);
 		assertThat(bean.getMessages().getFirst().getSender().getSms()).isNotNull();
 		assertThat(bean.getMessages().getFirst().getSender().getSms().getName()).isEqualTo(smsSender);
+	}
 
+	@Test
+	void toFilterSTring() {
+		final var namespace = "my-namespace";
+		final var departmentName = "my-department-name";
+
+		final var result = MessagingMapper.toFilterString(namespace, departmentName);
+
+		assertThat(result).isEqualTo("exists(values.key: 'namespace' and values.value: 'my-namespace') and exists(values.key: 'department_name' and values.value: 'my-department-name')");
 	}
 }
