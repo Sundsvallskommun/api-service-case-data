@@ -25,6 +25,7 @@ import se.sundsvall.casedata.service.model.MessagingSettings;
 public final class MessagingMapper {
 
 	private static final String FILTER_TEMPLATE = "exists(values.key: 'namespace' and values.value: '%s') and exists(values.key: 'department_name' and values.value: '%s')";
+	private static final String SUBJECT_TEMPLATE = "Nytt meddelande kopplat till ärendet %s %s";
 
 	private MessagingMapper() {
 		// Private constructor to prevent instantiation
@@ -32,7 +33,7 @@ public final class MessagingMapper {
 
 	public static EmailRequest toEmailRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, final StakeholderEntity stakeholderEntity) {
 		return new EmailRequest()
-			.subject("Nytt meddelande kopplat till ärendet " + errandEntity.getCaseTitleAddition() + " " + errandEntity.getErrandNumber())
+			.subject(SUBJECT_TEMPLATE.formatted(errandEntity.getCaseTitleAddition(), errandEntity.getErrandNumber()))
 			.message(createBody(errandEntity, messagingSettings))
 			.emailAddress(findStakeholderEmail(stakeholderEntity))
 			.sender(new EmailSender()
@@ -43,7 +44,7 @@ public final class MessagingMapper {
 	public static MessageRequest toMessagingMessageRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings) {
 		return new MessageRequest()
 			.messages(List.of(new generated.se.sundsvall.messaging.Message()
-				.subject("Nytt meddelande kopplat till ärendet " + errandEntity.getCaseTitleAddition() + " " + errandEntity.getErrandNumber())
+				.subject(SUBJECT_TEMPLATE.formatted(errandEntity.getCaseTitleAddition(), errandEntity.getErrandNumber()))
 				.message(createBody(errandEntity, messagingSettings))
 				.party(new MessageParty().partyId(findErrandOwnerPartyId(errandEntity)))
 				.sender(new MessageSender()
@@ -52,21 +53,19 @@ public final class MessagingMapper {
 					.email(new Email()
 						.name(messagingSettings.getContactInformationEmail())
 						.address(messagingSettings.getContactInformationEmail())))));
-
 	}
 
 	static String createBody(final ErrandEntity errandEntity, final MessagingSettings messagingSettings) {
-		if (StringUtils.isBlank(messagingSettings.getSupportText())) {
-			return "";
-		}
-
-		return String.format(
-			messagingSettings.getSupportText(),
-			findErrandOwnerFirstName(errandEntity),
-			errandEntity.getCaseTitleAddition(),
-			errandEntity.getErrandNumber(),
-			messagingSettings.getContactInformationUrl(),
-			errandEntity.getId());
+		return ofNullable(messagingSettings.getSupportText())
+			.filter(StringUtils::isNotBlank)
+			.map(supportText -> String.format(
+				messagingSettings.getSupportText(),
+				findErrandOwnerFirstName(errandEntity),
+				errandEntity.getCaseTitleAddition(),
+				errandEntity.getErrandNumber(),
+				messagingSettings.getContactInformationUrl(),
+				errandEntity.getId()))
+			.orElse("");
 	}
 
 	static String findErrandOwnerFirstName(final ErrandEntity errandEntity) {
