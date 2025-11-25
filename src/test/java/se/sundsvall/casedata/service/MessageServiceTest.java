@@ -25,7 +25,6 @@ import static se.sundsvall.dept44.support.Identifier.Type.PARTY_ID;
 
 import generated.se.sundsvall.messaging.EmailRequest;
 import generated.se.sundsvall.messaging.MessageResult;
-import generated.se.sundsvall.messagingsettings.SenderInfoResponse;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Blob;
@@ -60,7 +59,8 @@ import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.messaging.MessagingClient;
-import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsClient;
+import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsIntegration;
+import se.sundsvall.casedata.service.model.MessagingSettings;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.casedata.service.util.BlobBuilder;
 import se.sundsvall.dept44.support.Identifier;
@@ -72,7 +72,7 @@ class MessageServiceTest {
 	private static final Random RANDOM = new Random();
 
 	@Mock
-	private MessagingSettingsClient messagingSettingsClientMock;
+	private MessagingSettingsIntegration messagingSettingsIntegrationMock;
 
 	@Mock
 	private MessagingClient messagingClientMock;
@@ -280,7 +280,7 @@ class MessageServiceTest {
 			.build();
 
 		when(metadataserviceMock.getCaseType(MUNICIPALITY_ID, NAMESPACE, PARATRANSIT_DEPARTMENT_NAME)).thenReturn(CaseType.builder().build());
-		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE, PARATRANSIT_DEPARTMENT_NAME)).thenReturn(List.of(new SenderInfoResponse()));
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, PARATRANSIT_DEPARTMENT_NAME)).thenReturn(MessagingSettings.builder().build());
 		when(messageRepositoryMock.save(any(MessageEntity.class))).thenReturn(MessageEntity.builder().build());
 		when(messageMapperMock.toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(MessageEntity.builder().build());
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
@@ -350,6 +350,7 @@ class MessageServiceTest {
 	@Test
 	void sendMessageNotification() {
 		// Arrange
+		Identifier.set(Identifier.create().withType(PARTY_ID).withValue(UUID.randomUUID().toString()));
 		final var errandId = 1L;
 		final var messageId = UUID.randomUUID();
 		final var errand = ErrandEntity.builder()
@@ -358,40 +359,18 @@ class MessageServiceTest {
 			.withNamespace(NAMESPACE)
 			.build();
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(List.of(new SenderInfoResponse()));
-		when(messagingClientMock.sendMessage(eq(MUNICIPALITY_ID), any())).thenReturn(
-			new MessageResult().messageId(messageId));
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		when(messagingClientMock.sendMessage(eq(MUNICIPALITY_ID), any())).thenReturn(new MessageResult().messageId(messageId));
+
 		// Act
 		messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
 
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
 		verify(messagingClientMock).sendMessage(eq(MUNICIPALITY_ID), messageRequestCaptor.capture());
 		assertThat(messageRequestCaptor.getValue().getMessages()).hasSize(1);
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
-
-	}
-
-	@Test
-	void sendMessageNotificationWithNullSenderInfo() {
-		// Arrange
-		final var errandId = 1L;
-		final var errand = ErrandEntity.builder()
-			.withId(errandId)
-			.withMunicipalityId(MUNICIPALITY_ID)
-			.withNamespace(NAMESPACE)
-			.build();
-		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(null);
-
-		// Act & Assert
-		assertThatThrownBy(() -> messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID))
-			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.INTERNAL_SERVER_ERROR)
-			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to retrieve sender information for municipality '2281' and namespace 'MY_NAMESPACE'");
-		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(messagingSettingsClientMock).getSenderInfo(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
-		verifyNoInteractions(messagingClientMock, messageMapperMock, notificationServiceMock);
 
 	}
 
@@ -407,7 +386,7 @@ class MessageServiceTest {
 			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
 			.hasFieldOrPropertyWithValue("message", "Not Found: Errand with id:'1' not found in namespace:'MY_NAMESPACE' for municipality with id:'2281'");
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verifyNoInteractions(messagingSettingsClientMock, messagingClientMock, messageMapperMock, notificationServiceMock);
+		verifyNoInteractions(messagingSettingsIntegrationMock, messagingClientMock, messageMapperMock, notificationServiceMock);
 
 	}
 
@@ -424,7 +403,7 @@ class MessageServiceTest {
 		Identifier.set(Identifier.create().withType(PARTY_ID).withValue("e82c8029-7676-467d-8ebb-8638d0abd2b4"));
 
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		when(messagingSettingsClientMock.getSenderInfo(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(List.of(new SenderInfoResponse()));
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
 		when(messagingClientMock.sendMessage(eq(MUNICIPALITY_ID), any())).thenReturn(null);
 
 		// Act & Assert

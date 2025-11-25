@@ -1,7 +1,12 @@
 {
 	"request": {
 		"method": "GET",
-		"url": "/messaging-settings/2281/sender-info?namespace=MY_NAMESPACE&departmentName=CONVERSATION"
+		"urlPath": "/messaging-settings/2281",
+		"queryParameters": {
+			"filter": {
+				"equalTo": "exists(values.key: 'namespace' and values.value: 'MY_NAMESPACE') and exists(values.key: 'department_name' and values.value: 'CONVERSATION')"
+			}
+		}
 	},
 	"response": {
 		"headers": {

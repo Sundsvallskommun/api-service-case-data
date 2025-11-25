@@ -16,7 +16,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotifica
 
 import generated.se.sundsvall.messaging.Message;
 import generated.se.sundsvall.messaging.MessageParty;
-import generated.se.sundsvall.messagingsettings.SenderInfoResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -35,7 +34,7 @@ import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.messaging.MessagingClient;
-import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsClient;
+import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsIntegration;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.dept44.support.Identifier;
 
@@ -50,20 +49,21 @@ public class MessageService {
 	private final ErrandRepository errandRepository;
 	private final MessageAttachmentRepository messageAttachmentRepository;
 	private final MessagingClient messagingClient;
-	private final MessagingSettingsClient messagingSettingsClient;
+	private final MessagingSettingsIntegration messagingSettingsIntegration;
 	private final NotificationService notificationService;
 	private final MetadataService metadataService;
 
 	private final MessageMapper mapper;
 
 	public MessageService(final MessageRepository messageRepository, final ErrandRepository errandRepository,
-		final MessageAttachmentRepository messageAttachmentRepository, final MessagingClient messagingClient, final MessagingSettingsClient messagingSettingsClient, final NotificationService notificationService, final MetadataService metadataService,
+		final MessageAttachmentRepository messageAttachmentRepository, final MessagingClient messagingClient, final MessagingSettingsIntegration messagingSettingsIntegration, final NotificationService notificationService,
+		final MetadataService metadataService,
 		final MessageMapper mapper) {
 		this.messageRepository = messageRepository;
 		this.errandRepository = errandRepository;
 		this.messageAttachmentRepository = messageAttachmentRepository;
 		this.messagingClient = messagingClient;
-		this.messagingSettingsClient = messagingSettingsClient;
+		this.messagingSettingsIntegration = messagingSettingsIntegration;
 		this.notificationService = notificationService;
 		this.metadataService = metadataService;
 		this.mapper = mapper;
@@ -139,19 +139,10 @@ public class MessageService {
 		final var errandEntity = errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 
-		final var senderInfo = getSenderInfo(municipalityId, namespace, departmentName);
-		final var request = toMessagingMessageRequest(errandEntity, senderInfo);
+		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
+		final var request = toMessagingMessageRequest(errandEntity, messagingSettings);
 
 		sendMessageNotification(errandEntity, request);
-	}
-
-	private SenderInfoResponse getSenderInfo(final String municipalityId, final String namespace, final String departmentName) {
-		final var senderInfo = Optional.ofNullable(messagingSettingsClient.getSenderInfo(municipalityId, namespace, departmentName)).orElse(emptyList());
-
-		if (senderInfo.isEmpty()) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve sender information for municipality '%s' and namespace '%s'".formatted(municipalityId, namespace));
-		}
-		return senderInfo.getFirst();
 	}
 
 	public void sendMessageNotification(final ErrandEntity errandEntity, final generated.se.sundsvall.messaging.MessageRequest request) {
@@ -175,8 +166,8 @@ public class MessageService {
 
 	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName) {
 
-		final var senderInfo = getSenderInfo(municipalityId, namespace, departmentName);
-		final var request = toEmailRequest(errandEntity, senderInfo, stakeholderEntity);
+		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
+		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity);
 
 		messagingClient.sendEmail(errandEntity.getMunicipalityId(), request);
 	}
