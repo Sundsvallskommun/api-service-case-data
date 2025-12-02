@@ -1,6 +1,8 @@
 package se.sundsvall.casedata.service;
 
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import generated.se.sundsvall.relation.Relation;
+import generated.se.sundsvall.relation.ResourceIdentifier;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -9,6 +11,9 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
@@ -27,6 +32,7 @@ import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
+import se.sundsvall.casedata.integration.relation.RelationClient;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
 import se.sundsvall.dept44.support.Identifier;
@@ -78,8 +84,14 @@ class ErrandServiceTest {
 	@Mock
 	private EventlogIntegration eventlogIntegrationMock;
 
+	@Mock
+	private RelationClient relationClientMock;
+
 	@Captor
 	private ArgumentCaptor<List<Long>> idListCapture;
+
+	@Captor
+	private ArgumentCaptor<Relation> relationCaptor;
 
 	@Captor
 	private ArgumentCaptor<Notification> notificationCaptor;
@@ -109,7 +121,7 @@ class ErrandServiceTest {
 		when(processServiceMock.startProcess(inputErrand)).thenReturn(processId);
 
 		// Act
-		errandService.create(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
+		errandService.create(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE, null);
 
 		// Assert
 		verify(processServiceMock).startProcess(inputErrand);
@@ -343,4 +355,58 @@ class ErrandServiceTest {
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock, notificationServiceMock, applicationEventPublisherMock, eventlogIntegrationMock);
 	}
 
+	@Test
+	void createWhenReferredFromPresent() {
+		final var referredFrom = "ABC-123456";
+		final var errand = createErrand();
+		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
+
+		savedErrand.setId(42L);
+
+		when(errandRepositoryMock.save(any())).thenReturn(savedErrand);
+
+		errandService.create(errand, MUNICIPALITY_ID, NAMESPACE, referredFrom);
+
+		verify(relationClientMock).createRelation(eq(MUNICIPALITY_ID), relationCaptor.capture());
+
+		final var relation = relationCaptor.getValue();
+
+		assertThat(relation.getType()).isEqualTo("REFERRED_FROM");
+		assertThat(relation.getSource())
+			.extracting(ResourceIdentifier::getResourceId,
+				ResourceIdentifier::getType,
+				ResourceIdentifier::getService,
+				ResourceIdentifier::getNamespace)
+			.containsExactly(
+				referredFrom,
+				"case",
+				"support-management",
+				NAMESPACE);
+		assertThat(relation.getTarget())
+			.extracting(ResourceIdentifier::getResourceId,
+				ResourceIdentifier::getType,
+				ResourceIdentifier::getService,
+				ResourceIdentifier::getNamespace)
+			.containsExactly(
+				String.valueOf(savedErrand.getId()),
+				"case",
+				"support-management",
+				NAMESPACE);
+	}
+
+	@ParameterizedTest
+	@NullAndEmptySource
+	@ValueSource(strings = {
+		" "
+	})
+	void createWhenReferredFromEmpty(String referredFrom) {
+		final var errand = createErrand();
+		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
+
+		when(errandRepositoryMock.save(any())).thenReturn(savedErrand);
+
+		errandService.create(errand, MUNICIPALITY_ID, NAMESPACE, referredFrom);
+
+		verify(relationClientMock, never()).createRelation(any(), any());
+	}
 }

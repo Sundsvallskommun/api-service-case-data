@@ -1,26 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import java.util.List;
-import java.util.Optional;
-import org.hibernate.query.sqm.PathElementException;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.mapping.PropertyReferenceException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
-import se.sundsvall.casedata.api.model.Errand;
-import se.sundsvall.casedata.api.model.Notification;
-import se.sundsvall.casedata.api.model.PatchErrand;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-import se.sundsvall.casedata.service.util.mappers.PatchMapper;
-
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static org.zalando.problem.Status.BAD_REQUEST;
@@ -39,6 +18,31 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 
+import java.util.List;
+import java.util.Optional;
+
+import generated.se.sundsvall.relation.Relation;
+import generated.se.sundsvall.relation.ResourceIdentifier;
+import org.hibernate.query.sqm.PathElementException;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.zalando.problem.Problem;
+import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.Notification;
+import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
+import se.sundsvall.casedata.integration.relation.RelationClient;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import se.sundsvall.casedata.service.util.mappers.PatchMapper;
+
 @Service
 @Transactional
 public class ErrandService {
@@ -48,14 +52,24 @@ public class ErrandService {
 	private final NotificationService notificationService;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final EventlogIntegration eventlogIntegration;
+	private final RelationClient relationClient;
 
-	public ErrandService(final ErrandRepository errandRepository, final ProcessService processService, final NotificationService notificationService,
-		final ApplicationEventPublisher applicationEventPublisher, final EventlogIntegration eventlogIntegration) {
+	private static final String REFERRED_FROM_RELATION_TYPE = "REFERRED_FROM";
+	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE = "case";
+	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE = "support-management";
+
+	public ErrandService(final ErrandRepository errandRepository,
+		final ProcessService processService,
+		final NotificationService notificationService,
+		final ApplicationEventPublisher applicationEventPublisher,
+		final EventlogIntegration eventlogIntegration,
+		final RelationClient relationClient) {
 		this.errandRepository = errandRepository;
 		this.processService = processService;
 		this.notificationService = notificationService;
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.eventlogIntegration = eventlogIntegration;
+		this.relationClient = relationClient;
 	}
 
 	private String determineSubType(final ErrandEntity updatedErrand) {
@@ -88,7 +102,7 @@ public class ErrandService {
 	/**
 	 * Saves an errand and update the process in ParkingPermit if it's a parking permit errand
 	 */
-	public Errand create(final Errand errand, final String municipalityId, final String namespace) {
+	public Errand create(final Errand errand, final String municipalityId, final String namespace, final String referredFrom) {
 
 		final var statuses = Optional.ofNullable(errand.getStatus())
 			.map(List::of)
@@ -101,6 +115,23 @@ public class ErrandService {
 
 		// Will not start a process if it's not a parking permit or mex errand
 		startProcess(resultErrand);
+
+		if (referredFrom != null && !referredFrom.isBlank()) {
+			final var relation = new Relation()
+				.type(REFERRED_FROM_RELATION_TYPE)
+				.source(new ResourceIdentifier()
+					.resourceId(referredFrom)
+					.type(REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE)
+					.service(REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE)
+					.namespace(namespace))
+				.target(new ResourceIdentifier()
+					.resourceId(resultErrand.getId().toString())
+					.type(REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE)
+					.service(REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE)
+					.namespace(namespace));
+
+			relationClient.createRelation(municipalityId, relation);
+		}
 
 		return toErrand(resultErrand);
 	}
