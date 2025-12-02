@@ -5,7 +5,7 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.10"
+  version: "11.11"
 servers:
 - url: http://localhost:51563
   description: Generated server url
@@ -1471,6 +1471,13 @@ paths:
           pattern: "[\\w|\\-]+"
           type: string
         example: MY_NAMESPACE
+      - name: referred_from
+        in: query
+        description: Referenced from errand
+        required: false
+        schema:
+          type: string
+        example: ABC-123456
       requestBody:
         content:
           application/json:
