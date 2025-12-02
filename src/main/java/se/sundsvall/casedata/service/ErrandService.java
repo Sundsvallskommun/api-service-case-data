@@ -2,6 +2,9 @@ package se.sundsvall.casedata.service;
 
 import java.util.List;
 import java.util.Optional;
+
+import generated.se.sundsvall.relation.Relation;
+import generated.se.sundsvall.relation.ResourceIdentifier;
 import org.hibernate.query.sqm.PathElementException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -17,6 +20,7 @@ import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
+import se.sundsvall.casedata.integration.relation.RelationClient;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
 import se.sundsvall.dept44.problem.Problem;
@@ -48,9 +52,18 @@ public class ErrandService {
 	private final NotificationService notificationService;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final EventlogIntegration eventlogIntegration;
+	private final RelationClient relationClient;
 
-	public ErrandService(final ErrandRepository errandRepository, final ProcessService processService, final NotificationService notificationService,
-		final ApplicationEventPublisher applicationEventPublisher, final EventlogIntegration eventlogIntegration) {
+	private static final String REFERRED_FROM_RELATION_TYPE = "REFERRED_FROM";
+	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE = "case";
+	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE = "support-management";
+
+	public ErrandService(final ErrandRepository errandRepository,
+		final ProcessService processService,
+		final NotificationService notificationService,
+		final ApplicationEventPublisher applicationEventPublisher,
+		final EventlogIntegration eventlogIntegration,
+		final RelationClient relationClient) {
 		this.errandRepository = errandRepository;
 		this.processService = processService;
 		this.notificationService = notificationService;
@@ -88,7 +101,7 @@ public class ErrandService {
 	/**
 	 * Saves an errand and update the process in ParkingPermit if it's a parking permit errand
 	 */
-	public Errand create(final Errand errand, final String municipalityId, final String namespace) {
+	public Errand create(final Errand errand, final String municipalityId, final String namespace, final String referredFrom) {
 
 		final var statuses = Optional.ofNullable(errand.getStatus())
 			.map(List::of)
@@ -101,6 +114,23 @@ public class ErrandService {
 
 		// Will not start a process if it's not a parking permit or mex errand
 		startProcess(resultErrand);
+
+		if (referredFrom != null && !referredFrom.isBlank()) {
+			final var relation = new Relation()
+				.type(REFERRED_FROM_RELATION_TYPE)
+				.source(new ResourceIdentifier()
+					.resourceId(referredFrom)
+					.type(REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE)
+					.service(REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE)
+					.namespace(namespace))
+				.target(new ResourceIdentifier()
+					.resourceId(resultErrand.getId().toString())
+					.type(REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE)
+					.service(REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE)
+					.namespace(namespace));
+
+			relationClient.createRelation(municipalityId, relation);
+		}
 
 		return toErrand(resultErrand);
 	}
