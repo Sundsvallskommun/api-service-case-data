@@ -20,15 +20,15 @@ public interface WebMessageCollectorClient {
 
 	@GetMapping("/{municipalityId}/messages/{familyid}/{instance}")
 	List<MessageDTO> getMessages(
-		@PathVariable(name = "municipalityId") String municipalityId,
-		@PathVariable(name = "familyid") String familyId,
-		@PathVariable(name = "instance") String instance);
+		@PathVariable String municipalityId,
+		@PathVariable String familyid,
+		@PathVariable String instance);
 
 	@DeleteMapping("/{municipalityId}/messages")
-	void deleteMessages(@PathVariable(name = "municipalityId") String municipalityId, List<Integer> ids);
+	void deleteMessages(@PathVariable String municipalityId, List<Integer> ids);
 
 	@GetMapping("/{municipalityId}/messages/attachments/{attachmentId}")
 	byte[] getAttachment(
-		@PathVariable(name = "municipalityId") String municipalityId,
-		@PathVariable(name = "attachmentId") int attachmentId);
+		@PathVariable String municipalityId,
+		@PathVariable int attachmentId);
 }

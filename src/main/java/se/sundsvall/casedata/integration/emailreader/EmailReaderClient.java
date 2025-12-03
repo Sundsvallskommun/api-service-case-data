@@ -19,11 +19,17 @@ import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderCo
 public interface EmailReaderClient {
 
 	@GetMapping("/{municipalityId}/email/{namespace}")
-	List<Email> getEmail(@PathVariable("municipalityId") final String municipalityId, @PathVariable("namespace") final String namespace);
+	List<Email> getEmail(
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace);
 
 	@GetMapping("/{municipalityId}/email/attachments/{attachmentId}")
-	byte[] getAttachment(@PathVariable("municipalityId") final String municipalityId, @PathVariable("attachmentId") final Long attachmentId);
+	byte[] getAttachment(
+		@PathVariable final String municipalityId,
+		@PathVariable final Long attachmentId);
 
 	@DeleteMapping("/{municipalityId}/email/{id}")
-	void deleteEmail(@PathVariable("municipalityId") final String municipalityId, @PathVariable("id") final String id);
+	void deleteEmail(
+		@PathVariable final String municipalityId,
+		@PathVariable final String id);
 }
