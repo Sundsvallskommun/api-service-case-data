@@ -79,7 +79,7 @@ class ErrandResourceTest {
 		final var facilities = List.of(facility);
 		body.setFacilities(facilities);
 
-		when(errandServiceMock.create(body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(body);
+		when(errandServiceMock.create(body, MUNICIPALITY_ID, NAMESPACE, null)).thenReturn(body);
 
 		// Act
 		webTestClient.post()
@@ -92,7 +92,59 @@ class ErrandResourceTest {
 			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + body.getId());
 
 		// Assert
-		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE, null);
+		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@Test
+	void postErrandWithReferredFrom() {
+		// Arrange
+		final var referredFrom = "ABC-123456";
+		final var body = createErrand();
+		body.setId(123L);
+
+		when(errandServiceMock.create(body, MUNICIPALITY_ID, NAMESPACE, referredFrom)).thenReturn(body);
+
+		// Act
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder
+				.path(BASE_URL)
+				.queryParam("referred_from", referredFrom)
+				.build(MUNICIPALITY_ID, NAMESPACE))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isCreated()
+			.expectHeader().contentType(ALL_VALUE)
+			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + body.getId());
+
+		// Assert
+		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE, referredFrom);
+		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@Test
+	void postErrandWithoutReferredFrom() {
+		// Arrange
+		final var body = createErrand();
+		body.setId(123L);
+
+		when(errandServiceMock.create(body, MUNICIPALITY_ID, NAMESPACE, null)).thenReturn(body);
+
+		// Act
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder
+				.path(BASE_URL)
+				.build(MUNICIPALITY_ID, NAMESPACE))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isCreated()
+			.expectHeader().contentType(ALL_VALUE)
+			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + body.getId());
+
+		// Assert
+		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE, null);
 		verifyNoMoreInteractions(errandServiceMock);
 	}
 }
