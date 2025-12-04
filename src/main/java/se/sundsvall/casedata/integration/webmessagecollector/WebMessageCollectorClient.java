@@ -18,10 +18,10 @@ import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMe
 @CircuitBreaker(name = CLIENT_ID)
 public interface WebMessageCollectorClient {
 
-	@GetMapping("/{municipalityId}/messages/{familyid}/{instance}")
+	@GetMapping("/{municipalityId}/messages/{familyId}/{instance}")
 	List<MessageDTO> getMessages(
 		@PathVariable String municipalityId,
-		@PathVariable String familyid,
+		@PathVariable String familyId,
 		@PathVariable String instance);
 
 	@DeleteMapping("/{municipalityId}/messages")

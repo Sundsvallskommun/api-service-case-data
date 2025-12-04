@@ -1,0 +1,57 @@
+{
+	"request": {
+		"method": "GET",
+		"urlPath": "/messaging-settings/2281",
+		"queryParameters": {
+			"filter": {
+				"equalTo": "exists(values.key: 'namespace' and values.value: 'MY_NAMESPACE') and exists(values.key: 'department_name' and values.value: 'PARATRANSIT')"
+			}
+		}
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"jsonBody": [
+			{
+				"id": "475dcfd4-21d5-4f1d-9aac-fbf247f889b8",
+				"municipalityId": "2281",
+				"created": "2025-05-01T15:00:00Z",
+				"updated": "2025-05-01T16:00:00Z",
+				"values": [
+					{
+						"key": "contact_information_email",
+						"value": "no-reply.6@localhost.local",
+						"type": "STRING"
+					},
+					{
+						"key": "contact_information_url",
+						"value": "https://domain.tld/",
+						"type": "STRING"
+					},
+					{
+						"key": "department_name",
+						"value": "CONVERSATION",
+						"type": "STRING"
+					},
+					{
+						"key": "namespace",
+						"value": "MY_NAMESPACE",
+						"type": "STRING"
+					},
+					{
+						"key": "sms_sender",
+						"value": "SENDER NAME",
+						"type": "STRING"
+					},
+					{
+						"key": "support_text",
+						"value": "Kontakta oss via e-post eller telefon",
+						"type": "STRING"
+					}
+				]
+			}
+		],
+		"status": 200
+	}
+}

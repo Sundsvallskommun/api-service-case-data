@@ -13,6 +13,22 @@ VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         'ERRAND-NUMBER-2', '', '2281', 'Aktualisering', 'MEDIUM',
         '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE');
 
+INSERT INTO stakeholder (id, created, updated, version, ad_account, authorized_signatory,
+                         first_name, last_name, organization_name, organization_number, person_id,
+                         `type`, errand_id, municipality_id, namespace)
+VALUES (1, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'string',
+        'Test Testorsson', 'Test', 'Testorsson', 'Sundsvalls testfabrik', '19901010-1234',
+        '3ed5bc30-6308-4fd5-a5a7-78d7f96f4438', 'PERSON', 1, '2281', 'MY_NAMESPACE'),
+       (2, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'string',
+        'Test Testorsson', 'Test', 'Testorsson', 'Sundsvalls testfabrik', '19901010-1234',
+        '3ed5bc30-6308-4fd5-a5a7-78d7f96f4438', 'PERSON', 2, '2281', 'MY_NAMESPACE');
+        
+INSERT INTO stakeholder_roles(stakeholder_id, roles, role_order)
+VALUES (1, 'REPORTER', 0),
+       (2, 'REPORTER', 0);
+       
+INSERT INTO case_type(type, display_name, namespace, municipality_id, id)
+VALUES ('PARKING_PERMIT', 'Nytt parkeringstillstånd', 'MY_NAMESPACE', '2281', '1');
 
 INSERT INTO message(messageid, errand_id, direction, familyid, external_caseid, subject,
                     message,
