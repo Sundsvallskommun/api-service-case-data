@@ -26,7 +26,7 @@ public interface MessagingClient {
 	 */
 	@PostMapping(path = "/{municipalityId}/messages", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 	MessageResult sendMessage(
-		@PathVariable("municipalityId") final String municipalityId,
+		@PathVariable final String municipalityId,
 		@RequestBody final MessageRequest messageRequest);
 
 	/**
@@ -35,9 +35,8 @@ public interface MessagingClient {
 	 * @param municipalityId the id of the municipality to send the email to
 	 * @param emailRequest   containing email information
 	 */
-	@PostMapping(path = "/{municipalityId}/messages/email", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/{municipalityId}/email", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 	MessageResult sendEmail(
-		@PathVariable("municipalityId") final String municipalityId,
+		@PathVariable final String municipalityId,
 		@RequestBody final EmailRequest emailRequest);
-
 }

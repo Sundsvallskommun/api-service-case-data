@@ -21,6 +21,6 @@ public interface RelationClient {
 
 	@GetMapping(path = "/{municipalityId}/relations/{id}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Relation> getRelation(
-		@PathVariable("municipalityId") final String municipalityId,
-		@PathVariable("id") final String id);
+		@PathVariable final String municipalityId,
+		@PathVariable final String id);
 }
