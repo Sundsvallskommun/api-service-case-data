@@ -6,7 +6,8 @@ import lombok.Data;
 @Data
 @Builder(setterPrefix = "with")
 public class MessagingSettings {
-	private String supportText;
+	private String ownerSupportText;
+	private String reporterSupportText;
 	private String contactInformationUrl;
 	private String smsSender;
 	private String contactInformationEmail;

@@ -1,0 +1,29 @@
+{
+	"messageId": "a1883fb9-60b4-4f38-9f48-642070ff49ee",
+	"errandId": 3,
+	"direction": "INBOUND",
+	"familyId": "123",
+	"externalCaseId": "321",
+	"message": "Message-POST",
+	"sent": "2024-01-02T12:00:00.000000",
+	"subject": "Subject",
+	"username": "tes01adm",
+	"firstName": "Test",
+	"lastName": "Adminsson",
+	"messageType": "EMAIL",
+	"mobileNumber": "0701234567",
+	"recipients": [
+		"patch@sundsvall.se"
+	],
+	"email": "johndoe@email.com",
+	"userId": "tes01adm",
+	"viewed": false,
+	"attachments": [
+		{
+			"attachmentId": "${json-unit.any-string}",
+			"name": "this-is-an-attachment",
+			"contentType": "text/plain"
+		}
+	],
+	"emailHeaders": []
+}

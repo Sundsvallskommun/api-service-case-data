@@ -1,8 +1,11 @@
 package se.sundsvall.casedata.service;
 
+import static java.util.Optional.ofNullable;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.api.model.conversation.ConversationType.EXTERNAL;
+import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_CONVERSATION;
+import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversation;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationEntity;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationList;
@@ -14,7 +17,7 @@ import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.upda
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,16 +29,19 @@ import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeScheduler;
 
 @Service
 public class ConversationService {
 
-	static final String CONVERSATION_DEPARTMENT_NAME = "CONVERSATION";
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConversationService.class);
+
 	private final ConversationRepository conversationRepository;
+	private final ErrandRepository errandRepository;
 	private final MessageExchangeClient messageExchangeClient;
 	private final MessageService messageService;
 	private final MessageExchangeScheduler messageExchangeScheduler;
@@ -43,9 +49,10 @@ public class ConversationService {
 	@Value("${integration.message-exchange.namespace:casedata}")
 	private String messageExchangeNamespace;
 
-	public ConversationService(final ConversationRepository conversationRepository, final MessageExchangeClient messageExchangeClient, final MessageService messageService,
+	public ConversationService(final ConversationRepository conversationRepository, final ErrandRepository errandRepository, final MessageExchangeClient messageExchangeClient, final MessageService messageService,
 		final MessageExchangeScheduler messageExchangeScheduler) {
 		this.conversationRepository = conversationRepository;
+		this.errandRepository = errandRepository;
 		this.messageExchangeClient = messageExchangeClient;
 		this.messageService = messageService;
 		this.messageExchangeScheduler = messageExchangeScheduler;
@@ -59,7 +66,7 @@ public class ConversationService {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create conversation in Message Exchange");
 		}
 
-		final var messageExchangeId = Optional.ofNullable(response.getHeaders().getLocation())
+		final var messageExchangeId = ofNullable(response.getHeaders().getLocation())
 			.map(location -> location.getPath().substring(location.getPath().lastIndexOf('/') + 1))
 			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create conversation in Message Exchange"));
 
@@ -115,15 +122,37 @@ public class ConversationService {
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message in Message Exchange");
 		}
-		Optional.ofNullable(attachments).ifPresent(attachment -> messageExchangeScheduler.triggerSyncConversationsAsync());
+		ofNullable(attachments).ifPresent(attachment -> messageExchangeScheduler.triggerSyncConversationsAsync());
 
 		try {
 			if (EXTERNAL.name().equals(entity.getType())) {
-				messageService.sendMessageNotification(municipalityId, namespace, errandId, CONVERSATION_DEPARTMENT_NAME);
+				messageService.sendMessageNotification(municipalityId, namespace, errandId, DEPARTMENT_NAME_CONVERSATION);
+			} else {// If not EXTERNAL then presume that it is INTERNAL and send notification as email
+				messageService.sendEmailNotification(municipalityId, namespace, errandId, translateToDepartmentName(errandId));
 			}
 		} catch (final Exception e) {
 			LOGGER.error("Failed to send message notification", e);
 		}
+	}
+
+	/**
+	 * Method for determining what department name to use when sending email notification. If case type starts with
+	 * PARATRANSIT then department name PARATRANSIT is returned. If not then CONVERSATION is the returned fallback
+	 * department.
+	 *
+	 * It is not an optimal solution, but right now this is the only way to distinguish between PARATRANSIT cases and other
+	 * cases in the PARKING_PERMIT namespace (the distinction is needed as they use different URLs in Katlan).
+	 *
+	 * @param  errandId id of errand to interpret department name on
+	 * @return          department name connected to the messaging settings that should be used when sending email
+	 *                  notification
+	 */
+	private String translateToDepartmentName(final long errandId) {
+		return ofNullable(errandRepository.getReferenceById(errandId))
+			.map(ErrandEntity::getCaseType)
+			.filter(ct -> Strings.CI.startsWith(ct, DEPARTMENT_NAME_PARATRANSIT))
+			.map(ct -> DEPARTMENT_NAME_PARATRANSIT)
+			.orElse(DEPARTMENT_NAME_CONVERSATION);
 	}
 
 	public Page<Message> getMessages(final String municipalityId, final String namespace, final Long errandId, final String conversationId, final Pageable pageable) {

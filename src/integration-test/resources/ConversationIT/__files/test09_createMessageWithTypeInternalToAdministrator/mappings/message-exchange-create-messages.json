@@ -1,0 +1,16 @@
+{
+	"request": {
+		"method": "POST",
+		"url": "/message-exchange/2281/casedata/conversations/c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c7/messages"
+	},
+	"response": {
+		"headers": {
+			"x-current-version": "0",
+			"x-current-revision": "90572753-e8b0-48f8-b200-3623eaa76f2a",
+			"Content-Type": "*/*",
+			"Location": "/message-exchange/2281/casedata/conversations/c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c7/90572753-e8b0-48f8-b200-3623eaa76f2a"
+		},
+		"status": 201
+	},
+	"name": "message-exchange-create-messages"
+}
