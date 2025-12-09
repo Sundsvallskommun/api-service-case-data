@@ -39,6 +39,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,7 +51,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.annotation.DirtiesContext;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.CaseType;
@@ -135,6 +135,11 @@ class MessageServiceTest {
 
 	@Mock
 	private MetadataService metadataserviceMock;
+
+	@BeforeEach
+	void setup() {
+		Identifier.remove();
+	}
 
 	@Test
 	void findMessages() {
@@ -419,12 +424,10 @@ class MessageServiceTest {
 			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to create message notification");
 	}
 
-	@DirtiesContext
 	@MethodSource("reporterEmailArgumentProvider")
 	@ParameterizedTest(name = "{0}")
 	void sendEmailNotification(String name, String identifierValue, StakeholderEntity stakeholderEntity, boolean emailShouldBeSent) {
 		// Arrange
-		Identifier.remove();
 		if (nonNull(identifierValue)) {
 			Identifier.set(Identifier.parse(identifierValue));
 		}
