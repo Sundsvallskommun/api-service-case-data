@@ -36,18 +36,18 @@ public class NotificationService {
 	private final NotificationRepository notificationRepository;
 	private final ErrandRepository errandRepository;
 	private final EmployeeService employeeService;
-	private final List<NotificationProcessorInterface> notificationReceivers;
+	private final List<NotificationProcessorInterface> notificationProcessors;
 
 	public NotificationService(
 		final NotificationRepository notificationRepository,
 		final ErrandRepository errandRepository,
 		final EmployeeService employeeService,
-		final List<NotificationProcessorInterface> notificationReceivers) {
+		final List<NotificationProcessorInterface> notificationProcessors) {
 
 		this.notificationRepository = notificationRepository;
 		this.errandRepository = errandRepository;
 		this.employeeService = employeeService;
-		this.notificationReceivers = notificationReceivers;
+		this.notificationProcessors = notificationProcessors;
 	}
 
 	public List<Notification> findNotificationsByOwnerId(final String municipalityId, final String namespace, final String ownerId) {
@@ -79,8 +79,8 @@ public class NotificationService {
 	 * @param errandEntity   the errand that the notification belongs to
 	 */
 	public void create(final String municipalityId, final String namespace, final Notification notification, ErrandEntity errandEntity) {
-		ofNullable(notificationReceivers).orElse(emptyList()).stream()
-			.forEach(receiver -> receiver.processNotification(municipalityId, namespace, notification, errandEntity));
+		ofNullable(notificationProcessors).orElse(emptyList()).stream()
+			.forEach(processor -> processor.processNotification(municipalityId, namespace, notification, errandEntity));
 	}
 
 	/**

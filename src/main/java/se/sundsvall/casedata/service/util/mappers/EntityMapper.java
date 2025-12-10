@@ -528,7 +528,7 @@ public final class EntityMapper {
 	public static String getUserIdFromRole(final ErrandEntity errandEntity, final StakeholderRole stakeholderRole) {
 		return ofNullable(errandEntity.getStakeholders()).orElse(emptyList()).stream()
 			.filter(stakeholder -> ofNullable(stakeholder.getRoles()).orElse(emptyList()).stream()
-				.anyMatch(stakeholderRole.toString()::equalsIgnoreCase))
+				.anyMatch(stakeholderRole.name()::equalsIgnoreCase))
 			.findFirst()
 			.map(StakeholderEntity::getAdAccount)
 			.orElse(null);

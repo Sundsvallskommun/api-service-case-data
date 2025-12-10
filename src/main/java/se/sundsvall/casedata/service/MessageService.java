@@ -96,10 +96,10 @@ public class MessageService {
 		final var messageEntity = messageRepository.save(mapper.toMessageEntity(request, errandId, municipalityId, namespace));
 		notificationService.create(municipalityId, namespace, toNotification(errandEntity, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errandEntity);
 
-		final var stakeholderEntity = getReporterStakeholder(errandEntity);
+		final var reporterStakeholder = getReporterStakeholder(errandEntity);
 
-		if (doesCaseTypeExist(municipalityId, namespace, errandEntity.getCaseType()) && stakeholderEntity != null && !stakeholderEntity.getAdAccount().equals(request.getUsername())) {
-			sendEmailNotification(municipalityId, namespace, errandEntity, stakeholderEntity, DEPARTMENT_NAME_PARATRANSIT);
+		if (doesCaseTypeExist(municipalityId, namespace, errandEntity.getCaseType()) && reporterStakeholder != null && !reporterStakeholder.getAdAccount().equals(request.getUsername())) {
+			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, DEPARTMENT_NAME_PARATRANSIT, calculateSupportTextType(reporterStakeholder));
 		}
 
 		return mapper.toMessageResponse(messageEntity, true);
@@ -168,12 +168,12 @@ public class MessageService {
 	 */
 	public void sendEmailNotification(final String municipalityId, final String namespace, final Long errandId, final String departmentName) {
 		final var errandEntity = fetchErrand(municipalityId, namespace, errandId);
-		final var stakeholderEntity = getReporterStakeholder(errandEntity);
+		final var reporterStakeholder = getReporterStakeholder(errandEntity);
 
 		// Create a notification and send email if logic determins that mail should be sent
 		notificationService.create(municipalityId, namespace, toNotification(errandEntity, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errandEntity);
-		if (isEmailNotificationToBeSent(stakeholderEntity)) {
-			sendEmailNotification(municipalityId, namespace, errandEntity, stakeholderEntity, departmentName);
+		if (isEmailNotificationToBeSent(reporterStakeholder)) {
+			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, departmentName, calculateSupportTextType(reporterStakeholder));
 		}
 	}
 
@@ -212,9 +212,9 @@ public class MessageService {
 		}
 	}
 
-	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName) {
+	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName, int supportTextType) {
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
-		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity, calculateSupportTextType(stakeholderEntity));
+		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity, supportTextType);
 		messagingClient.sendEmail(errandEntity.getMunicipalityId(), request);
 	}
 
