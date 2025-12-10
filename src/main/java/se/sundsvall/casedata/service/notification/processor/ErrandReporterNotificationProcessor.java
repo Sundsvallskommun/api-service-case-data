@@ -72,6 +72,6 @@ public class ErrandReporterNotificationProcessor extends AbstractNotificationPro
 	private boolean hasReporterRole(final StakeholderEntity stakeholderEntity) {
 		return isNotBlank(stakeholderEntity.getAdAccount()) && ofNullable(stakeholderEntity.getRoles()).orElse(emptyList()).stream()
 			.map(String::trim)
-			.anyMatch(role -> REPORTER.name().equalsIgnoreCase(role));
+			.anyMatch(role -> REPORTER.name().equals(role));
 	}
 }

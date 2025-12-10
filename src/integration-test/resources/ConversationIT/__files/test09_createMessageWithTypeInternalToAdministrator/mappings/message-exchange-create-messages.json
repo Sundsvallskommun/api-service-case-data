@@ -1,7 +1,29 @@
 {
 	"request": {
 		"method": "POST",
-		"url": "/message-exchange/2281/casedata/conversations/c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c7/messages"
+		"url": "/message-exchange/2281/casedata/conversations/c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c7/messages",
+		"multipartPatterns": [
+			{
+				"matchingType": "ANY",
+				"headers": {
+					"Content-Disposition": {
+						"contains": "name=\"message\""
+					},
+					"Content-Type": {
+						"contains": "application/json"
+					}
+				},
+				"bodyPatterns": [
+					{
+						"equalToJson": {
+							"content": "Hello, how can I help you?",
+							"readBy": [],
+							"attachments": []
+						}
+					}
+				]
+			}
+		]
 	},
 	"response": {
 		"headers": {

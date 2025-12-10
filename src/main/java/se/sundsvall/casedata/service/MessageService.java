@@ -1,17 +1,14 @@
 package se.sundsvall.casedata.service;
 
 import static java.util.Collections.emptyList;
-import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ObjectUtils.notEqual;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
-import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_OWNER_SUPPORT_TEXT;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_REPORTER_SUPPORT_TEXT;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailRequest;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toMessagingMessageRequest;
@@ -99,7 +96,7 @@ public class MessageService {
 		final var reporterStakeholder = getReporterStakeholder(errandEntity);
 
 		if (doesCaseTypeExist(municipalityId, namespace, errandEntity.getCaseType()) && reporterStakeholder != null && !reporterStakeholder.getAdAccount().equals(request.getUsername())) {
-			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, DEPARTMENT_NAME_PARATRANSIT, calculateSupportTextType(reporterStakeholder));
+			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, DEPARTMENT_NAME_PARATRANSIT);
 		}
 
 		return mapper.toMessageResponse(messageEntity, true);
@@ -173,7 +170,7 @@ public class MessageService {
 		// Create a notification and send email if logic determins that mail should be sent
 		notificationService.create(municipalityId, namespace, toNotification(errandEntity, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errandEntity);
 		if (isEmailNotificationToBeSent(reporterStakeholder)) {
-			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, departmentName, calculateSupportTextType(reporterStakeholder));
+			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, departmentName);
 		}
 	}
 
@@ -212,9 +209,9 @@ public class MessageService {
 		}
 	}
 
-	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName, int supportTextType) {
+	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName) {
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
-		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity, supportTextType);
+		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity, TYPE_REPORTER_SUPPORT_TEXT);
 		messagingClient.sendEmail(errandEntity.getMunicipalityId(), request);
 	}
 
@@ -239,15 +236,5 @@ public class MessageService {
 	private ErrandEntity fetchErrand(final String municipalityId, final String namespace, final Long errandId) {
 		return errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
-	}
-
-	/**
-	 * Method for calculating which support text to use. The current logic to determin mail body is to check if the
-	 * stakeholder entity with role REPORTER has set the ad account attribute or not
-	 *
-	 * @return the support text type to use based on sent in stakeholder entity
-	 */
-	private int calculateSupportTextType(StakeholderEntity stakeholderEntity) {
-		return isNull(stakeholderEntity) || isBlank(stakeholderEntity.getAdAccount()) ? TYPE_OWNER_SUPPORT_TEXT : TYPE_REPORTER_SUPPORT_TEXT;
 	}
 }
