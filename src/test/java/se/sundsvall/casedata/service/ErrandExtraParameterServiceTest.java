@@ -26,6 +26,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -43,6 +44,9 @@ class ErrandExtraParameterServiceTest {
 
 	@Mock
 	private ErrandRepository errandRepositoryMock;
+
+	@Mock
+	private ApplicationEventPublisher applicationEventPublisherMock;
 
 	@Captor
 	private ArgumentCaptor<ErrandEntity> errandEntityArgumentCaptor;
@@ -69,6 +73,7 @@ class ErrandExtraParameterServiceTest {
 
 		// Assert
 		verify(errandRepositoryMock).save(errandEntityArgumentCaptor.capture());
+		verify(applicationEventPublisherMock).publishEvent(errandEntityArgumentCaptor.getValue());
 
 		assertThat(errandEntityArgumentCaptor.getValue().getExtraParameters()).usingRecursiveComparison().isEqualTo(expectedListInCapture);
 	}
@@ -143,6 +148,7 @@ class ErrandExtraParameterServiceTest {
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(ERRAND_ID, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock).save(errandEntityArgumentCaptor.capture());
+		verify(applicationEventPublisherMock).publishEvent(errandEntityArgumentCaptor.getValue());
 		verifyNoMoreInteractions(errandRepositoryMock);
 
 		assertThat(result).isNotNull();
