@@ -1,0 +1,19 @@
+{
+	"request": {
+		"method": "GET",
+		"urlPath": "/messaging-settings/2281",
+		"queryParameters": {
+			"filter": {
+				"equalTo": "exists(values.key: 'namespace' and values.value: 'MY_NAMESPACE') and exists(values.key: 'department_name' and values.value: 'PARATRANSIT')"
+			}
+		}
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"bodyFileName": "test08_createMessageWithTypeInternalToReporter/response/messaging-settings-get-information.json",
+		"status": 200
+	},
+	"name": "messaging-settings-get-information"
+}

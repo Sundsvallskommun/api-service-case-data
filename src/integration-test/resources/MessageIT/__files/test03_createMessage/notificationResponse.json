@@ -1,0 +1,38 @@
+[
+	{
+		"id": "${json-unit.any-string}",
+		"municipalityId": "2281",
+		"namespace": "MY_NAMESPACE",
+		"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+		"ownerFullName": "Test Adminsson",
+		"ownerId": "tes01adm",
+		"createdBy": "tes01adm",
+		"createdByFullName": "Test Adminsson",
+		"type": "UPDATE",
+		"subType": "MESSAGE",
+		"description": "Meddelande skickat",
+		"expires": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}Z$",
+		"acknowledged": true,
+		"globalAcknowledged": false,
+		"errandId": 1,
+		"errandNumber": "ERRAND-NUMBER-1"
+	},
+	{
+		"id": "${json-unit.any-string}",
+		"municipalityId": "2281",
+		"namespace": "MY_NAMESPACE",
+		"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+		"ownerFullName": "Usersson User",
+		"ownerId": "tes03usr",
+		"createdBy": "tes01adm",
+		"createdByFullName": "Test Adminsson",
+		"type": "UPDATE",
+		"subType": "MESSAGE",
+		"description": "Meddelande skickat",
+		"expires": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}Z$",
+		"acknowledged": false,
+		"globalAcknowledged": false,
+		"errandId": 1,
+		"errandNumber": "ERRAND-NUMBER-1"
+	}
+]

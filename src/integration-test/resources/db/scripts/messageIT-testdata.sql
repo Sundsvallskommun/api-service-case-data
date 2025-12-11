@@ -4,28 +4,23 @@ INSERT INTO errand(id, created, updated, version, application_received, case_tit
                    external_case_id,
                    municipality_id, phase, priority, process_id, start_date, updated_by,
                    updated_by_client, channel, namespace)
-VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
-        'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
-        'ERRAND-NUMBER-1', '', '2281', 'Aktualisering', 'MEDIUM',
-        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE'),
-       (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
-        'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
-        'ERRAND-NUMBER-2', '', '2281', 'Aktualisering', 'MEDIUM',
-        '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE');
+VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL, 'ERRAND-NUMBER-1', '', '2281', 'Aktualisering', 'MEDIUM', '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE'),
+       (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL, 'ERRAND-NUMBER-2', '', '2281', 'Aktualisering', 'MEDIUM', '896a44d8-724b-11ed-a840-0242ac110003', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE'),
+       (3, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'Nytt avvikelseärende', 'PARATRANSIT', 'UNKNOWN', 'WSO2_test', '', '', NULL, 'ERRAND-NUMBER-3', '', '2281', 'Aktualisering', 'MEDIUM', '896a44d8-724b-11ed-a840-0242ac110004', NULL, 'UNKNOWN', 'WSO_test', NULL, 'MY_NAMESPACE');
 
-INSERT INTO stakeholder (id, created, updated, version, ad_account, authorized_signatory,
-                         first_name, last_name, organization_name, organization_number, person_id,
-                         `type`, errand_id, municipality_id, namespace)
-VALUES (1, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'string',
-        'Test Testorsson', 'Test', 'Testorsson', 'Sundsvalls testfabrik', '19901010-1234',
-        '3ed5bc30-6308-4fd5-a5a7-78d7f96f4438', 'PERSON', 1, '2281', 'MY_NAMESPACE'),
-       (2, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'string',
-        'Test Testorsson', 'Test', 'Testorsson', 'Sundsvalls testfabrik', '19901010-1234',
-        '3ed5bc30-6308-4fd5-a5a7-78d7f96f4438', 'PERSON', 2, '2281', 'MY_NAMESPACE');
-        
+INSERT INTO stakeholder (id, created, updated, version, ad_account, authorized_signatory, first_name, last_name, organization_name, organization_number, person_id, `type`, errand_id, municipality_id, namespace)
+VALUES (1, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'tes03usr',  'Test Testorsson', 'Test', 'Testorsson', 'Sundsvalls testfabrik', '19901010-1234', '3ed5bc30-6308-4fd5-a5a7-78d7f96f4438', 'PERSON', 1, '2281', 'MY_NAMESPACE'),
+       (5, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'tes01adm', 'Test Adminsson', 'Test', 'Adminsson', 'Sundsvalls testfabrik', '19901020-1234', NULL, 'PERSON', 1, '2281', 'MY_NAMESPACE'),
+       (2, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'tes03usr',  'Test Testorsson', 'Test', 'Testorsson', 'Sundsvalls testfabrik', '19901020-1234', '3ed5bc30-6308-4fd5-a5a7-78d7f96f4438', 'PERSON', 2, '2281', 'MY_NAMESPACE'),
+       (3, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'tes01adm', 'Test Adminsson', 'Test', 'Adminsson', 'Sundsvalls testfabrik', '19901010-1234', NULL, 'PERSON', 3, '2281', 'MY_NAMESPACE'),
+       (4, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'tes02rep', 'Test Reportersson', 'Test', 'Reportersson', 'Sundsvalls testfabrik', '19900202-5678', NULL, 'PERSON', 3, '2281', 'MY_NAMESPACE');
+
 INSERT INTO stakeholder_roles(stakeholder_id, roles, role_order)
-VALUES (1, 'REPORTER', 0),
-       (2, 'REPORTER', 0);
+VALUES (5, 'ADMINISTRATOR', 0),
+       (1, 'REPORTER', 0),
+       (2, 'REPORTER', 0),
+       (3, 'ADMINISTRATOR', 0),
+       (4, 'REPORTER', 0);
        
 INSERT INTO case_type(type, display_name, namespace, municipality_id, id)
 VALUES ('PARKING_PERMIT', 'Nytt parkeringstillstånd', 'MY_NAMESPACE', '2281', '1');
