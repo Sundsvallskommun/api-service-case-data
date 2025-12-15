@@ -1,8 +1,6 @@
 package se.sundsvall.casedata.apptest;
 
 import static java.text.MessageFormat.format;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.GET;
@@ -133,15 +131,14 @@ class ConversationIT extends AbstractAppTest {
 	}
 
 	/**
-	 * Test to verify email is sent and notifications are created when creating an message with type internal for an errand
-	 * where stakeholder with reporter role is present, i.e. test of scenario when administrator creates an internal message
-	 * in a case created by a reporter (for example in paratransit))
+	 * Test to verify email is sent when creating an message with type internal for an errand where stakeholder with
+	 * reporter role is present, i.e. test of scenario when administrator creates an internal message in a case created by a
+	 * reporter (for example in paratransit))
 	 */
 	@Test
 	void test08_createMessageWithTypeInternalToReporter() throws FileNotFoundException {
 		final var errandId = 3;
 		final var internalConversationId = "896a44d8-724b-11ed-a840-0242ac110004";
-		final var notificationsResponseFile = "notificationResponse.json";
 
 		setupCall()
 			.withHttpMethod(POST)
@@ -151,27 +148,18 @@ class ConversationIT extends AbstractAppTest {
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(HEADER_NAME, "type=adAccount; adm01adm")
 			.withExpectedResponseStatus(NO_CONTENT)
-			.sendRequest();
-
-		setupCall()
-			.withServicePath(format("/{0}/{1}/errands/{2}/notifications", MUNICIPALITY_ID, NAMESPACE, errandId))
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(notificationsResponseFile)
-			.withJsonAssertOptions(List.of(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS))
 			.sendRequestAndVerifyResponse();
 	}
 
 	/**
-	 * Test to verify email is NOT sent but notifications are created when creating an message with type internal for an
-	 * errand where stakeholder with reporter role is present, i.e. test of scenario when reporter creates an internal
-	 * message to the administrator of the errand in a case created by the reporter (for example in paratransit)
+	 * Test to verify email is NOT sent when creating an message with type internal for an errand where stakeholder with
+	 * reporter role is present, i.e. test of scenario when reporter creates an internal message to the administrator of the
+	 * errand in a case created by the reporter (for example in paratransit)
 	 */
 	@Test
 	void test09_createMessageWithTypeInternalToAdministrator() throws FileNotFoundException {
 		final var errandId = 3;
 		final var internalConversationId = "896a44d8-724b-11ed-a840-0242ac110004";
-		final var notificationsResponseFile = "notificationResponse.json";
 
 		setupCall()
 			.withHttpMethod(POST)
@@ -181,14 +169,6 @@ class ConversationIT extends AbstractAppTest {
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(HEADER_NAME, "type=adAccount; tes02rep")
 			.withExpectedResponseStatus(NO_CONTENT)
-			.sendRequest();
-
-		setupCall()
-			.withServicePath(format("/{0}/{1}/errands/{2}/notifications", MUNICIPALITY_ID, NAMESPACE, errandId))
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(notificationsResponseFile)
-			.withJsonAssertOptions(List.of(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS))
 			.sendRequestAndVerifyResponse();
 	}
 }

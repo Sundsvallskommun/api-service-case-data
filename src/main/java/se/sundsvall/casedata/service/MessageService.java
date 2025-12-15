@@ -155,8 +155,7 @@ public class MessageService {
 	}
 
 	/**
-	 * Method for sending notification email to reporter stakeholder and in the process also create a notification to errand
-	 * owner and reporter stakeholder (called from ConversationService.createMessage).
+	 * Method for sending notification email to reporter stakeholder (called from ConversationService.createMessage).
 	 *
 	 * @param municipalityId of the errand that the message belongs to
 	 * @param namespace      of the errand that the message belongs to
@@ -168,7 +167,6 @@ public class MessageService {
 		final var reporterStakeholder = getReporterStakeholder(errandEntity);
 
 		// Create a notification and send email if logic determins that mail should be sent
-		notificationService.create(municipalityId, namespace, toNotification(errandEntity, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errandEntity);
 		if (isEmailNotificationToBeSent(reporterStakeholder)) {
 			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, departmentName);
 		}

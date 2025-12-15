@@ -554,21 +554,24 @@ public final class EntityMapper {
 			.orElse(null);
 	}
 
-	public static Notification toNotification(final ErrandEntity errand, final String type, final String description, final NotificationSubType subType) {
+	public static Notification toNotification(final ErrandEntity errand, final String type, final String description, final NotificationSubType subType, String ownerAdAccount) {
+		return Notification.builder()
+			.withOwnerId(ownerAdAccount)
+			.withType(type)
+			.withSubType(ofNullable(subType).map(NotificationSubType::name).orElse(null))
+			.withDescription(description)
+			.withErrandId(ofNullable(errand).map(ErrandEntity::getId).orElse(null))
+			.withMunicipalityId(ofNullable(errand).map(ErrandEntity::getMunicipalityId).orElse(null))
+			.withNamespace(ofNullable(errand).map(ErrandEntity::getNamespace).orElse(null))
+			.build();
+	}
 
+	public static Notification toNotification(final ErrandEntity errand, final String type, final String description, final NotificationSubType subType) {
 		final var stakeholder = errand.getStakeholders().stream()
 			.filter(stakeholderEntity -> ofNullable(stakeholderEntity.getRoles()).orElse(emptyList()).contains(ADMINISTRATOR.name()))
 			.findFirst()
 			.orElse(new StakeholderEntity());
 
-		return Notification.builder()
-			.withOwnerId(stakeholder.getAdAccount())
-			.withType(type)
-			.withSubType(subType.name())
-			.withDescription(description)
-			.withErrandId(errand.getId())
-			.withMunicipalityId(errand.getMunicipalityId())
-			.withNamespace(errand.getNamespace())
-			.build();
+		return toNotification(errand, type, description, subType, stakeholder.getAdAccount());
 	}
 }
