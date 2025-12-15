@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -175,6 +176,7 @@ class NotificationServiceTest {
 		switch (clazz.getSimpleName()) {
 			case "ErrandOwnerNotificationProcessor" -> verify(errandOwnerNotificationProcessorMock).processNotification(MUNICIPALITY_ID, NAMESPACE, notification, errandEntity);
 			case "ErrandReporterNotificationProcessor" -> verify(errandReporterNotificationProcessorMock).processNotification(MUNICIPALITY_ID, NAMESPACE, notification, errandEntity);
+			default -> fail("No verification defined for %s".formatted(clazz.getSimpleName()));
 		}
 	}
 
