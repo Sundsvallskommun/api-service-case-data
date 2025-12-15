@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
@@ -31,7 +32,10 @@ public class ErrandExtraParameterService {
 
 	private final ErrandRepository errandsRepository;
 
-	public ErrandExtraParameterService(final ErrandRepository errandsRepository) {
+	private final ApplicationEventPublisher applicationEventPublisher;
+
+	public ErrandExtraParameterService(final ErrandRepository errandsRepository, final ApplicationEventPublisher applicationEventPublisher) {
+		this.applicationEventPublisher = applicationEventPublisher;
 		this.errandsRepository = errandsRepository;
 	}
 
@@ -49,7 +53,10 @@ public class ErrandExtraParameterService {
 		ofNullable(parameters).orElse(emptyList()).stream()
 			.forEach(parameter -> processParameter(errandEntity, extraParameterEntityMap.get(parameter.getKey()), parameter));
 
-		return toParameterList(errandsRepository.save(errandEntity).getExtraParameters());
+		final var updatedErrand = errandsRepository.save(errandEntity);
+		applicationEventPublisher.publishEvent(updatedErrand);
+
+		return toParameterList(updatedErrand.getExtraParameters());
 	}
 
 	private void processParameter(final ErrandEntity errandEntity, ExtraParameterEntity extraParameterEntity, ExtraParameter parameter) {
@@ -82,7 +89,8 @@ public class ErrandExtraParameterService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, String.format(PARAMETER_NOT_FOUND, parameterKey, errandEntity.getId())))
 			.withValues(parameterValues);
 
-		errandsRepository.save(errandEntity);
+		final var updatedErrand = errandsRepository.save(errandEntity);
+		applicationEventPublisher.publishEvent(updatedErrand);
 
 		return toParameter(parameterEntity);
 	}

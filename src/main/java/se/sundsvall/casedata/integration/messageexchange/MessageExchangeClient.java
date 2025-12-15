@@ -35,65 +35,64 @@ public interface MessageExchangeClient {
 
 	@GetMapping(path = "/{municipalityId}/{namespace}/conversations", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Page<Conversation>> getConversations(
-		@PathVariable("municipalityId") final String municipalityId,
-		@PathVariable("namespace") final String namespace,
-		@RequestParam("filter") String filter,
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@RequestParam String filter,
 		@ParameterObject final Pageable pageable);
 
 	@GetMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Conversation> getConversation(
-		@PathVariable("municipalityId") final String municipalityId,
-		@PathVariable("namespace") final String namespace,
-		@PathVariable("conversationId") final String conversationId);
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@PathVariable final String conversationId);
 
 	@PostMapping(path = "/{municipalityId}/{namespace}/conversations", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	ResponseEntity<Void> createConversation(
-		@PathVariable("municipalityId") final String municipalityId,
-		@PathVariable("namespace") final String namespace,
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
 		@RequestBody final Conversation conversation);
 
 	@PatchMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Conversation> updateConversation(
-		@PathVariable("municipalityId") final String municipalityId,
-		@PathVariable("namespace") final String namespace,
-		@PathVariable("conversationId") final String conversationId,
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@PathVariable final String conversationId,
 		@RequestBody final Conversation conversation);
 
 	@DeleteMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Void> deleteConversation(
-		@PathVariable("municipalityId") final String municipalityId,
-		@PathVariable("namespace") final String namespace,
-		@PathVariable("conversationId") final String conversationId);
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@PathVariable final String conversationId);
 
 	@PostMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}/messages", consumes = MULTIPART_FORM_DATA_VALUE, produces = ALL_VALUE)
 	ResponseEntity<Void> createMessage(
-		@PathVariable("municipalityId") final String municipalityId,
-		@PathVariable("namespace") final String namespace,
-		@PathVariable("conversationId") final String conversationId,
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@PathVariable final String conversationId,
 		@RequestPart("message") final Message message,
 		@RequestPart("attachments") final List<MultipartFile> attachments);
 
 	@GetMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}/messages", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Page<Message>> getMessages(
-		@PathVariable("municipalityId") final String municipalityId,
-		@PathVariable("namespace") final String namespace,
-		@PathVariable("conversationId") final String conversationId,
-		@RequestParam("filter") String filter,
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@PathVariable final String conversationId,
+		@RequestParam String filter,
 		@ParameterObject final Pageable pageable);
 
 	@DeleteMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}/messages/{messageId}", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteMessage(
-		@PathVariable("municipalityId") final String municipalityId,
-		@PathVariable("namespace") final String namespace,
-		@PathVariable("conversationId") final String conversationId,
-		@PathVariable("messageId") final String messageId);
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@PathVariable final String conversationId,
+		@PathVariable final String messageId);
 
 	@GetMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}/messages/{messageId}/attachments/{attachmentId}", produces = ALL_VALUE)
 	ResponseEntity<InputStreamResource> readErrandAttachment(
-		@PathVariable("municipalityId") final String municipalityId,
-		@PathVariable("namespace") final String namespace,
-		@PathVariable("conversationId") final String conversationId,
-		@PathVariable("messageId") final String messageId,
-		@PathVariable("attachmentId") final String attachmentId);
-
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@PathVariable final String conversationId,
+		@PathVariable final String messageId,
+		@PathVariable final String attachmentId);
 }

@@ -1,0 +1,30 @@
+{
+	"request": {
+		"method": "GET",
+		"urlPath": "/employee/2281/portalpersondata/personal/tes02rep"
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"jsonBody": {
+			"address": "",
+			"city": "",
+			"postalCode": "",
+			"orgTree": "2|28|KSK Avd Digitalisering och IT",
+			"lastname": "Reportersson",
+			"aboutMe": "",
+			"companyId": 1,
+			"givenname": "Test",
+			"loginName": "PERSONAL\\tes02rep",
+			"isManager": false,
+			"personid": "b10be261-b417-4c3e-a42a-9b94c27c17f0",
+			"company": "Sundsvalls kommun",
+			"fullname": "Test Reportersson",
+			"email": "test.reportersson@sundsvall.se",
+			"mailNickname": "test.reportersson"
+		},
+		"status": 200
+	},
+	"name": "api-employee-getEmployeePersonalDataForReporter"
+}

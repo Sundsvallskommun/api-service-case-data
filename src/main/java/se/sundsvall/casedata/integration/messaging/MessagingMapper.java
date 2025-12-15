@@ -1,9 +1,11 @@
 package se.sundsvall.casedata.integration.messaging;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.APPLICANT;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
 import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
 
 import com.nimbusds.oauth2.sdk.util.StringUtils;
@@ -17,6 +19,7 @@ import generated.se.sundsvall.messaging.Sms;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
@@ -24,6 +27,8 @@ import se.sundsvall.casedata.service.model.MessagingSettings;
 
 public final class MessagingMapper {
 
+	public static final int TYPE_OWNER_SUPPORT_TEXT = 1;
+	public static final int TYPE_REPORTER_SUPPORT_TEXT = 2;
 	private static final String FILTER_TEMPLATE = "exists(values.key: 'namespace' and values.value: '%s') and exists(values.key: 'department_name' and values.value: '%s')";
 	private static final String SUBJECT_TEMPLATE = "Nytt meddelande kopplat till ärendet %s %s";
 
@@ -31,10 +36,10 @@ public final class MessagingMapper {
 		// Private constructor to prevent instantiation
 	}
 
-	public static EmailRequest toEmailRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, final StakeholderEntity stakeholderEntity) {
+	public static EmailRequest toEmailRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, final StakeholderEntity stakeholderEntity, int supportTextType) {
 		return new EmailRequest()
 			.subject(SUBJECT_TEMPLATE.formatted(errandEntity.getCaseTitleAddition(), errandEntity.getErrandNumber()))
-			.message(createBody(errandEntity, messagingSettings))
+			.message(createBody(errandEntity, messagingSettings, supportTextType))
 			.emailAddress(findStakeholderEmail(stakeholderEntity))
 			.sender(new EmailSender()
 				.name(messagingSettings.getContactInformationEmailName())
@@ -45,7 +50,7 @@ public final class MessagingMapper {
 		return new MessageRequest()
 			.messages(List.of(new generated.se.sundsvall.messaging.Message()
 				.subject(SUBJECT_TEMPLATE.formatted(errandEntity.getCaseTitleAddition(), errandEntity.getErrandNumber()))
-				.message(createBody(errandEntity, messagingSettings))
+				.message(createBody(errandEntity, messagingSettings, TYPE_OWNER_SUPPORT_TEXT))
 				.party(new MessageParty().partyId(findErrandOwnerPartyId(errandEntity)))
 				.sender(new MessageSender()
 					.sms(new Sms()
@@ -55,12 +60,14 @@ public final class MessagingMapper {
 						.address(messagingSettings.getContactInformationEmail())))));
 	}
 
-	static String createBody(final ErrandEntity errandEntity, final MessagingSettings messagingSettings) {
-		return ofNullable(messagingSettings.getSupportText())
+	static String createBody(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, int supportTextType) {
+		final var nullableSupportText = TYPE_REPORTER_SUPPORT_TEXT == supportTextType ? messagingSettings.getReporterSupportText() : messagingSettings.getOwnerSupportText();
+
+		return ofNullable(nullableSupportText)
 			.filter(StringUtils::isNotBlank)
 			.map(supportText -> String.format(
-				messagingSettings.getSupportText(),
-				findErrandOwnerFirstName(errandEntity),
+				supportText,
+				findErrandOwnerFirstName(errandEntity, TYPE_REPORTER_SUPPORT_TEXT == supportTextType ? REPORTER : APPLICANT),
 				errandEntity.getCaseTitleAddition(),
 				errandEntity.getErrandNumber(),
 				messagingSettings.getContactInformationUrl(),
@@ -68,12 +75,12 @@ public final class MessagingMapper {
 			.orElse("");
 	}
 
-	static String findErrandOwnerFirstName(final ErrandEntity errandEntity) {
+	static String findErrandOwnerFirstName(final ErrandEntity errandEntity, StakeholderRole stakeholderRole) {
 		return ofNullable(errandEntity.getStakeholders())
 			.orElse(emptyList())
 			.stream()
 			.filter(stakeholder -> isNotEmpty(stakeholder.getRoles()))
-			.filter(stakeholder -> stakeholder.getRoles().contains(APPLICANT.name()))
+			.filter(stakeholder -> stakeholder.getRoles().contains(stakeholderRole.name()))
 			.findFirst()
 			.map(StakeholderEntity::getFirstName)
 			.orElse(null);
@@ -92,6 +99,10 @@ public final class MessagingMapper {
 	}
 
 	static String findStakeholderEmail(final StakeholderEntity stakeholderEntity) {
+		if (isNull(stakeholderEntity)) {
+			return null;
+		}
+
 		return ofNullable(stakeholderEntity.getContactInformation())
 			.orElse(emptyList())
 			.stream()

@@ -22,14 +22,14 @@ public interface ParatransitClient {
 	@Retry(name = CLIENT_ID)
 	@PostMapping(path = "/{municipalityId}/{namespace}/process/start/{errandId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	StartProcessResponse startProcess(
-		@PathVariable(name = "municipalityId") final String municipalityId,
-		@PathVariable(name = "namespace") final String namespace,
-		@PathVariable(name = "errandId") final Long errandId);
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@PathVariable final Long errandId);
 
 	@Retry(name = CLIENT_ID)
 	@PostMapping(path = "/{municipalityId}/{namespace}/process/update/{processInstanceId}", consumes = APPLICATION_JSON_VALUE)
 	ResponseEntity<Void> updateProcess(
-		@PathVariable(name = "municipalityId") final String municipalityId,
-		@PathVariable(name = "namespace") final String namespace,
-		@PathVariable(name = "processInstanceId") final String processInstanceId);
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@PathVariable final String processInstanceId);
 }

@@ -9,7 +9,7 @@ import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubTy
 import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildMunicipalityIdFilter;
 import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildNamespaceFilter;
 import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.distinct;
-import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
+import static se.sundsvall.casedata.service.model.EventType.UPDATE;
 import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;

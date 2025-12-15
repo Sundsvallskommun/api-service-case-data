@@ -23,7 +23,9 @@ public class MessagingSettingsIntegration {
 	private static final String KEY_CONTACT_INFORMATION_EMAIL_NAME = "contact_information_email_name";
 	private static final String KEY_CONTACT_INFORMATION_URL = "contact_information_url";
 	private static final String KEY_SMS_SENDER = "sms_sender";
-	private static final String KEY_SUPPORT_TEXT = "support_text";
+	private static final String KEY_OWNER_SUPPORT_TEXT = "support_text";
+	private static final String KEY_REPORTER_SUPPORT_TEXT = "reporter_support_text";
+
 	private static final Logger LOG = LoggerFactory.getLogger(MessagingSettingsIntegration.class);
 
 	private final MessagingSettingsClient messagingSettingsClient;
@@ -46,7 +48,8 @@ public class MessagingSettingsIntegration {
 				.withContactInformationEmailName(retrieveOptionalValue(KEY_CONTACT_INFORMATION_EMAIL_NAME, messagingSettings).orElse(retrieveValue(KEY_CONTACT_INFORMATION_EMAIL, messagingSettings)))
 				.withContactInformationUrl(retrieveValue(KEY_CONTACT_INFORMATION_URL, messagingSettings))
 				.withSmsSender(retrieveValue(KEY_SMS_SENDER, messagingSettings))
-				.withSupportText(retrieveOptionalValue(KEY_SUPPORT_TEXT, messagingSettings).orElse(null)) // This is not a mandatory setting
+				.withOwnerSupportText(retrieveOptionalValue(KEY_OWNER_SUPPORT_TEXT, messagingSettings).orElse(null)) // This is not a mandatory setting
+				.withReporterSupportText(retrieveOptionalValue(KEY_REPORTER_SUPPORT_TEXT, messagingSettings).orElse(null)) // This is not a mandatory setting
 				.build();
 		} catch (final ThrowableProblem e) {
 			LOG.error("{} for namespace '{}' and department with name '{}' within municipality '{}'", e.getDetail(), sanitizeForLogging(namespace), sanitizeForLogging(departmentName), sanitizeForLogging(municipalityId));
