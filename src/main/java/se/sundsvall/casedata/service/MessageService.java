@@ -166,8 +166,6 @@ public class MessageService {
 		final var errandEntity = fetchErrand(municipalityId, namespace, errandId);
 		final var reporterStakeholder = getReporterStakeholder(errandEntity);
 
-		System.out.println(isEmailNotificationToBeSent(reporterStakeholder));
-
 		// Create a notification and send email if logic determins that mail should be sent
 		if (isEmailNotificationToBeSent(reporterStakeholder)) {
 			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, departmentName);
