@@ -1,0 +1,30 @@
+{
+	"request": {
+		"method": "GET",
+		"urlPath": "/employee/2281/portalpersondata/personal/adm01adm"
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"jsonBody": {
+			"address": "",
+			"city": "",
+			"postalCode": "",
+			"orgTree": "2|28|KSK Avd Digitalisering och IT",
+			"lastname": "Adminsson",
+			"aboutMe": "",
+			"companyId": 1,
+			"givenname": "Admin",
+			"loginName": "PERSONAL\\adm01adm",
+			"isManager": false,
+			"personid": "b10be261-b417-4c3e-a42a-9b94c27c17fa",
+			"company": "Sundsvalls kommun",
+			"fullname": "Admin Adminsson",
+			"email": "admin.adminsson@sundsvall.se",
+			"mailNickname": "admin.adminsson"
+		},
+		"status": 200
+	},
+	"name": "employee-get-persondata-administrator"
+}

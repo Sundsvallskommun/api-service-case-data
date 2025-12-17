@@ -4,7 +4,6 @@ import static java.lang.Boolean.TRUE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.data.domain.Sort.unsorted;
-import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.springframework.util.StringUtils.hasText;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
@@ -72,7 +71,7 @@ public class NotificationService {
 	}
 
 	/**
-	 * Overloaded method used to create notification internally from service for all defined notification processors
+	 * Method used to create notification internally from service
 	 *
 	 * @param municipalityId of the errand that the notification belongs to
 	 * @param namespace      of the errand that the notification belongs to
@@ -80,22 +79,7 @@ public class NotificationService {
 	 * @param errandEntity   the errand that the notification belongs to
 	 */
 	public void create(final String municipalityId, final String namespace, final Notification notification, ErrandEntity errandEntity) {
-		create(municipalityId, namespace, notification, errandEntity, null);
-	}
-
-	/**
-	 * Method used to create notification internally from service for a defined set of NotificationProcessors
-	 *
-	 * @param municipalityId      of the errand that the notification belongs to
-	 * @param namespace           of the errand that the notification belongs to
-	 * @param notification        the notification to process
-	 * @param errandEntity        the errand that the notification belongs to
-	 * @param processorsToExecute a list with full class name for filtering out which processors that shall process the
-	 *                            given notification (or null if no filter should be applied)
-	 */
-	public void create(final String municipalityId, final String namespace, final Notification notification, ErrandEntity errandEntity, List<String> processorsToExecute) {
 		ofNullable(notificationProcessors).orElse(emptyList()).stream()
-			.filter(processor -> isEmpty(processorsToExecute) || processorsToExecute.contains(processor.getClass().getName()))
 			.forEach(processor -> processor.processNotification(municipalityId, namespace, notification, errandEntity));
 	}
 

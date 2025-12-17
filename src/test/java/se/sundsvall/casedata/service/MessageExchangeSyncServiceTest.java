@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -9,7 +10,6 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
 
 import generated.se.sundsvall.messageexchange.Conversation;
 import generated.se.sundsvall.messageexchange.Identifier;
@@ -34,8 +34,6 @@ import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
-import se.sundsvall.casedata.service.notification.processor.ErrandOwnerNotificationProcessor;
-import se.sundsvall.casedata.service.notification.processor.ErrandReporterNotificationProcessor;
 
 @ExtendWith(MockitoExtension.class)
 class MessageExchangeSyncServiceTest {
@@ -67,6 +65,7 @@ class MessageExchangeSyncServiceTest {
 
 	@Test
 	void syncConversation() {
+
 		// Arrange
 		final var id = "id";
 		final var messageExchangeId = "messageExchangeId";
@@ -79,16 +78,13 @@ class MessageExchangeSyncServiceTest {
 		final var latestSyncedSequenceNumber = 123L;
 		final var targetRelationId = "targetRelationId";
 		final var newLatestSyncedSequenceNumber = 456L;
-		final var adminAdAccount = "adminAdAccount";
-		final var reporterAdAccount = "reporterAdAccount";
+		final var adAccount = "adAccount";
 
 		final var errandEntity = ErrandEntity.builder()
 			.withId(Long.parseLong(errandId))
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
-			.withStakeholders(List.of(
-				StakeholderEntity.builder().withAdAccount(adminAdAccount).withRoles(List.of(ADMINISTRATOR.name())).build(),
-				StakeholderEntity.builder().withAdAccount(reporterAdAccount).withRoles(List.of(REPORTER.name())).build()))
+			.withStakeholders(List.of(StakeholderEntity.builder().withAdAccount(adAccount).withRoles(List.of(ADMINISTRATOR.name())).build()))
 			.build();
 
 		final var conversationEntity = ConversationEntity.builder()
@@ -131,18 +127,8 @@ class MessageExchangeSyncServiceTest {
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.withErrandId(Long.parseLong(errandId))
-			.withOwnerId(adminAdAccount)
-			.build()), same(errandEntity), eq(List.of(ErrandOwnerNotificationProcessor.class.getName())));
-		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), eq(se.sundsvall.casedata.api.model.Notification.builder()
-			.withType("UPDATE")
-			.withSubType("MESSAGE")
-			.withDescription("Ny händelse för topic")
-			.withMunicipalityId(municipalityId)
-			.withNamespace(namespace)
-			.withErrandId(Long.parseLong(errandId))
-			.withOwnerId(reporterAdAccount)
-			.build()), same(errandEntity), eq(List.of(ErrandReporterNotificationProcessor.class.getName())));
-
+			.withOwnerId(adAccount)
+			.build()), same(errandEntity));
 		verify(conversationRepositoryMock).save(conversationEntity);
 
 		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
@@ -150,153 +136,63 @@ class MessageExchangeSyncServiceTest {
 	}
 
 	@Test
-	void syncConversationForMessageCreatedByAdministrator() {
+	void syncMessagesAllMatchAdministratorOwner() {
 		// Arrange
-		final var id = "id";
-		final var messageExchangeId = "messageExchangeId";
-		final var errandId = "1";
-		final var namespace = "namespace";
+		final var errandId = 123L;
 		final var municipalityId = "municipalityId";
-		final var topic = "topic";
-		final var type = "INTERNAL";
-		final var relationIds = List.of("relationId");
-		final var latestSyncedSequenceNumber = 123L;
-		final var targetRelationId = "targetRelationId";
-		final var newLatestSyncedSequenceNumber = 456L;
-		final var adminAdAccount = "adminAdAccount";
-		final var reporterAdAccount = "reporterAdAccount";
-
-		final var errandEntity = ErrandEntity.builder()
-			.withId(Long.parseLong(errandId))
-			.withMunicipalityId(municipalityId)
-			.withNamespace(namespace)
-			.withStakeholders(List.of(
-				StakeholderEntity.builder().withAdAccount(adminAdAccount).withRoles(List.of(ADMINISTRATOR.name())).build(),
-				StakeholderEntity.builder().withAdAccount(reporterAdAccount).withRoles(List.of(REPORTER.name())).build()))
-			.build();
-
+		final var namespace = "namespace";
+		final var messageExchangeId = "messageExchangeId";
+		final var errandAdministratorOwnerId = "errandAdministratorOwnerId";
 		final var conversationEntity = ConversationEntity.builder()
-			.withId(id)
-			.withMessageExchangeId(messageExchangeId)
-			.withErrandId(errandId)
-			.withNamespace(namespace)
+			.withErrandId(String.valueOf(errandId))
 			.withMunicipalityId(municipalityId)
-			.withTopic(topic)
-			.withType(type)
-			.withRelationIds(relationIds)
-			.withLatestSyncedSequenceNumber(latestSyncedSequenceNumber)
-			.withTargetRelationId(targetRelationId)
+			.withNamespace(namespace)
+			.withMessageExchangeId(messageExchangeId)
+			.withLatestSyncedSequenceNumber(123L)
 			.build();
 
-		final var conversation = new Conversation()
-			.id(id)
-			.namespace(namespace)
-			.municipalityId(municipalityId)
-			.participants(List.of(new Identifier().type("identifier").value("identifierValue")))
-			.externalReferences(List.of(new KeyValues().key("relationId").values(List.of(relationIds.getFirst()))))
-			.metadata(List.of(new KeyValues().key("metadata").values(List.of("metadataValue"))))
-			.topic(topic)
-			.latestSequenceNumber(newLatestSyncedSequenceNumber);
-
-		when(errandRepositoryMock.getReferenceById(any())).thenReturn(errandEntity);
-		when(messageExchangeClientMock.getMessages(any(), any(), any(), any(), any())).thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier().value(adminAdAccount))))));
-		when(conversationRepositoryMock.save(conversationEntity)).thenReturn(conversationEntity);
+		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(MESSAGE_EXCHANGE_NS), any(), any(), any()))
+			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier(errandAdministratorOwnerId))))));
 
 		// Act
-		service.syncConversation(conversationEntity, conversation);
+		var result = service.syncMessages(conversationEntity, errandAdministratorOwnerId);
 
 		// Assert
-		verify(errandRepositoryMock).getReferenceById(1L);
+		assertThat(result).isTrue();
 		verify(messageExchangeClientMock).getMessages(municipalityId, MESSAGE_EXCHANGE_NS, messageExchangeId, "sequenceNumber.id >123", Pageable.unpaged());
-		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), eq(se.sundsvall.casedata.api.model.Notification.builder()
-			.withType("UPDATE")
-			.withSubType("MESSAGE")
-			.withDescription("Ny händelse för topic")
-			.withMunicipalityId(municipalityId)
-			.withNamespace(namespace)
-			.withErrandId(Long.parseLong(errandId))
-			.withOwnerId(reporterAdAccount)
-			.build()), same(errandEntity), eq(List.of(ErrandReporterNotificationProcessor.class.getName())));
-
-		verify(conversationRepositoryMock).save(conversationEntity);
-
-		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
-		verifyNoInteractions(attachmentServiceMock);
+		verifyNoMoreInteractions(messageExchangeClientMock);
+		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock);
 	}
 
 	@Test
-	void syncConversationForMessageCreatedByReporter() {
+	void syncMessagesNotAllMatchAdministratorOwner() {
 		// Arrange
-		final var id = "id";
-		final var messageExchangeId = "messageExchangeId";
-		final var errandId = "1";
-		final var namespace = "namespace";
+		final var errandId = 123L;
 		final var municipalityId = "municipalityId";
-		final var topic = "topic";
-		final var type = "INTERNAL";
-		final var relationIds = List.of("relationId");
-		final var latestSyncedSequenceNumber = 123L;
-		final var targetRelationId = "targetRelationId";
-		final var newLatestSyncedSequenceNumber = 456L;
-		final var adminAdAccount = "adminAdAccount";
-		final var reporterAdAccount = "reporterAdAccount";
-
-		final var errandEntity = ErrandEntity.builder()
-			.withId(Long.parseLong(errandId))
-			.withMunicipalityId(municipalityId)
-			.withNamespace(namespace)
-			.withStakeholders(List.of(
-				StakeholderEntity.builder().withAdAccount(adminAdAccount).withRoles(List.of(ADMINISTRATOR.name())).build(),
-				StakeholderEntity.builder().withAdAccount(reporterAdAccount).withRoles(List.of(REPORTER.name())).build()))
-			.build();
-
+		final var namespace = "namespace";
+		final var messageExchangeId = "messageExchangeId";
+		final var errandAdministratorOwnerId = "errandAdministratorOwnerId";
 		final var conversationEntity = ConversationEntity.builder()
-			.withId(id)
-			.withMessageExchangeId(messageExchangeId)
-			.withErrandId(errandId)
-			.withNamespace(namespace)
+			.withErrandId(String.valueOf(errandId))
 			.withMunicipalityId(municipalityId)
-			.withTopic(topic)
-			.withType(type)
-			.withRelationIds(relationIds)
-			.withLatestSyncedSequenceNumber(latestSyncedSequenceNumber)
-			.withTargetRelationId(targetRelationId)
+			.withNamespace(namespace)
+			.withMessageExchangeId(messageExchangeId)
+			.withLatestSyncedSequenceNumber(123L)
 			.build();
 
-		final var conversation = new Conversation()
-			.id(id)
-			.namespace(namespace)
-			.municipalityId(municipalityId)
-			.participants(List.of(new Identifier().type("identifier").value("identifierValue")))
-			.externalReferences(List.of(new KeyValues().key("relationId").values(List.of(relationIds.getFirst()))))
-			.metadata(List.of(new KeyValues().key("metadata").values(List.of("metadataValue"))))
-			.topic(topic)
-			.latestSequenceNumber(newLatestSyncedSequenceNumber);
-
-		when(errandRepositoryMock.getReferenceById(any())).thenReturn(errandEntity);
-		when(messageExchangeClientMock.getMessages(any(), any(), any(), any(), any())).thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier().value(reporterAdAccount))))));
-		when(conversationRepositoryMock.save(conversationEntity)).thenReturn(conversationEntity);
+		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(MESSAGE_EXCHANGE_NS), any(), any(), any()))
+			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(
+				new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier(errandAdministratorOwnerId)),
+				new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier("otherUserId"))))));
 
 		// Act
-		service.syncConversation(conversationEntity, conversation);
+		var result = service.syncMessages(conversationEntity, errandAdministratorOwnerId);
 
 		// Assert
-		verify(errandRepositoryMock).getReferenceById(1L);
+		assertThat(result).isFalse();
 		verify(messageExchangeClientMock).getMessages(municipalityId, MESSAGE_EXCHANGE_NS, messageExchangeId, "sequenceNumber.id >123", Pageable.unpaged());
-		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), eq(se.sundsvall.casedata.api.model.Notification.builder()
-			.withType("UPDATE")
-			.withSubType("MESSAGE")
-			.withDescription("Ny händelse för topic")
-			.withMunicipalityId(municipalityId)
-			.withNamespace(namespace)
-			.withErrandId(Long.parseLong(errandId))
-			.withOwnerId(adminAdAccount)
-			.build()), same(errandEntity), eq(List.of(ErrandOwnerNotificationProcessor.class.getName())));
-
-		verify(conversationRepositoryMock).save(conversationEntity);
-
-		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
-		verifyNoInteractions(attachmentServiceMock);
+		verifyNoMoreInteractions(messageExchangeClientMock);
+		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock);
 	}
 
 	@Test
@@ -306,8 +202,7 @@ class MessageExchangeSyncServiceTest {
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
 		final var messageExchangeId = "messageExchangeId";
-		final var errandEntity = ErrandEntity.builder().withId(errandId).build();
-		final var conversation = new Conversation();
+		final var errandAdministratorOwnerId = "errandAdministratorOwnerId";
 		final var conversationEntity = ConversationEntity.builder()
 			.withErrandId(String.valueOf(errandId))
 			.withMunicipalityId(municipalityId)
@@ -316,14 +211,14 @@ class MessageExchangeSyncServiceTest {
 			.withLatestSyncedSequenceNumber(123L)
 			.build();
 
-		when(errandRepositoryMock.getReferenceById(errandId)).thenReturn(errandEntity);
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(MESSAGE_EXCHANGE_NS), any(), any(), any()))
 			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of())));
 
 		// Act
-		service.syncConversation(conversationEntity, conversation);
+		var result = service.syncMessages(conversationEntity, errandAdministratorOwnerId);
 
 		// Assert
+		assertThat(result).isTrue();
 		verify(messageExchangeClientMock).getMessages(municipalityId, MESSAGE_EXCHANGE_NS, messageExchangeId, "sequenceNumber.id >123", Pageable.unpaged());
 		verifyNoMoreInteractions(messageExchangeClientMock);
 		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock);
@@ -336,8 +231,7 @@ class MessageExchangeSyncServiceTest {
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
 		final var messageExchangeId = "messageExchangeId";
-		final var errandEntity = ErrandEntity.builder().withId(errandId).build();
-		final var conversation = new Conversation();
+		final var errandAdministratorOwnerId = "errandAdministratorOwnerId";
 		final var conversationEntity = ConversationEntity.builder()
 			.withErrandId(String.valueOf(errandId))
 			.withMunicipalityId(municipalityId)
@@ -346,12 +240,11 @@ class MessageExchangeSyncServiceTest {
 			.withLatestSyncedSequenceNumber(123L)
 			.build();
 
-		when(errandRepositoryMock.getReferenceById(errandId)).thenReturn(errandEntity);
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(MESSAGE_EXCHANGE_NS), any(), any(), any()))
 			.thenReturn(null);
 
 		// Act & Assert
-		assertThatThrownBy(() -> service.syncConversation(conversationEntity, conversation))
+		assertThatThrownBy(() -> service.syncMessages(conversationEntity, errandAdministratorOwnerId))
 			.isInstanceOf(Problem.class)
 			.hasMessageContaining("Failed to retrieve messages from Message Exchange");
 
