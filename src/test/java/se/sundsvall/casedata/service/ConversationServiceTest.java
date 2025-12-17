@@ -4,12 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.api.model.conversation.ConversationType.EXTERNAL;
-import static se.sundsvall.casedata.service.ConversationService.CONVERSATION_DEPARTMENT_NAME;
+import static se.sundsvall.casedata.api.model.conversation.ConversationType.INTERNAL;
 
 import generated.se.sundsvall.messageexchange.KeyValues;
 import java.io.IOException;
@@ -32,7 +33,9 @@ import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.ConversationType;
 import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeScheduler;
 
@@ -40,14 +43,23 @@ import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeSc
 class ConversationServiceTest {
 
 	private static final String MESSAGE_EXCHANGE_NAMESPACE = "case-data";
+	private static final String CONVERSATION_DEPARTMENT_NAME = "CONVERSATION";
+	private static final String PARATRANSIT_DEPARTMENT_NAME = "PARATRANSIT";
 	@Mock
 	private MessageService messageServiceMock;
+
 	@Mock
 	private ConversationRepository conversationRepositoryMock;
+
+	@Mock
+	private ErrandRepository errandRepositoryMock;
+
 	@Mock
 	private MessageExchangeClient messageExchangeClientMock;
+
 	@Mock
 	private MessageExchangeScheduler messageExchangeSchedulerMock;
+
 	@InjectMocks
 	private ConversationService conversationService;
 
@@ -268,7 +280,6 @@ class ConversationServiceTest {
 
 	@Test
 	void getConversations() {
-
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -309,7 +320,6 @@ class ConversationServiceTest {
 
 	@Test
 	void updateConversation() {
-
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -415,8 +425,7 @@ class ConversationServiceTest {
 	}
 
 	@Test
-	void createMessage() {
-
+	void createExternalMessage() {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -442,6 +451,100 @@ class ConversationServiceTest {
 		verify(messageExchangeClientMock).createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any());
 		verify(messageExchangeSchedulerMock).triggerSyncConversationsAsync();
 		verify(messageServiceMock).sendMessageNotification(municipalityId, namespace, errandId, CONVERSATION_DEPARTMENT_NAME);
+		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock, messageExchangeSchedulerMock, messageServiceMock);
+	}
+
+	@Test
+	void createInternalMessageForParatransitErrand() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "123";
+		final var messageExchangeId = "messageExchangeId";
+
+		final var messageContent = Message.builder().build();
+
+		final var attachment = new MockMultipartFile("attachments", "attachment.txt".getBytes());
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
+			.thenReturn(Optional.ofNullable(ConversationEntity.builder().withType(INTERNAL.name()).withMessageExchangeId(messageExchangeId).build()));
+
+		when(messageExchangeClientMock.createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any()))
+			.thenReturn(ResponseEntity.ok().build());
+
+		when(errandRepositoryMock.getReferenceById(errandId)).thenReturn(ErrandEntity.builder().withCaseType("PaRaTrAnSiT_SOMETHING_SOMETHING").build());
+
+		// Act
+		conversationService.createMessage(municipalityId, namespace, errandId, conversationId, messageContent, List.of(attachment));
+
+		// Assert
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(messageExchangeClientMock).createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any());
+		verify(messageExchangeSchedulerMock).triggerSyncConversationsAsync();
+		verify(messageServiceMock).sendEmailNotification(municipalityId, namespace, errandId, PARATRANSIT_DEPARTMENT_NAME);
+		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock, messageExchangeSchedulerMock, messageServiceMock);
+	}
+
+	@Test
+	void createInternalMessageForNonParatransitErrand() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "123";
+		final var messageExchangeId = "messageExchangeId";
+
+		final var messageContent = Message.builder().build();
+
+		final var attachment = new MockMultipartFile("attachments", "attachment.txt".getBytes());
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
+			.thenReturn(Optional.ofNullable(ConversationEntity.builder().withType(INTERNAL.name()).withMessageExchangeId(messageExchangeId).build()));
+
+		when(messageExchangeClientMock.createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any()))
+			.thenReturn(ResponseEntity.ok().build());
+
+		// Act
+		conversationService.createMessage(municipalityId, namespace, errandId, conversationId, messageContent, List.of(attachment));
+
+		// Assert
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(messageExchangeClientMock).createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any());
+		verify(messageExchangeSchedulerMock).triggerSyncConversationsAsync();
+		verify(messageServiceMock).sendEmailNotification(municipalityId, namespace, errandId, CONVERSATION_DEPARTMENT_NAME);
+		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock, messageExchangeSchedulerMock, messageServiceMock);
+	}
+
+	@Test
+	void createMessageSendIntegrationThrowsException() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "123";
+		final var messageExchangeId = "messageExchangeId";
+
+		final var messageContent = Message.builder().build();
+
+		final var attachment = new MockMultipartFile("attachments", "attachment.txt".getBytes());
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
+			.thenReturn(Optional.ofNullable(ConversationEntity.builder().withType(INTERNAL.name()).withMessageExchangeId(messageExchangeId).build()));
+
+		when(messageExchangeClientMock.createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any()))
+			.thenReturn(ResponseEntity.ok().build());
+
+		doThrow(new RuntimeException("Test")).when(messageServiceMock).sendEmailNotification(any(), any(), any(), any());
+
+		// Act
+		conversationService.createMessage(municipalityId, namespace, errandId, conversationId, messageContent, List.of(attachment));
+
+		// Assert
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(messageExchangeClientMock).createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any());
+		verify(messageExchangeSchedulerMock).triggerSyncConversationsAsync();
+		verify(messageServiceMock).sendEmailNotification(municipalityId, namespace, errandId, CONVERSATION_DEPARTMENT_NAME);
 		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock, messageExchangeSchedulerMock, messageServiceMock);
 	}
 

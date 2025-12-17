@@ -35,7 +35,8 @@ class MessagingSettingsIntegrationTest {
 	private static final String KEY_EMAIL_NAME = "contact_information_email_name";
 	private static final String KEY_URL = "contact_information_url";
 	private static final String KEY_SMS_SENDER = "sms_sender";
-	private static final String KEY_SUPPORT_TEXT = "support_text";
+	private static final String KEY_OWNER_SUPPORT_TEXT = "support_text";
+	private static final String KEY_REPORTER_SUPPORT_TEXT = "reporter_support_text";
 
 	@Mock
 	private MessagingSettingsClient clientMock;
@@ -52,14 +53,16 @@ class MessagingSettingsIntegrationTest {
 		final var emailNameValue = "emailName";
 		final var urlValue = "url";
 		final var smsSenderValue = "smsSender";
-		final var supportTextValue = "supportText";
+		final var ownerSupportTextValue = "supportText";
+		final var reporterSupportTextValue = "reporterSupportText";
 
 		when(clientMock.getMessagingsettings(eq(MUNICIPALITY_ID), anyString())).thenReturn(List.of(new MessagingSettings().values(List.of(
 			new MessagingSettingValue().key(KEY_EMAIL).value(emailValue),
 			new MessagingSettingValue().key(KEY_EMAIL_NAME).value(emailNameValue),
 			new MessagingSettingValue().key(KEY_URL).value(urlValue),
 			new MessagingSettingValue().key(KEY_SMS_SENDER).value(smsSenderValue),
-			new MessagingSettingValue().key(KEY_SUPPORT_TEXT).value(supportTextValue)))));
+			new MessagingSettingValue().key(KEY_OWNER_SUPPORT_TEXT).value(ownerSupportTextValue),
+			new MessagingSettingValue().key(KEY_REPORTER_SUPPORT_TEXT).value(reporterSupportTextValue)))));
 
 		final var result = integration.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_NAME);
 
@@ -67,7 +70,8 @@ class MessagingSettingsIntegrationTest {
 		assertThat(result.getContactInformationEmailName()).isEqualTo(emailNameValue);
 		assertThat(result.getContactInformationUrl()).isEqualTo(urlValue);
 		assertThat(result.getSmsSender()).isEqualTo(smsSenderValue);
-		assertThat(result.getSupportText()).isEqualTo(supportTextValue);
+		assertThat(result.getOwnerSupportText()).isEqualTo(ownerSupportTextValue);
+		assertThat(result.getReporterSupportText()).isEqualTo(reporterSupportTextValue);
 	}
 
 	@Test
@@ -89,7 +93,8 @@ class MessagingSettingsIntegrationTest {
 		assertThat(result.getContactInformationEmailName()).isEqualTo(emailNameValue);
 		assertThat(result.getContactInformationUrl()).isEqualTo(urlValue);
 		assertThat(result.getSmsSender()).isEqualTo(smsSenderValue);
-		assertThat(result.getSupportText()).isBlank();
+		assertThat(result.getOwnerSupportText()).isBlank();
+		assertThat(result.getReporterSupportText()).isBlank();
 	}
 
 	@Test

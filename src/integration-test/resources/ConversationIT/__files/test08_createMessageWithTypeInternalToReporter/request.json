@@ -1,0 +1,15 @@
+{
+	"sequenceNumber": "1",
+	"inReplyTo": "msg-12344",
+	"createdBy": {
+		"type": "string",
+		"value": "string"
+	},
+	"content": "Hello, how can I help you?",
+	"readBy": [
+		{
+			"type": "string",
+			"value": "string"
+		}
+	]
+}

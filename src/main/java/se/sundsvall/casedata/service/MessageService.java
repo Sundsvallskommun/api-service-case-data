@@ -1,14 +1,18 @@
 package se.sundsvall.casedata.service;
 
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.ObjectUtils.notEqual;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_REPORTER_SUPPORT_TEXT;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailRequest;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toMessagingMessageRequest;
+import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ENTITY_NOT_FOUND;
@@ -20,7 +24,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,12 +40,12 @@ import se.sundsvall.casedata.integration.messaging.MessagingClient;
 import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsIntegration;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.dept44.support.Identifier;
+import se.sundsvall.dept44.support.Identifier.Type;
 
 @Service
 @Transactional
 public class MessageService {
 
-	static final String PARATRANSIT_DEPARTMENT_NAME = "PARATRANSIT";
 	private static final String NOTIFICATION_TYPE = "UPDATE";
 	private static final String NOTIFICATION_DESCRIPTION = "Meddelande skickat";
 	private final MessageRepository messageRepository;
@@ -85,16 +88,15 @@ public class MessageService {
 	}
 
 	public MessageResponse create(final Long errandId, final MessageRequest request, final String municipalityId, final String namespace) {
-		final var errandEntity = errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+		final var errandEntity = fetchErrand(municipalityId, namespace, errandId);
 
 		final var messageEntity = messageRepository.save(mapper.toMessageEntity(request, errandId, municipalityId, namespace));
 		notificationService.create(municipalityId, namespace, toNotification(errandEntity, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errandEntity);
 
-		final var stakeholderEntity = getReporterStakeholder(errandEntity);
+		final var reporterStakeholder = getReporterStakeholder(errandEntity);
 
-		if (doesCaseTypeExist(municipalityId, namespace, errandEntity.getCaseType()) && stakeholderEntity != null && !stakeholderEntity.getAdAccount().equals(request.getUsername())) {
-			sendEmailNotification(municipalityId, namespace, errandEntity, stakeholderEntity, PARATRANSIT_DEPARTMENT_NAME);
+		if (doesCaseTypeExist(municipalityId, namespace, errandEntity.getCaseType()) && reporterStakeholder != null && !reporterStakeholder.getAdAccount().equals(request.getUsername())) {
+			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, DEPARTMENT_NAME_PARATRANSIT);
 		}
 
 		return mapper.toMessageResponse(messageEntity, true);
@@ -134,10 +136,17 @@ public class MessageService {
 		}
 	}
 
+	/**
+	 * Method for sending notification message to external applicant stakeholder by partyId (called from
+	 * ConversationService.createMessage).
+	 *
+	 * @param municipalityId of the errand that the message belongs to
+	 * @param namespace      of the errand that the message belongs to
+	 * @param errandId       of the errand that the message belongs to
+	 * @param departmentName the department name to use when retreiving which messaging settings to use
+	 */
 	public void sendMessageNotification(final String municipalityId, final String namespace, final Long errandId, final String departmentName) {
-
-		final var errandEntity = errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+		final var errandEntity = fetchErrand(municipalityId, namespace, errandId);
 
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
 		final var request = toMessagingMessageRequest(errandEntity, messagingSettings);
@@ -145,9 +154,46 @@ public class MessageService {
 		sendMessageNotification(errandEntity, request);
 	}
 
-	public void sendMessageNotification(final ErrandEntity errandEntity, final generated.se.sundsvall.messaging.MessageRequest request) {
+	/**
+	 * Method for sending email notification to reporter stakeholder (called from ConversationService.createMessage).
+	 *
+	 * @param municipalityId of the errand that the message belongs to
+	 * @param namespace      of the errand that the message belongs to
+	 * @param errandId       of the errand that the message belongs to
+	 * @param departmentName the department name to use when retreiving which messaging settings to use
+	 */
+	public void sendEmailNotification(final String municipalityId, final String namespace, final Long errandId, final String departmentName) {
+		final var errandEntity = fetchErrand(municipalityId, namespace, errandId);
+		final var reporterStakeholder = getReporterStakeholder(errandEntity);
 
-		final var partyId = Optional.ofNullable(request.getMessages())
+		System.out.println(isEmailNotificationToBeSent(reporterStakeholder));
+
+		// Create a notification and send email if logic determins that mail should be sent
+		if (isEmailNotificationToBeSent(reporterStakeholder)) {
+			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, departmentName);
+		}
+	}
+
+	/**
+	 * Method determins if email notification is to be sent or not. If no identifier is present or if identifier is present
+	 * and identifier is of any other type than ad account, or if type is ad account and value of
+	 * stakeholder is not equal to identifier value (i.e. a user that is not same as the stakeholder is creating the
+	 * message) an email should be sent.
+	 *
+	 * @param  stakeholderEntity the stakehlolder to evaluate against
+	 * @return                   true if email notification is to be sent, false otherwise
+	 */
+	boolean isEmailNotificationToBeSent(final StakeholderEntity stakeholderEntity) {
+		return ofNullable(Identifier.get())
+			.map(identifier -> notEqual(identifier.getType(), Type.AD_ACCOUNT) ||
+				notEqual(identifier.getValue(), ofNullable(stakeholderEntity)
+					.map(StakeholderEntity::getAdAccount)
+					.orElse(identifier.getValue()))) // If no stakeholder is present mail should not be sent, hence we use identifier value to compare to in that case
+			.orElse(true);
+	}
+
+	private void sendMessageNotification(final ErrandEntity errandEntity, final generated.se.sundsvall.messaging.MessageRequest request) {
+		final var partyId = ofNullable(request.getMessages())
 			.map(List::getFirst)
 			.map(Message::getParty)
 			.map(MessageParty::getPartyId)
@@ -161,22 +207,19 @@ public class MessageService {
 				throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message notification");
 			}
 		}
-
 	}
 
 	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName) {
-
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
-		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity);
-
+		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity, TYPE_REPORTER_SUPPORT_TEXT);
 		messagingClient.sendEmail(errandEntity.getMunicipalityId(), request);
 	}
 
 	private StakeholderEntity getReporterStakeholder(final ErrandEntity errandEntity) {
-		return Optional.ofNullable(errandEntity.getStakeholders())
+		return ofNullable(errandEntity.getStakeholders())
 			.orElse(emptyList())
 			.stream()
-			.filter(stakeholder -> stakeholder.getRoles().contains(REPORTER.name()))
+			.filter(stakeholder -> ofNullable(stakeholder.getRoles()).orElse(emptyList()).contains(REPORTER.name()))
 			.findFirst()
 			.orElse(null);
 	}
@@ -188,7 +231,10 @@ public class MessageService {
 		} catch (final Exception ignored) {
 			return false;
 		}
-
 	}
 
+	private ErrandEntity fetchErrand(final String municipalityId, final String namespace, final Long errandId) {
+		return errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+	}
 }
