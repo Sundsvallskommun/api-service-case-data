@@ -1,8 +1,6 @@
 package se.sundsvall.casedata.apptest;
 
 import static java.text.MessageFormat.format;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.GET;
@@ -24,10 +22,8 @@ import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
-
 import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
@@ -67,6 +63,7 @@ class ConversationIT extends AbstractAppTest {
 
 	@Test
 	void test03_updateConversation() {
+
 		setupCall()
 			.withHttpMethod(PATCH)
 			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID))
@@ -96,6 +93,7 @@ class ConversationIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
+
 	}
 
 	@Test
@@ -109,6 +107,7 @@ class ConversationIT extends AbstractAppTest {
 			.withHeader(HEADER_NAME, "type=adAccount; someUser123")
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
+
 	}
 
 	@Test
@@ -119,6 +118,7 @@ class ConversationIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
+
 	}
 
 	@Test
@@ -132,63 +132,4 @@ class ConversationIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
-	/**
-	 * Test to verify email is sent and notifications are created when creating an message with type internal for an errand
-	 * where stakeholder with reporter role is present, i.e. test of scenario when administrator creates an internal message
-	 * in a case created by a reporter (for example in paratransit))
-	 */
-	@Test
-	void test08_createMessageWithTypeInternalToReporter() throws FileNotFoundException {
-		final var errandId = 3;
-		final var internalConversationId = "896a44d8-724b-11ed-a840-0242ac110004";
-		final var notificationsResponseFile = "notificationResponse.json";
-
-		setupCall()
-			.withHttpMethod(POST)
-			.withServicePath(format(PATH + "/{3}/messages", MUNICIPALITY_ID, NAMESPACE, errandId, internalConversationId))
-			.withContentType(MULTIPART_FORM_DATA)
-			.withRequestFile("message", REQUEST_FILE)
-			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(HEADER_NAME, "type=adAccount; adm01adm")
-			.withExpectedResponseStatus(NO_CONTENT)
-			.sendRequest();
-
-		setupCall()
-			.withServicePath(format("/{0}/{1}/errands/{2}/notifications", MUNICIPALITY_ID, NAMESPACE, errandId))
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(notificationsResponseFile)
-			.withJsonAssertOptions(List.of(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS))
-			.sendRequestAndVerifyResponse();
-	}
-
-	/**
-	 * Test to verify email is NOT sent but notifications are created when creating an message with type internal for an
-	 * errand where stakeholder with reporter role is present, i.e. test of scenario when reporter creates an internal
-	 * message to the administrator of the errand in a case created by the reporter (for example in paratransit)
-	 */
-	@Test
-	void test09_createMessageWithTypeInternalToAdministrator() throws FileNotFoundException {
-		final var errandId = 3;
-		final var internalConversationId = "896a44d8-724b-11ed-a840-0242ac110004";
-		final var notificationsResponseFile = "notificationResponse.json";
-
-		setupCall()
-			.withHttpMethod(POST)
-			.withServicePath(format(PATH + "/{3}/messages", MUNICIPALITY_ID, NAMESPACE, errandId, internalConversationId))
-			.withContentType(MULTIPART_FORM_DATA)
-			.withRequestFile("message", REQUEST_FILE)
-			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
-			.withHeader(HEADER_NAME, "type=adAccount; tes02rep")
-			.withExpectedResponseStatus(NO_CONTENT)
-			.sendRequest();
-
-		setupCall()
-			.withServicePath(format("/{0}/{1}/errands/{2}/notifications", MUNICIPALITY_ID, NAMESPACE, errandId))
-			.withHttpMethod(GET)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponse(notificationsResponseFile)
-			.withJsonAssertOptions(List.of(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS))
-			.sendRequestAndVerifyResponse();
-	}
 }

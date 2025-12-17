@@ -1,9 +1,6 @@
 package se.sundsvall.casedata.service;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,7 +20,7 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
 import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
-import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
+import static se.sundsvall.casedata.service.MessageService.PARATRANSIT_DEPARTMENT_NAME;
 import static se.sundsvall.dept44.support.Identifier.Type.PARTY_ID;
 
 import generated.se.sundsvall.messaging.EmailRequest;
@@ -36,15 +33,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -56,7 +49,6 @@ import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.Notification;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
@@ -135,11 +127,6 @@ class MessageServiceTest {
 
 	@Mock
 	private MetadataService metadataserviceMock;
-
-	@BeforeEach
-	void setup() {
-		Identifier.remove();
-	}
 
 	@Test
 	void findMessages() {
@@ -289,11 +276,11 @@ class MessageServiceTest {
 			.withCaseTitleAddition("Case Title Addition")
 			.withErrandNumber("123456789")
 			.withStakeholders(List.of(stakeholder, stakholderReporter))
-			.withCaseType(DEPARTMENT_NAME_PARATRANSIT)
+			.withCaseType(PARATRANSIT_DEPARTMENT_NAME)
 			.build();
 
-		when(metadataserviceMock.getCaseType(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_NAME_PARATRANSIT)).thenReturn(CaseType.builder().build());
-		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_NAME_PARATRANSIT)).thenReturn(MessagingSettings.builder().build());
+		when(metadataserviceMock.getCaseType(MUNICIPALITY_ID, NAMESPACE, PARATRANSIT_DEPARTMENT_NAME)).thenReturn(CaseType.builder().build());
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, PARATRANSIT_DEPARTMENT_NAME)).thenReturn(MessagingSettings.builder().build());
 		when(messageRepositoryMock.save(any(MessageEntity.class))).thenReturn(MessageEntity.builder().build());
 		when(messageMapperMock.toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(MessageEntity.builder().build());
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(Optional.of(errand));
@@ -384,6 +371,7 @@ class MessageServiceTest {
 		verify(messagingClientMock).sendMessage(eq(MUNICIPALITY_ID), messageRequestCaptor.capture());
 		assertThat(messageRequestCaptor.getValue().getMessages()).hasSize(1);
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
+
 	}
 
 	@Test
@@ -399,6 +387,7 @@ class MessageServiceTest {
 			.hasFieldOrPropertyWithValue("message", "Not Found: Errand with id:'1' not found in namespace:'MY_NAMESPACE' for municipality with id:'2281'");
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(messagingSettingsIntegrationMock, messagingClientMock, messageMapperMock, notificationServiceMock);
+
 	}
 
 	@Test
@@ -422,71 +411,7 @@ class MessageServiceTest {
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.INTERNAL_SERVER_ERROR)
 			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to create message notification");
-	}
-
-	@MethodSource("reporterEmailArgumentProvider")
-	@ParameterizedTest(name = "{0}")
-	void sendEmailNotification(String name, String identifierValue, StakeholderEntity stakeholderEntity, boolean emailShouldBeSent) {
-		// Arrange
-		if (nonNull(identifierValue)) {
-			Identifier.set(Identifier.parse(identifierValue));
-		}
-
-		final var errandId = 1L;
-		final var errand = ErrandEntity.builder()
-			.withId(errandId)
-			.withCaseTitleAddition("Case Title Addition")
-			.withErrandNumber("123456789")
-			.withMunicipalityId(MUNICIPALITY_ID)
-			.withStakeholders(isNull(stakeholderEntity) ? emptyList() : List.of(stakeholderEntity))
-			.withNamespace(NAMESPACE)
-			.build();
-
-		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
-		if (emailShouldBeSent) {
-			when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
-		}
-
-		// Act
-		messageService.sendEmailNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
-
-		// Assert and verify
-		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), any(), eq(errand));
-		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		if (emailShouldBeSent) {
-			verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
-			verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
-			assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case Title Addition 123456789");
-			assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(stakeholderEntity.getContactInformation().getFirst().getValue());
-		}
-		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
 
 	}
 
-	@MethodSource("reporterEmailArgumentProvider")
-	@ParameterizedTest(name = "{0}")
-	void isEmailNotificationToBeSent(String name, String identifierValue, StakeholderEntity stakeholderEntity, boolean expectedOutcome) {
-		Identifier.remove();
-		if (nonNull(identifierValue)) {
-			Identifier.set(Identifier.parse(identifierValue));
-		}
-
-		assertThat(messageService.isEmailNotificationToBeSent(stakeholderEntity)).isEqualTo(expectedOutcome);
-	}
-
-	private static Stream<Arguments> reporterEmailArgumentProvider() {
-		final var stakeholderTemplate = StakeholderEntity.builder()
-			.withAdAccount("abc123")
-			.withRoles(List.of(StakeholderRole.REPORTER.name()))
-			.withContactInformation(List.of(ContactInformationEntity.builder().withContactType(EMAIL).withValue("abc123@noreply.com").build()));
-
-		return Stream.of(
-			Arguments.of("Identifier is null", null, stakeholderTemplate.build(), true),
-			Arguments.of("Identifier with custom type", "any_identifier; type=custom", stakeholderTemplate.build(), true),
-			Arguments.of("Identifier with party id type", "054c2673-af4e-461b-9afa-c5c813303bc7; type=partyId", stakeholderTemplate.build(), true),
-			Arguments.of("Identifier with ad account type but different value as provided stakeholders ad account", "bcd234; type=adAccount", stakeholderTemplate.build(), true),
-			Arguments.of("Identifier with ad account and stakeholder is null", "abc123; type=adAccount", null, false),
-			Arguments.of("Identifier with ad account type and same value as provided stakeholders ad account but not with reporter role", "abc123; type=adAccount", stakeholderTemplate.withRoles(List.of(StakeholderRole.APPLICANT.name())).build(), false),
-			Arguments.of("Identifier with ad account type and same value as provided stakeholders ad account", "abc123; type=adAccount", stakeholderTemplate.build(), false));
-	}
 }

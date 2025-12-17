@@ -32,7 +32,6 @@ import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
 import static se.sundsvall.casedata.TestUtil.createStatus;
 import static se.sundsvall.casedata.TestUtil.createStatusEntity;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.APPLICANT;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ATTACHMENT;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddress;
@@ -794,18 +793,6 @@ class EntityMapperTest {
 
 		// Assert
 		assertThat(ownerId).isNull();
-	}
-
-	@Test
-	void getUserIdFromRole() {
-		// Arrange
-		final var errandEntity = createErrandEntity();
-
-		// Act
-		final var id = EntityMapper.getUserIdFromRole(errandEntity, APPLICANT);
-
-		// Assert
-		assertThat(id).isEqualTo("adAccount");
 	}
 
 	@Test

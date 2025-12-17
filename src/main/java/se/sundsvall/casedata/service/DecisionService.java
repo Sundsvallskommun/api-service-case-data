@@ -3,7 +3,7 @@ package se.sundsvall.casedata.service;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.DECISION;
-import static se.sundsvall.casedata.service.model.EventType.UPDATE;
+import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_CREATED;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_UPDATED;
@@ -147,8 +147,9 @@ public class DecisionService {
 		if (locking) {
 			return errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 				.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+		} else {
+			return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+				.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 		}
-		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 	}
 }

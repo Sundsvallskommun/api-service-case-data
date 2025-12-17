@@ -3,8 +3,8 @@ package se.sundsvall.casedata.service;
 import static java.util.Collections.emptyList;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.NOTE;
-import static se.sundsvall.casedata.service.model.EventType.CREATE;
-import static se.sundsvall.casedata.service.model.EventType.UPDATE;
+import static se.sundsvall.casedata.service.NotificationService.EventType.CREATE;
+import static se.sundsvall.casedata.service.NotificationService.EventType.UPDATE;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_NOTE_CREATED;
@@ -131,8 +131,9 @@ public class NoteService {
 		if (locking) {
 			return errandRepository.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 				.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
+		} else {
+			return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+				.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 		}
-		return errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId)));
 	}
 }

@@ -1,34 +1,7 @@
 {
 	"request": {
 		"method": "POST",
-		"url": "/messaging/2281/messages",
-		"bodyPatterns": [
-			{
-				"equalToJson": {
-					"messages": [
-						{
-							"party": {
-								"partyId": "352ec7b4-cae0-4216-8d47-3e10246b2952",
-								"externalReferences": []
-							},
-							"filters": {},
-							"sender": {
-								"email": {
-									"name": "no-reply.6@localhost.local",
-									"address": "no-reply.6@localhost.local"
-								},
-								"sms": {
-									"name": "SENDER NAME"
-								}
-							},
-							"subject": "Nytt meddelande kopplat till ärendet Nytt parkeringstillstånd ERRAND-NUMBER-1",
-							"message": "Hej Citizen, om du vill kontakta oss så kan det göras via e-post eller telefon"
-						}
-					]
-				},
-				"ignoreArrayOrder": true
-			}
-		]
+		"url": "/messaging/2281/messages"
 	},
 	"response": {
 		"headers": {

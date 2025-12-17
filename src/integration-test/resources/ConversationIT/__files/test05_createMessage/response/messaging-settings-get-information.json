@@ -32,12 +32,7 @@
 			},
 			{
 				"key": "support_text",
-				"value": "Hej %s, om du vill kontakta oss så kan det göras via e-post eller telefon",
-				"type": "STRING"
-			},
-			{
-				"key": "reporter_support_text",
-				"value": "Du som rapporterat kan kontakta oss via e-post",
+				"value": "Kontakta oss via e-post eller telefon",
 				"type": "STRING"
 			}
 		]
