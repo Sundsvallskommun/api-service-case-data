@@ -41,20 +41,25 @@ import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeSc
 
 @ExtendWith(MockitoExtension.class)
 class ConversationServiceTest {
-	private static final String CONVERSATION_DEPARTMENT_NAME = "CONVERSATION";
-	private static final String PARATRANSIT_DEPARTMENT_NAME = "PARATRANSIT";
 
 	private static final String MESSAGE_EXCHANGE_NAMESPACE = "case-data";
+	private static final String CONVERSATION_DEPARTMENT_NAME = "CONVERSATION";
+	private static final String PARATRANSIT_DEPARTMENT_NAME = "PARATRANSIT";
 	@Mock
 	private MessageService messageServiceMock;
-	@Mock
-	private ErrandRepository errandRepositoryMock;
+
 	@Mock
 	private ConversationRepository conversationRepositoryMock;
+
+	@Mock
+	private ErrandRepository errandRepositoryMock;
+
 	@Mock
 	private MessageExchangeClient messageExchangeClientMock;
+
 	@Mock
 	private MessageExchangeScheduler messageExchangeSchedulerMock;
+
 	@InjectMocks
 	private ConversationService conversationService;
 
@@ -275,7 +280,6 @@ class ConversationServiceTest {
 
 	@Test
 	void getConversations() {
-
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -316,7 +320,6 @@ class ConversationServiceTest {
 
 	@Test
 	void updateConversation() {
-
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -423,7 +426,6 @@ class ConversationServiceTest {
 
 	@Test
 	void createExternalMessage() {
-
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -454,7 +456,6 @@ class ConversationServiceTest {
 
 	@Test
 	void createInternalMessageForParatransitErrand() {
-
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -487,7 +488,6 @@ class ConversationServiceTest {
 
 	@Test
 	void createInternalMessageForNonParatransitErrand() {
-
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -518,7 +518,6 @@ class ConversationServiceTest {
 
 	@Test
 	void createMessageSendIntegrationThrowsException() {
-
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";

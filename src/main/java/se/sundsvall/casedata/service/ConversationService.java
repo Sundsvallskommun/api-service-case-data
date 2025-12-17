@@ -17,6 +17,7 @@ import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.upda
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +39,8 @@ import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeSc
 @Service
 public class ConversationService {
 
+	static final String CONVERSATION_DEPARTMENT_NAME = "CONVERSATION";
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConversationService.class);
-
 	private final ConversationRepository conversationRepository;
 	private final ErrandRepository errandRepository;
 	private final MessageExchangeClient messageExchangeClient;
@@ -49,8 +50,13 @@ public class ConversationService {
 	@Value("${integration.message-exchange.namespace:casedata}")
 	private String messageExchangeNamespace;
 
-	public ConversationService(final ConversationRepository conversationRepository, final ErrandRepository errandRepository, final MessageExchangeClient messageExchangeClient, final MessageService messageService,
+	public ConversationService(
+		final ConversationRepository conversationRepository,
+		final ErrandRepository errandRepository,
+		final MessageExchangeClient messageExchangeClient,
+		final MessageService messageService,
 		final MessageExchangeScheduler messageExchangeScheduler) {
+
 		this.conversationRepository = conversationRepository;
 		this.errandRepository = errandRepository;
 		this.messageExchangeClient = messageExchangeClient;
@@ -66,7 +72,7 @@ public class ConversationService {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create conversation in Message Exchange");
 		}
 
-		final var messageExchangeId = ofNullable(response.getHeaders().getLocation())
+		final var messageExchangeId = Optional.ofNullable(response.getHeaders().getLocation())
 			.map(location -> location.getPath().substring(location.getPath().lastIndexOf('/') + 1))
 			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create conversation in Message Exchange"));
 
@@ -122,11 +128,11 @@ public class ConversationService {
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message in Message Exchange");
 		}
-		ofNullable(attachments).ifPresent(attachment -> messageExchangeScheduler.triggerSyncConversationsAsync());
+		Optional.ofNullable(attachments).ifPresent(attachment -> messageExchangeScheduler.triggerSyncConversationsAsync());
 
 		try {
 			if (EXTERNAL.name().equals(entity.getType())) {
-				messageService.sendMessageNotification(municipalityId, namespace, errandId, DEPARTMENT_NAME_CONVERSATION);
+				messageService.sendMessageNotification(municipalityId, namespace, errandId, CONVERSATION_DEPARTMENT_NAME);
 			} else {// If not EXTERNAL then presume that it is INTERNAL and send notification as email
 				messageService.sendEmailNotification(municipalityId, namespace, errandId, translateToDepartmentName(errandId));
 			}

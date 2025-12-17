@@ -155,7 +155,7 @@ public class MessageService {
 	}
 
 	/**
-	 * Method for sending notification email to reporter stakeholder (called from ConversationService.createMessage).
+	 * Method for sending email notification to reporter stakeholder (called from ConversationService.createMessage).
 	 *
 	 * @param municipalityId of the errand that the message belongs to
 	 * @param namespace      of the errand that the message belongs to

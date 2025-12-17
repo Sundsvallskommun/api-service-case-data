@@ -4,7 +4,6 @@ import static java.util.Collections.emptyList;
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -12,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.data.domain.Sort.unsorted;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createNotificationEntity;
 import static se.sundsvall.casedata.TestUtil.createPatchNotification;
@@ -20,14 +18,11 @@ import static se.sundsvall.casedata.TestUtil.createPatchNotification;
 import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Problem;
@@ -35,8 +30,6 @@ import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.NotificationRepository;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
-import se.sundsvall.casedata.service.notification.processor.ErrandOwnerNotificationProcessor;
-import se.sundsvall.casedata.service.notification.processor.ErrandReporterNotificationProcessor;
 import se.sundsvall.dept44.support.Identifier;
 import se.sundsvall.dept44.support.Identifier.Type;
 
@@ -52,11 +45,8 @@ class NotificationServiceTest {
 	@Mock
 	private NotificationRepository notificationRepositoryMock;
 
-	@Mock
-	private ErrandOwnerNotificationProcessor errandOwnerNotificationProcessorMock;
-
-	@Mock
-	private ErrandReporterNotificationProcessor errandReporterNotificationProcessorMock;
+	@InjectMocks
+	private NotificationService notificationService;
 
 	@Captor
 	private ArgumentCaptor<NotificationEntity> notificationEntityArgumentCaptor;
@@ -64,20 +54,9 @@ class NotificationServiceTest {
 	@Captor
 	private ArgumentCaptor<List<NotificationEntity>> notificationEntityListArgumentCaptor;
 
-	private NotificationService notificationService;
-
-	@BeforeEach
-	void setup() {
-		notificationService = new NotificationService(notificationRepositoryMock, errandRepositoryMock, employeeServiceMock, List.of(errandOwnerNotificationProcessorMock, errandReporterNotificationProcessorMock));
-	}
-
-	@AfterEach
-	void teardown() {
-		verifyNoMoreInteractions(errandOwnerNotificationProcessorMock, errandReporterNotificationProcessorMock);
-	}
-
 	@Test
 	void findNotification() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
@@ -97,6 +76,7 @@ class NotificationServiceTest {
 
 	@Test
 	void findNotificationNotFound() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
@@ -114,6 +94,7 @@ class NotificationServiceTest {
 
 	@Test
 	void findNotificationsByOwnerId() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
@@ -132,6 +113,7 @@ class NotificationServiceTest {
 
 	@Test
 	void findNotificationsByOwnerIdNoneFound() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
@@ -146,42 +128,8 @@ class NotificationServiceTest {
 	}
 
 	@Test
-	void createNotificationWithEntity() {
-		// Arrange
-		final var notification = TestUtil.createNotification(n -> {});
-		final var errandEntity = TestUtil.createErrandEntity();
-
-		// Act
-		notificationService.create(MUNICIPALITY_ID, NAMESPACE, notification, errandEntity);
-
-		// Verify
-		verify(errandOwnerNotificationProcessorMock).processNotification(MUNICIPALITY_ID, NAMESPACE, notification, errandEntity);
-		verify(errandReporterNotificationProcessorMock).processNotification(MUNICIPALITY_ID, NAMESPACE, notification, errandEntity);
-	}
-
-	@ParameterizedTest
-	@ValueSource(classes = {
-		ErrandOwnerNotificationProcessor.class, ErrandReporterNotificationProcessor.class
-	})
-	void createWithProcessorFilter(Class<?> clazz) {
-		// Arrange
-		final var processorFilter = List.of(clazz.getName());
-		final var notification = TestUtil.createNotification(n -> {});
-		final var errandEntity = TestUtil.createErrandEntity();
-
-		// Act
-		notificationService.create(MUNICIPALITY_ID, NAMESPACE, notification, errandEntity, processorFilter);
-
-		// Verify
-		switch (clazz.getSimpleName()) {
-			case "ErrandOwnerNotificationProcessor" -> verify(errandOwnerNotificationProcessorMock).processNotification(MUNICIPALITY_ID, NAMESPACE, notification, errandEntity);
-			case "ErrandReporterNotificationProcessor" -> verify(errandReporterNotificationProcessorMock).processNotification(MUNICIPALITY_ID, NAMESPACE, notification, errandEntity);
-			default -> fail("No verification defined for %s".formatted(clazz.getSimpleName()));
-		}
-	}
-
-	@Test
 	void create() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
@@ -209,6 +157,7 @@ class NotificationServiceTest {
 
 	@Test
 	void createNotification() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
@@ -242,6 +191,7 @@ class NotificationServiceTest {
 
 	@Test
 	void createNotificationWhenExecutinUserIsTheSameAsOwnerId() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
@@ -272,6 +222,7 @@ class NotificationServiceTest {
 
 	@Test
 	void update() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var notificationId = randomUUID().toString();
@@ -300,6 +251,7 @@ class NotificationServiceTest {
 
 	@Test
 	void updateNotFound() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
@@ -318,6 +270,7 @@ class NotificationServiceTest {
 
 	@Test
 	void delete() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
@@ -338,6 +291,7 @@ class NotificationServiceTest {
 
 	@Test
 	void deleteNotFound() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
@@ -356,6 +310,7 @@ class NotificationServiceTest {
 
 	@Test
 	void globalAcknowledgeNotificationsByErrandId() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
@@ -381,6 +336,7 @@ class NotificationServiceTest {
 
 	@Test
 	void globalAcknowledgeNotificationsByErrandIdWhenNothingFound() {
+
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";

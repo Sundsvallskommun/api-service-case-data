@@ -32,7 +32,6 @@ import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
 import static se.sundsvall.casedata.TestUtil.createStatus;
 import static se.sundsvall.casedata.TestUtil.createStatusEntity;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.APPLICANT;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ATTACHMENT;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddress;
@@ -66,7 +65,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.model.Errand;
-import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
@@ -74,7 +72,6 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
 import se.sundsvall.casedata.integration.db.model.enums.ContactType;
-import se.sundsvall.casedata.integration.db.model.enums.NotificationSubType;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
@@ -771,39 +768,6 @@ class EntityMapperTest {
 	}
 
 	@Test
-	void toNotificationOverloadedConstructorTest() {
-		// Arrange
-		final var errandEntity = createErrandEntity();
-		final var type = "type";
-		final var description = "description";
-		final var subType = NotificationSubType.SYSTEM;
-		final var ownerAccount = "ownerAccount";
-
-		// Act
-		final var result = toNotification(errandEntity, type, description, subType, ownerAccount);
-
-		// Assert
-		assertThat(result).isNotNull().satisfies(notification -> {
-			assertThat(notification.getErrandId()).isEqualTo(errandEntity.getId());
-			assertThat(notification.getNamespace()).isEqualTo(errandEntity.getNamespace());
-			assertThat(notification.getMunicipalityId()).isEqualTo(errandEntity.getMunicipalityId());
-			assertThat(notification.getType()).isEqualTo(type);
-			assertThat(notification.getDescription()).isEqualTo(description);
-			assertThat(notification.getSubType()).isEqualTo(subType.name());
-			assertThat(notification.getOwnerId()).isEqualTo(ownerAccount);
-		});
-	}
-
-	@Test
-	void toNotificationOverloadedConstructorWithNullValuesTest() {
-		// Act and assert
-		assertThat(toNotification(null, null, null, null, null))
-			.hasAllNullFieldsOrPropertiesExcept("acknowledged", "globalAcknowledged")
-			.extracting(Notification::isAcknowledged, Notification::isGlobalAcknowledged)
-			.containsOnly(false);
-	}
-
-	@Test
 	void toOwnerIdTest() {
 		// Arrange
 		final var errandEntity = createErrandEntity();
@@ -829,18 +793,6 @@ class EntityMapperTest {
 
 		// Assert
 		assertThat(ownerId).isNull();
-	}
-
-	@Test
-	void getUserIdFromRole() {
-		// Arrange
-		final var errandEntity = createErrandEntity();
-
-		// Act
-		final var id = EntityMapper.getUserIdFromRole(errandEntity, APPLICANT);
-
-		// Assert
-		assertThat(id).isEqualTo("adAccount");
 	}
 
 	@Test

@@ -65,6 +65,7 @@ class ConversationIT extends AbstractAppTest {
 
 	@Test
 	void test03_updateConversation() {
+
 		setupCall()
 			.withHttpMethod(PATCH)
 			.withServicePath(format(PATH + "/{3}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID))
@@ -94,6 +95,7 @@ class ConversationIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
+
 	}
 
 	@Test
@@ -107,6 +109,7 @@ class ConversationIT extends AbstractAppTest {
 			.withHeader(HEADER_NAME, "type=adAccount; someUser123")
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
+
 	}
 
 	@Test
@@ -117,6 +120,7 @@ class ConversationIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
+
 	}
 
 	@Test

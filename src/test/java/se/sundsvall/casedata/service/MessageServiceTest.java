@@ -121,6 +121,9 @@ class MessageServiceTest {
 	@Mock
 	private ServletOutputStream servletOutputStreamMock;
 
+	@Mock
+	private MetadataService metadataserviceMock;
+
 	@InjectMocks
 	private MessageService messageService;
 
@@ -132,9 +135,6 @@ class MessageServiceTest {
 
 	@Captor
 	private ArgumentCaptor<EmailRequest> emailRequestCaptor;
-
-	@Mock
-	private MetadataService metadataserviceMock;
 
 	@BeforeEach
 	void setup() {
@@ -384,6 +384,7 @@ class MessageServiceTest {
 		verify(messagingClientMock).sendMessage(eq(MUNICIPALITY_ID), messageRequestCaptor.capture());
 		assertThat(messageRequestCaptor.getValue().getMessages()).hasSize(1);
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
+
 	}
 
 	@Test
@@ -399,6 +400,7 @@ class MessageServiceTest {
 			.hasFieldOrPropertyWithValue("message", "Not Found: Errand with id:'1' not found in namespace:'MY_NAMESPACE' for municipality with id:'2281'");
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(messagingSettingsIntegrationMock, messagingClientMock, messageMapperMock, notificationServiceMock);
+
 	}
 
 	@Test
@@ -422,6 +424,7 @@ class MessageServiceTest {
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", Status.INTERNAL_SERVER_ERROR)
 			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to create message notification");
+
 	}
 
 	@MethodSource("reporterEmailArgumentProvider")
@@ -465,7 +468,6 @@ class MessageServiceTest {
 	@MethodSource("reporterEmailArgumentProvider")
 	@ParameterizedTest(name = "{0}")
 	void isEmailNotificationToBeSent(String name, String identifierValue, StakeholderEntity stakeholderEntity, boolean expectedOutcome) {
-		Identifier.remove();
 		if (nonNull(identifierValue)) {
 			Identifier.set(Identifier.parse(identifierValue));
 		}
