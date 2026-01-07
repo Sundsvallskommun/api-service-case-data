@@ -44,9 +44,9 @@ public final class PatchMapper {
 		ofNullable(patch.getStartDate()).ifPresent(errand::setStartDate);
 		ofNullable(patch.getEndDate()).ifPresent(errand::setEndDate);
 		ofNullable(patch.getApplicationReceived()).ifPresent(errand::setApplicationReceived);
-		ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(patch.getFacilities().stream().map(facility -> toFacilityEntity(facility, errand.getMunicipalityId(), errand.getNamespace())).toList()));
-		ofNullable(patch.getRelatesTo()).ifPresent(relatesTo -> errand.getRelatesTo().addAll(patch.getRelatesTo().stream().map(EntityMapper::toRelatedErrandEntity).toList()));
-		ofNullable(patch.getLabels()).ifPresent(labels -> errand.setLabels(patch.getLabels()));
+		ofNullable(patch.getFacilities()).ifPresent(_ -> errand.getFacilities().addAll(patch.getFacilities().stream().map(facility -> toFacilityEntity(facility, errand.getMunicipalityId(), errand.getNamespace())).toList()));
+		ofNullable(patch.getRelatesTo()).ifPresent(_ -> errand.getRelatesTo().addAll(patch.getRelatesTo().stream().map(EntityMapper::toRelatedErrandEntity).toList()));
+		ofNullable(patch.getLabels()).ifPresent(_ -> errand.setLabels(patch.getLabels()));
 		ofNullable(patch.getSuspension()).ifPresent(
 			suspension -> {
 				errand.setSuspendedFrom(suspension.getSuspendedFrom());
@@ -64,7 +64,7 @@ public final class PatchMapper {
 
 	public static DecisionEntity patchDecision(final DecisionEntity decision, final PatchDecision patch) {
 		// ExtraParameters are not patched, they are posted for whatever reason.
-		ofNullable(patch.getExtraParameters()).ifPresent(s -> decision.getExtraParameters().putAll(patch.getExtraParameters()));
+		ofNullable(patch.getExtraParameters()).ifPresent(_ -> decision.getExtraParameters().putAll(patch.getExtraParameters()));
 		ofNullable(patch.getDecisionType()).ifPresent(decision::setDecisionType);
 		ofNullable(patch.getDecisionOutcome()).ifPresent(decision::setDecisionOutcome);
 		ofNullable(patch.getDescription()).ifPresent(decision::setDescription);
@@ -76,7 +76,7 @@ public final class PatchMapper {
 
 	public static StakeholderEntity patchStakeholder(final StakeholderEntity stakeholder, final Stakeholder patch) {
 		// ExtraParameters are not patched, they are posted for whatever reason.
-		ofNullable(patch.getExtraParameters()).ifPresent(s -> stakeholder.getExtraParameters().putAll(patch.getExtraParameters()));
+		ofNullable(patch.getExtraParameters()).ifPresent(extraParameters -> stakeholder.getExtraParameters().putAll(extraParameters));
 		ofNullable(patch.getType()).ifPresent(stakeholder::setType);
 		ofNullable(patch.getFirstName()).ifPresent(stakeholder::setFirstName);
 		ofNullable(patch.getLastName()).ifPresent(stakeholder::setLastName);
@@ -85,15 +85,15 @@ public final class PatchMapper {
 		ofNullable(patch.getOrganizationNumber()).ifPresent(stakeholder::setOrganizationNumber);
 		ofNullable(patch.getAuthorizedSignatory()).ifPresent(stakeholder::setAuthorizedSignatory);
 		ofNullable(patch.getAdAccount()).ifPresent(stakeholder::setAdAccount);
-		ofNullable(patch.getRoles()).ifPresent(roles -> stakeholder.setRoles(patch.getRoles()));
-		ofNullable(patch.getAddresses()).ifPresent(s -> stakeholder.setAddresses(new ArrayList<>(patch.getAddresses().stream().map(EntityMapper::toAddressEntity).toList())));
-		ofNullable(patch.getContactInformation()).ifPresent(s -> stakeholder.setContactInformation(new ArrayList<>(patch.getContactInformation().stream().map(EntityMapper::toContactInformationEntity).toList())));
+		ofNullable(patch.getRoles()).ifPresent(roles -> stakeholder.setRoles(roles));
+		ofNullable(patch.getAddresses()).ifPresent(addresses -> stakeholder.setAddresses(new ArrayList<>(addresses.stream().map(EntityMapper::toAddressEntity).toList())));
+		ofNullable(patch.getContactInformation()).ifPresent(contactInformation -> stakeholder.setContactInformation(new ArrayList<>(contactInformation.stream().map(EntityMapper::toContactInformationEntity).toList())));
 		return stakeholder;
 	}
 
 	public static AttachmentEntity patchAttachment(final AttachmentEntity attachmentEntity, final Attachment patch) {
 		// ExtraParameters are not patched, they are posted for whatever reason.
-		ofNullable(patch.getExtraParameters()).ifPresent(s -> attachmentEntity.getExtraParameters().putAll(patch.getExtraParameters()));
+		ofNullable(patch.getExtraParameters()).ifPresent(extraParameters -> attachmentEntity.getExtraParameters().putAll(extraParameters));
 		ofNullable(patch.getCategory()).ifPresent(attachmentEntity::setCategory);
 		ofNullable(patch.getName()).ifPresent(attachmentEntity::setName);
 		ofNullable(patch.getNote()).ifPresent(attachmentEntity::setNote);
@@ -105,7 +105,7 @@ public final class PatchMapper {
 
 	public static NoteEntity patchNote(final NoteEntity noteEntity, final Note patch) {
 		// ExtraParameters are not patched, they are posted for whatever reason.
-		ofNullable(patch.getExtraParameters()).ifPresent(s -> noteEntity.getExtraParameters().putAll(patch.getExtraParameters()));
+		ofNullable(patch.getExtraParameters()).ifPresent(extraParameters -> noteEntity.getExtraParameters().putAll(extraParameters));
 		ofNullable(patch.getTitle()).ifPresent(noteEntity::setTitle);
 		ofNullable(patch.getText()).ifPresent(noteEntity::setText);
 		ofNullable(patch.getNoteType()).ifPresent(noteEntity::setNoteType);

@@ -77,7 +77,7 @@ public class EmailReaderWorker {
 			final var errandNumber = parseSubject(email.getSubject());
 
 			errandRepository.findWithPessimisticLockingByErrandNumber(errandNumber)
-				.filter(errand -> !messageRepository.existsById(email.getId()))
+				.filter(_ -> !messageRepository.existsById(email.getId()))
 				.ifPresent(errand -> {
 					messageRepository.save(messageMapper.toMessage(email, errand.getMunicipalityId(), errand.getNamespace(), errand.getId()));
 					notificationService.create(errand.getMunicipalityId(), errand.getNamespace(), toNotification(errand, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errand);

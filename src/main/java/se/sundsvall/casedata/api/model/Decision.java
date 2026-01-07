@@ -24,25 +24,25 @@ import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 @Builder(setterPrefix = "with")
 public class Decision {
 
-	@Schema(description = "The id of the decision", accessMode = READ_ONLY, example = "1")
+	@Schema(description = "The id of the decision", accessMode = READ_ONLY, examples = "1")
 	private Long id;
 
-	@Schema(description = "The version of the decision", accessMode = READ_ONLY, example = "1")
+	@Schema(description = "The version of the decision", accessMode = READ_ONLY, examples = "1")
 	private int version;
 
-	@Schema(description = "The municipality ID", example = "2281", accessMode = READ_ONLY)
+	@Schema(description = "The municipality ID", examples = "2281", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Namespace", example = "MY_NAMESPACE", accessMode = READ_ONLY)
+	@Schema(description = "Namespace", examples = "MY_NAMESPACE", accessMode = READ_ONLY)
 	private String namespace;
 
-	@Schema(description = "Type of the decision", example = "APPROVAL")
+	@Schema(description = "Type of the decision", examples = "APPROVAL")
 	private DecisionType decisionType;
 
-	@Schema(description = "Outcome of the decision", example = "GRANTED")
+	@Schema(description = "Outcome of the decision", examples = "GRANTED")
 	private DecisionOutcome decisionOutcome;
 
-	@Schema(description = "Description of the decision", example = "This decision approves the application.", maxLength = 100000)
+	@Schema(description = "Description of the decision", examples = "This decision approves the application.", maxLength = 100000)
 	@Size(max = 100000)
 	private String description;
 
@@ -52,31 +52,31 @@ public class Decision {
 	@Schema(description = "Stakeholder who made the decision")
 	private Stakeholder decidedBy;
 
-	@Schema(description = "Date and time when the decision was made", example = "2023-10-01T12:00:00Z")
+	@Schema(description = "Date and time when the decision was made", examples = "2023-10-01T12:00:00Z")
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime decidedAt;
 
-	@Schema(description = "Date and time when the decision becomes valid", example = "2023-10-01T12:00:00Z")
+	@Schema(description = "Date and time when the decision becomes valid", examples = "2023-10-01T12:00:00Z")
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime validFrom;
 
-	@Schema(description = "Date and time when the decision expires", example = "2024-10-01T12:00:00Z")
+	@Schema(description = "Date and time when the decision expires", examples = "2024-10-01T12:00:00Z")
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime validTo;
 
 	@Schema(description = "List of attachments related to the decision")
 	private List<Attachment> attachments;
 
-	@Schema(description = "Additional parameters for the decision", example = "{\"key1\": \"value1\", \"key2\": \"value2\"}")
+	@Schema(description = "Additional parameters for the decision", examples = "{\"key1\": \"value1\", \"key2\": \"value2\"}")
 	@ValidMapValueSize(max = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
 
-	@Schema(description = "Date and time when the decision was created", accessMode = READ_ONLY, example = "2023-10-01T12:00:00Z")
+	@Schema(description = "Date and time when the decision was created", accessMode = READ_ONLY, examples = "2023-10-01T12:00:00Z")
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime created;
 
-	@Schema(description = "Date and time when the decision was last updated", accessMode = READ_ONLY, example = "2023-10-02T12:00:00Z")
+	@Schema(description = "Date and time when the decision was last updated", accessMode = READ_ONLY, examples = "2023-10-02T12:00:00Z")
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime updated;
 
