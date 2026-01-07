@@ -14,11 +14,11 @@ import se.sundsvall.casedata.integration.db.model.enums.ContactType;
 @Builder(setterPrefix = "with")
 public class ContactInformation {
 
-	@Schema(description = "The type of contact information", example = "EMAIL")
+	@Schema(description = "The type of contact information", examples = "EMAIL")
 	private ContactType contactType;
 
 	@Size(max = 255)
-	@Schema(description = "The value of the contact information", example = "someEmail@sundsvall.se@", maxLength = 255)
+	@Schema(description = "The value of the contact information", examples = "someEmail@sundsvall.se@", maxLength = 255)
 	private String value;
 
 }

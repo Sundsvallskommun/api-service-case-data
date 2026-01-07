@@ -128,7 +128,7 @@ public class ConversationService {
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message in Message Exchange");
 		}
-		Optional.ofNullable(attachments).ifPresent(attachment -> messageExchangeScheduler.triggerSyncConversationsAsync());
+		Optional.ofNullable(attachments).ifPresent(_ -> messageExchangeScheduler.triggerSyncConversationsAsync());
 
 		try {
 			if (EXTERNAL.name().equals(entity.getType())) {
@@ -157,7 +157,7 @@ public class ConversationService {
 		return ofNullable(errandRepository.getReferenceById(errandId))
 			.map(ErrandEntity::getCaseType)
 			.filter(ct -> Strings.CI.startsWith(ct, DEPARTMENT_NAME_PARATRANSIT))
-			.map(ct -> DEPARTMENT_NAME_PARATRANSIT)
+			.map(_ -> DEPARTMENT_NAME_PARATRANSIT)
 			.orElse(DEPARTMENT_NAME_CONVERSATION);
 	}
 

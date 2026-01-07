@@ -13,19 +13,19 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 public class Law {
 
-	@Schema(description = "Heading of the law", example = "Building Act", maxLength = 255)
+	@Schema(description = "Heading of the law", examples = "Building Act", maxLength = 255)
 	@Size(max = 255)
 	private String heading;
 
-	@Schema(description = "Swedish Code of Statutes (SFS)", example = "SFS 2010:900", maxLength = 255)
+	@Schema(description = "Swedish Code of Statutes (SFS)", examples = "SFS 2010:900", maxLength = 255)
 	@Size(max = 255)
 	private String sfs;
 
-	@Schema(description = "Chapter of the law", example = "3", maxLength = 255)
+	@Schema(description = "Chapter of the law", examples = "3", maxLength = 255)
 	@Size(max = 255)
 	private String chapter;
 
-	@Schema(description = "Article of the law", example = "1", maxLength = 255)
+	@Schema(description = "Article of the law", examples = "1", maxLength = 255)
 	@Size(max = 255)
 	private String article;
 }

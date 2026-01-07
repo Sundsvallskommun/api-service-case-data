@@ -78,14 +78,13 @@ public final class PutMapper {
 
 	public static FacilityEntity putFacility(final FacilityEntity oldFacility, final Facility facility) {
 		Optional.of(facility).ifPresent(facilityEntity -> {
-			oldFacility.setFacilityType(facility.getFacilityType());
-			oldFacility.setMainFacility(facility.isMainFacility());
-			oldFacility.setDescription(facility.getDescription());
-			oldFacility.setAddress(EntityMapper.toAddressEntity(facility.getAddress()));
-			oldFacility.setFacilityCollectionName(facility.getFacilityCollectionName());
-			oldFacility.setExtraParameters(facility.getExtraParameters());
+			oldFacility.setFacilityType(facilityEntity.getFacilityType());
+			oldFacility.setMainFacility(facilityEntity.isMainFacility());
+			oldFacility.setDescription(facilityEntity.getDescription());
+			oldFacility.setAddress(EntityMapper.toAddressEntity(facilityEntity.getAddress()));
+			oldFacility.setFacilityCollectionName(facilityEntity.getFacilityCollectionName());
+			oldFacility.setExtraParameters(facilityEntity.getExtraParameters());
 		});
 		return oldFacility;
 	}
-
 }

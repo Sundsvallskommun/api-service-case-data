@@ -21,49 +21,49 @@ import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 @Builder(setterPrefix = "with")
 public class Attachment {
 
-	@Schema(description = "The id of the attachment", accessMode = READ_ONLY, example = "1")
+	@Schema(description = "The id of the attachment", accessMode = READ_ONLY, examples = "1")
 	private Long id;
 
-	@Schema(description = "The version of the attachment", accessMode = READ_ONLY, example = "1")
+	@Schema(description = "The version of the attachment", accessMode = READ_ONLY, examples = "1")
 	private int version;
 
-	@Schema(description = "The municipality ID", example = "2281", accessMode = READ_ONLY)
+	@Schema(description = "The municipality ID", examples = "2281", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Errand id associated with the attachment", accessMode = READ_ONLY, example = "123456")
+	@Schema(description = "Errand id associated with the attachment", accessMode = READ_ONLY, examples = "123456")
 	private Long errandId;
 
-	@Schema(description = "Namespace", example = "MY_NAMESPACE", accessMode = READ_ONLY)
+	@Schema(description = "Namespace", examples = "MY_NAMESPACE", accessMode = READ_ONLY)
 	private String namespace;
 
-	@Schema(description = "The date when this attachment was created", accessMode = READ_ONLY, example = "2023-10-01T12:00:00Z")
+	@Schema(description = "The date when this attachment was created", accessMode = READ_ONLY, examples = "2023-10-01T12:00:00Z")
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime created;
 
-	@Schema(description = "The date when this attachment was last updated", accessMode = READ_ONLY, example = "2023-10-02T12:00:00Z")
+	@Schema(description = "The date when this attachment was last updated", accessMode = READ_ONLY, examples = "2023-10-02T12:00:00Z")
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime updated;
 
-	@Schema(description = "Category of the attachment", example = "DOCUMENT")
+	@Schema(description = "Category of the attachment", examples = "DOCUMENT")
 	@ValidAttachmentCategory
 	private String category;
 
-	@Schema(description = "Name of the attachment", example = "Test Document")
+	@Schema(description = "Name of the attachment", examples = "Test Document")
 	private String name;
 
-	@Schema(description = "Note about the attachment", example = "This is a test document.")
+	@Schema(description = "Note about the attachment", examples = "This is a test document.")
 	private String note;
 
-	@Schema(description = "File extension of the attachment", example = "pdf")
+	@Schema(description = "File extension of the attachment", examples = "pdf")
 	private String extension;
 
-	@Schema(description = "MIME type of the attachment", example = "application/pdf")
+	@Schema(description = "MIME type of the attachment", examples = "application/pdf")
 	private String mimeType;
 
-	@Schema(description = "Base64 encoded file content", example = "dGVzdCBjb250ZW50")
+	@Schema(description = "Base64 encoded file content", examples = "dGVzdCBjb250ZW50")
 	private String file;
 
-	@Schema(description = "Additional parameters for the attachment", example = "{\"key1\": \"value1\", \"key2\": \"value2\"}")
+	@Schema(description = "Additional parameters for the attachment", examples = "{\"key1\": \"value1\", \"key2\": \"value2\"}")
 	@ValidMapValueSize(max = 8192)
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();

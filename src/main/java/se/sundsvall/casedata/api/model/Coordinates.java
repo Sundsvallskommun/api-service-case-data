@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @Builder(setterPrefix = "with")
 public class Coordinates {
 
-	@Schema(description = "Decimal Degrees (DD)", example = "62.390205")
+	@Schema(description = "Decimal Degrees (DD)", examples = "62.390205")
 	private Double latitude;
 
-	@Schema(description = "Decimal Degrees (DD)", example = "17.306616")
+	@Schema(description = "Decimal Degrees (DD)", examples = "17.306616")
 	private Double longitude;
 
 }

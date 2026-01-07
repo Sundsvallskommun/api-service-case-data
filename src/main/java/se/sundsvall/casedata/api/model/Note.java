@@ -22,35 +22,35 @@ import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 @Builder(setterPrefix = "with")
 public class Note {
 
-	@Schema(accessMode = READ_ONLY, description = "The unique identifier of the note", example = "1")
+	@Schema(accessMode = READ_ONLY, description = "The unique identifier of the note", examples = "1")
 	private Long id;
 
-	@Schema(accessMode = READ_ONLY, description = "The version of the note", example = "1")
+	@Schema(accessMode = READ_ONLY, description = "The version of the note", examples = "1")
 	private int version;
 
-	@Schema(description = "The municipality ID", example = "2281", accessMode = READ_ONLY)
+	@Schema(description = "The municipality ID", examples = "2281", accessMode = READ_ONLY)
 	private String municipalityId;
 
-	@Schema(description = "Namespace", example = "MY_NAMESPACE", accessMode = READ_ONLY)
+	@Schema(description = "Namespace", examples = "MY_NAMESPACE", accessMode = READ_ONLY)
 	private String namespace;
 
-	@Schema(description = "The title of the note", example = "Motivering till bifall", maxLength = 255)
+	@Schema(description = "The title of the note", examples = "Motivering till bifall", maxLength = 255)
 	@Size(max = 255)
 	private String title;
 
-	@Schema(description = "The content of the note", example = "Den sökande har rätt till parkeringstillstånd eftersom alla kriterier uppfylls.", maxLength = 10000)
+	@Schema(description = "The content of the note", examples = "Den sökande har rätt till parkeringstillstånd eftersom alla kriterier uppfylls.", maxLength = 10000)
 	@Size(max = 10000)
 	private String text;
 
-	@Schema(description = "AD-account for the user who created the note", example = "user", accessMode = READ_ONLY, maxLength = 36)
+	@Schema(description = "AD-account for the user who created the note", examples = "user", accessMode = READ_ONLY, maxLength = 36)
 	@Size(max = 36)
 	private String createdBy;
 
-	@Schema(description = "AD-account for the user who last modified the note", example = "user", accessMode = READ_ONLY, maxLength = 36)
+	@Schema(description = "AD-account for the user who last modified the note", examples = "user", accessMode = READ_ONLY, maxLength = 36)
 	@Size(max = 36)
 	private String updatedBy;
 
-	@Schema(description = "The type of note", example = "INTERNAL")
+	@Schema(description = "The type of note", examples = "INTERNAL")
 	private NoteType noteType;
 
 	@ValidMapValueSize(max = 8192)
@@ -58,11 +58,11 @@ public class Note {
 	@Builder.Default
 	private Map<String, String> extraParameters = new HashMap<>();
 
-	@Schema(accessMode = READ_ONLY, description = "The timestamp when the note was created", example = "2023-01-01T12:00:00Z")
+	@Schema(accessMode = READ_ONLY, description = "The timestamp when the note was created", examples = "2023-01-01T12:00:00Z")
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime created;
 
-	@Schema(accessMode = READ_ONLY, description = "The timestamp when the note was last updated", example = "2023-01-02T12:00:00Z")
+	@Schema(accessMode = READ_ONLY, description = "The timestamp when the note was last updated", examples = "2023-01-02T12:00:00Z")
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime updated;
 
