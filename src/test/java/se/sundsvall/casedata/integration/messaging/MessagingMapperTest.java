@@ -117,7 +117,7 @@ class MessagingMapperTest {
 			.build();
 		final var messagingSettings = MessagingSettings.builder()
 			.withReporterSupportText(supportText)
-			.withContactInformationUrl(url)
+			.withKatlaUrl(url)
 			.withContactInformationEmailName(emailName)
 			.withContactInformationEmail(emailAddress)
 			.withSmsSender(smsSender)
