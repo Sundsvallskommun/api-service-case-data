@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Related errand for errand")
 public class RelatedErrand {
 
-	@Schema(description = "Errand id", example = "123")
+	@Schema(description = "Errand id", examples = "123")
 	private Long errandId;
 
 	@NotNull
-	@Schema(description = "Errand number", example = "PRH-2022-000001")
+	@Schema(description = "Errand number", examples = "PRH-2022-000001")
 	private String errandNumber;
 
-	@Schema(description = "Relation reason", example = "Related because of appealed decision on errand")
+	@Schema(description = "Relation reason", examples = "Related because of appealed decision on errand")
 	private String relationReason;
 }

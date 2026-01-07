@@ -18,21 +18,21 @@ import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 @Schema(description = "Message model")
 public class Message {
 
-	@Schema(description = "Message ID", example = "1aefbbb8-de82-414b-b5d7-ba7c5bbe4506", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "Message ID", examples = "1aefbbb8-de82-414b-b5d7-ba7c5bbe4506", accessMode = Schema.AccessMode.READ_ONLY)
 	private String id;
 
 	@ValidUuid(nullable = true)
-	@Schema(description = "The ID of the replied message", example = "1aefbbb8-de82-414b-b5d7-ba7c5bbe4506")
+	@Schema(description = "The ID of the replied message", examples = "1aefbbb8-de82-414b-b5d7-ba7c5bbe4506")
 	private String inReplyToMessageId;
 
-	@Schema(description = "The timestamp when the message was created.", example = "2023-01-01T12:00:00", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "The timestamp when the message was created.", examples = "2023-01-01T12:00:00", accessMode = Schema.AccessMode.READ_ONLY)
 	private OffsetDateTime created;
 
 	@Schema(description = "The participant who created the message.", accessMode = Schema.AccessMode.READ_ONLY)
 	private Identifier createdBy;
 
 	@NotBlank
-	@Schema(description = "The content of the message.", example = "Hello, how can I help you?")
+	@Schema(description = "The content of the message.", examples = "Hello, how can I help you?")
 	private String content;
 
 	@ArraySchema(schema = @Schema(implementation = ReadBy.class, description = "A list of users who have read the message.", accessMode = Schema.AccessMode.READ_ONLY))
@@ -41,6 +41,6 @@ public class Message {
 	@ArraySchema(schema = @Schema(implementation = ConversationAttachment.class, description = "A list of attachments associated with the message.", accessMode = Schema.AccessMode.READ_ONLY))
 	private List<ConversationAttachment> attachments;
 
-	@Schema(description = "Type of message (user or system created)", example = "USER_CREATED", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "Type of message (user or system created)", examples = "USER_CREATED", accessMode = Schema.AccessMode.READ_ONLY)
 	private MessageType type;
 }

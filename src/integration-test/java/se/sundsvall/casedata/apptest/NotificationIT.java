@@ -86,7 +86,7 @@ class NotificationIT extends AbstractAppTest {
 	@Test
 	void test04_updateNotification() {
 		setupCall()
-			.withServicePath(builder -> fromPath(NOTIFICATIONS_PATH)
+			.withServicePath(_ -> fromPath(NOTIFICATIONS_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
 			.withHttpMethod(PATCH)
 			.withHeader(HEADER_NAME, "type=adAccount; modifier123")
@@ -95,7 +95,7 @@ class NotificationIT extends AbstractAppTest {
 			.sendRequest();
 
 		setupCall()
-			.withServicePath(builder -> fromPath(NOTIFICATION_PATH)
+			.withServicePath(_ -> fromPath(NOTIFICATION_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID, "errandId", 1)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
@@ -107,21 +107,21 @@ class NotificationIT extends AbstractAppTest {
 	void test05_deleteNotification() {
 
 		setupCall()
-			.withServicePath(builder -> fromPath(NOTIFICATION_PATH)
+			.withServicePath(_ -> fromPath(NOTIFICATION_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID, "errandId", 1)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath(builder -> fromPath(NOTIFICATION_PATH)
+			.withServicePath(_ -> fromPath(NOTIFICATION_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID, "errandId", 1)))
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 
 		setupCall()
-			.withServicePath(builder -> fromPath(NOTIFICATION_PATH)
+			.withServicePath(_ -> fromPath(NOTIFICATION_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID, "errandId", 1)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(NOT_FOUND)
@@ -131,7 +131,7 @@ class NotificationIT extends AbstractAppTest {
 	@Test
 	void test06_getNotificationsByErrandId() {
 		setupCall()
-			.withServicePath(builder -> fromPath(ERRAND_NOTIFICATIONS_PATH)
+			.withServicePath(_ -> fromPath(ERRAND_NOTIFICATIONS_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 1)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
@@ -143,7 +143,7 @@ class NotificationIT extends AbstractAppTest {
 	void test07_globalAcknowledgeNotifications() {
 
 		setupCall()
-			.withServicePath(builder -> fromPath(ERRAND_NOTIFICATIONS_PATH + "/global-acknowledged")
+			.withServicePath(_ -> fromPath(ERRAND_NOTIFICATIONS_PATH + "/global-acknowledged")
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 1)))
 			.withHttpMethod(PUT)
 			.withRequest(REQUEST_FILE)
@@ -152,7 +152,7 @@ class NotificationIT extends AbstractAppTest {
 			.sendRequest();
 
 		setupCall()
-			.withServicePath(builder -> fromPath(ERRAND_NOTIFICATIONS_PATH)
+			.withServicePath(_ -> fromPath(ERRAND_NOTIFICATIONS_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 1)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)

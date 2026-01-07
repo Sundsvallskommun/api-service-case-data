@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CaseType {
 
-	@Schema(description = "The case type", example = "PARATRANSIT")
+	@Schema(description = "The case type", examples = "PARATRANSIT")
 	private String type;
 
-	@Schema(description = "The display name of the case type", example = "Färdtjänst")
+	@Schema(description = "The display name of the case type", examples = "Färdtjänst")
 	private String displayName;
 }
