@@ -1,10 +1,11 @@
 package se.sundsvall.casedata.service;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
+import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USERS;
 import static se.sundsvall.casedata.service.util.Constants.PARKIKNG_PERMIT_CASE_TYPES;
 import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class ProcessService {
 	@TransactionalEventListener
 	public void updateProcess(final ErrandEntity errand) {
 
-		if (CAMUNDA_USER.equals(errand.getUpdatedByClient())) {
+		if (CAMUNDA_USERS.contains(Optional.ofNullable(errand.getUpdatedByClient()).orElse(""))) {
 			LOGGER.warn("Errand with id: {} was updated by camunda user, no need to update process", errand.getId());
 			return;
 		}
