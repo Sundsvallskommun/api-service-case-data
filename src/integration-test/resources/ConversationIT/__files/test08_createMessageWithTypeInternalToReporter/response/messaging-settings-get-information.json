@@ -37,7 +37,12 @@
 			},
 			{
 				"key": "reporter_support_text",
-				"value": "Du som rapporterat kan kontakta oss via e-post",
+				"value": "Hej %s, du har ett meddelande rörande ärende med titel %s (ärendenr %s). Använd länken %s%s för att komma till ärendet.",
+				"type": "STRING"
+			},
+			{
+				"key": "katla_url",
+				"value": "https://katla.domain.tld/",
 				"type": "STRING"
 			}
 		]

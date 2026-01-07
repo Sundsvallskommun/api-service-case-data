@@ -33,10 +33,11 @@ class MessagingSettingsIntegrationTest {
 	private static final String DEPARTMENT_NAME = "my-department";
 	private static final String KEY_EMAIL = "contact_information_email";
 	private static final String KEY_EMAIL_NAME = "contact_information_email_name";
-	private static final String KEY_URL = "contact_information_url";
+	private static final String KEY_CONTACT_INFORMATION_URL = "contact_information_url";
 	private static final String KEY_SMS_SENDER = "sms_sender";
 	private static final String KEY_OWNER_SUPPORT_TEXT = "support_text";
 	private static final String KEY_REPORTER_SUPPORT_TEXT = "reporter_support_text";
+	private static final String KEY_KATLA_URL = "katla_url";
 
 	@Mock
 	private MessagingSettingsClient clientMock;
@@ -51,7 +52,8 @@ class MessagingSettingsIntegrationTest {
 	void getMessagingsettingsWithOptionalValueSet() {
 		final var emailValue = "email";
 		final var emailNameValue = "emailName";
-		final var urlValue = "url";
+		final var contactInformationUrlValue = "contactInformationUrl";
+		final var katlaUrlValue = "katlaUrl";
 		final var smsSenderValue = "smsSender";
 		final var ownerSupportTextValue = "supportText";
 		final var reporterSupportTextValue = "reporterSupportText";
@@ -59,16 +61,19 @@ class MessagingSettingsIntegrationTest {
 		when(clientMock.getMessagingsettings(eq(MUNICIPALITY_ID), anyString())).thenReturn(List.of(new MessagingSettings().values(List.of(
 			new MessagingSettingValue().key(KEY_EMAIL).value(emailValue),
 			new MessagingSettingValue().key(KEY_EMAIL_NAME).value(emailNameValue),
-			new MessagingSettingValue().key(KEY_URL).value(urlValue),
+			new MessagingSettingValue().key(KEY_CONTACT_INFORMATION_URL).value(contactInformationUrlValue),
+			new MessagingSettingValue().key(KEY_KATLA_URL).value(katlaUrlValue),
 			new MessagingSettingValue().key(KEY_SMS_SENDER).value(smsSenderValue),
 			new MessagingSettingValue().key(KEY_OWNER_SUPPORT_TEXT).value(ownerSupportTextValue),
 			new MessagingSettingValue().key(KEY_REPORTER_SUPPORT_TEXT).value(reporterSupportTextValue)))));
 
 		final var result = integration.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_NAME);
 
+		assertThat(result).hasNoNullFieldsOrProperties();
 		assertThat(result.getContactInformationEmail()).isEqualTo(emailValue);
 		assertThat(result.getContactInformationEmailName()).isEqualTo(emailNameValue);
-		assertThat(result.getContactInformationUrl()).isEqualTo(urlValue);
+		assertThat(result.getContactInformationUrl()).isEqualTo(contactInformationUrlValue);
+		assertThat(result.getKatlaUrl()).isEqualTo(katlaUrlValue);
 		assertThat(result.getSmsSender()).isEqualTo(smsSenderValue);
 		assertThat(result.getOwnerSupportText()).isEqualTo(ownerSupportTextValue);
 		assertThat(result.getReporterSupportText()).isEqualTo(reporterSupportTextValue);
@@ -84,7 +89,7 @@ class MessagingSettingsIntegrationTest {
 		when(clientMock.getMessagingsettings(eq(MUNICIPALITY_ID), anyString())).thenReturn(List.of(new MessagingSettings().values(List.of(
 			new MessagingSettingValue().key(KEY_EMAIL).value(emailValue),
 			new MessagingSettingValue().key(KEY_EMAIL_NAME).value(emailNameValue),
-			new MessagingSettingValue().key(KEY_URL).value(urlValue),
+			new MessagingSettingValue().key(KEY_CONTACT_INFORMATION_URL).value(urlValue),
 			new MessagingSettingValue().key(KEY_SMS_SENDER).value(smsSenderValue)))));
 
 		final var result = integration.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_NAME);
@@ -120,7 +125,7 @@ class MessagingSettingsIntegrationTest {
 
 		assertThat(e.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR);
 		assertThat(e.getDetail()).isEqualTo("One or more mandatory settings [%s, %s, %s] are absent for namespace 'my-namespace' and department with name 'my-department' within municipality with id 'my-municipality'"
-			.formatted(KEY_EMAIL, KEY_URL, KEY_SMS_SENDER));
+			.formatted(KEY_EMAIL, KEY_CONTACT_INFORMATION_URL, KEY_SMS_SENDER));
 		assertThat(filterCaptor.getValue()).isEqualTo(FILTER_STRING.formatted(NAMESPACE, DEPARTMENT_NAME));
 	}
 
@@ -131,7 +136,7 @@ class MessagingSettingsIntegrationTest {
 				new MessagingSettingValue().key(KEY_EMAIL).value("value"))))),
 			Arguments.of(List.of(new MessagingSettings().values(List.of(
 				new MessagingSettingValue().key(KEY_EMAIL).value("value"),
-				new MessagingSettingValue().key(KEY_URL).value("value"))))));
+				new MessagingSettingValue().key(KEY_CONTACT_INFORMATION_URL).value("value"))))));
 
 	}
 }

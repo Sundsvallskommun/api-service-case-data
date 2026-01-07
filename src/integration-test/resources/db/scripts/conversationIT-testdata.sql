@@ -8,7 +8,7 @@ INSERT INTO stakeholder (id, created, updated, version, ad_account, authorized_s
 VALUES (1, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'own01own', 'Owner Ownersson', 'Owner', 'Ownersson', 'Sundsvalls testfabrik', '19900101-1234', '3ed5bc30-6308-4fd5-a5a7-78d7f96f4438', 'PERSON', 1, '2281', 'MY_NAMESPACE'),
        (2, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, null, 'Citizen Citizensson', 'Citizen', 'Citizensson', 'Sundsvalls testfabrik', '19900202-5678', '352ec7b4-cae0-4216-8d47-3e10246b2952', 'PERSON', 1, '2281', 'MY_NAMESPACE'),
        (3, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'adm01adm', 'Admin Adminsson', 'Admin', 'Adminsson', 'Sundsvalls testfabrik', '19900303-2345', NULL, 'PERSON', 3, '2281', 'MY_NAMESPACE'),
-       (4, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'tes02rep', 'Test Reportersson', 'Test', 'Reportersson', 'Sundsvalls testfabrik', '19900404-6789', NULL, 'PERSON', 3, '2281', 'MY_NAMESPACE');
+       (4, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'tes02rep', 'Reporter Reportersson', 'Reporter', 'Reportersson', 'Sundsvalls testfabrik', '19900404-6789', NULL, 'PERSON', 3, '2281', 'MY_NAMESPACE');
        
 INSERT INTO stakeholder_roles(stakeholder_id, roles, role_order)
 VALUES (1, 'ADMINISTRATOR', 0),
