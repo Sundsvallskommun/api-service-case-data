@@ -10,7 +10,7 @@ import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpe
 import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildNamespaceFilter;
 import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.distinct;
 import static se.sundsvall.casedata.service.model.EventType.UPDATE;
-import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USER;
+import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USERS;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;
 import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
@@ -57,7 +57,7 @@ public class ErrandService {
 
 	private String determineSubType(final ErrandEntity updatedErrand) {
 		var subtype = ERRAND;
-		if (CAMUNDA_USER.equals(updatedErrand.getUpdatedByClient())) {
+		if (CAMUNDA_USERS.contains(Optional.ofNullable(updatedErrand.getUpdatedByClient()).orElse(""))) {
 			subtype = SYSTEM;
 		}
 		return subtype.toString();

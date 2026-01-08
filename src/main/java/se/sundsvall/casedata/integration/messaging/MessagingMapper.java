@@ -70,7 +70,7 @@ public final class MessagingMapper {
 				findErrandOwnerFirstName(errandEntity, TYPE_REPORTER_SUPPORT_TEXT == supportTextType ? REPORTER : APPLICANT),
 				errandEntity.getCaseTitleAddition(),
 				errandEntity.getErrandNumber(),
-				messagingSettings.getContactInformationUrl(),
+				TYPE_REPORTER_SUPPORT_TEXT == supportTextType ? messagingSettings.getKatlaUrl() : messagingSettings.getContactInformationUrl(),
 				errandEntity.getId()))
 			.orElse("");
 	}

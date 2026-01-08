@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -171,11 +172,14 @@ class ProcessServiceTest {
 		verifyNoInteractions(parkingPermitIntegrationMock);
 	}
 
-	@Test
-	void updateProcessCamundaUser() {
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"WSO2_Camunda", "WSO2_MS_PwParatransit"
+	})
+	void updateProcessCamundaUser(String camundaUser) {
 		// Arrange
 		final var errand = createErrandEntity();
-		errand.setUpdatedByClient("WSO2_Camunda");
+		errand.setUpdatedByClient(camundaUser);
 
 		// Act
 		processService.updateProcess(errand);
