@@ -44,9 +44,9 @@ public final class PatchMapper {
 		ofNullable(patch.getStartDate()).ifPresent(errand::setStartDate);
 		ofNullable(patch.getEndDate()).ifPresent(errand::setEndDate);
 		ofNullable(patch.getApplicationReceived()).ifPresent(errand::setApplicationReceived);
-		ofNullable(patch.getFacilities()).ifPresent(_ -> errand.getFacilities().addAll(patch.getFacilities().stream().map(facility -> toFacilityEntity(facility, errand.getMunicipalityId(), errand.getNamespace())).toList()));
-		ofNullable(patch.getRelatesTo()).ifPresent(_ -> errand.getRelatesTo().addAll(patch.getRelatesTo().stream().map(EntityMapper::toRelatedErrandEntity).toList()));
-		ofNullable(patch.getLabels()).ifPresent(_ -> errand.setLabels(patch.getLabels()));
+		ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(facilities.stream().map(facility -> toFacilityEntity(facility, errand.getMunicipalityId(), errand.getNamespace())).toList()));
+		ofNullable(patch.getRelatesTo()).ifPresent(relatesTo -> errand.getRelatesTo().addAll(relatesTo.stream().map(EntityMapper::toRelatedErrandEntity).toList()));
+		ofNullable(patch.getLabels()).ifPresent(labels -> errand.setLabels(labels));
 		ofNullable(patch.getSuspension()).ifPresent(
 			suspension -> {
 				errand.setSuspendedFrom(suspension.getSuspendedFrom());
@@ -64,7 +64,7 @@ public final class PatchMapper {
 
 	public static DecisionEntity patchDecision(final DecisionEntity decision, final PatchDecision patch) {
 		// ExtraParameters are not patched, they are posted for whatever reason.
-		ofNullable(patch.getExtraParameters()).ifPresent(_ -> decision.getExtraParameters().putAll(patch.getExtraParameters()));
+		ofNullable(patch.getExtraParameters()).ifPresent(extraParameters -> decision.getExtraParameters().putAll(extraParameters));
 		ofNullable(patch.getDecisionType()).ifPresent(decision::setDecisionType);
 		ofNullable(patch.getDecisionOutcome()).ifPresent(decision::setDecisionOutcome);
 		ofNullable(patch.getDescription()).ifPresent(decision::setDescription);

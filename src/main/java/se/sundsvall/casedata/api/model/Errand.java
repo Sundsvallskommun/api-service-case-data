@@ -16,6 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.TimeZoneStorage;
 import se.sundsvall.casedata.api.model.validation.UniqueDecisionType;
+import se.sundsvall.casedata.api.model.validation.UniqueInvoiceRecipient;
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
@@ -94,6 +95,7 @@ public class Errand {
 
 	@Schema(description = "The applicant and other stakeholders connected to the errand")
 	@Valid
+	@UniqueInvoiceRecipient
 	private List<Stakeholder> stakeholders;
 
 	@Schema(description = "The facilities connected to the errand")
@@ -103,9 +105,9 @@ public class Errand {
 	@Schema(description = "List of notifications connected to this errand", accessMode = READ_ONLY)
 	private List<Notification> notifications;
 
+	@Schema(description = "The decisions connected to the errand")
 	@Valid
 	@UniqueDecisionType
-	@Schema(description = "The decisions connected to the errand")
 	private List<Decision> decisions;
 
 	@Schema(description = "The notes connected to the errand")
@@ -118,8 +120,8 @@ public class Errand {
 	@Schema(description = "List of labels for the errand", examples = "[\"label1\",\"label2\"]")
 	private List<String> labels;
 
-	@Valid
 	@Schema(description = "Other errands related to the errand")
+	@Valid
 	private List<RelatedErrand> relatesTo;
 
 	@Schema(description = "The client who created the errand. WSO2-username", accessMode = READ_ONLY)
@@ -134,8 +136,8 @@ public class Errand {
 	@Schema(description = "The most recent user who updated the errand", accessMode = READ_ONLY)
 	private String updatedBy;
 
-	@Valid
 	@Schema(description = "Suspension information")
+	@Valid
 	private Suspension suspension;
 
 	@Schema(description = "Extra parameters for the errand")

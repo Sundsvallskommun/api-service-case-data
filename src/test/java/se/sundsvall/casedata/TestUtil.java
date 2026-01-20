@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -121,7 +122,8 @@ public final class TestUtil {
 	}
 
 	public static String getRandomStakeholderRole() {
-		return StakeholderRole.values()[RANDOM.nextInt(StakeholderRole.values().length)].name();
+		// Exclude position 4 (holding INVOICE_RECIPIENT as this will f*ck up tests if found on more than one stakeholder
+		return StakeholderRole.values()[randomIntExcluding(StakeholderRole.values().length, Set.of(4))].name();
 	}
 
 	public static StakeholderType getRandomStakeholderType() {
@@ -130,6 +132,14 @@ public final class TestUtil {
 
 	public static OffsetDateTime getRandomOffsetDateTime() {
 		return toOffsetDateTimeWithLocalOffset(now().minusDays(RANDOM.nextInt(10000)).truncatedTo(ChronoUnit.MILLIS));
+	}
+
+	private static int randomIntExcluding(int upperBound, Set<Integer> excludeInts) {
+		var random = RANDOM.nextInt(upperBound);
+		while (excludeInts.contains(random)) {
+			random = RANDOM.nextInt(upperBound);
+		}
+		return random;
 	}
 
 	public static Status createStatus() {

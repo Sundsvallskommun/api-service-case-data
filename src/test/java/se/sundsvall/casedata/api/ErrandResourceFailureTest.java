@@ -11,6 +11,7 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
+import static se.sundsvall.casedata.TestUtil.createStakeholder;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,8 +28,10 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.Decision;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.service.ErrandService;
 import se.sundsvall.casedata.service.MetadataService;
 
@@ -58,7 +61,7 @@ class ErrandResourceFailureTest {
 	void postErrandWithExtraParameterTooLong() {
 		// Arrange
 		final var body = createErrandEntity();
-		final String longExtraParameter = String.join("", Collections.nCopies(9000, "a")); // This creates a string longer than 8192 characters
+		final var longExtraParameter = String.join("", Collections.nCopies(9000, "a")); // This creates a string longer than 8192 characters
 		body.setExtraParameters(List.of(ExtraParameterEntity.builder().withKey("longParameter").withValues(List.of(longExtraParameter)).build()));
 
 		// Act
@@ -187,4 +190,30 @@ class ErrandResourceFailureTest {
 		assertThat(result.getViolations().getFirst().getMessage()).isEqualTo("Errand can contain one decision of each DecisionType");
 	}
 
+	@Test
+	void postErrandWithMultipleInvoiceRecipients() {
+		// Arrange
+		final var body = createErrand();
+		body.setStakeholders(List.of(
+			createStakeholder(StakeholderType.PERSON, List.of(StakeholderRole.INVOICE_RECIPIENT.name())),
+			createStakeholder(StakeholderType.PERSON, List.of(StakeholderRole.INVOICE_RECIPIENT.name()))));
+
+		// Act
+		final var result = webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		verifyNoInteractions(errandServiceMock);
+		assertThat(result).isNotNull();
+		assertThat(result.getViolations()).hasSize(1);
+		assertThat(result.getViolations().getFirst().getField()).isEqualTo("stakeholders");
+		assertThat(result.getViolations().getFirst().getMessage()).isEqualTo("Errand can only contain one stakeholder with role INVOICE_RECIPIENT");
+	}
 }
