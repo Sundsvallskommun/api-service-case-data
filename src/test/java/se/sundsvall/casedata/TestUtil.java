@@ -3,6 +3,7 @@ package se.sundsvall.casedata;
 import static java.time.OffsetDateTime.now;
 import static java.util.UUID.randomUUID;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.INVOICE_RECIPIENT;
 import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
 import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
@@ -122,8 +123,8 @@ public final class TestUtil {
 	}
 
 	public static String getRandomStakeholderRole() {
-		// Exclude position 4 (holding INVOICE_RECIPIENT as this will f*ck up tests if found on more than one stakeholder
-		return StakeholderRole.values()[randomIntExcluding(StakeholderRole.values().length, Set.of(4))].name();
+		// Exclude the position holding INVOICE_RECIPIENT as this will f*ck up tests if found on more than one stakeholder
+		return StakeholderRole.values()[randomIntExcluding(StakeholderRole.values().length, Set.of(INVOICE_RECIPIENT.ordinal()))].name();
 	}
 
 	public static StakeholderType getRandomStakeholderType() {
