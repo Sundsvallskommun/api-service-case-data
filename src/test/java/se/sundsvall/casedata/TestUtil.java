@@ -3,6 +3,7 @@ package se.sundsvall.casedata;
 import static java.time.OffsetDateTime.now;
 import static java.util.UUID.randomUUID;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.INVOICE_RECIPIENT;
 import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
 import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -121,7 +123,8 @@ public final class TestUtil {
 	}
 
 	public static String getRandomStakeholderRole() {
-		return StakeholderRole.values()[RANDOM.nextInt(StakeholderRole.values().length)].name();
+		// Exclude the position holding INVOICE_RECIPIENT as this will f*ck up tests if found on more than one stakeholder
+		return StakeholderRole.values()[randomIntExcluding(StakeholderRole.values().length, Set.of(INVOICE_RECIPIENT.ordinal()))].name();
 	}
 
 	public static StakeholderType getRandomStakeholderType() {
@@ -130,6 +133,14 @@ public final class TestUtil {
 
 	public static OffsetDateTime getRandomOffsetDateTime() {
 		return toOffsetDateTimeWithLocalOffset(now().minusDays(RANDOM.nextInt(10000)).truncatedTo(ChronoUnit.MILLIS));
+	}
+
+	private static int randomIntExcluding(int upperBound, Set<Integer> excludeInts) {
+		var random = RANDOM.nextInt(upperBound);
+		while (excludeInts.contains(random)) {
+			random = RANDOM.nextInt(upperBound);
+		}
+		return random;
 	}
 
 	public static Status createStatus() {
