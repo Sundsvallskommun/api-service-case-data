@@ -2,7 +2,6 @@ package se.sundsvall.casedata.api.model.validation.impl;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static org.springframework.util.CollectionUtils.isEmpty;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.INVOICE_RECIPIENT;
 
 import jakarta.validation.ConstraintValidator;
@@ -20,11 +19,7 @@ public class UniqueInvoiceRecipientValidator implements ConstraintValidator<Uniq
 
 	@Override
 	public boolean isValid(final List<Stakeholder> stakeholders, final ConstraintValidatorContext context) {
-		if (isEmpty(stakeholders)) {
-			return true;
-		}
-
-		return stakeholders.stream()
+		return ofNullable(stakeholders).orElse(emptyList()).stream()
 			.filter(hasInvoiceRecipientRole())
 			.count() <= 1; // An errand can at most have one stakeholder with role INVOICE_RECIPIENT
 	}

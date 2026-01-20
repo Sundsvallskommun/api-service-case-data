@@ -55,7 +55,7 @@ class UniqueInvoiceRecipientValidatorTest {
 		assertThat(validator.isValid(stakeholders, null)).isFalse();
 	}
 
-	private final static Stakeholder createStakeholder(List<String> roles) {
+	private static final Stakeholder createStakeholder(List<String> roles) {
 		return Stakeholder.builder()
 			.withRoles(roles)
 			.build();
