@@ -6,7 +6,7 @@ public final class ErrandNumberParser {
 
 	/**
 	 * Parses the subject of an email and returns the errand number if it exists.
-	 * The errand number is expected to be in the format: PRH-2022-000001
+	 * The errand number is expected to be in the format: SGP-2022-000001
 	 * The errand number is expected to be preceded by a '#' and followed by a space or the end of the string.
 	 * If the errand number is not found, null is returned.
 	 *
