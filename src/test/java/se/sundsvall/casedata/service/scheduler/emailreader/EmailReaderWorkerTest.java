@@ -81,7 +81,7 @@ class EmailReaderWorkerTest {
 		// Arrange
 		final var email = new Email()
 			.id("someId")
-			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.subject("Ärende #MEX-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
 			.recipients(List.of("someRecipient"))
 			.sender("someSender")
 			.message("someMessage")
@@ -129,14 +129,14 @@ class EmailReaderWorkerTest {
 
 		final var email = new Email()
 			.id(String.valueOf(messageId))
-			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.subject("Ärende #MEX-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
 			.recipients(List.of("someRecipient"))
 			.sender("someSender")
 			.message("someMessage")
 			.receivedAt(OffsetDateTime.now())
 			.attachments(List.of(emailAttachment));
 
-		final var errandNumber = "PRH-2022-01";
+		final var errandNumber = "MEX-2022-01";
 		final var errandId = 123L;
 		final var municipalityId = "someMunicipalityId";
 		final var namespace = "someNamespace";
@@ -181,7 +181,7 @@ class EmailReaderWorkerTest {
 		// Arrange
 		final var email = new Email()
 			.id("someId")
-			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.subject("Ärende #MEX-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
 			.recipients(List.of("someRecipient"))
 			.sender("someSender")
 			.message("someMessage")
@@ -190,7 +190,7 @@ class EmailReaderWorkerTest {
 				.name("someName")
 				.contentType("someContentType")));
 
-		final var errandNumber = "PRH-2022-01";
+		final var errandNumber = "MEX-2022-01";
 		final var errandId = 123L;
 		final var municipalityId = "someMunicipalityId";
 		final var namespace = "someNamespace";
@@ -224,7 +224,7 @@ class EmailReaderWorkerTest {
 		// Arrange
 		final var email = new Email()
 			.id("someId")
-			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.subject("Ärende #MEX-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
 			.recipients(List.of("someRecipient"))
 			.sender("someSender")
 			.message("someMessage")
@@ -232,7 +232,7 @@ class EmailReaderWorkerTest {
 			.attachments(List.of(new EmailAttachment()
 				.name("someName")
 				.contentType("someContentType")));
-		final var errandNumber = "PRH-2022-01";
+		final var errandNumber = "MEX-2022-01";
 
 		when(errandRepositoryMock.findWithPessimisticLockingByErrandNumber(errandNumber))
 			.thenReturn(Optional.empty());
@@ -253,7 +253,7 @@ class EmailReaderWorkerTest {
 		// Arrange
 		final var email = new Email()
 			.id("someId")
-			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.subject("Ärende #MEX-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
 			.recipients(List.of("someRecipient"))
 			.sender("someSender")
 			.message("someMessage")
@@ -262,7 +262,7 @@ class EmailReaderWorkerTest {
 				.name("someName")
 				.contentType("someContentType")));
 
-		final var errandNumber = "PRH-2022-01";
+		final var errandNumber = "MEX-2022-01";
 
 		when(errandRepositoryMock.findWithPessimisticLockingByErrandNumber(errandNumber))
 			.thenThrow(new RuntimeException("Database error"));
@@ -284,7 +284,7 @@ class EmailReaderWorkerTest {
 		// Arrange
 		final var email = new Email()
 			.id("someId")
-			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.subject("Ärende #MEX-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
 			.recipients(List.of("someRecipient"))
 			.sender("someSender")
 			.message("someMessage")
@@ -310,7 +310,7 @@ class EmailReaderWorkerTest {
 		// Arrange
 		final var email = new Email()
 			.id("someId")
-			.subject("Ärende #PRH-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
+			.subject("Ärende #MEX-2022-01 Ansökan om bygglov för fastighet KATARINA 4")
 			.recipients(List.of("someRecipient"))
 			.sender("someSender")
 			.message("someMessage")
