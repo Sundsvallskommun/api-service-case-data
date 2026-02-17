@@ -18,7 +18,7 @@ public class RelatedErrand {
 	private Long errandId;
 
 	@NotNull
-	@Schema(description = "Errand number", examples = "PRH-2022-000001")
+	@Schema(description = "Errand number", examples = "SGP-2022-000001")
 	private String errandNumber;
 
 	@Schema(description = "Relation reason", examples = "Related because of appealed decision on errand")

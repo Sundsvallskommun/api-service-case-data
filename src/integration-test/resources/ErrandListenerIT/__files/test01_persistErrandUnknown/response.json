@@ -1,7 +1,7 @@
 {
 	"id": 3,
 	"version": 1,
-	"errandNumber": "${json-unit.regex}^PRH-\\d{4}-000001",
+	"errandNumber": "${json-unit.regex}^SGP-\\d{4}-000001",
 	"municipalityId": "2281",
 	"namespace": "SBK_PARKING_PERMIT",
 	"externalCaseId": "9527464e-c5a0-4971-a253-8b94a79e74c9",
