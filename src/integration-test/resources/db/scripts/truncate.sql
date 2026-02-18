@@ -7,6 +7,7 @@ truncate table decision_extra_parameters;
 truncate table decision_laws;
 truncate table errand;
 truncate table errand_extra_parameters;
+truncate table errand_extra_parameter_values;
 truncate table errand_statuses;
 truncate table errand_labels;
 truncate table facility;
@@ -29,5 +30,9 @@ truncate table stakeholder_contact_information;
 truncate table stakeholder_extra_parameters;
 truncate table stakeholder_roles;
 truncate table message_recipients;
+truncate table conversation;
+truncate table conversation_relation_id;
+truncate table message_exchange_sync;
+truncate table case_type;
 
 set foreign_key_checks = 1;

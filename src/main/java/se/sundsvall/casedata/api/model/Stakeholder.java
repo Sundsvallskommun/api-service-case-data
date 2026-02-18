@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
-import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +19,9 @@ import se.sundsvall.casedata.api.model.validation.ValidStakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 import se.sundsvall.casedata.service.util.Constants;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
+
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 @Data
 @NoArgsConstructor

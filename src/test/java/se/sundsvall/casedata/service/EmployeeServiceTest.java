@@ -1,10 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Optional.empty;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -13,6 +8,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.casedata.integration.employee.EmployeeClient;
+
+import static java.util.Optional.empty;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeServiceTest {

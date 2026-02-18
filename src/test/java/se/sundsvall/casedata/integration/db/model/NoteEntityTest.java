@@ -1,5 +1,13 @@
 package se.sundsvall.casedata.integration.db.model;
 
+import java.time.OffsetDateTime;
+import java.util.Map;
+import java.util.Random;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.integration.db.model.enums.NoteType;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEqualsExcluding;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCodeExcluding;
@@ -9,14 +17,6 @@ import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
-
-import java.time.OffsetDateTime;
-import java.util.Map;
-import java.util.Random;
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 
 class NoteEntityTest {
 

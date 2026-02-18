@@ -1,5 +1,21 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.TestUtil;
+import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.Stakeholder;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
+import se.sundsvall.casedata.integration.db.model.enums.ContactType;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
 import static java.time.OffsetDateTime.now;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,22 +74,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakehol
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatus;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStatusEntity;
-
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import se.sundsvall.casedata.TestUtil;
-import se.sundsvall.casedata.api.model.Errand;
-import se.sundsvall.casedata.api.model.Stakeholder;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
-import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
-import se.sundsvall.casedata.integration.db.model.enums.ContactType;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 @ExtendWith(MockitoExtension.class)
 class EntityMapperTest {

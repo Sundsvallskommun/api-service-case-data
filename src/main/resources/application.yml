@@ -38,6 +38,8 @@ spring:
             token-uri: ${config.relation.token-url}
           paratransit:
             token-uri: ${config.paratransit.token-url}
+          eventlog:
+            token-uri: ${config.eventlog.token-url}
         registration:
           parkingpermit:
             authorization-grant-type: client_credentials
@@ -89,6 +91,11 @@ spring:
             provider: paratransit
             client-id: ${config.paratransit.client-id}
             client-secret: ${config.paratransit.client-secret}
+          eventlog:
+            authorization-grant-type: client_credentials
+            provider: eventlog
+            client-id: ${config.eventlog.client-id}
+            client-secret: ${config.eventlog.client-secret}
   servlet:
     multipart:
       max-file-size: 50MB
@@ -156,6 +163,10 @@ integration:
     base-url: ${config.paratransit.base-url}
     connectTimeout: 5
     readTimeout: 20
+  eventlog:
+    base-url: ${config.eventlog.base-url}
+    connectTimeout: 5
+    readTimeout: 20
 
 #----------------------------------------
 # Circuit breakers
@@ -170,6 +181,8 @@ resilience4j:
       relation:
         ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
       paratransit:
+        ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
+      eventlog:
         ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
     configs:
       default:

@@ -1,14 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import static java.time.OffsetDateTime.now;
-import static java.time.ZoneId.systemDefault;
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
-import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,6 +32,15 @@ import se.sundsvall.casedata.integration.db.model.RelatedErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.StatusEntity;
 import se.sundsvall.casedata.integration.db.model.enums.NotificationSubType;
+
+import static java.time.OffsetDateTime.now;
+import static java.time.ZoneId.systemDefault;
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
+import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 public final class EntityMapper {
 

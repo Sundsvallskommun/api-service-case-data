@@ -1,12 +1,5 @@
 package se.sundsvall.casedata;
 
-import static java.time.OffsetDateTime.now;
-import static java.util.UUID.randomUUID;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.INVOICE_RECIPIENT;
-import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
-import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -65,6 +58,13 @@ import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
+import static java.time.OffsetDateTime.now;
+import static java.util.UUID.randomUUID;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.INVOICE_RECIPIENT;
+import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
+import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 public final class TestUtil {
 

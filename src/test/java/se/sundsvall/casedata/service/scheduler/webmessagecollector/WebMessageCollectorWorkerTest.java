@@ -1,17 +1,5 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
-
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import java.sql.SQLException;
 import java.util.List;
@@ -40,6 +28,18 @@ import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollector
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.NotificationService;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
 
 @ExtendWith(MockitoExtension.class)
 class WebMessageCollectorWorkerTest {

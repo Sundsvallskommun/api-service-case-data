@@ -1,23 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createAddress;
-import static se.sundsvall.casedata.TestUtil.createErrand;
-import static se.sundsvall.casedata.TestUtil.createErrandEntity;
-import static se.sundsvall.casedata.TestUtil.createExtraParameters;
-import static se.sundsvall.casedata.TestUtil.createFacility;
-import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +18,24 @@ import se.sundsvall.casedata.integration.db.model.AddressEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createAddress;
+import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.TestUtil.createExtraParameters;
+import static se.sundsvall.casedata.TestUtil.createFacility;
+import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
 
 @ExtendWith(MockitoExtension.class)
 class FacilityServiceTest {

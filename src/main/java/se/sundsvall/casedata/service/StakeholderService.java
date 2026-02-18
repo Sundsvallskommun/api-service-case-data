@@ -1,14 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Collections.emptyList;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholder;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderEntity;
-import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
-import static se.sundsvall.casedata.service.util.mappers.PutMapper.putStakeholder;
-
 import java.util.List;
 import java.util.Optional;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,6 +12,15 @@ import se.sundsvall.casedata.integration.db.StakeholderRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+
+import static java.util.Collections.emptyList;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholder;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholderEntity;
+import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
+import static se.sundsvall.casedata.service.util.mappers.PutMapper.putStakeholder;
 
 @Service
 @Transactional

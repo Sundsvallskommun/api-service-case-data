@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static org.javers.repository.jql.QueryBuilder.byInstance;
-import static org.zalando.problem.Status.NOT_FOUND;
-
 import com.google.gson.reflect.TypeToken;
 import java.util.List;
 import org.javers.core.Changes;
@@ -17,6 +14,9 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.FacilityRepository;
 import se.sundsvall.casedata.integration.db.NoteRepository;
 import se.sundsvall.casedata.integration.db.StakeholderRepository;
+
+import static org.javers.repository.jql.QueryBuilder.byInstance;
+import static org.zalando.problem.Status.NOT_FOUND;
 
 @Service
 public class HistoryService {

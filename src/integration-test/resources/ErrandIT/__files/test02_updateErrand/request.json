@@ -5,5 +5,9 @@
 	"labels": [
 		"updated-label-1",
 		"updated-label-2"
-	]
+	],
+	"status": {
+		"statusType": "Komplettering",
+		"description": "Komplettering begärd"
+	}
 }

@@ -1,23 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.ObjectUtils.notEqual;
-import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
-import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
-import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_REPORTER_SUPPORT_TEXT;
-import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailRequest;
-import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toMessagingMessageRequest;
-import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
-import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
-
 import generated.se.sundsvall.messaging.Message;
 import generated.se.sundsvall.messaging.MessageParty;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,6 +23,24 @@ import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsInte
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.dept44.support.Identifier;
 import se.sundsvall.dept44.support.Identifier.Type;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.ObjectUtils.notEqual;
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_REPORTER_SUPPORT_TEXT;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailRequest;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toMessagingMessageRequest;
+import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 @Service
 @Transactional

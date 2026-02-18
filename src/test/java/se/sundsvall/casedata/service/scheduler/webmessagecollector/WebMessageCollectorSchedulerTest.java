@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -11,6 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class WebMessageCollectorSchedulerTest {

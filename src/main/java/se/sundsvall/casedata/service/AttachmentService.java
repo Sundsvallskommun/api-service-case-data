@@ -1,14 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.ATTACHMENT_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachmentEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
-import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchAttachment;
-import static se.sundsvall.casedata.service.util.mappers.PutMapper.putAttachment;
-
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +11,15 @@ import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.NotificationSubType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.ATTACHMENT_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachmentEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
+import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchAttachment;
+import static se.sundsvall.casedata.service.util.mappers.PutMapper.putAttachment;
 
 @Service
 @Transactional

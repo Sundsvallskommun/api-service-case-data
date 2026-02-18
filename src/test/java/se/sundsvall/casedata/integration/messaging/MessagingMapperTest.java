@@ -1,18 +1,18 @@
 package se.sundsvall.casedata.integration.messaging;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.APPLICANT;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
-import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
-import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_OWNER_SUPPORT_TEXT;
-import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_REPORTER_SUPPORT_TEXT;
-
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.service.model.MessagingSettings;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.APPLICANT;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
+import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_OWNER_SUPPORT_TEXT;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_REPORTER_SUPPORT_TEXT;
 
 class MessagingMapperTest {
 

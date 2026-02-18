@@ -93,6 +93,11 @@ config:
     client-id: client-id
     client-secret: client-secret
     token-url: token-url
+  eventlog:
+    base-url: http://localhost:8080
+    client-id: client-id
+    client-secret: client-secret
+    token-url: token-url
 
 #----------------------------------------
 # Scheduler settings

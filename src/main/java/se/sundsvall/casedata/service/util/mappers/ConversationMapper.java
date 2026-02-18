@@ -1,9 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +20,10 @@ import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.api.model.conversation.MessageType;
 import se.sundsvall.casedata.api.model.conversation.ReadBy;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyList;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 
 public final class ConversationMapper {
 

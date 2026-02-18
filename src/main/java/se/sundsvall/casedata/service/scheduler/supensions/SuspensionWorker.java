@@ -1,10 +1,5 @@
 package se.sundsvall.casedata.service.scheduler.supensions;
 
-import static java.time.OffsetDateTime.now;
-import static java.util.Collections.emptyList;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.SUSPENSION;
-
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +8,11 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.service.NotificationService;
+
+import static java.time.OffsetDateTime.now;
+import static java.util.Collections.emptyList;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.SUSPENSION;
 
 @Component
 public class SuspensionWorker {
