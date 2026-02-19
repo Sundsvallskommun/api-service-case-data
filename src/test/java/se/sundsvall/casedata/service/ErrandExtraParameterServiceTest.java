@@ -1,13 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.TestUtil.createErrandEntity;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -242,7 +234,7 @@ class ErrandExtraParameterServiceTest {
 			.build();
 
 		// Act
-		final var exception = Assert.assertThrows(ThrowableProblem.class, () -> errandExtraParameterService.findParameterEntityOrElseThrow(errand, "parameterId"));
+		final var exception = assertThrows(ThrowableProblem.class, () -> errandExtraParameterService.findParameterEntityOrElseThrow(errand, "parameterId"));
 
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
