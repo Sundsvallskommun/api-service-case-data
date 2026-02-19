@@ -36,7 +36,6 @@ class ErrandIT extends AbstractAppTest {
 
 	@Test
 	void test01_createErrand() {
-
 		final var location = Objects.requireNonNull(setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(format(PATH, MUNICIPALITY_ID, "SBK_PARKING_PERMIT"))
@@ -56,7 +55,6 @@ class ErrandIT extends AbstractAppTest {
 
 	@Test
 	void test02_updateErrand() {
-
 		setupCall()
 			.withServicePath(format(PATH + "/{2}", MUNICIPALITY_ID, NAMESPACE, 2))
 			.withHttpMethod(PATCH)
@@ -92,7 +90,6 @@ class ErrandIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
-
 	}
 
 	@Test
@@ -103,7 +100,6 @@ class ErrandIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
-
 	}
 
 	@Test
@@ -126,7 +122,6 @@ class ErrandIT extends AbstractAppTest {
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(NOT_FOUND)
 			.sendRequestAndVerifyResponse();
-
 	}
 
 	@Test
@@ -146,4 +141,23 @@ class ErrandIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
+	@Test
+	void test08_createErrandWithReferredFrom() {
+		final var referredFromParam = format("?referred_from={0},{1},{2}", "MY_SERVICE", "SBK_PARKING_PERMIT", "MY_IDENTIFIER");
+		final var location = Objects.requireNonNull(setupCall()
+			.withHttpMethod(POST)
+			.withServicePath(format(PATH + "{2}", MUNICIPALITY_ID, "SBK_PARKING_PERMIT", referredFromParam))
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
+			.withExpectedResponseStatus(CREATED)
+			.withRequest(REQUEST_FILE)
+			.sendRequest()
+			.getResponseHeaders().get(LOCATION)).getFirst();
+
+		setupCall()
+			.withServicePath(location)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
 }

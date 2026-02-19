@@ -1,14 +1,20 @@
 package se.sundsvall.casedata.service;
 
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import generated.se.sundsvall.relation.Relation;
+import generated.se.sundsvall.relation.ResourceIdentifier;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Stream;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
@@ -27,6 +33,7 @@ import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
+import se.sundsvall.casedata.integration.relation.RelationClient;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
 import se.sundsvall.dept44.support.Identifier;
@@ -34,6 +41,7 @@ import se.sundsvall.dept44.support.Identifier.Type;
 
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -43,6 +51,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
@@ -78,8 +87,14 @@ class ErrandServiceTest {
 	@Mock
 	private EventlogIntegration eventlogIntegrationMock;
 
+	@Mock
+	private RelationClient relationClientMock;
+
 	@Captor
 	private ArgumentCaptor<List<Long>> idListCapture;
+
+	@Captor
+	private ArgumentCaptor<Relation> relationCaptor;
 
 	@Captor
 	private ArgumentCaptor<Notification> notificationCaptor;
@@ -109,7 +124,7 @@ class ErrandServiceTest {
 		when(processServiceMock.startProcess(inputErrand)).thenReturn(processId);
 
 		// Act
-		errandService.create(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE);
+		errandService.create(inputErrandDTO, MUNICIPALITY_ID, NAMESPACE, null);
 
 		// Assert
 		verify(processServiceMock).startProcess(inputErrand);
@@ -343,4 +358,85 @@ class ErrandServiceTest {
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock, notificationServiceMock, applicationEventPublisherMock, eventlogIntegrationMock);
 	}
 
+	@Test
+	void createWhenReferredFromPresent() {
+		final var referredFromService = "referredFromService";
+		final var referredFromNamespace = "referredFromNamespace";
+		final var referredFromIdentifier = "referredFromIdentifier";
+		final var referredFrom = referredFromService + "," + referredFromNamespace + "," + referredFromIdentifier;
+
+		final var errand = createErrand();
+		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
+
+		savedErrand.setId(42L);
+
+		when(errandRepositoryMock.save(any())).thenReturn(savedErrand);
+
+		errandService.create(errand, MUNICIPALITY_ID, referredFromNamespace, referredFrom);
+
+		verify(relationClientMock).createRelation(eq(MUNICIPALITY_ID), relationCaptor.capture());
+
+		final var relation = relationCaptor.getValue();
+
+		assertThat(relation.getType()).isEqualTo("REFERRED_FROM");
+		assertThat(relation.getSource())
+			.extracting(ResourceIdentifier::getResourceId,
+				ResourceIdentifier::getType,
+				ResourceIdentifier::getService,
+				ResourceIdentifier::getNamespace)
+			.containsExactly(
+				referredFromIdentifier,
+				"case",
+				referredFromService,
+				referredFromNamespace);
+		assertThat(relation.getTarget())
+			.extracting(ResourceIdentifier::getResourceId,
+				ResourceIdentifier::getType,
+				ResourceIdentifier::getService,
+				ResourceIdentifier::getNamespace)
+			.containsExactly(
+				String.valueOf(savedErrand.getId()),
+				"case",
+				"case-data",
+				referredFromNamespace);
+	}
+
+	@Test
+	void createWhenReferredFromNamespaceNamespaceDoesNotMatchNamespace() {
+		final var referredFromService = "referredFromService";
+		final var referredFromNamespace = "referredFromNamespace";
+		final var referredFromIdentifier = "referredFromIdentifier";
+		final var referredFrom = referredFromService + "," + referredFromNamespace + "," + referredFromIdentifier;
+
+		final var errand = createErrand();
+		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
+
+		when(errandRepositoryMock.save(any())).thenReturn(savedErrand);
+
+		assertThatException()
+			.isThrownBy(() -> errandService.create(errand, MUNICIPALITY_ID, NAMESPACE, referredFrom))
+			.asInstanceOf(InstanceOfAssertFactories.type(ThrowableProblem.class))
+			.satisfies(thrownProblem -> {
+				assertThat(thrownProblem.getStatus()).isEqualTo(BAD_REQUEST);
+				assertThat(thrownProblem.getMessage()).endsWith("Mismatch on namespace and referred-from namespace");
+			});
+
+		verify(relationClientMock, never()).createRelation(any(), any());
+	}
+
+	@ParameterizedTest
+	@NullAndEmptySource
+	@ValueSource(strings = {
+		" "
+	})
+	void createWhenReferredFromNotPresent(String referredFrom) {
+		final var errand = createErrand();
+		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
+
+		when(errandRepositoryMock.save(any())).thenReturn(savedErrand);
+
+		errandService.create(errand, MUNICIPALITY_ID, NAMESPACE, referredFrom);
+
+		verify(relationClientMock, never()).createRelation(any(), any());
+	}
 }
