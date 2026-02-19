@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Stream;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +39,7 @@ import se.sundsvall.dept44.support.Identifier.Type;
 
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -388,7 +390,11 @@ class ErrandServiceTest {
 
 	@Test
 	void createWhenReferredFromPresent() {
-		final var referredFrom = "ABC-123456";
+		final var referredFromService = "referredFromService";
+		final var referredFromNamespace = "referredFromNamespace";
+		final var referredFromIdentifier = "referredFromIdentifier";
+		final var referredFrom = referredFromService + "," + referredFromNamespace + "," + referredFromIdentifier;
+
 		final var errand = createErrand();
 		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
 
@@ -396,7 +402,7 @@ class ErrandServiceTest {
 
 		when(errandRepositoryMock.save(any())).thenReturn(savedErrand);
 
-		errandService.create(errand, MUNICIPALITY_ID, NAMESPACE, referredFrom);
+		errandService.create(errand, MUNICIPALITY_ID, referredFromNamespace, referredFrom);
 
 		verify(relationClientMock).createRelation(eq(MUNICIPALITY_ID), relationCaptor.capture());
 
@@ -409,10 +415,10 @@ class ErrandServiceTest {
 				ResourceIdentifier::getService,
 				ResourceIdentifier::getNamespace)
 			.containsExactly(
-				referredFrom,
+				referredFromIdentifier,
 				"case",
-				"support-management",
-				NAMESPACE);
+				referredFromService,
+				referredFromNamespace);
 		assertThat(relation.getTarget())
 			.extracting(ResourceIdentifier::getResourceId,
 				ResourceIdentifier::getType,
@@ -422,7 +428,30 @@ class ErrandServiceTest {
 				String.valueOf(savedErrand.getId()),
 				"case",
 				"support-management",
-				NAMESPACE);
+				referredFromNamespace);
+	}
+
+	@Test
+	void createWhenReferredFromNamespaceNamespaceDoesNotMatchNamespace() {
+		final var referredFromService = "referredFromService";
+		final var referredFromNamespace = "referredFromNamespace";
+		final var referredFromIdentifier = "referredFromIdentifier";
+		final var referredFrom = referredFromService + "," + referredFromNamespace + "," + referredFromIdentifier;
+
+		final var errand = createErrand();
+		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
+
+		when(errandRepositoryMock.save(any())).thenReturn(savedErrand);
+
+		assertThatException()
+			.isThrownBy(() -> errandService.create(errand, MUNICIPALITY_ID, NAMESPACE, referredFrom))
+			.asInstanceOf(InstanceOfAssertFactories.type(ThrowableProblem.class))
+			.satisfies(thrownProblem -> {
+				assertThat(thrownProblem.getStatus()).isEqualTo(BAD_REQUEST);
+				assertThat(thrownProblem.getMessage()).endsWith("Mismatch on namespace and referred-from namespace");
+			});
+
+		verify(relationClientMock, never()).createRelation(any(), any());
 	}
 
 	@ParameterizedTest
@@ -430,7 +459,7 @@ class ErrandServiceTest {
 	@ValueSource(strings = {
 		" "
 	})
-	void createWhenReferredFromEmpty(String referredFrom) {
+	void createWhenReferredFromNotPresent(String referredFrom) {
 		final var errand = createErrand();
 		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
 

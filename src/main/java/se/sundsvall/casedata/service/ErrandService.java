@@ -1,10 +1,10 @@
 package se.sundsvall.casedata.service;
 
-import java.util.List;
-import java.util.Optional;
-
 import generated.se.sundsvall.relation.Relation;
 import generated.se.sundsvall.relation.ResourceIdentifier;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.hibernate.query.sqm.PathElementException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -21,6 +21,7 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
 import se.sundsvall.casedata.integration.relation.RelationClient;
+import se.sundsvall.casedata.service.model.ReferredFrom;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
 import se.sundsvall.dept44.problem.Problem;
@@ -29,6 +30,25 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.SYSTEM;
+import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildMunicipalityIdFilter;
+import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildNamespaceFilter;
+import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.distinct;
+import static se.sundsvall.casedata.service.model.EventType.UPDATE;
+import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USERS;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ERRAND_UPDATED;
+import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
+
+import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.zalando.problem.Status.BAD_REQUEST;
+import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.SYSTEM;
 import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildMunicipalityIdFilter;
@@ -69,6 +89,7 @@ public class ErrandService {
 		this.notificationService = notificationService;
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.eventlogIntegration = eventlogIntegration;
+		this.relationClient = relationClient;
 	}
 
 	private String determineSubType(final ErrandEntity updatedErrand) {
@@ -115,13 +136,20 @@ public class ErrandService {
 		// Will not start a process if it's not a parking permit or mex errand
 		startProcess(resultErrand);
 
-		if (referredFrom != null && !referredFrom.isBlank()) {
+		if (isNotBlank(referredFrom)) {
+			final var expandedReferredFrom = expandReferredFrom(referredFrom);
+
+			// Make sure namespaces match
+			if (!namespace.equalsIgnoreCase(expandedReferredFrom.namespace())) {
+				throw Problem.valueOf(BAD_REQUEST, "Mismatch on namespace and referred-from namespace");
+			}
+
 			final var relation = new Relation()
 				.type(REFERRED_FROM_RELATION_TYPE)
 				.source(new ResourceIdentifier()
-					.resourceId(referredFrom)
+					.resourceId(expandedReferredFrom.identifier())
 					.type(REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE)
-					.service(REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE)
+					.service(expandedReferredFrom.service())
 					.namespace(namespace))
 				.target(new ResourceIdentifier()
 					.resourceId(resultErrand.getId().toString())
@@ -191,4 +219,14 @@ public class ErrandService {
 		}
 	}
 
+	ReferredFrom expandReferredFrom(final String referredFromAsString) {
+		if (isNotBlank(referredFromAsString)) {
+			var parts = referredFromAsString.split(",");
+			if (parts.length == 3 && Arrays.stream(parts).map(String::trim).noneMatch(String::isBlank)) {
+				return new ReferredFrom(parts[0].trim(), parts[1].trim(), parts[2].trim());
+			}
+		}
+
+		throw Problem.valueOf(BAD_REQUEST, "Referred from should be three non-blank comma-separated parts: <service>,<namespace>,<identifier>");
+	}
 }
