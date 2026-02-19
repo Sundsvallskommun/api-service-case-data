@@ -52,7 +52,7 @@ class NotificationTest {
 		final var acknowledged = true;
 		final var globalAcknowledged = true;
 		final var errandId = 12345L;
-		final var errandNumber = "PRH-2022-000001";
+		final var errandNumber = "SGP-2022-000001";
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
 

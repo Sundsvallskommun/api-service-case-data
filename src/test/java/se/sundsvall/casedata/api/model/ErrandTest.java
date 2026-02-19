@@ -43,7 +43,7 @@ class ErrandTest {
 		// Arrange
 		final var id = 1L;
 		final var version = 1;
-		final var errandNumber = "PRH-2022-000001";
+		final var errandNumber = "SGP-2022-000001";
 		final var externalCaseId = "caa230c6-abb4-4592-ad9a-34e263c2787b";
 		final var caseType = "BUILDING_PERMIT";
 		final var channel = Channel.EMAIL;

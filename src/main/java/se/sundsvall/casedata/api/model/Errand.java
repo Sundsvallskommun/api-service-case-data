@@ -33,7 +33,7 @@ public class Errand {
 	@Schema(description = "The version of the errand", accessMode = READ_ONLY, examples = "1")
 	private int version;
 
-	@Schema(description = "Errand number", examples = "PRH-2022-000001", accessMode = READ_ONLY)
+	@Schema(description = "Errand number", examples = "SGP-2022-000001", accessMode = READ_ONLY)
 	private String errandNumber;
 
 	@Schema(description = "The municipality ID", examples = "2281", accessMode = READ_ONLY)
