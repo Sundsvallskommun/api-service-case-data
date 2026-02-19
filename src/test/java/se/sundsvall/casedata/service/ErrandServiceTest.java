@@ -397,7 +397,7 @@ class ErrandServiceTest {
 			.containsExactly(
 				String.valueOf(savedErrand.getId()),
 				"case",
-				"support-management",
+				"case-data",
 				referredFromNamespace);
 	}
 

@@ -1473,7 +1473,7 @@ paths:
         example: MY_NAMESPACE
       - name: referred_from
         in: query
-        description: Referenced from errand
+        description: "Source errand reference in format: <service>,<namespace>,<identifier>"
         required: false
         schema:
           type: string

@@ -49,16 +49,16 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 @Transactional
 public class ErrandService {
 
+	private static final String REFERRED_FROM_RELATION_TYPE = "REFERRED_FROM";
+	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE = "case";
+	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE = "case-data";
+
 	private final ErrandRepository errandRepository;
 	private final ProcessService processService;
 	private final NotificationService notificationService;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final EventlogIntegration eventlogIntegration;
 	private final RelationClient relationClient;
-
-	private static final String REFERRED_FROM_RELATION_TYPE = "REFERRED_FROM";
-	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE = "case";
-	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE = "support-management";
 
 	public ErrandService(final ErrandRepository errandRepository,
 		final ProcessService processService,
