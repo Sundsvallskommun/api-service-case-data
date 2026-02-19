@@ -70,6 +70,11 @@ config:
     token-url: http://localhost:${wiremock.server.port:}/token
     client-id: client-id
     client-secret: client-secret
+  eventlog:
+    base-url: http://localhost:${wiremock.server.port:}/eventlog
+    token-url: http://localhost:${wiremock.server.port:}/token
+    client-id: client-id
+    client-secret: client-secret
 
 #----------------------------------------
 # Scheduler settings

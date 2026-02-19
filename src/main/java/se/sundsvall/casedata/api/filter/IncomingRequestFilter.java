@@ -1,9 +1,5 @@
 package se.sundsvall.casedata.api.filter;
 
-import static java.util.Objects.isNull;
-import static se.sundsvall.casedata.service.util.Constants.UNKNOWN;
-import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -15,6 +11,10 @@ import java.util.Base64;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import static java.util.Objects.isNull;
+import static se.sundsvall.casedata.service.util.Constants.UNKNOWN;
+import static se.sundsvall.casedata.service.util.Constants.X_JWT_ASSERTION_HEADER_KEY;
 
 @Component
 public class IncomingRequestFilter extends OncePerRequestFilter {

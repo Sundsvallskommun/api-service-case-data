@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.integration.paratransit;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static se.sundsvall.casedata.integration.paratransit.configuration.ParatransitConfiguration.CLIENT_ID;
-
 import generated.se.sundsvall.paratransit.StartProcessResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,6 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import se.sundsvall.casedata.integration.paratransit.configuration.ParatransitConfiguration;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static se.sundsvall.casedata.integration.paratransit.configuration.ParatransitConfiguration.CLIENT_ID;
 
 @FeignClient(
 	name = CLIENT_ID,

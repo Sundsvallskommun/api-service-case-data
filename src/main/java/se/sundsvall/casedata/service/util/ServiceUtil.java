@@ -1,9 +1,9 @@
 package se.sundsvall.casedata.service.util;
 
-import static se.sundsvall.dept44.support.Identifier.Type.AD_ACCOUNT;
-
 import java.util.Optional;
 import se.sundsvall.dept44.support.Identifier;
+
+import static se.sundsvall.dept44.support.Identifier.Type.AD_ACCOUNT;
 
 public final class ServiceUtil {
 

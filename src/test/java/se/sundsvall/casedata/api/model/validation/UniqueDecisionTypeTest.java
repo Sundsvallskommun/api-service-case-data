@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.api.model.validation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.validation.impl.UniqueDecisionTypeValidator;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 class UniqueDecisionTypeTest {
 

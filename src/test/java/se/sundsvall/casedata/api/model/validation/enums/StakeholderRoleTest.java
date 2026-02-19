@@ -1,5 +1,7 @@
 package se.sundsvall.casedata.api.model.validation.enums;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ALTERNATE;
@@ -39,8 +41,6 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.S
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.SELLER;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.USUFRUCTUARY;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.values;
-
-import org.junit.jupiter.api.Test;
 
 class StakeholderRoleTest {
 

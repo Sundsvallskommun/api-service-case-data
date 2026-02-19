@@ -1,13 +1,5 @@
 package se.sundsvall.casedata.integration.messaging;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.isNull;
-import static java.util.Optional.ofNullable;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.APPLICANT;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
-import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
-
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import generated.se.sundsvall.messaging.Email;
 import generated.se.sundsvall.messaging.EmailRequest;
@@ -24,6 +16,14 @@ import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.service.model.MessagingSettings;
+
+import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.APPLICANT;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
+import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
 
 public final class MessagingMapper {
 

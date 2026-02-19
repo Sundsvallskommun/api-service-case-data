@@ -1,5 +1,26 @@
 package se.sundsvall.casedata.service;
 
+import java.util.List;
+import java.util.Optional;
+import org.hibernate.query.sqm.PathElementException;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.zalando.problem.Problem;
+import se.sundsvall.casedata.api.model.Errand;
+import se.sundsvall.casedata.api.model.Notification;
+import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
+import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import se.sundsvall.casedata.service.util.mappers.PatchMapper;
+
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static org.zalando.problem.Status.BAD_REQUEST;
@@ -18,26 +39,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrand;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 
-import java.util.List;
-import java.util.Optional;
-import org.hibernate.query.sqm.PathElementException;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.mapping.PropertyReferenceException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
-import se.sundsvall.casedata.api.model.Errand;
-import se.sundsvall.casedata.api.model.Notification;
-import se.sundsvall.casedata.api.model.PatchErrand;
-import se.sundsvall.casedata.integration.db.ErrandRepository;
-import se.sundsvall.casedata.integration.db.model.ErrandEntity;
-import se.sundsvall.casedata.service.util.mappers.EntityMapper;
-import se.sundsvall.casedata.service.util.mappers.PatchMapper;
-
 @Service
 @Transactional
 public class ErrandService {
@@ -46,13 +47,15 @@ public class ErrandService {
 	private final ProcessService processService;
 	private final NotificationService notificationService;
 	private final ApplicationEventPublisher applicationEventPublisher;
+	private final EventlogIntegration eventlogIntegration;
 
 	public ErrandService(final ErrandRepository errandRepository, final ProcessService processService, final NotificationService notificationService,
-		final ApplicationEventPublisher applicationEventPublisher) {
+		final ApplicationEventPublisher applicationEventPublisher, final EventlogIntegration eventlogIntegration) {
 		this.errandRepository = errandRepository;
 		this.processService = processService;
 		this.notificationService = notificationService;
 		this.applicationEventPublisher = applicationEventPublisher;
+		this.eventlogIntegration = eventlogIntegration;
 	}
 
 	private String determineSubType(final ErrandEntity updatedErrand) {
@@ -107,6 +110,10 @@ public class ErrandService {
 		final var updatedErrand = errandRepository.saveAndFlush(PatchMapper.patchErrand(oldErrand, patchErrand));
 
 		applicationEventPublisher.publishEvent(updatedErrand);
+
+		if (patchErrand.getStatus() != null) {
+			eventlogIntegration.sendEventlogEvent(municipalityId, updatedErrand, patchErrand.getStatus());
+		}
 
 		// Create notification
 		notificationService.create(municipalityId, namespace, Notification.builder()

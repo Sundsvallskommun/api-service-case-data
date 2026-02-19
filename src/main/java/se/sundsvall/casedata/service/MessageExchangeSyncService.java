@@ -1,12 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toAttachment;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.updateConversationEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
-
 import generated.se.sundsvall.messageexchange.Message;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +13,13 @@ import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
+
+import static java.util.Optional.ofNullable;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toAttachment;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.updateConversationEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 @Service
 public class MessageExchangeSyncService {

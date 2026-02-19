@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import static org.hibernate.Length.LONG32;
-import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
@@ -42,6 +39,9 @@ import org.javers.core.metamodel.annotation.DiffIgnore;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
+import static org.hibernate.Length.LONG32;
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 @Entity
 @Table(name = "errand",

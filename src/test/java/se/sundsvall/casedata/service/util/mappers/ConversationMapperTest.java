@@ -1,14 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.within;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
-
 import generated.se.sundsvall.messageexchange.Message;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -26,6 +17,15 @@ import se.sundsvall.casedata.api.model.conversation.Identifier;
 import se.sundsvall.casedata.api.model.conversation.KeyValues;
 import se.sundsvall.casedata.api.model.conversation.MessageType;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
 
 class ConversationMapperTest {
 

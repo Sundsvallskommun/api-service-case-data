@@ -1,11 +1,5 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
-
 import java.util.ArrayList;
 import java.util.List;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -22,6 +16,12 @@ import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 
 public final class PatchMapper {
 
@@ -46,7 +46,7 @@ public final class PatchMapper {
 		ofNullable(patch.getApplicationReceived()).ifPresent(errand::setApplicationReceived);
 		ofNullable(patch.getFacilities()).ifPresent(facilities -> errand.getFacilities().addAll(facilities.stream().map(facility -> toFacilityEntity(facility, errand.getMunicipalityId(), errand.getNamespace())).toList()));
 		ofNullable(patch.getRelatesTo()).ifPresent(relatesTo -> errand.getRelatesTo().addAll(relatesTo.stream().map(EntityMapper::toRelatedErrandEntity).toList()));
-		ofNullable(patch.getLabels()).ifPresent(labels -> errand.setLabels(labels));
+		ofNullable(patch.getLabels()).ifPresent(errand::setLabels);
 		ofNullable(patch.getSuspension()).ifPresent(
 			suspension -> {
 				errand.setSuspendedFrom(suspension.getSuspendedFrom());
@@ -85,7 +85,7 @@ public final class PatchMapper {
 		ofNullable(patch.getOrganizationNumber()).ifPresent(stakeholder::setOrganizationNumber);
 		ofNullable(patch.getAuthorizedSignatory()).ifPresent(stakeholder::setAuthorizedSignatory);
 		ofNullable(patch.getAdAccount()).ifPresent(stakeholder::setAdAccount);
-		ofNullable(patch.getRoles()).ifPresent(roles -> stakeholder.setRoles(roles));
+		ofNullable(patch.getRoles()).ifPresent(stakeholder::setRoles);
 		ofNullable(patch.getAddresses()).ifPresent(addresses -> stakeholder.setAddresses(new ArrayList<>(addresses.stream().map(EntityMapper::toAddressEntity).toList())));
 		ofNullable(patch.getContactInformation()).ifPresent(contactInformation -> stakeholder.setContactInformation(new ArrayList<>(contactInformation.stream().map(EntityMapper::toContactInformationEntity).toList())));
 		return stakeholder;

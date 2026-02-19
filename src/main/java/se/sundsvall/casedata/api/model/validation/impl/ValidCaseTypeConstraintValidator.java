@@ -1,9 +1,5 @@
 package se.sundsvall.casedata.api.model.validation.impl;
 
-import static java.util.Collections.emptyList;
-import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
-import static org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.List;
@@ -18,6 +14,10 @@ import org.zalando.problem.Status;
 import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
 import se.sundsvall.casedata.service.MetadataService;
+
+import static java.util.Collections.emptyList;
+import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
+import static org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
 
 @Setter
 public class ValidCaseTypeConstraintValidator implements ConstraintValidator<ValidCaseType, String> {

@@ -1,10 +1,10 @@
 package se.sundsvall.casedata.integration.db.config;
 
-import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
-
 import org.javers.spring.auditable.AuthorProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
 
 @Configuration
 public class JaversConfiguration {

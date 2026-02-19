@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import static org.hibernate.Length.LONG;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -43,6 +41,8 @@ import org.javers.core.metamodel.annotation.DiffIgnore;
 import se.sundsvall.casedata.integration.db.listeners.DecisionListener;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
+
+import static org.hibernate.Length.LONG;
 
 @Entity
 @Table(name = "decision",

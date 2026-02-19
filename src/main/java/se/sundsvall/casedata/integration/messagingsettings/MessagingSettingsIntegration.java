@@ -1,11 +1,5 @@
 package se.sundsvall.casedata.integration.messagingsettings;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toFilterString;
-import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
-
 import generated.se.sundsvall.messagingsettings.MessagingSettingValue;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +10,12 @@ import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.service.model.MessagingSettings;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toFilterString;
+import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 @Component
 public class MessagingSettingsIntegration {
