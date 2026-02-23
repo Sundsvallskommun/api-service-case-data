@@ -655,9 +655,9 @@ public final class TestUtil {
 
 	public static List<NotificationEntity> createNotificationEntityList() {
 		return new ArrayList<>(List.of(
-			createNotificationEntity(n -> {}),
-			createNotificationEntity(n -> {}),
-			createNotificationEntity(n -> {})));
+			createNotificationEntity(_ -> {}),
+			createNotificationEntity(_ -> {}),
+			createNotificationEntity(_ -> {})));
 	}
 
 	private static List<ExtraParameterEntity> createExtraParameterEntityList() {

@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.10"
+  version: "11.11"
 servers:
-- url: http://localhost:62364
+- url: http://localhost:59084
   description: Generated server url
 tags:
 - name: Notifications
@@ -4701,20 +4701,20 @@ components:
         parameters:
           type: object
           additionalProperties: {}
-        title:
-          type: string
-        detail:
-          type: string
         status:
           $ref: "#/components/schemas/StatusType"
+        detail:
+          type: string
+        title:
+          type: string
     StatusType:
       type: object
       properties:
+        reasonPhrase:
+          type: string
         statusCode:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -4833,12 +4833,12 @@ components:
         parameters:
           type: object
           additionalProperties: {}
-        title:
-          type: string
-        detail:
-          type: string
         status:
           $ref: "#/components/schemas/StatusType"
+        detail:
+          type: string
+        title:
+          type: string
         suppressed:
           type: array
           items:
@@ -5393,6 +5393,11 @@ components:
           description: Extra parameters for the errand
           items:
             $ref: "#/components/schemas/ExtraParameter"
+        jsonParameters:
+          type: array
+          description: JSON parameters for the errand
+          items:
+            $ref: "#/components/schemas/JsonParameter"
         created:
           type: string
           format: date-time
@@ -5427,6 +5432,33 @@ components:
             type: string
       required:
       - key
+    JsonNode: {}
+    JsonParameter:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Parameter key
+          examples:
+          - formData1
+          minLength: 1
+        value:
+          $ref: "#/components/schemas/JsonNode"
+          description: JSON structure value
+          examples:
+          - |
+            {
+              "firstName": "Joe",
+              "lastName": "Doe"
+            }
+        schemaId:
+          type: string
+          description: ID referencing a schema in the json-schema service
+          examples:
+          - 2281_person_1.0
+      required:
+      - key
+      - value
     Note:
       type: object
       properties:
@@ -6168,6 +6200,11 @@ components:
           description: Extra parameters for the errand
           items:
             $ref: "#/components/schemas/ExtraParameter"
+        jsonParameters:
+          type: array
+          description: JSON parameters for the errand
+          items:
+            $ref: "#/components/schemas/JsonParameter"
         relatesTo:
           type: array
           description: Other errands related to the errand
@@ -6240,12 +6277,12 @@ components:
     PageErrand:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -6256,10 +6293,6 @@ components:
         number:
           type: integer
           format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
         sort:
           $ref: "#/components/schemas/SortObject"
         numberOfElements:
@@ -6267,6 +6300,10 @@ components:
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
     PageableObject:
@@ -6279,14 +6316,14 @@ components:
           $ref: "#/components/schemas/SortObject"
         paged:
           type: boolean
-        unpaged:
-          type: boolean
-        pageNumber:
-          type: integer
-          format: int32
         pageSize:
           type: integer
           format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        unpaged:
+          type: boolean
     SortObject:
       type: object
       properties:
@@ -6526,12 +6563,12 @@ components:
     PageMessage:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -6542,10 +6579,6 @@ components:
         number:
           type: integer
           format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
         sort:
           $ref: "#/components/schemas/SortObject"
         numberOfElements:
@@ -6553,6 +6586,10 @@ components:
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
   securitySchemes: {}

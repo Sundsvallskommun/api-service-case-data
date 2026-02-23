@@ -1,5 +1,7 @@
 package se.sundsvall.casedata.api.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -27,6 +29,7 @@ class PatchErrandTest {
 	static void setup() {
 		registerValueGenerator(() -> OffsetDateTime.now().plusDays(new Random().nextInt()), OffsetDateTime.class);
 		registerValueGenerator(() -> LocalDate.now().plusDays(new Random().nextInt()), LocalDate.class);
+		registerValueGenerator(() -> new ObjectMapper().createObjectNode().put("random", UUID.randomUUID().toString()), JsonNode.class);
 	}
 
 	@Test
@@ -53,6 +56,7 @@ class PatchErrandTest {
 		final var endDate = LocalDate.now();
 		final var applicationReceived = OffsetDateTime.now();
 		final var extraParameters = createExtraParametersList();
+		final var jsonParameters = List.of(JsonParameter.builder().withKey("formData1").withValue(new ObjectMapper().createObjectNode()).build());
 		final var facilities = List.of(createFacility());
 		final var suspension = new Suspension();
 		final var relatesTo = List.of(new RelatedErrand());
@@ -72,6 +76,7 @@ class PatchErrandTest {
 			.withEndDate(endDate)
 			.withApplicationReceived(applicationReceived)
 			.withExtraParameters(extraParameters)
+			.withJsonParameters(jsonParameters)
 			.withFacilities(facilities)
 			.withSuspension(suspension)
 			.withRelatesTo(relatesTo)
@@ -92,6 +97,7 @@ class PatchErrandTest {
 		assertThat(result.getEndDate()).isEqualTo(endDate);
 		assertThat(result.getApplicationReceived()).isEqualTo(applicationReceived);
 		assertThat(result.getExtraParameters()).isEqualTo(extraParameters);
+		assertThat(result.getJsonParameters()).isEqualTo(jsonParameters);
 		assertThat(result.getFacilities()).isEqualTo(facilities);
 		assertThat(result.getSuspension()).isEqualTo(suspension);
 		assertThat(result.getRelatesTo()).isEqualTo(relatesTo);

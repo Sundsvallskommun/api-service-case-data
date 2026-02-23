@@ -19,7 +19,7 @@ public final class ErrandEntitySpecification {
 	 * @return       a specification that compares the municipality id to the given value
 	 */
 	public static Specification<ErrandEntity> buildMunicipalityIdFilter(final String value) {
-		return (entity, cq, cb) -> {
+		return (entity, _, cb) -> {
 			if (value == null) {
 				return null;
 			}
@@ -34,7 +34,7 @@ public final class ErrandEntitySpecification {
 	 * @return       a specification that compares the namespace to the given value
 	 */
 	public static Specification<ErrandEntity> buildNamespaceFilter(final String value) {
-		return (entity, cq, cb) -> {
+		return (entity, _, cb) -> {
 			if (value == null) {
 				return null;
 			}
@@ -48,7 +48,7 @@ public final class ErrandEntitySpecification {
 	 * @return a specification that makes the result distinct
 	 */
 	public static Specification<ErrandEntity> distinct() {
-		return (entity, cq, cb) -> {
+		return (_, cq, _) -> {
 			if (cq == null) {
 				return null;
 			}

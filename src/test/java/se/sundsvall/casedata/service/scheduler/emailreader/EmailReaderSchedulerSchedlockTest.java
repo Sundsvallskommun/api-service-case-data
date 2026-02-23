@@ -84,7 +84,7 @@ class EmailReaderSchedulerSchedlockTest {
 			final var mockBean = Mockito.mock(EmailReaderWorker.class);
 
 			// Let mock hang
-			doAnswer(invocation -> {
+			doAnswer(_ -> {
 				mockCalledTime = LocalDateTime.now();
 				await().forever()
 					.until(() -> false);

@@ -148,7 +148,7 @@ class EntityMapperTest {
 		final var errandDto = toErrand(errand);
 
 		// Assert
-		assertThat(errandDto).hasNoNullFieldsOrPropertiesExcept("messageIds").satisfies(e -> {
+		assertThat(errandDto).hasNoNullFieldsOrPropertiesExcept("messageIds", "jsonParameters").satisfies(e -> {
 			assertThat(e.getErrandNumber()).isEqualTo(errand.getErrandNumber());
 			assertThat(e.getUpdatedByClient()).isEqualTo(errand.getUpdatedByClient());
 			assertThat(e.getUpdatedBy()).isEqualTo(errand.getUpdatedBy());

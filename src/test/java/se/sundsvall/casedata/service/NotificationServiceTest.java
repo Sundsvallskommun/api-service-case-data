@@ -62,7 +62,7 @@ class NotificationServiceTest {
 		final var namespace = "namespace";
 		final var errandId = 123L;
 		final var notificationId = randomUUID().toString();
-		final var notificationEntity = createNotificationEntity(n -> {});
+		final var notificationEntity = createNotificationEntity(_ -> {});
 
 		when(notificationRepositoryMock.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId)).thenReturn(Optional.of(notificationEntity));
 
@@ -99,7 +99,7 @@ class NotificationServiceTest {
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
 		final var ownerId = randomUUID().toString();
-		final var notificationEntity = createNotificationEntity(n -> {});
+		final var notificationEntity = createNotificationEntity(_ -> {});
 
 		when(notificationRepositoryMock.findAllByNamespaceAndMunicipalityIdAndOwnerId(namespace, municipalityId, ownerId)).thenReturn(List.of(notificationEntity));
 
@@ -133,8 +133,8 @@ class NotificationServiceTest {
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
-		final var notification = TestUtil.createNotification(n -> {});
-		final var notificationEntity = createNotificationEntity(n -> {});
+		final var notification = TestUtil.createNotification(_ -> {});
+		final var notificationEntity = createNotificationEntity(_ -> {});
 		final var id = "SomeId";
 		final var fullName = "Full Name";
 		final var personalPortalData = new PortalPersonData().fullname(fullName);
@@ -161,8 +161,8 @@ class NotificationServiceTest {
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
-		final var notification = TestUtil.createNotification(n -> {});
-		final var notificationEntity = createNotificationEntity(n -> {});
+		final var notification = TestUtil.createNotification(_ -> {});
+		final var notificationEntity = createNotificationEntity(_ -> {});
 		final var id = "SomeId";
 		final var executingUserId = "executingUserId";
 		final var createdByFullName = "createdByFullName";
@@ -195,8 +195,8 @@ class NotificationServiceTest {
 		// Arrange
 		final var municipalityId = "2281";
 		final var namespace = "namespace";
-		final var notification = TestUtil.createNotification(n -> {});
-		final var errandEntity = TestUtil.createNotificationEntity(n -> {}).getErrand();
+		final var notification = TestUtil.createNotification(_ -> {});
+		final var errandEntity = TestUtil.createNotificationEntity(_ -> {}).getErrand();
 		final var id = "SomeId";
 		final var executingUserId = notification.getOwnerId();
 		final var fullName = "fullName";
@@ -276,7 +276,7 @@ class NotificationServiceTest {
 		final var namespace = "namespace";
 		final var errandId = 123L;
 		final var notificationId = randomUUID().toString();
-		final var notificationEntity = createNotificationEntity(n -> {});
+		final var notificationEntity = createNotificationEntity(_ -> {});
 
 		when(notificationRepositoryMock.findByIdAndNamespaceAndMunicipalityIdAndErrandId(notificationId, namespace, municipalityId, errandId))
 			.thenReturn(Optional.of(notificationEntity));
