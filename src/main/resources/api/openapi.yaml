@@ -5215,7 +5215,7 @@ components:
           type: string
           description: Errand number
           examples:
-          - PRH-2022-000001
+          - SGP-2022-000001
           readOnly: true
         municipalityId:
           type: string
@@ -5626,7 +5626,7 @@ components:
           type: string
           description: Errand number of the notification
           examples:
-          - PRH-2022-000001
+          - SGP-2022-000001
           readOnly: true
       required:
       - description
@@ -5646,7 +5646,7 @@ components:
           type: string
           description: Errand number
           examples:
-          - PRH-2022-000001
+          - SGP-2022-000001
         relationReason:
           type: string
           description: Relation reason

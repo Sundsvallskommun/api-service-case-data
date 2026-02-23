@@ -74,7 +74,7 @@ public class Notification {
 	@Schema(description = "Errand id of the notification", examples = "1234", accessMode = READ_ONLY)
 	private Long errandId;
 
-	@Schema(description = "Errand number of the notification", examples = "PRH-2022-000001", accessMode = READ_ONLY)
+	@Schema(description = "Errand number of the notification", examples = "SGP-2022-000001", accessMode = READ_ONLY)
 	private String errandNumber;
 
 }
