@@ -73,7 +73,7 @@
 		<!-- Test -->
 		<dependency>
 			<groupId>org.testcontainers</groupId>
-			<artifactId>mariadb</artifactId>
+			<artifactId>testcontainers-mariadb</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

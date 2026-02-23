@@ -12,7 +12,7 @@ VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL),
        (3, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL,
         'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'WSO2_test', '', '', NULL,
-        'PRH-2022-000029', 'ext-no-3', '2281', 'MY_NAMESPACE', 'Aktualisering', 'HIGH',
+        'SGP-2022-000029', 'ext-no-3', '2281', 'MY_NAMESPACE', 'Aktualisering', 'HIGH',
         '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'WSO_test', NULL);
 
 INSERT INTO errand_extra_parameters (errand_id, id, display_name, parameters_key)
