@@ -4,6 +4,7 @@ import generated.se.sundsvall.eventlog.Event;
 import generated.se.sundsvall.eventlog.EventType;
 import generated.se.sundsvall.eventlog.Metadata;
 import java.util.List;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -28,9 +29,14 @@ public class EventlogIntegration {
 				.owner("CaseData")
 				.message("Status updated to " + status.getStatusType())
 				.sourceType("Errand")
-				.metadata(List.of(new Metadata().key("Status").value(status.getStatusType())));
+				.metadata(List.of(
+					new Metadata().key("Status").value(status.getStatusType()),
+					new Metadata().key("ExternalCaseId").value(String.valueOf(errand.getId()))
 
-			eventlogClient.createEvent(municipalityId, String.valueOf(errand.getId()), event);
+				));
+
+			final var uuid = UUID.randomUUID().toString();
+			eventlogClient.createEvent(municipalityId, uuid, event);
 		} catch (final Exception e) {
 			LOG.error("Failed to send event to eventlog for errand with id: {}", errand.getId(), e);
 		}
