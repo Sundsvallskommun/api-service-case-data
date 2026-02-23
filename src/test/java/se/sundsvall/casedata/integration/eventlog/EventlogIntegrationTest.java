@@ -43,16 +43,18 @@ class EventlogIntegrationTest {
 		eventlogIntegration.sendEventlogEvent(MUNICIPALITY_ID, errand, status);
 
 		// Assert
-		verify(eventlogClientMock).createEvent(eq(MUNICIPALITY_ID), eq(String.valueOf(errand.getId())), eventCaptor.capture());
+		verify(eventlogClientMock).createEvent(eq(MUNICIPALITY_ID), any(String.class), eventCaptor.capture());
 
 		final var capturedEvent = eventCaptor.getValue();
 		assertThat(capturedEvent.getType()).isEqualTo(EventType.UPDATE);
 		assertThat(capturedEvent.getOwner()).isEqualTo("CaseData");
 		assertThat(capturedEvent.getMessage()).isEqualTo("Status updated to " + status.getStatusType());
 		assertThat(capturedEvent.getSourceType()).isEqualTo("Errand");
-		assertThat(capturedEvent.getMetadata()).hasSize(1);
-		assertThat(capturedEvent.getMetadata().getFirst().getKey()).isEqualTo("Status");
-		assertThat(capturedEvent.getMetadata().getFirst().getValue()).isEqualTo(status.getStatusType());
+		assertThat(capturedEvent.getMetadata()).hasSize(2);
+		assertThat(capturedEvent.getMetadata().get(0).getKey()).isEqualTo("Status");
+		assertThat(capturedEvent.getMetadata().get(0).getValue()).isEqualTo(status.getStatusType());
+		assertThat(capturedEvent.getMetadata().get(1).getKey()).isEqualTo("ExternalCaseId");
+		assertThat(capturedEvent.getMetadata().get(1).getValue()).isEqualTo(String.valueOf(errand.getId()));
 
 		verifyNoMoreInteractions(eventlogClientMock);
 	}
@@ -69,7 +71,7 @@ class EventlogIntegrationTest {
 		eventlogIntegration.sendEventlogEvent(MUNICIPALITY_ID, errand, status);
 
 		// Assert
-		verify(eventlogClientMock).createEvent(eq(MUNICIPALITY_ID), eq(String.valueOf(errand.getId())), any(Event.class));
+		verify(eventlogClientMock).createEvent(eq(MUNICIPALITY_ID), any(String.class), any(Event.class));
 		verifyNoMoreInteractions(eventlogClientMock);
 	}
 }
