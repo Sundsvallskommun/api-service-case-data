@@ -80,7 +80,7 @@ class NotificationSchedulerSchedlockTest {
 			final var mockBean = Mockito.mock(NotificationWorker.class);
 
 			// Let mock delay briefly instead of hanging forever
-			doAnswer(invocation -> {
+			doAnswer(_ -> {
 				mockCalledTime = LocalDateTime.now();
 				await().atMost(3, SECONDS)
 					.until(() -> false);

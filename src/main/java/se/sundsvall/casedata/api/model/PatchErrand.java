@@ -72,6 +72,10 @@ public class PatchErrand {
 	private List<ExtraParameter> extraParameters;
 
 	@Valid
+	@Schema(description = "JSON parameters for the errand")
+	private List<JsonParameter> jsonParameters;
+
+	@Valid
 	@Schema(description = "Other errands related to the errand")
 	private List<RelatedErrand> relatesTo;
 

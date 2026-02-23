@@ -44,3 +44,4 @@ application-default.yml
 
 # Claude Code
 .claude/
+/CLAUDE.md
