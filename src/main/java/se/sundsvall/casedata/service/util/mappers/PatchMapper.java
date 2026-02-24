@@ -22,6 +22,7 @@ import static java.util.Optional.ofNullable;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAddressEntity;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
+import static se.sundsvall.casedata.service.util.mappers.JsonParameterMapper.toJsonParameterEntityList;
 
 public final class PatchMapper {
 
@@ -32,6 +33,11 @@ public final class PatchMapper {
 		ofNullable(patch.getExtraParameters()).ifPresent(extraParameters -> {
 			ofNullable(errand.getExtraParameters()).ifPresentOrElse(List::clear, () -> errand.setExtraParameters(new ArrayList<>()));
 			errand.getExtraParameters().addAll(toErrandParameterEntityList(extraParameters, errand));
+		});
+
+		ofNullable(patch.getJsonParameters()).ifPresent(jsonParameters -> {
+			ofNullable(errand.getJsonParameters()).ifPresentOrElse(List::clear, () -> errand.setJsonParameters(new ArrayList<>()));
+			errand.getJsonParameters().addAll(toJsonParameterEntityList(jsonParameters, errand));
 		});
 
 		ofNullable(patch.getCaseType()).ifPresent(errand::setCaseType);

@@ -120,6 +120,7 @@ class EntityMapperTest {
 			"suspension",
 			"relatesTo",
 			"extraParameters",
+			"jsonParameters",
 			"municipalityId",
 			"namespace",
 			"priority");
@@ -133,6 +134,7 @@ class EntityMapperTest {
 		assertThat(entity.getSuspendedFrom()).isNull();
 		assertThat(entity.getSuspendedTo()).isNull();
 		assertThat(entity.getExtraParameters()).isEmpty();
+		assertThat(entity.getJsonParameters()).isEmpty();
 		assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(entity.getNamespace()).isEqualTo(NAMESPACE);
 		assertThat(entity.getPriority()).isEqualTo(Priority.MEDIUM);
@@ -148,7 +150,7 @@ class EntityMapperTest {
 		final var errandDto = toErrand(errand);
 
 		// Assert
-		assertThat(errandDto).hasNoNullFieldsOrPropertiesExcept("messageIds", "jsonParameters").satisfies(e -> {
+		assertThat(errandDto).hasNoNullFieldsOrPropertiesExcept("messageIds").satisfies(e -> {
 			assertThat(e.getErrandNumber()).isEqualTo(errand.getErrandNumber());
 			assertThat(e.getUpdatedByClient()).isEqualTo(errand.getUpdatedByClient());
 			assertThat(e.getUpdatedBy()).isEqualTo(errand.getUpdatedBy());
@@ -182,7 +184,8 @@ class EntityMapperTest {
 			"notes",
 			"suspension",
 			"notifications",
-			"extraParameters");
+			"extraParameters",
+			"jsonParameters");
 
 		assertThat(dto.getId()).isEqualTo(entity.getId());
 		assertThat(dto.getVersion()).isEqualTo(entity.getVersion());
@@ -194,6 +197,7 @@ class EntityMapperTest {
 		assertThat(dto.getSuspension().getSuspendedFrom()).isNull();
 		assertThat(dto.getSuspension().getSuspendedTo()).isNull();
 		assertThat(dto.getExtraParameters()).isEmpty();
+		assertThat(dto.getJsonParameters()).isEmpty();
 	}
 
 	@Test

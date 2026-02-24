@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,11 +14,15 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.CaseType;
+import se.sundsvall.casedata.api.model.JsonParameter;
 import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
+import se.sundsvall.casedata.integration.jsonschema.JsonSchemaClient;
 import se.sundsvall.casedata.service.ErrandService;
 import se.sundsvall.casedata.service.MetadataService;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -34,6 +39,9 @@ import static se.sundsvall.casedata.TestUtil.createFacility;
 class ErrandResourceTest {
 
 	private static final String BASE_URL = "/{municipalityId}/{namespace}/errands";
+
+	@MockitoBean
+	private JsonSchemaClient jsonSchemaClientMock;
 
 	@MockitoBean
 	private MetadataService metadataServiceMock;
@@ -94,5 +102,36 @@ class ErrandResourceTest {
 		// Assert
 		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@Test
+	void postErrandWithValidJsonParameters() {
+		// Arrange
+		final var objectMapper = new ObjectMapper();
+		final var body = createErrand();
+		body.setId(123L);
+		body.setJsonParameters(List.of(
+			JsonParameter.builder()
+				.withKey("formData")
+				.withSchemaId("2281_person_1.0")
+				.withValue(objectMapper.createObjectNode().put("firstName", "Joe"))
+				.build()));
+
+		when(errandServiceMock.create(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(body);
+
+		// Act
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isCreated()
+			.expectHeader().contentType(ALL_VALUE)
+			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + body.getId());
+
+		// Assert
+		// Validated twice due to @Validated on class + @Valid on @RequestBody both triggering Default group validation
+		verify(jsonSchemaClientMock, times(2)).validateJson(eq(MUNICIPALITY_ID), eq("2281_person_1.0"), any());
+		verify(errandServiceMock).create(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE));
 	}
 }

@@ -45,18 +45,12 @@
 	],
 	"createdBy": "UNKNOWN",
 	"namespace": "MY_NAMESPACE",
-	"statuses": [
-		{
-			"statusType": "Komplettering",
-			"description": "Komplettering begärd",
-			"created": "${json-unit.any-string}"
-		}
-	],
+	"statuses": [],
 	"facilities": [],
 	"updated": "${json-unit.any-string}",
 	"status": {
-		"statusType": "Komplettering",
-		"description": "Komplettering begärd",
+		"statusType": "UNKNOWN",
+		"description": "Status description",
 		"created": "${json-unit.any-string}"
 	}
 }
