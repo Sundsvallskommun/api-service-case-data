@@ -9,6 +9,7 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.JsonParameterEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JsonParameterMapperTest {
 
@@ -155,10 +156,9 @@ class JsonParameterMapperTest {
 			.withValue("not valid json{{{")
 			.build();
 
-		// Act
-		final var result = JsonParameterMapper.toJsonParameter(entity);
-
-		// Assert
-		assertThat(result.getValue()).isNull();
+		// Act & Assert
+		assertThatThrownBy(() -> JsonParameterMapper.toJsonParameter(entity))
+			.isInstanceOf(IllegalStateException.class)
+			.hasMessageContaining("Failed to convert String to JsonNode");
 	}
 }

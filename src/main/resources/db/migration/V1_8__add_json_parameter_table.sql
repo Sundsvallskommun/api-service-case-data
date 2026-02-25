@@ -12,4 +12,5 @@ create index if not exists idx_json_parameter_key on json_parameter (parameter_k
 
 alter table json_parameter
     add constraint fk_json_parameter_errand_id
-    foreign key (errand_id) references errand(id);
+    foreign key (errand_id) references errand(id)
+    on delete cascade;

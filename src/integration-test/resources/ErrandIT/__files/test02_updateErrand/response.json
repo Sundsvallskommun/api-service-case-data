@@ -31,6 +31,7 @@
 	"caseTitleAddition": "Nytt parkeringstillstånd",
 	"decisions": [],
 	"id": 2,
+	"jsonParameters": [],
 	"relatesTo": [],
 	"suspension": {},
 	"phase": "Aktualisering",
@@ -45,12 +46,18 @@
 	],
 	"createdBy": "UNKNOWN",
 	"namespace": "MY_NAMESPACE",
-	"statuses": [],
+	"statuses": [
+		{
+			"statusType": "Komplettering",
+			"description": "Komplettering begärd",
+			"created": "${json-unit.any-string}"
+		}
+	],
 	"facilities": [],
 	"updated": "${json-unit.any-string}",
 	"status": {
-		"statusType": "UNKNOWN",
-		"description": "Status description",
+		"statusType": "Komplettering",
+		"description": "Komplettering begärd",
 		"created": "${json-unit.any-string}"
 	}
 }

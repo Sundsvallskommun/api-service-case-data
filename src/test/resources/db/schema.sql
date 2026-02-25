@@ -542,9 +542,9 @@
        foreign key (facility_id) 
        references facility (id);
 
-    alter table if exists json_parameter 
-       add constraint fk_json_parameter_errand_id 
-       foreign key (errand_id) 
+    alter table if exists json_parameter
+       add constraint fk_json_parameter_errand_id
+       foreign key (errand_id)
        references errand (id);
 
     alter table if exists message_attachment 

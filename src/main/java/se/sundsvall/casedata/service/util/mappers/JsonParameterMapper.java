@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import se.sundsvall.casedata.api.model.JsonParameter;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.JsonParameterEntity;
@@ -17,7 +15,6 @@ import static java.util.stream.Collectors.toCollection;
 
 public final class JsonParameterMapper {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JsonParameterMapper.class);
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	private JsonParameterMapper() {
@@ -60,8 +57,7 @@ public final class JsonParameterMapper {
 		try {
 			return OBJECT_MAPPER.writeValueAsString(jsonNode);
 		} catch (final JsonProcessingException e) {
-			LOG.warn("Failed to convert JsonNode to String", e);
-			return null;
+			throw new IllegalStateException("Failed to convert JsonNode to String", e);
 		}
 	}
 
@@ -72,8 +68,7 @@ public final class JsonParameterMapper {
 		try {
 			return OBJECT_MAPPER.readTree(value);
 		} catch (final JsonProcessingException e) {
-			LOG.warn("Failed to convert String to JsonNode", e);
-			return null;
+			throw new IllegalStateException("Failed to convert String to JsonNode", e);
 		}
 	}
 }
