@@ -1,0 +1,12 @@
+{
+	"jsonParameters": [
+		{
+			"key": "contactInfo",
+			"schemaId": "2281_contact_1.0",
+			"value": {
+				"email": "test@example.com",
+				"phone": "0701234567"
+			}
+		}
+	]
+}

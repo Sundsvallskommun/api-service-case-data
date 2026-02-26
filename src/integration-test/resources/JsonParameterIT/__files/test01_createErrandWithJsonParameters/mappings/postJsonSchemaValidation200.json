@@ -1,0 +1,12 @@
+{
+	"request": {
+		"method": "POST",
+		"urlPathPattern": "/json-schema/.*/schemas/.*/validation"
+	},
+	"response": {
+		"status": 200,
+		"headers": {
+			"Content-Type": "application/json"
+		}
+	}
+}

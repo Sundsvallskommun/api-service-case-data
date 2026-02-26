@@ -18,8 +18,8 @@ related to land and exploitation subjects._
 1. **Clone the repository:**
 
    ```bash
-   git clone git@github.com:Sundsvallskommun/api-service-case-status.git
-   cd api-service-case-status
+   git clone git@github.com:Sundsvallskommun/api-service-case-data.git
+   cd api-service-case-data
    ```
 2. **Configure the application:**
 
@@ -76,6 +76,22 @@ This microservice depends on the following services:
 - **Relation**
   - **Purpose:** Used to fetch relation data (linked errands)
   - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/api-service-relations)
+  - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
+- **EventLog**
+  - **Purpose:** Posts event records to track and store audit/historical events for cases.
+  - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/api-service-eventlog)
+  - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
+- **JsonSchema**
+  - **Purpose:** Validates JSON data against stored schemas.
+  - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/api-service-json-schema)
+  - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
+- **MessagingSettings**
+  - **Purpose:** Retrieves messaging settings configurations to determine how notifications and communications should be handled.
+  - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/api-service-messaging-settings)
+  - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
+- **Paratransit**
+  - **Purpose:** Starts and manages paratransit (accessible transportation) processes for errands.
+  - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/pw-paratransit)
   - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
 
 Ensure that these services are running and properly configured before starting this microservice.
@@ -160,6 +176,26 @@ Configuration is crucial for the application to run successfully. Ensure all nec
         token-url: your-token.url
         client-id: your-client-id
         client-secret: your-client-secret
+    eventlog:
+        base-url: https://your_service_url
+        token-url: your-token.url
+        client-id: your-client-id
+        client-secret: your-client-secret
+    json-schema:
+        base-url: https://your_service_url
+        token-url: your-token.url
+        client-id: your-client-id
+        client-secret: your-client-secret
+    messaging-settings:
+        base-url: https://your_service_url
+        token-url: your-token.url
+        client-id: your-client-id
+        client-secret: your-client-secret
+    paratransit:
+        base-url: https://your_service_url
+        token-url: your-token.url
+        client-id: your-client-id
+        client-secret: your-client-secret
 
     scheduler:
         message-collector:
@@ -216,4 +252,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-© 2024 Sundsvalls kommun
+© 2025 Sundsvalls kommun

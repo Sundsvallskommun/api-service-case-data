@@ -1,0 +1,17 @@
+{
+	"request": {
+		"method": "POST",
+		"urlPathPattern": "/json-schema/.*/schemas/.*/validation"
+	},
+	"response": {
+		"status": 400,
+		"headers": {
+			"Content-Type": "application/problem+json"
+		},
+		"jsonBody": {
+			"title": "Bad Request",
+			"status": 400,
+			"detail": "Schema validation failed: [Property 'firstName' is required]"
+		}
+	}
+}

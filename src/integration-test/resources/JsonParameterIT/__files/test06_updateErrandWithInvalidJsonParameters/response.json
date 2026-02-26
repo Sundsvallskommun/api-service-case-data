@@ -1,0 +1,11 @@
+{
+	"type": "https://zalando.github.io/problem/constraint-violation",
+	"title": "Constraint Violation",
+	"status": 400,
+	"violations": [
+		{
+			"field": "jsonParameters[0]",
+			"message": "json-schema error: {detail=Schema validation failed: [Property 'firstName' is required], status=400 Bad Request, title=Bad Request}"
+		}
+	]
+}

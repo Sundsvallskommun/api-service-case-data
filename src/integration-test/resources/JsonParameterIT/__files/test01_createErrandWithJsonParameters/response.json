@@ -1,0 +1,49 @@
+{
+	"id": 3,
+	"version": 1,
+	"errandNumber": "${json-unit.regex}^SGP-\\d{4}-000001$",
+	"municipalityId": "2281",
+	"namespace": "SBK_PARKING_PERMIT",
+	"caseType": "PARKING_PERMIT",
+	"priority": "HIGH",
+	"description": "Test with json parameters",
+	"caseTitleAddition": "Json parameter test",
+	"status": {
+		"statusType": "Ärende inkommit",
+		"description": "Ärende inkommit",
+		"created": "${json-unit.any-string}"
+	},
+	"statuses": [
+		{
+			"statusType": "Ärende inkommit",
+			"description": "Ärende inkommit",
+			"created": "${json-unit.any-string}"
+		}
+	],
+	"processId": "49011dea-ee10-11ec-9505-0242c0a84503",
+	"stakeholders": [],
+	"facilities": [],
+	"notifications": [],
+	"decisions": [],
+	"notes": [],
+	"labels": [],
+	"relatesTo": [],
+	"createdByClient": "UNKNOWN",
+	"updatedByClient": "UNKNOWN",
+	"createdBy": "user123",
+	"updatedBy": "user123",
+	"suspension": {},
+	"extraParameters": [],
+	"jsonParameters": [
+		{
+			"key": "formData1",
+			"schemaId": "2281_person_1.0",
+			"value": {
+				"firstName": "Joe",
+				"lastName": "Doe"
+			}
+		}
+	],
+	"created": "${json-unit.any-string}",
+	"updated": "${json-unit.any-string}"
+}
