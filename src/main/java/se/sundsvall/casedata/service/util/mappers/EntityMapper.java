@@ -40,6 +40,8 @@ import static java.util.Optional.ofNullable;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntityList;
 import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
+import static se.sundsvall.casedata.service.util.mappers.JsonParameterMapper.toJsonParameterEntityList;
+import static se.sundsvall.casedata.service.util.mappers.JsonParameterMapper.toJsonParameterList;
 import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 public final class EntityMapper {
@@ -84,6 +86,7 @@ public final class EntityMapper {
 				.withRelatesTo(new ArrayList<>(ofNullable(obj.getRelatesTo()).orElse(emptyList()).stream().map(EntityMapper::toRelatedErrand).toList()))
 				.withNotifications(toNotifications(obj.getNotifications()))
 				.withExtraParameters(toParameterList(obj.getExtraParameters()))
+				.withJsonParameters(toJsonParameterList(obj.getJsonParameters()))
 				.withLabels(obj.getLabels())
 				.build())
 			.orElse(null);
@@ -149,6 +152,7 @@ public final class EntityMapper {
 			entity.getDecisions().forEach(decision -> decision.setErrand(entity));
 			entity.getNotes().forEach(note -> note.setErrand(entity));
 			entity.setExtraParameters(toErrandParameterEntityList(errand.getExtraParameters(), entity));
+			entity.setJsonParameters(toJsonParameterEntityList(errand.getJsonParameters(), entity));
 		});
 
 		return errandEntity.orElse(null);

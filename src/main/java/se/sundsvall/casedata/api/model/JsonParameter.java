@@ -29,5 +29,6 @@ public class JsonParameter {
 	private JsonNode value;
 
 	@Schema(description = "ID referencing a schema in the json-schema service", examples = "2281_person_1.0")
+	@NotBlank
 	private String schemaId;
 }

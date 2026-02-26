@@ -15,6 +15,7 @@ import org.hibernate.annotations.TimeZoneStorage;
 import se.sundsvall.casedata.api.model.validation.UniqueDecisionType;
 import se.sundsvall.casedata.api.model.validation.UniqueInvoiceRecipient;
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
+import se.sundsvall.casedata.api.model.validation.ValidJsonParameters;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
@@ -145,6 +146,7 @@ public class Errand {
 
 	@Schema(description = "JSON parameters for the errand")
 	@Valid
+	@ValidJsonParameters
 	private List<JsonParameter> jsonParameters;
 
 	@Schema(description = "Date and time when the errand was created", accessMode = READ_ONLY, examples = "2023-10-01T12:00:00Z")

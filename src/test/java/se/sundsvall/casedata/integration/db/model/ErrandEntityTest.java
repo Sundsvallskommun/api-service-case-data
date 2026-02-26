@@ -49,6 +49,7 @@ class ErrandEntityTest {
 	private static final String CREATED_BY = "createdBy";
 	private static final String UPDATED_BY = "updatedBy";
 	private static final List<ExtraParameterEntity> EXTRA_PARAMETERS = List.of(new ExtraParameterEntity());
+	private static final List<JsonParameterEntity> JSON_PARAMETERS = List.of(new JsonParameterEntity());
 	private static final OffsetDateTime CREATED = now();
 	private static final OffsetDateTime UPDATED = now();
 	private static final OffsetDateTime SUSPENSION_FROM = now();
@@ -106,6 +107,7 @@ class ErrandEntityTest {
 			.withCreatedBy(CREATED_BY)
 			.withUpdatedBy(UPDATED_BY)
 			.withExtraParameters(EXTRA_PARAMETERS)
+			.withJsonParameters(JSON_PARAMETERS)
 			.withCreated(CREATED)
 			.withUpdated(UPDATED)
 			.withSuspendedFrom(SUSPENSION_FROM)
@@ -159,6 +161,7 @@ class ErrandEntityTest {
 		assertThat(bean.getNotes()).isEqualTo(NOTES);
 		assertThat(bean.getNotifications()).isEqualTo(NOTIFICATIONS);
 		assertThat(bean.getExtraParameters()).isEqualTo(EXTRA_PARAMETERS);
+		assertThat(bean.getJsonParameters()).isEqualTo(JSON_PARAMETERS);
 		assertThat(bean.getRelatesTo()).isEqualTo(RELATES_TO);
 		assertThat(bean.getLabels()).isEqualTo(LABELS);
 	}
@@ -168,6 +171,24 @@ class ErrandEntityTest {
 		assertThat(bean.getUpdatedByClient()).isEqualTo(UPDATED_BY_CLIENT);
 		assertThat(bean.getCreatedBy()).isEqualTo(CREATED_BY);
 		assertThat(bean.getUpdatedBy()).isEqualTo(UPDATED_BY);
+	}
+
+	@Test
+	void withExtraParameters() {
+		final var entity = new ErrandEntity();
+		final var result = entity.withExtraParameters(EXTRA_PARAMETERS);
+
+		assertThat(result).isSameAs(entity);
+		assertThat(result.getExtraParameters()).isEqualTo(EXTRA_PARAMETERS);
+	}
+
+	@Test
+	void withJsonParameters() {
+		final var entity = new ErrandEntity();
+		final var result = entity.withJsonParameters(JSON_PARAMETERS);
+
+		assertThat(result).isSameAs(entity);
+		assertThat(result.getJsonParameters()).isEqualTo(JSON_PARAMETERS);
 	}
 
 	@Test

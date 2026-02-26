@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.TimeZoneStorage;
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
+import se.sundsvall.casedata.api.model.validation.ValidJsonParameters;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
 
 import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
@@ -71,8 +72,9 @@ public class PatchErrand {
 	@Schema(description = "Extra parameters for the errand")
 	private List<ExtraParameter> extraParameters;
 
-	@Valid
 	@Schema(description = "JSON parameters for the errand")
+	@Valid
+	@ValidJsonParameters
 	private List<JsonParameter> jsonParameters;
 
 	@Valid

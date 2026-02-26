@@ -24,6 +24,7 @@ import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Errand;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.api.model.Facility;
+import se.sundsvall.casedata.api.model.JsonParameter;
 import se.sundsvall.casedata.api.model.Law;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.api.model.Notification;
@@ -45,6 +46,7 @@ import se.sundsvall.casedata.integration.db.model.DecisionEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
+import se.sundsvall.casedata.integration.db.model.JsonParameterEntity;
 import se.sundsvall.casedata.integration.db.model.LawEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
@@ -118,6 +120,7 @@ public final class TestUtil {
 				RandomStringUtils.secure().next(10, true, true))))
 			.withSuspension(Suspension.builder().withSuspendedFrom(now()).withSuspendedTo(now().plusDays(5)).build())
 			.withExtraParameters(createExtraParametersList())
+			.withJsonParameters(createJsonParameterList())
 			.withLabels(new ArrayList<>(List.of("label1", "label2")))
 			.build();
 	}
@@ -344,6 +347,7 @@ public final class TestUtil {
 			.withEndDate(LocalDate.now())
 			.withApplicationReceived(getRandomOffsetDateTime())
 			.withExtraParameters(createExtraParametersList())
+			.withJsonParameters(createJsonParameterList())
 			.withFacilities(new ArrayList<>(List.of(createFacility())))
 			.withSuspension(Suspension.builder().withSuspendedFrom(now()).withSuspendedTo(now().plusDays(5)).build())
 			.withRelatesTo(new ArrayList<>(List.of(new RelatedErrand())))
@@ -624,6 +628,7 @@ public final class TestUtil {
 			.withStakeholders(new ArrayList<>(List.of(createStakeholderEntity())))
 			.withDecisions(new ArrayList<>(List.of(createDecisionEntity())))
 			.withExtraParameters(createExtraParameterEntityList())
+			.withJsonParameters(createJsonParameterEntityList())
 			.withErrandNumber("errandNumber")
 			.withExternalCaseId("externalCaseId")
 			.withProcessId("processId")
@@ -658,6 +663,37 @@ public final class TestUtil {
 			createNotificationEntity(_ -> {}),
 			createNotificationEntity(_ -> {}),
 			createNotificationEntity(_ -> {})));
+	}
+
+	public static List<JsonParameterEntity> createJsonParameterEntityList() {
+		final var list = new ArrayList<JsonParameterEntity>();
+		list.add(
+			JsonParameterEntity.builder()
+				.withKey("jsonKey1")
+				.withSchemaId("schemaId1")
+				.withValue("{\"name\":\"test\"}")
+				.build());
+		list.add(
+			JsonParameterEntity.builder()
+				.withKey("jsonKey2")
+				.withSchemaId("schemaId2")
+				.withValue("{\"value\":123}")
+				.build());
+		return list;
+	}
+
+	public static List<JsonParameter> createJsonParameterList() {
+		return List.of(
+			JsonParameter.builder()
+				.withKey("jsonKey1")
+				.withSchemaId("schemaId1")
+				.withValue(OBJECT_MAPPER.createObjectNode().put("name", "test"))
+				.build(),
+			JsonParameter.builder()
+				.withKey("jsonKey2")
+				.withSchemaId("schemaId2")
+				.withValue(OBJECT_MAPPER.createObjectNode().put("value", 123))
+				.build());
 	}
 
 	private static List<ExtraParameterEntity> createExtraParameterEntityList() {
