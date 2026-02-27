@@ -252,4 +252,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-© 2025 Sundsvalls kommun
+© 2026 Sundsvalls kommun
