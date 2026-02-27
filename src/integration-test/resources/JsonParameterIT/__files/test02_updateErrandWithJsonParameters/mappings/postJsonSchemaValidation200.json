@@ -1,0 +1,20 @@
+{
+	"request": {
+		"method": "POST",
+		"urlPath": "/json-schema/2281/schemas/2281_contact_1.0/validation",
+		"bodyPatterns": [
+			{
+				"equalToJson": {
+					"email": "test@example.com",
+					"phone": "0701234567"
+				}
+			}
+		]
+	},
+	"response": {
+		"status": 200,
+		"headers": {
+			"Content-Type": "application/json"
+		}
+	}
+}
