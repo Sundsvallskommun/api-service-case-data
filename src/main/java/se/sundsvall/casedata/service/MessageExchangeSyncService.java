@@ -7,15 +7,15 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
+import se.sundsvall.dept44.problem.Problem;
 
 import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toAttachment;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.updateConversationEntity;
@@ -92,7 +92,7 @@ public class MessageExchangeSyncService {
 		final Attachment attachment;
 		try {
 			attachment = toAttachment(file.getBody().getContentAsByteArray(), file.getHeaders().getContentDisposition().getFilename(), file.getHeaders().getContentType().toString(), errandId, municipalityId, namespace);
-		} catch (final IOException e) {
+		} catch (final IOException _) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert attachment from Message Exchange");
 		}
 		attachmentService.create(errandId, attachment, municipalityId, namespace);

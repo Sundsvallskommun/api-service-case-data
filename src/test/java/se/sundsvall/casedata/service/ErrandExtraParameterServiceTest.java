@@ -18,11 +18,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
 @ExtendWith(MockitoExtension.class)

@@ -10,11 +10,11 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Problem;
 import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.NotificationRepository;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
+import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.support.Identifier;
 import se.sundsvall.dept44.support.Identifier.Type;
 

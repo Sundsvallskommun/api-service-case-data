@@ -1,9 +1,5 @@
 package se.sundsvall.casedata;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -60,6 +56,10 @@ import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import static java.time.OffsetDateTime.now;
 import static java.util.UUID.randomUUID;
@@ -77,11 +77,10 @@ public final class TestUtil {
 
 	private TestUtil() {}
 
-	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+	public static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder()
 		.enable(SerializationFeature.INDENT_OUTPUT)
-		.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-		.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
-		.registerModule(new JavaTimeModule());
+		.disable(DateTimeFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+		.build();
 
 	public static Errand createErrand() {
 		return Errand.builder()

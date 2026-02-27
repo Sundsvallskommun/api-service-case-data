@@ -5,16 +5,16 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.JsonParameter;
 import se.sundsvall.casedata.api.model.validation.ValidJsonParameters;
 import se.sundsvall.casedata.integration.jsonschema.JsonSchemaClient;
 import se.sundsvall.dept44.exception.ServerProblem;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static java.util.Optional.ofNullable;
 import static org.hibernate.validator.internal.engine.messageinterpolation.util.InterpolationHelper.escapeMessageParameter;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 import static org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
@@ -97,6 +97,6 @@ public class ValidJsonParametersConstraintValidator implements ConstraintValidat
 				return value;
 			}
 		}
-		throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Path variable '%s' is not readable from request".formatted(variableName));
+		throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Path variable '%s' is not readable from request".formatted(variableName));
 	}
 }

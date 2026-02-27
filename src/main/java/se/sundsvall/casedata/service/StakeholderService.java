@@ -5,16 +5,16 @@ import java.util.Optional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.StakeholderRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import se.sundsvall.dept44.problem.Problem;
 
 import static java.util.Collections.emptyList;
-import static org.zalando.problem.Status.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.STAKEHOLDER_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toStakeholder;

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
-import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.EmailHeader;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
@@ -23,11 +22,12 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.casedata.service.util.BlobBuilder;
+import se.sundsvall.dept44.problem.Problem;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.UUID.randomUUID;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Component
 public class MessageMapper {

@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -19,6 +19,7 @@ import se.sundsvall.casedata.api.model.validation.enums.FacilityType;
 import se.sundsvall.casedata.integration.jsonschema.JsonSchemaClient;
 import se.sundsvall.casedata.service.ErrandService;
 import se.sundsvall.casedata.service.MetadataService;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -34,6 +35,7 @@ import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createFacility;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ErrandResourceTest {

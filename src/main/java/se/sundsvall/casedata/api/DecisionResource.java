@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.zalando.problem.Problem;
-import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.service.DecisionService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
@@ -61,10 +61,10 @@ class DecisionResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Decision> getDecisionById(
-		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
-		@PathVariable(name = "decisionId") final Long decisionId) {
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable final Long errandId,
+		@PathVariable final Long decisionId) {
 
 		return ok(decisionService.findDecision(errandId, decisionId, municipalityId, namespace));
 	}
@@ -74,10 +74,10 @@ class DecisionResource {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> patchDecision(
-		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
-		@PathVariable(name = "decisionId") final Long decisionId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable final Long errandId,
+		@PathVariable final Long decisionId,
 		@RequestBody @Valid final PatchDecision patchDecision) {
 
 		decisionService.update(errandId, decisionId, municipalityId, namespace, patchDecision);
@@ -91,10 +91,10 @@ class DecisionResource {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> putDecision(
-		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
-		@PathVariable(name = "decisionId") final Long decisionId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable final Long errandId,
+		@PathVariable final Long decisionId,
 		@RequestBody @Valid final Decision decision) {
 
 		decisionService.replaceOnErrand(errandId, decisionId, municipalityId, namespace, decision);
@@ -108,9 +108,9 @@ class DecisionResource {
 		@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource.", schema = @Schema(type = "string")), useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> createDecision(
-		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable final Long errandId,
 		@RequestBody @Valid final Decision decision) {
 
 		final var result = decisionService.addToErrand(errandId, municipalityId, namespace, decision);
@@ -124,9 +124,9 @@ class DecisionResource {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<List<Decision>> getDecision(
-		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId) {
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable final Long errandId) {
 
 		return ok(decisionService.findDecisions(errandId, municipalityId, namespace));
 	}
@@ -136,10 +136,10 @@ class DecisionResource {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
 	ResponseEntity<Void> deleteDecision(
-		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable(name = "municipalityId") @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable(name = "errandId") final Long errandId,
-		@PathVariable(name = "decisionId") final Long decisionId) {
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable final Long errandId,
+		@PathVariable final Long decisionId) {
 
 		decisionService.delete(errandId, municipalityId, namespace, decisionId);
 		return noContent()

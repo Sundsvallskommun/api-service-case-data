@@ -3,7 +3,6 @@ package se.sundsvall.casedata.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -11,8 +10,9 @@ import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.NotificationSubType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import se.sundsvall.dept44.problem.Problem;
 
-import static org.zalando.problem.Status.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ATTACHMENT_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toAttachment;
@@ -24,6 +24,7 @@ import static se.sundsvall.casedata.service.util.mappers.PutMapper.putAttachment
 @Service
 @Transactional
 public class AttachmentService {
+
 	private static final String NOTIFICATION_UPDATE_TYPE = "UPDATE";
 	private static final String NOTIFICATION_ADD_ATTACHMENT = "En bilaga har lagts till i ärendet.";
 	private static final String NOTIFICATION_REPLACE_ATTACHMENT = "En bilaga har ersatts i ärendet.";

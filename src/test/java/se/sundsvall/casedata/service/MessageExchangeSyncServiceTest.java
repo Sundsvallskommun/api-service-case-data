@@ -16,13 +16,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.zalando.problem.Problem;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
+import se.sundsvall.dept44.problem.Problem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

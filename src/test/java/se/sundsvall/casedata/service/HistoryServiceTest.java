@@ -14,8 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.history.History;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.DecisionRepository;
@@ -29,6 +27,7 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -39,6 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
@@ -82,7 +82,7 @@ class HistoryServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> historyService.findFacilityHistoryOnErrand(errandId, id, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Facility not found");
 
 		verify(facilityRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE);
@@ -141,7 +141,7 @@ class HistoryServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> historyService.findAttachmentHistoryOnErrand(1L, 123L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Attachment not found");
 
 		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE);
@@ -179,7 +179,7 @@ class HistoryServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> historyService.findDecisionHistoryOnErrand(errandId, id, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Decision not found");
 
 		verify(decisionRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE);
@@ -212,7 +212,7 @@ class HistoryServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> historyService.findErrandHistory(123L, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Errand not found");
 
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(123L, MUNICIPALITY_ID, NAMESPACE);
@@ -251,7 +251,7 @@ class HistoryServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> historyService.findNoteHistoryOnErrand(errandId, id, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Note not found");
 
 		verify(noteRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE);
@@ -287,7 +287,7 @@ class HistoryServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> historyService.findStakeholderHistoryOnErrand(errandId, id, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Stakeholder not found");
 
 		verify(stakeholderRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE);

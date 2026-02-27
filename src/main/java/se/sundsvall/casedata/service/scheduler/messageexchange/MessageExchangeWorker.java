@@ -13,7 +13,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageExchangeSyncRepository;
@@ -22,8 +21,9 @@ import se.sundsvall.casedata.integration.db.model.MessageExchangeSyncEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.casedata.integration.relation.RelationClient;
 import se.sundsvall.casedata.service.MessageExchangeSyncService;
+import se.sundsvall.dept44.problem.Problem;
 
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
 
 @Component

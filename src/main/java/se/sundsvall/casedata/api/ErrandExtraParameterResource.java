@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.zalando.problem.Problem;
-import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.service.ErrandExtraParameterService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.ALL_VALUE;

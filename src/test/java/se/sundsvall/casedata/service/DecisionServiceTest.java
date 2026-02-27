@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchDecision;
@@ -27,6 +25,7 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,7 +73,7 @@ class DecisionServiceTest {
 	private ArgumentCaptor<Notification> notificationCaptor;
 
 	@Test
-	void update() throws JsonProcessingException {
+	void update() {
 		// Arrange
 		final var errand = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
 		final var decision = errand.getDecisions().getFirst();

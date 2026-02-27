@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -11,6 +9,8 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
-import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.ConversationType;
@@ -17,6 +16,7 @@ import se.sundsvall.casedata.api.model.conversation.Identifier;
 import se.sundsvall.casedata.api.model.conversation.KeyValues;
 import se.sundsvall.casedata.api.model.conversation.MessageType;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+import se.sundsvall.dept44.problem.Problem;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;

@@ -8,11 +8,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.integration.db.CaseTypeRepository;
 import se.sundsvall.casedata.integration.db.model.CaseTypeEntity;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -21,6 +20,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
@@ -101,7 +101,7 @@ class MetadataServiceTest {
 		assertThatThrownBy(() -> metadataService.getCaseType(MUNICIPALITY_ID, NAMESPACE, type))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasMessage("Not Found: CaseType not found in database")
-			.satisfies(e -> assertThat(((ThrowableProblem) e).getStatus()).isEqualTo(Status.NOT_FOUND));
+			.satisfies(e -> assertThat(((ThrowableProblem) e).getStatus()).isEqualTo(NOT_FOUND));
 
 		verify(caseTypeRepositoryMock).findByMunicipalityIdAndNamespaceAndType(MUNICIPALITY_ID, NAMESPACE, type);
 		verifyNoMoreInteractions(caseTypeRepositoryMock);
@@ -173,7 +173,7 @@ class MetadataServiceTest {
 		assertThatThrownBy(() -> metadataService.deleteCaseType(MUNICIPALITY_ID, NAMESPACE, type))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasMessage("Not Found: CaseType not found in database")
-			.satisfies(e -> assertThat(((ThrowableProblem) e).getStatus()).isEqualTo(Status.NOT_FOUND));
+			.satisfies(e -> assertThat(((ThrowableProblem) e).getStatus()).isEqualTo(NOT_FOUND));
 
 		verify(caseTypeRepositoryMock).findByMunicipalityIdAndNamespaceAndType(MUNICIPALITY_ID, NAMESPACE, type);
 		verify(caseTypeRepositoryMock, never()).delete(any());

@@ -1,14 +1,13 @@
 package se.sundsvall.casedata.integration.webmessagecollector.configuration;
 
 import feign.codec.Decoder;
-import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.openfeign.FeignBuilderCustomizer;
+import org.springframework.cloud.openfeign.support.FeignHttpMessageConverters;
 import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
 import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import se.sundsvall.dept44.configuration.feign.FeignConfiguration;
 import se.sundsvall.dept44.configuration.feign.FeignMultiCustomizer;
@@ -29,8 +28,7 @@ public class WebMessageCollectorConfiguration {
 	}
 
 	@Bean
-	Decoder feignDecoder() {
-		final ObjectFactory<HttpMessageConverters> messageConverters = () -> new HttpMessageConverters(new ByteArrayHttpMessageConverter());
-		return new ResponseEntityDecoder(new SpringDecoder(messageConverters));
+	Decoder feignDecoder(ObjectProvider<FeignHttpMessageConverters> feignHttpMessageConverters) {
+		return new ResponseEntityDecoder(new SpringDecoder(feignHttpMessageConverters));
 	}
 }

@@ -25,8 +25,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.Notification;
@@ -45,6 +43,7 @@ import se.sundsvall.casedata.integration.messagingsettings.MessagingSettingsInte
 import se.sundsvall.casedata.service.model.MessagingSettings;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.casedata.service.util.BlobBuilder;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 import se.sundsvall.dept44.support.Identifier;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -65,6 +64,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
@@ -234,7 +235,7 @@ class MessageServiceTest {
 		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.findMessageAttachmentAsStreamedResponse(1L, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock));
 
 		// Assert
-		assertThat(exception.getStatus()).isEqualTo(Status.INTERNAL_SERVER_ERROR);
+		assertThat(exception.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR);
 		assertThat(exception.getMessage()).isEqualTo("Internal Server Error: SQLException occurred when copying file with attachment id 'attachmentId' to response: testException");
 		verify(messageAttachmentRepositoryMock).findByAttachmentIdAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageAttachmentEntityMock).getAttachmentData();
@@ -256,7 +257,7 @@ class MessageServiceTest {
 		final var exception = assertThrows(ThrowableProblem.class, () -> messageService.findMessageAttachmentAsStreamedResponse(1L, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock));
 
 		// Assert
-		assertThat(exception.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(exception.getMessage()).isEqualTo("Not Found: MessageAttachment with id:'%s' not found in namespace:'%s' for municipality with id:'%s'".formatted(attachmentId, NAMESPACE, MUNICIPALITY_ID));
 		verify(messageAttachmentRepositoryMock).findByAttachmentIdAndMunicipalityIdAndNamespace(attachmentId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(messageAttachmentEntityMock, servletResponseMock);
@@ -352,7 +353,7 @@ class MessageServiceTest {
 		// Act & assert
 		assertThatThrownBy(() -> messageService.updateViewedStatus(1L, messageId, MUNICIPALITY_ID, NAMESPACE, true))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("message", "Not Found: Message with id:'%s' not found in namespace:'%s' for municipality with id:'%s'".formatted(messageId, NAMESPACE, MUNICIPALITY_ID));
 
 		verify(messageRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndMessageId(MUNICIPALITY_ID, NAMESPACE, errandId, messageId);
@@ -396,7 +397,7 @@ class MessageServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("message", "Not Found: Errand with id:'1' not found in namespace:'MY_NAMESPACE' for municipality with id:'2281'");
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(messagingSettingsIntegrationMock, messagingClientMock, messageMapperMock, notificationServiceMock);
@@ -422,7 +423,7 @@ class MessageServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.INTERNAL_SERVER_ERROR)
+			.hasFieldOrPropertyWithValue("status", INTERNAL_SERVER_ERROR)
 			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to create message notification");
 
 	}

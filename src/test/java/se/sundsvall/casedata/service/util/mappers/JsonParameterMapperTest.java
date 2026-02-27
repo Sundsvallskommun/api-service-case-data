@@ -1,12 +1,13 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.casedata.api.model.JsonParameter;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.JsonParameterEntity;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -87,7 +88,7 @@ class JsonParameterMapperTest {
 		assertThat(result.getKey()).isEqualTo("testKey");
 		assertThat(result.getSchemaId()).isEqualTo("schemaId");
 		assertThat(result.getValue()).isInstanceOf(ObjectNode.class);
-		assertThat(result.getValue().get("name").asText()).isEqualTo("test");
+		assertThat(result.getValue().get("name").asString()).isEqualTo("test");
 	}
 
 	@Test
@@ -158,7 +159,6 @@ class JsonParameterMapperTest {
 
 		// Act & Assert
 		assertThatThrownBy(() -> JsonParameterMapper.toJsonParameter(entity))
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining("Failed to convert String to JsonNode");
+			.isInstanceOf(JacksonException.class);
 	}
 }
