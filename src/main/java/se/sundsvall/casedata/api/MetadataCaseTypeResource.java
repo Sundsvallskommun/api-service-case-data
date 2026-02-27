@@ -50,7 +50,7 @@ class MetadataCaseTypeResource {
 		this.metadataService = metadataService;
 	}
 
-	@GetMapping
+	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	@Operation(description = "Get all case types", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
@@ -60,7 +60,7 @@ class MetadataCaseTypeResource {
 		return ResponseEntity.ok(metadataService.getCaseTypes(municipalityId, namespace));
 	}
 
-	@GetMapping("/{type}")
+	@GetMapping(path = "/{type}", produces = APPLICATION_JSON_VALUE)
 	@Operation(description = "Get a specific case type", responses = {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true),
 		@ApiResponse(responseCode = "404", description = "Not found", useReturnTypeSchema = true)
@@ -72,7 +72,7 @@ class MetadataCaseTypeResource {
 		return ResponseEntity.ok(metadataService.getCaseType(municipalityId, namespace, type));
 	}
 
-	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	@Operation(description = "Create caseType", responses = {
 		@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true),
 	})

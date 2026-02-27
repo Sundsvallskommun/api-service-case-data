@@ -19,12 +19,7 @@ public class JsonParameter {
 	@NotBlank
 	private String key;
 
-	@Schema(description = "JSON structure value", examples = """
-		{
-		  "firstName": "Joe",
-		  "lastName": "Doe"
-		}
-		""")
+	@Schema(description = "JSON structure value")
 	@NotNull
 	private JsonNode value;
 

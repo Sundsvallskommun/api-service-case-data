@@ -63,7 +63,7 @@ class NotificationResource {
 		this.notificationService = notificationService;
 	}
 
-	@GetMapping("/errands/{errandId}/notifications/{notificationId}")
+	@GetMapping(path = "/errands/{errandId}/notifications/{notificationId}", produces = APPLICATION_JSON_VALUE)
 	@Operation(summary = "Get notification", description = "Get a specific notification for the namespace and municipality", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful operation", useReturnTypeSchema = true)
 	})
