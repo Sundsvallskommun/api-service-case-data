@@ -1,5 +1,11 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
@@ -26,12 +32,6 @@ import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacili
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNote;
 import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchStakeholder;
 
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
-import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
-import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
-
 class PatchMapperTest {
 
 	@Test
@@ -53,6 +53,7 @@ class PatchMapperTest {
 			assertThat(e.getEndDate()).isEqualTo(patch.getEndDate());
 			assertThat(e.getApplicationReceived()).isEqualTo(patch.getApplicationReceived());
 			assertThat(e.getExtraParameters()).hasSize(3).containsAll(patch.getExtraParameters().stream().map(parameter -> ErrandExtraParameterMapper.toErrandParameterEntity(parameter, errand)).toList());
+			assertThat(e.getJsonParameters()).hasSize(2).containsAll(patch.getJsonParameters().stream().map(parameter -> JsonParameterMapper.toJsonParameterEntity(parameter, errand)).toList());
 			assertThat(e.getSuspendedFrom()).isEqualTo(patch.getSuspension().getSuspendedFrom());
 			assertThat(e.getSuspendedTo()).isEqualTo(patch.getSuspension().getSuspendedTo());
 			assertThat(e.getFacilities()).hasSize(2).containsAll(patch.getFacilities().stream().map(facilityDTO -> toFacilityEntity(facilityDTO, MUNICIPALITY_ID, NAMESPACE)).toList());

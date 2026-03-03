@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -15,7 +13,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.TimeZoneStorage;
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
+import se.sundsvall.casedata.api.model.validation.ValidJsonParameters;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 @Data
 @NoArgsConstructor
@@ -70,6 +71,11 @@ public class PatchErrand {
 
 	@Schema(description = "Extra parameters for the errand")
 	private List<ExtraParameter> extraParameters;
+
+	@Schema(description = "JSON parameters for the errand")
+	@Valid
+	@ValidJsonParameters
+	private List<JsonParameter> jsonParameters;
 
 	@Valid
 	@Schema(description = "Other errands related to the errand")

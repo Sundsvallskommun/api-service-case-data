@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
-import static jakarta.persistence.EnumType.STRING;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Enumerated;
 import java.util.List;
@@ -17,6 +14,9 @@ import lombok.Setter;
 import lombok.ToString;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
+
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static jakarta.persistence.EnumType.STRING;
 
 @Data
 @NoArgsConstructor

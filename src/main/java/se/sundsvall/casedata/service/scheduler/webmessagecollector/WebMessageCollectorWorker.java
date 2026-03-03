@@ -1,9 +1,5 @@
 package se.sundsvall.casedata.service.scheduler.webmessagecollector;
 
-import static java.util.Collections.emptyMap;
-import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
-
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +17,10 @@ import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollector
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.NotificationService;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
+
+import static java.util.Collections.emptyMap;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 @Component
 public class WebMessageCollectorWorker {

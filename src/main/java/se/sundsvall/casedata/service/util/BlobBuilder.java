@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.service.util;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import jakarta.persistence.EntityManager;
 import java.io.ByteArrayInputStream;
 import java.sql.Blob;
@@ -9,6 +7,8 @@ import java.util.Base64;
 import java.util.Base64.Decoder;
 import org.hibernate.Session;
 import org.springframework.stereotype.Component;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class BlobBuilder {

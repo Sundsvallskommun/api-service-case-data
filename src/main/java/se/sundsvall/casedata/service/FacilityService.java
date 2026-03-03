@@ -1,11 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
-import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacility;
-
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -18,6 +12,12 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PutMapper;
+
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacility;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toFacilityEntity;
+import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchFacility;
 
 @Service
 @Transactional

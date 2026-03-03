@@ -1,10 +1,5 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
-import static java.time.OffsetDateTime.now;
-import static java.time.OffsetDateTime.of;
-import static java.time.ZoneId.systemDefault;
-import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
-
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -18,6 +13,11 @@ import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.api.model.validation.enums.Shortcode;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+
+import static java.time.OffsetDateTime.now;
+import static java.time.OffsetDateTime.of;
+import static java.time.ZoneId.systemDefault;
+import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
 
 @Component
 public class ErrandListener {

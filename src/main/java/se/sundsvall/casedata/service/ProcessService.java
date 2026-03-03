@@ -1,10 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USERS;
-import static se.sundsvall.casedata.service.util.Constants.PARKIKNG_PERMIT_CASE_TYPES;
-import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
-
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +11,11 @@ import se.sundsvall.casedata.integration.landandexploitation.configuration.LandA
 import se.sundsvall.casedata.integration.paratransit.ParatransitIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.configuration.ParkingPermitProperties;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static se.sundsvall.casedata.service.util.Constants.CAMUNDA_USERS;
+import static se.sundsvall.casedata.service.util.Constants.PARKIKNG_PERMIT_CASE_TYPES;
+import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 @Service
 public class ProcessService {

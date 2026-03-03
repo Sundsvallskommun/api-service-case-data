@@ -1,9 +1,5 @@
 package se.sundsvall.casedata.service.util;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Base64;
@@ -12,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import se.sundsvall.casedata.Application;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 
 @SpringBootTest(classes = {
 	Application.class

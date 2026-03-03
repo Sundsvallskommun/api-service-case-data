@@ -1,16 +1,16 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toCollection;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toCollection;
 
 public final class ErrandExtraParameterMapper {
 

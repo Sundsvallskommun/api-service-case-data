@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import static org.hibernate.Length.LONG32;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -32,6 +30,8 @@ import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.javers.core.metamodel.annotation.DiffIgnore;
+
+import static org.hibernate.Length.LONG32;
 
 @Entity
 @Table(name = "attachment",

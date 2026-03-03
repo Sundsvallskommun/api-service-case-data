@@ -1,10 +1,5 @@
 package se.sundsvall.casedata.integration.messageexchange;
 
-import static org.springframework.http.MediaType.ALL_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
-import static se.sundsvall.casedata.integration.messageexchange.configuration.MessageExchangeConfiguration.CLIENT_ID;
-
 import generated.se.sundsvall.messageexchange.Conversation;
 import generated.se.sundsvall.messageexchange.Message;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -25,6 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.casedata.integration.messageexchange.configuration.MessageExchangeConfiguration;
+
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+import static se.sundsvall.casedata.integration.messageexchange.configuration.MessageExchangeConfiguration.CLIENT_ID;
 
 @FeignClient(
 	name = CLIENT_ID,

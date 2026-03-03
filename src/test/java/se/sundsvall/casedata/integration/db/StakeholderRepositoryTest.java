@@ -1,17 +1,5 @@
 package se.sundsvall.casedata.integration.db;
 
-import static java.time.OffsetDateTime.now;
-import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
-import static java.time.temporal.ChronoUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.within;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.integration.db.model.enums.AddressCategory.POSTAL_ADDRESS;
-import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
-import static se.sundsvall.casedata.integration.db.model.enums.StakeholderType.PERSON;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +17,18 @@ import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
 import se.sundsvall.casedata.integration.db.model.AddressEntity;
 import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+
+import static java.time.OffsetDateTime.now;
+import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.integration.db.model.enums.AddressCategory.POSTAL_ADDRESS;
+import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
+import static se.sundsvall.casedata.integration.db.model.enums.StakeholderType.PERSON;
 
 /**
  * StakeholderRepository tests.

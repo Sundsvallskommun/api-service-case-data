@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.service.scheduler.messageexchange;
 
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
-
 import com.google.common.primitives.Longs;
 import generated.se.sundsvall.messageexchange.Conversation;
 import generated.se.sundsvall.relation.Relation;
@@ -25,6 +22,9 @@ import se.sundsvall.casedata.integration.db.model.MessageExchangeSyncEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.casedata.integration.relation.RelationClient;
 import se.sundsvall.casedata.service.MessageExchangeSyncService;
+
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
 
 @Component
 public class MessageExchangeWorker {

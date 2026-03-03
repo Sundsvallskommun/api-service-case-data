@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import se.sundsvall.dept44.common.validators.annotation.ValidBase64;
+
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Data
 @NoArgsConstructor

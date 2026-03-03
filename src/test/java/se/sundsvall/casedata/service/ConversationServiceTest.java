@@ -1,17 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.api.model.conversation.ConversationType.EXTERNAL;
-import static se.sundsvall.casedata.api.model.conversation.ConversationType.INTERNAL;
-
 import generated.se.sundsvall.messageexchange.KeyValues;
 import java.io.IOException;
 import java.net.URI;
@@ -38,6 +26,18 @@ import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeScheduler;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.api.model.conversation.ConversationType.EXTERNAL;
+import static se.sundsvall.casedata.api.model.conversation.ConversationType.INTERNAL;
 
 @ExtendWith(MockitoExtension.class)
 class ConversationServiceTest {

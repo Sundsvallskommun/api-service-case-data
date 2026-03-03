@@ -1,15 +1,5 @@
 package se.sundsvall.casedata.integration.db.model;
 
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEqualsExcluding;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCodeExcluding;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToStringExcluding;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
-import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
-import static java.time.OffsetDateTime.now;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.allOf;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +9,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
+
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEqualsExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCodeExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToStringExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
+import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
+import static java.time.OffsetDateTime.now;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.allOf;
 
 class DecisionEntityTest {
 

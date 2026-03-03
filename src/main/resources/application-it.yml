@@ -2,6 +2,8 @@ spring:
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:mariadb:10.6:///ittest
+    hikari:
+      maximum-pool-size: 2
   flyway:
     enabled: true
   jpa:
@@ -67,6 +69,16 @@ config:
     client-secret: client-secret
   paratransit:
     base-url: http://localhost:${wiremock.server.port:}/paratransit
+    token-url: http://localhost:${wiremock.server.port:}/token
+    client-id: client-id
+    client-secret: client-secret
+  eventlog:
+    base-url: http://localhost:${wiremock.server.port:}/eventlog
+    token-url: http://localhost:${wiremock.server.port:}/token
+    client-id: client-id
+    client-secret: client-secret
+  json-schema:
+    base-url: http://localhost:${wiremock.server.port:}/json-schema
     token-url: http://localhost:${wiremock.server.port:}/token
     client-id: client-id
     client-secret: client-secret

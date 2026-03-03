@@ -1,17 +1,5 @@
 package se.sundsvall.casedata.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.MediaType.ALL_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createAttachment;
-import static se.sundsvall.casedata.TestUtil.createAttachmentEntity;
-
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +11,18 @@ import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.service.AttachmentService;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createAttachment;
+import static se.sundsvall.casedata.TestUtil.createAttachmentEntity;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")

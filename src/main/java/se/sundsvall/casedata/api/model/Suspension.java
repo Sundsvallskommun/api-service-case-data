@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
 import java.time.OffsetDateTime;
@@ -11,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import se.sundsvall.casedata.api.model.validation.ValidSuspension;
+
+import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
 
 @Data
 @NoArgsConstructor

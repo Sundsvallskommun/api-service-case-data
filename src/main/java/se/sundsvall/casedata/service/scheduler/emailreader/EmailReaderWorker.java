@@ -1,10 +1,5 @@
 package se.sundsvall.casedata.service.scheduler.emailreader;
 
-import static java.util.Collections.emptyList;
-import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
-import static se.sundsvall.casedata.service.scheduler.emailreader.ErrandNumberParser.parseSubject;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
-
 import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
 import java.util.List;
@@ -26,6 +21,11 @@ import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderPr
 import se.sundsvall.casedata.service.NotificationService;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
+
+import static java.util.Collections.emptyList;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
+import static se.sundsvall.casedata.service.scheduler.emailreader.ErrandNumberParser.parseSubject;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 
 @Component
 public class EmailReaderWorker {

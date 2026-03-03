@@ -1,11 +1,5 @@
 package se.sundsvall.casedata.integration.db;
 
-import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
+
+import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 /**
  * FacilityRepository tests.

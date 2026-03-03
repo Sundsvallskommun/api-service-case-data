@@ -1,9 +1,5 @@
 package se.sundsvall.casedata.integration.db;
 
-import static java.nio.file.Files.readString;
-import static java.nio.file.Paths.get;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -12,6 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+
+import static java.nio.file.Files.readString;
+import static java.nio.file.Paths.get;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("junit")

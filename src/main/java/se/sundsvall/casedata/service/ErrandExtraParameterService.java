@@ -1,15 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toMap;
-import static org.springframework.util.CollectionUtils.isEmpty;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntity;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameter;
-import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +12,16 @@ import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
+
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toMap;
+import static org.springframework.util.CollectionUtils.isEmpty;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toErrandParameterEntity;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameter;
+import static se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper.toParameterList;
 
 @Service
 public class ErrandExtraParameterService {

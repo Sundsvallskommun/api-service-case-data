@@ -1,19 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.api.model.conversation.ConversationType.EXTERNAL;
-import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_CONVERSATION;
-import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversation;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationEntity;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationList;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessageExchangeConversation;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessagePage;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessageRequest;
-import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.updateConversationEntity;
-
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -35,6 +21,20 @@ import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeScheduler;
+
+import static java.util.Optional.ofNullable;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.api.model.conversation.ConversationType.EXTERNAL;
+import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_CONVERSATION;
+import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversation;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationEntity;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toConversationList;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessageExchangeConversation;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessagePage;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessageRequest;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.updateConversationEntity;
 
 @Service
 public class ConversationService {

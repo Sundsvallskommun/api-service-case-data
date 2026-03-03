@@ -1,11 +1,5 @@
 package se.sundsvall.casedata;
 
-import static java.time.OffsetDateTime.now;
-import static java.util.UUID.randomUUID;
-import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
-import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
-import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -18,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -29,6 +24,7 @@ import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Errand;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.api.model.Facility;
+import se.sundsvall.casedata.api.model.JsonParameter;
 import se.sundsvall.casedata.api.model.Law;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.api.model.Notification;
@@ -50,6 +46,7 @@ import se.sundsvall.casedata.integration.db.model.DecisionEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
+import se.sundsvall.casedata.integration.db.model.JsonParameterEntity;
 import se.sundsvall.casedata.integration.db.model.LawEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
@@ -63,6 +60,13 @@ import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+
+import static java.time.OffsetDateTime.now;
+import static java.util.UUID.randomUUID;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.ADMINISTRATOR;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.INVOICE_RECIPIENT;
+import static se.sundsvall.casedata.integration.db.model.enums.Priority.HIGH;
+import static se.sundsvall.dept44.util.DateUtils.toOffsetDateTimeWithLocalOffset;
 
 public final class TestUtil {
 
@@ -116,12 +120,14 @@ public final class TestUtil {
 				RandomStringUtils.secure().next(10, true, true))))
 			.withSuspension(Suspension.builder().withSuspendedFrom(now()).withSuspendedTo(now().plusDays(5)).build())
 			.withExtraParameters(createExtraParametersList())
+			.withJsonParameters(createJsonParameterList())
 			.withLabels(new ArrayList<>(List.of("label1", "label2")))
 			.build();
 	}
 
 	public static String getRandomStakeholderRole() {
-		return StakeholderRole.values()[RANDOM.nextInt(StakeholderRole.values().length)].name();
+		// Exclude the position holding INVOICE_RECIPIENT as this will f*ck up tests if found on more than one stakeholder
+		return StakeholderRole.values()[randomIntExcluding(StakeholderRole.values().length, Set.of(INVOICE_RECIPIENT.ordinal()))].name();
 	}
 
 	public static StakeholderType getRandomStakeholderType() {
@@ -130,6 +136,14 @@ public final class TestUtil {
 
 	public static OffsetDateTime getRandomOffsetDateTime() {
 		return toOffsetDateTimeWithLocalOffset(now().minusDays(RANDOM.nextInt(10000)).truncatedTo(ChronoUnit.MILLIS));
+	}
+
+	private static int randomIntExcluding(int upperBound, Set<Integer> excludeInts) {
+		var random = RANDOM.nextInt(upperBound);
+		while (excludeInts.contains(random)) {
+			random = RANDOM.nextInt(upperBound);
+		}
+		return random;
 	}
 
 	public static Status createStatus() {
@@ -333,6 +347,7 @@ public final class TestUtil {
 			.withEndDate(LocalDate.now())
 			.withApplicationReceived(getRandomOffsetDateTime())
 			.withExtraParameters(createExtraParametersList())
+			.withJsonParameters(createJsonParameterList())
 			.withFacilities(new ArrayList<>(List.of(createFacility())))
 			.withSuspension(Suspension.builder().withSuspendedFrom(now()).withSuspendedTo(now().plusDays(5)).build())
 			.withRelatesTo(new ArrayList<>(List.of(new RelatedErrand())))
@@ -613,6 +628,7 @@ public final class TestUtil {
 			.withStakeholders(new ArrayList<>(List.of(createStakeholderEntity())))
 			.withDecisions(new ArrayList<>(List.of(createDecisionEntity())))
 			.withExtraParameters(createExtraParameterEntityList())
+			.withJsonParameters(createJsonParameterEntityList())
 			.withErrandNumber("errandNumber")
 			.withExternalCaseId("externalCaseId")
 			.withProcessId("processId")
@@ -644,9 +660,40 @@ public final class TestUtil {
 
 	public static List<NotificationEntity> createNotificationEntityList() {
 		return new ArrayList<>(List.of(
-			createNotificationEntity(n -> {}),
-			createNotificationEntity(n -> {}),
-			createNotificationEntity(n -> {})));
+			createNotificationEntity(_ -> {}),
+			createNotificationEntity(_ -> {}),
+			createNotificationEntity(_ -> {})));
+	}
+
+	public static List<JsonParameterEntity> createJsonParameterEntityList() {
+		final var list = new ArrayList<JsonParameterEntity>();
+		list.add(
+			JsonParameterEntity.builder()
+				.withKey("jsonKey1")
+				.withSchemaId("schemaId1")
+				.withValue("{\"name\":\"test\"}")
+				.build());
+		list.add(
+			JsonParameterEntity.builder()
+				.withKey("jsonKey2")
+				.withSchemaId("schemaId2")
+				.withValue("{\"value\":123}")
+				.build());
+		return list;
+	}
+
+	public static List<JsonParameter> createJsonParameterList() {
+		return List.of(
+			JsonParameter.builder()
+				.withKey("jsonKey1")
+				.withSchemaId("schemaId1")
+				.withValue(OBJECT_MAPPER.createObjectNode().put("name", "test"))
+				.build(),
+			JsonParameter.builder()
+				.withKey("jsonKey2")
+				.withSchemaId("schemaId2")
+				.withValue(OBJECT_MAPPER.createObjectNode().put("value", 123))
+				.build());
 	}
 
 	private static List<ExtraParameterEntity> createExtraParameterEntityList() {

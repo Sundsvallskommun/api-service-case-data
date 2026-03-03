@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import java.time.OffsetDateTime;
@@ -10,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 
 @Data
 @NoArgsConstructor
@@ -74,7 +74,7 @@ public class Notification {
 	@Schema(description = "Errand id of the notification", examples = "1234", accessMode = READ_ONLY)
 	private Long errandId;
 
-	@Schema(description = "Errand number of the notification", examples = "PRH-2022-000001", accessMode = READ_ONLY)
+	@Schema(description = "Errand number of the notification", examples = "SGP-2022-000001", accessMode = READ_ONLY)
 	private String errandNumber;
 
 }

@@ -197,6 +197,15 @@
         primary key (facility_id, extra_parameter_key)
     ) engine=InnoDB;
 
+    create table json_parameter (
+        errand_id bigint not null,
+        id varchar(255) not null,
+        parameter_key varchar(255) not null,
+        schema_id varchar(255) not null,
+        value longtext not null,
+        primary key (id)
+    ) engine=InnoDB;
+
     create table message (
         internal bit,
         viewed bit not null,
@@ -413,6 +422,12 @@
     create index idx_facility_namespace 
        on facility (namespace);
 
+    create index idx_json_parameter_errand_id 
+       on json_parameter (errand_id);
+
+    create index idx_json_parameter_key 
+       on json_parameter (parameter_key);
+
     create index idx_message_municipality_id 
        on message (municipality_id);
 
@@ -526,6 +541,11 @@
        add constraint FK_facility_extra_parameters_facility_id 
        foreign key (facility_id) 
        references facility (id);
+
+    alter table if exists json_parameter
+       add constraint fk_json_parameter_errand_id
+       foreign key (errand_id)
+       references errand (id);
 
     alter table if exists message_attachment 
        add constraint fk_message_attachment_data_message_attachment 

@@ -1,13 +1,13 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
-import static java.time.OffsetDateTime.now;
-import static java.time.ZoneId.systemDefault;
-
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
 import org.springframework.stereotype.Component;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+
+import static java.time.OffsetDateTime.now;
+import static java.time.ZoneId.systemDefault;
 
 @Component
 public class StakeholderListener {

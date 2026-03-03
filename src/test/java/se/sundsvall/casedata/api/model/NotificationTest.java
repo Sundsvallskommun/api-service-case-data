@@ -1,5 +1,11 @@
 package se.sundsvall.casedata.api.model;
 
+import java.time.OffsetDateTime;
+import java.util.Random;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -9,12 +15,6 @@ import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
-
-import java.time.OffsetDateTime;
-import java.util.Random;
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 class NotificationTest {
 
@@ -52,7 +52,7 @@ class NotificationTest {
 		final var acknowledged = true;
 		final var globalAcknowledged = true;
 		final var errandId = 12345L;
-		final var errandNumber = "PRH-2022-000001";
+		final var errandNumber = "SGP-2022-000001";
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
 

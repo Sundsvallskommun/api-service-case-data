@@ -41,3 +41,7 @@ application-default.yml
 
 # OSX
 .DS_Store
+
+# Claude Code
+.claude/
+/CLAUDE.md

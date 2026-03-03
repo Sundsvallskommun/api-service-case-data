@@ -1,14 +1,5 @@
 package se.sundsvall.casedata.api;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.MediaType.ALL_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createStatus;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +8,15 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.service.StatusService;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createStatus;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")

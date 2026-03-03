@@ -1,24 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Optional.empty;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createErrand;
-import static se.sundsvall.casedata.TestUtil.createErrandEntity;
-import static se.sundsvall.casedata.TestUtil.createPatchErrand;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
-
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 import java.util.List;
 import java.util.Optional;
@@ -45,10 +26,31 @@ import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.ErrandExtraParameterMapper;
 import se.sundsvall.dept44.support.Identifier;
 import se.sundsvall.dept44.support.Identifier.Type;
+
+import static java.util.Optional.empty;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.TestUtil.createPatchErrand;
+import static se.sundsvall.casedata.TestUtil.createStatus;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 
 @ExtendWith(MockitoExtension.class)
 class ErrandServiceTest {
@@ -72,6 +74,9 @@ class ErrandServiceTest {
 
 	@Mock
 	private NotificationService notificationServiceMock;
+
+	@Mock
+	private EventlogIntegration eventlogIntegrationMock;
 
 	@Captor
 	private ArgumentCaptor<List<Long>> idListCapture;
@@ -220,7 +225,7 @@ class ErrandServiceTest {
 		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
 		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(executingUserId);
 		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(errand.getId());
-		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock, notificationServiceMock, applicationEventPublisherMock);
+		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock, notificationServiceMock, applicationEventPublisherMock, eventlogIntegrationMock);
 	}
 
 	@Test
@@ -304,6 +309,38 @@ class ErrandServiceTest {
 		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(executingUserId);
 		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(entity.getId());
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock);
+	}
+
+	@Test
+	void updateWithStatusChange() {
+
+		// Arrange
+		final var errand = createErrandEntity();
+		final var updatedErrand = createErrandEntity();
+		final var status = createStatus();
+		final var patch = createPatchErrand();
+		patch.setStatus(status);
+		final var executingUserId = "executingUserId";
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.saveAndFlush(errand)).thenReturn(updatedErrand);
+
+		Identifier.set(Identifier.create().withType(Type.AD_ACCOUNT).withValue(executingUserId));
+
+		// Act
+		errandService.update(errand.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
+
+		// Assert
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).saveAndFlush(errand);
+		verify(applicationEventPublisherMock).publishEvent(updatedErrand);
+		verify(eventlogIntegrationMock).sendEventlogEvent(MUNICIPALITY_ID, updatedErrand, status);
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(updatedErrand));
+
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(executingUserId);
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(updatedErrand.getId());
+		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock, notificationServiceMock, applicationEventPublisherMock, eventlogIntegrationMock);
 	}
 
 }

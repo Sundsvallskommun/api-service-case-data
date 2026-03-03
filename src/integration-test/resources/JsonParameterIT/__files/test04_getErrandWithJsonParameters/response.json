@@ -1,0 +1,54 @@
+{
+	"id": 1,
+	"version": 1,
+	"errandNumber": "PRH-2022-000029",
+	"municipalityId": "2281",
+	"namespace": "MY_NAMESPACE",
+	"externalCaseId": "123",
+	"caseType": "PARKING_PERMIT",
+	"priority": "MEDIUM",
+	"description": "",
+	"caseTitleAddition": "Nytt parkeringstillstånd",
+	"diaryNumber": "",
+	"phase": "Aktualisering",
+	"status": {
+		"statusType": "UNKNOWN",
+		"description": "Status description",
+		"created": "2022-12-02T15:15:01.563+01:00"
+	},
+	"statuses": [],
+	"processId": "896a44d8-724b-11ed-a840-0242ac110002",
+	"stakeholders": [],
+	"facilities": [],
+	"notifications": [],
+	"decisions": [],
+	"notes": [],
+	"labels": [],
+	"relatesTo": [],
+	"createdByClient": "WSO2_test",
+	"updatedByClient": "WSO_test",
+	"createdBy": "UNKNOWN",
+	"updatedBy": "UNKNOWN",
+	"suspension": {},
+	"extraParameters": [],
+	"jsonParameters": [
+		{
+			"key": "formData1",
+			"schemaId": "2281_person_1.0",
+			"value": {
+				"firstName": "Joe",
+				"lastName": "Doe"
+			}
+		},
+		{
+			"key": "formData2",
+			"schemaId": "2281_address_1.0",
+			"value": {
+				"street": "Main St",
+				"city": "Springfield"
+			}
+		}
+	],
+	"created": "2022-12-02T15:13:45.363+01:00",
+	"updated": "2022-12-02T15:15:01.563+01:00"
+}

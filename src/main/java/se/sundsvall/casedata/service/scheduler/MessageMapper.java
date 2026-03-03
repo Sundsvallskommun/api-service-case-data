@@ -1,10 +1,5 @@
 package se.sundsvall.casedata.service.scheduler;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.time.format.DateTimeFormatter.ofPattern;
-import static java.util.UUID.randomUUID;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-
 import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
@@ -28,6 +23,11 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.casedata.service.util.BlobBuilder;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.time.format.DateTimeFormatter.ofPattern;
+import static java.util.UUID.randomUUID;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 
 @Component
 public class MessageMapper {

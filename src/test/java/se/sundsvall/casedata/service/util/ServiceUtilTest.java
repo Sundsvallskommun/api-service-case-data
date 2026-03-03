@@ -1,11 +1,11 @@
 package se.sundsvall.casedata.service.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.dept44.support.Identifier;
 import se.sundsvall.dept44.support.Identifier.Type;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ServiceUtilTest {
 

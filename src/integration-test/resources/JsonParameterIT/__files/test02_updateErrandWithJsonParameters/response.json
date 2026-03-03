@@ -1,0 +1,63 @@
+{
+	"id": 2,
+	"version": 2,
+	"errandNumber": "PRH-2022-000030",
+	"municipalityId": "2281",
+	"namespace": "MY_NAMESPACE",
+	"externalCaseId": "",
+	"caseType": "PARKING_PERMIT",
+	"priority": "MEDIUM",
+	"description": "",
+	"caseTitleAddition": "Nytt parkeringstillstånd",
+	"diaryNumber": "",
+	"phase": "Aktualisering",
+	"status": {
+		"statusType": "UNKNOWN",
+		"description": "Status description",
+		"created": "2022-12-02T15:15:01.563+01:00"
+	},
+	"statuses": [],
+	"processId": "896a44d8-724b-11ed-a840-0242ac110002",
+	"stakeholders": [],
+	"facilities": [],
+	"notifications": [
+		{
+			"id": "${json-unit.any-string}",
+			"municipalityId": "2281",
+			"namespace": "MY_NAMESPACE",
+			"created": "${json-unit.any-string}",
+			"createdBy": "user123",
+			"createdByFullName": "Testsson Test",
+			"type": "UPDATE",
+			"subType": "ERRAND",
+			"description": "Ärende uppdaterat",
+			"expires": "${json-unit.any-string}",
+			"acknowledged": false,
+			"globalAcknowledged": false,
+			"errandId": 2,
+			"errandNumber": "PRH-2022-000030"
+		}
+	],
+	"decisions": [],
+	"notes": [],
+	"labels": [],
+	"relatesTo": [],
+	"createdByClient": "WSO2_test",
+	"updatedByClient": "WSO2_MS_caseManagement",
+	"createdBy": "UNKNOWN",
+	"updatedBy": "user123",
+	"suspension": {},
+	"extraParameters": [],
+	"jsonParameters": [
+		{
+			"key": "contactInfo",
+			"schemaId": "2281_contact_1.0",
+			"value": {
+				"email": "test@example.com",
+				"phone": "0701234567"
+			}
+		}
+	],
+	"created": "2022-12-02T15:13:45.363+01:00",
+	"updated": "${json-unit.any-string}"
+}

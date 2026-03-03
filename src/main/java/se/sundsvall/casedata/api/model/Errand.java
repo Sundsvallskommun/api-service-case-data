@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
-import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -16,9 +13,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.TimeZoneStorage;
 import se.sundsvall.casedata.api.model.validation.UniqueDecisionType;
+import se.sundsvall.casedata.api.model.validation.UniqueInvoiceRecipient;
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
+import se.sundsvall.casedata.api.model.validation.ValidJsonParameters;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 @Data
 @NoArgsConstructor
@@ -32,7 +34,7 @@ public class Errand {
 	@Schema(description = "The version of the errand", accessMode = READ_ONLY, examples = "1")
 	private int version;
 
-	@Schema(description = "Errand number", examples = "PRH-2022-000001", accessMode = READ_ONLY)
+	@Schema(description = "Errand number", examples = "SGP-2022-000001", accessMode = READ_ONLY)
 	private String errandNumber;
 
 	@Schema(description = "The municipality ID", examples = "2281", accessMode = READ_ONLY)
@@ -94,6 +96,7 @@ public class Errand {
 
 	@Schema(description = "The applicant and other stakeholders connected to the errand")
 	@Valid
+	@UniqueInvoiceRecipient
 	private List<Stakeholder> stakeholders;
 
 	@Schema(description = "The facilities connected to the errand")
@@ -103,9 +106,9 @@ public class Errand {
 	@Schema(description = "List of notifications connected to this errand", accessMode = READ_ONLY)
 	private List<Notification> notifications;
 
+	@Schema(description = "The decisions connected to the errand")
 	@Valid
 	@UniqueDecisionType
-	@Schema(description = "The decisions connected to the errand")
 	private List<Decision> decisions;
 
 	@Schema(description = "The notes connected to the errand")
@@ -118,8 +121,8 @@ public class Errand {
 	@Schema(description = "List of labels for the errand", examples = "[\"label1\",\"label2\"]")
 	private List<String> labels;
 
-	@Valid
 	@Schema(description = "Other errands related to the errand")
+	@Valid
 	private List<RelatedErrand> relatesTo;
 
 	@Schema(description = "The client who created the errand. WSO2-username", accessMode = READ_ONLY)
@@ -134,12 +137,17 @@ public class Errand {
 	@Schema(description = "The most recent user who updated the errand", accessMode = READ_ONLY)
 	private String updatedBy;
 
-	@Valid
 	@Schema(description = "Suspension information")
+	@Valid
 	private Suspension suspension;
 
 	@Schema(description = "Extra parameters for the errand")
 	private List<ExtraParameter> extraParameters;
+
+	@Schema(description = "JSON parameters for the errand")
+	@Valid
+	@ValidJsonParameters
+	private List<JsonParameter> jsonParameters;
 
 	@Schema(description = "Date and time when the errand was created", accessMode = READ_ONLY, examples = "2023-10-01T12:00:00Z")
 	@TimeZoneStorage(NORMALIZE)

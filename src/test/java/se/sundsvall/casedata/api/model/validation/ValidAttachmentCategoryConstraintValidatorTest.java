@@ -1,10 +1,5 @@
 package se.sundsvall.casedata.api.model.validation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +7,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.impl.ValidAttachmentCategoryConstraintValidator;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ValidAttachmentCategoryConstraintValidatorTest {
 

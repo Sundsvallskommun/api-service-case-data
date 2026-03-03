@@ -1,19 +1,10 @@
 package se.sundsvall.casedata.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.TestUtil.createErrandEntity;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,6 +23,15 @@ import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
 @ExtendWith(MockitoExtension.class)
 class ErrandExtraParameterServiceTest {
@@ -234,7 +234,7 @@ class ErrandExtraParameterServiceTest {
 			.build();
 
 		// Act
-		final var exception = Assert.assertThrows(ThrowableProblem.class, () -> errandExtraParameterService.findParameterEntityOrElseThrow(errand, "parameterId"));
+		final var exception = assertThrows(ThrowableProblem.class, () -> errandExtraParameterService.findParameterEntityOrElseThrow(errand, "parameterId"));
 
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);

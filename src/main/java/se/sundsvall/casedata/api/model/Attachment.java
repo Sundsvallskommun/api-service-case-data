@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
-import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -14,6 +11,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.TimeZoneStorage;
 import se.sundsvall.casedata.api.model.validation.ValidAttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
+
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 @Data
 @NoArgsConstructor

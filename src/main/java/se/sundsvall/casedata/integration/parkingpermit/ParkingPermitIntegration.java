@@ -1,8 +1,5 @@
 package se.sundsvall.casedata.integration.parkingpermit;
 
-import static org.zalando.problem.Status.SERVICE_UNAVAILABLE;
-import static se.sundsvall.casedata.service.util.Constants.PROCESS_ENGINE_PROBLEM_DETAIL;
-
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +7,9 @@ import org.springframework.stereotype.Component;
 import org.zalando.problem.AbstractThrowableProblem;
 import org.zalando.problem.Problem;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+
+import static org.zalando.problem.Status.SERVICE_UNAVAILABLE;
+import static se.sundsvall.casedata.service.util.Constants.PROCESS_ENGINE_PROBLEM_DETAIL;
 
 @Component
 public class ParkingPermitIntegration {

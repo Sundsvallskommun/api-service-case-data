@@ -1,17 +1,5 @@
 package se.sundsvall.casedata.integration.db;
 
-import static java.time.OffsetDateTime.now;
-import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
-import static java.time.temporal.ChronoUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-import static org.assertj.core.api.Assertions.within;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
-import static org.springframework.data.domain.Sort.Direction.ASC;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.integration.db.model.enums.NoteType.INTERNAL;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -30,6 +18,18 @@ import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
+import static java.time.OffsetDateTime.now;
+import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.within;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.integration.db.model.enums.NoteType.INTERNAL;
 
 /**
  * ErrandRepository tests.
@@ -68,7 +68,7 @@ class ErrandRepositoryTest {
 			.isNotNull()
 			.extracting(ErrandEntity::getId, ErrandEntity::getErrandNumber, ErrandEntity::getCaseTitleAddition, ErrandEntity::getCaseType)
 			.containsExactly(
-				tuple(3L, "PRH-2022-000029", "Nytt parkeringstillstånd", "PARKING_PERMIT"),
+				tuple(3L, "SGP-2022-000029", "Nytt parkeringstillstånd", "PARKING_PERMIT"),
 				tuple(2L, "ERRAND-NUMBER-2", "Nytt parkeringstillstånd", "PARKING_PERMIT"));
 	}
 
@@ -188,7 +188,7 @@ class ErrandRepositoryTest {
 		assertThat(result.getCaseTitleAddition()).isEqualTo(caseTitleAddition);
 		assertThat(result.getCaseType()).isEqualTo(caseType);
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
-		assertThat(result.getErrandNumber()).startsWith("PRH");
+		assertThat(result.getErrandNumber()).startsWith("SGP");
 		assertThat(result.getNotes())
 			.extracting(NoteEntity::getText, NoteEntity::getNoteType)
 			.containsExactly(tuple(noteText, noteType));
@@ -199,12 +199,12 @@ class ErrandRepositoryTest {
 	void update() {
 
 		// Arrange
-		final var errandNumber = "PRH-2022-000029";
+		final var errandNumber = "SGP-2022-000029";
 
 		final var entity = errandRepository.findByErrandNumber(errandNumber).orElseThrow();
 
 		assertThat(entity.getId()).isEqualTo(3L);
-		assertThat(entity.getErrandNumber()).isEqualTo("PRH-2022-000029");
+		assertThat(entity.getErrandNumber()).isEqualTo("SGP-2022-000029");
 		assertThat(entity.getCaseTitleAddition()).isEqualTo("Nytt parkeringstillstånd");
 		assertThat(entity.getCaseType()).isEqualTo("PARKING_PERMIT");
 		assertThat(entity.getPriority()).isEqualTo(Priority.HIGH);
@@ -222,7 +222,7 @@ class ErrandRepositoryTest {
 		// Assert
 		assertThat(updatedErrand).isNotNull();
 		assertThat(updatedErrand.getId()).isEqualTo(3L);
-		assertThat(updatedErrand.getErrandNumber()).isEqualTo("PRH-2022-000029");
+		assertThat(updatedErrand.getErrandNumber()).isEqualTo("SGP-2022-000029");
 		assertThat(updatedErrand.getCaseTitleAddition()).isEqualTo("Nytt parkeringstillstånd");
 		assertThat(updatedErrand.getCaseType()).isEqualTo("PARKING_PERMIT");
 		assertThat(updatedErrand.getPriority()).isEqualTo(Priority.LOW);

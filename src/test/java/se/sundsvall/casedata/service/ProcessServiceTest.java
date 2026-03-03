@@ -1,13 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.TestUtil.createErrandEntity;
-
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +21,14 @@ import se.sundsvall.casedata.integration.landandexploitation.configuration.LandA
 import se.sundsvall.casedata.integration.paratransit.ParatransitIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.configuration.ParkingPermitProperties;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessServiceTest {

@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.api.model;
 
-import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import java.time.OffsetDateTime;
@@ -15,6 +13,8 @@ import org.hibernate.annotations.TimeZoneStorage;
 import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
+
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 @Data
 @NoArgsConstructor

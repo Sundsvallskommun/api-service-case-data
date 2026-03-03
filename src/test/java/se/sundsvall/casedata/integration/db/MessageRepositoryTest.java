@@ -1,12 +1,5 @@
 package se.sundsvall.casedata.integration.db;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -20,6 +13,13 @@ import se.sundsvall.casedata.api.model.validation.enums.MessageType;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.integration.db.model.enums.Direction.INBOUND;
 
 /**
  * MessageAttachmentRepository tests.

@@ -1,15 +1,5 @@
 package se.sundsvall.casedata.integration.db.specification;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildMunicipalityIdFilter;
-import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildNamespaceFilter;
-import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.distinct;
-
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Path;
@@ -21,6 +11,16 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildMunicipalityIdFilter;
+import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildNamespaceFilter;
+import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.distinct;
 
 @ExtendWith(MockitoExtension.class)
 class ErrandEntitySpecificationTest {

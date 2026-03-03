@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.api.model.validation.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class UniqueDecisionTypeValidatorTest {

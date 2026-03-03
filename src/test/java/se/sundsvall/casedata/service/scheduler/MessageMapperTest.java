@@ -1,11 +1,5 @@
 package se.sundsvall.casedata.service.scheduler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.groups.Tuple.tuple;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-
 import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import java.io.IOException;
@@ -36,6 +30,12 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.dept44.common.validators.annotation.impl.ValidUuidConstraintValidator;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
 @SpringBootTest(classes = {
 	Application.class

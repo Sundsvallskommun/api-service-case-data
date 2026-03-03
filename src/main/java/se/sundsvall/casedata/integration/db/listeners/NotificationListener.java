@@ -1,13 +1,13 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
-import static java.time.OffsetDateTime.now;
-import static java.time.ZoneId.systemDefault;
-import static java.time.temporal.ChronoUnit.MILLIS;
-
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import org.springframework.stereotype.Component;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
+
+import static java.time.OffsetDateTime.now;
+import static java.time.ZoneId.systemDefault;
+import static java.time.temporal.ChronoUnit.MILLIS;
 
 @Component
 public class NotificationListener {

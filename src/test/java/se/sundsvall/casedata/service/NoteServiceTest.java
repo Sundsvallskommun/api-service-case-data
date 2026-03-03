@@ -1,22 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createErrand;
-import static se.sundsvall.casedata.TestUtil.createErrandEntity;
-import static se.sundsvall.casedata.TestUtil.createExtraParameters;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -40,6 +23,23 @@ import se.sundsvall.casedata.integration.db.NoteRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.TestUtil.createExtraParameters;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toErrandEntity;
 
 @ExtendWith(MockitoExtension.class)
 class NoteServiceTest {

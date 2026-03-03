@@ -1,16 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static java.lang.Boolean.TRUE;
-import static org.springframework.data.domain.Sort.unsorted;
-import static org.springframework.util.StringUtils.hasText;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotificationEntity;
-import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNotification;
-
 import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +16,17 @@ import se.sundsvall.casedata.integration.db.NotificationRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+
+import static java.lang.Boolean.TRUE;
+import static org.springframework.data.domain.Sort.unsorted;
+import static org.springframework.util.StringUtils.hasText;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.ServiceUtil.getAdUser;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotificationEntity;
+import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNotification;
 
 @Service
 @Transactional

@@ -1,18 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static org.zalando.problem.Status.BAD_REQUEST;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.DECISION;
-import static se.sundsvall.casedata.service.model.EventType.UPDATE;
-import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_CREATED;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_UPDATED;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecision;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecisionEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
-import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecision;
-import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
-
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -25,6 +12,19 @@ import se.sundsvall.casedata.integration.db.DecisionRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+
+import static org.zalando.problem.Status.BAD_REQUEST;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.DECISION;
+import static se.sundsvall.casedata.service.model.EventType.UPDATE;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_CREATED;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_UPDATED;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecision;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toDecisionEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
+import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchDecision;
+import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 
 @Service
 @Transactional

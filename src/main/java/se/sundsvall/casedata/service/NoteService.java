@@ -1,19 +1,5 @@
 package se.sundsvall.casedata.service;
 
-import static java.util.Collections.emptyList;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.NOTE;
-import static se.sundsvall.casedata.service.model.EventType.CREATE;
-import static se.sundsvall.casedata.service.model.EventType.UPDATE;
-import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
-import static se.sundsvall.casedata.service.util.Constants.NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_NOTE_CREATED;
-import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_NOTE_UPDATED;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteEntity;
-import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
-import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNote;
-
 import java.util.List;
 import java.util.Optional;
 import org.springframework.context.ApplicationEventPublisher;
@@ -27,6 +13,20 @@ import se.sundsvall.casedata.integration.db.NoteRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.NoteType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
+
+import static java.util.Collections.emptyList;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.NOTE;
+import static se.sundsvall.casedata.service.model.EventType.CREATE;
+import static se.sundsvall.casedata.service.model.EventType.UPDATE;
+import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.Constants.NOTE_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_NOTE_CREATED;
+import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_NOTE_UPDATED;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNote;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNoteEntity;
+import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
+import static se.sundsvall.casedata.service.util.mappers.PatchMapper.patchNote;
 
 @Service
 @Transactional

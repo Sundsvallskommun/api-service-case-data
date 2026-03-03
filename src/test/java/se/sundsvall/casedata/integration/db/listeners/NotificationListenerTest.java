@@ -1,10 +1,5 @@
 package se.sundsvall.casedata.integration.db.listeners;
 
-import static java.time.OffsetDateTime.now;
-import static java.time.temporal.ChronoUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.within;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.NotificationEntity;
+
+import static java.time.OffsetDateTime.now;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 @ExtendWith(MockitoExtension.class)
 class NotificationListenerTest {

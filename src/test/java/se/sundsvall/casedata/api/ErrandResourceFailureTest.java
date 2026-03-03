@@ -1,17 +1,6 @@
 package se.sundsvall.casedata.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.TestUtil.NAMESPACE;
-import static se.sundsvall.casedata.TestUtil.createErrand;
-import static se.sundsvall.casedata.TestUtil.createErrandEntity;
-import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,14 +12,35 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.zalando.problem.Status;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.Decision;
+import se.sundsvall.casedata.api.model.JsonParameter;
+import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.ExtraParameterEntity;
 import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
+import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
+import se.sundsvall.casedata.integration.jsonschema.JsonSchemaClient;
 import se.sundsvall.casedata.service.ErrandService;
 import se.sundsvall.casedata.service.MetadataService;
+import se.sundsvall.dept44.exception.ClientProblem;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createErrand;
+import static se.sundsvall.casedata.TestUtil.createErrandEntity;
+import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
+import static se.sundsvall.casedata.TestUtil.createStakeholder;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
@@ -40,6 +50,9 @@ class ErrandResourceFailureTest {
 
 	@MockitoBean
 	private ErrandService errandServiceMock;
+
+	@MockitoBean
+	private JsonSchemaClient jsonSchemaClientMock;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -58,7 +71,7 @@ class ErrandResourceFailureTest {
 	void postErrandWithExtraParameterTooLong() {
 		// Arrange
 		final var body = createErrandEntity();
-		final String longExtraParameter = String.join("", Collections.nCopies(9000, "a")); // This creates a string longer than 8192 characters
+		final var longExtraParameter = String.join("", Collections.nCopies(9000, "a")); // This creates a string longer than 8192 characters
 		body.setExtraParameters(List.of(ExtraParameterEntity.builder().withKey("longParameter").withValues(List.of(longExtraParameter)).build()));
 
 		// Act
@@ -187,4 +200,127 @@ class ErrandResourceFailureTest {
 		assertThat(result.getViolations().getFirst().getMessage()).isEqualTo("Errand can contain one decision of each DecisionType");
 	}
 
+	@Test
+	void postErrandWithMultipleInvoiceRecipients() {
+		// Arrange
+		final var body = createErrand();
+		body.setStakeholders(List.of(
+			createStakeholder(StakeholderType.PERSON, List.of(StakeholderRole.INVOICE_RECIPIENT.name())),
+			createStakeholder(StakeholderType.PERSON, List.of(StakeholderRole.INVOICE_RECIPIENT.name()))));
+
+		// Act
+		final var result = webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		verifyNoInteractions(errandServiceMock);
+		assertThat(result).isNotNull();
+		assertThat(result.getViolations()).hasSize(1);
+		assertThat(result.getViolations().getFirst().getField()).isEqualTo("stakeholders");
+		assertThat(result.getViolations().getFirst().getMessage()).isEqualTo("Errand can only contain one stakeholder with role INVOICE_RECIPIENT");
+	}
+
+	@Test
+	void postErrandWithJsonParameterFailingSchemaValidation() {
+		// Arrange
+		final var objectMapper = new ObjectMapper();
+		final var body = createErrand();
+		body.setJsonParameters(List.of(
+			JsonParameter.builder()
+				.withKey("formData")
+				.withSchemaId("2281_person_1.0")
+				.withValue(objectMapper.createObjectNode().put("invalid", "data"))
+				.build()));
+
+		doThrow(new ClientProblem(Status.BAD_REQUEST, "Required property 'firstName' is missing"))
+			.when(jsonSchemaClientMock).validateJson(eq(MUNICIPALITY_ID), eq("2281_person_1.0"), any());
+
+		// Act
+		final var result = webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		verifyNoInteractions(errandServiceMock);
+		assertThat(result).isNotNull();
+		assertThat(result.getViolations()).hasSize(1);
+		assertThat(result.getViolations().getFirst().getMessage()).isEqualTo("Required property 'firstName' is missing");
+	}
+
+	@Test
+	void postErrandWithDuplicateJsonParameterKeys() {
+		// Arrange
+		final var objectMapper = new ObjectMapper();
+		final var body = createErrand();
+		body.setJsonParameters(List.of(
+			JsonParameter.builder()
+				.withKey("formData")
+				.withSchemaId("schema1")
+				.withValue(objectMapper.createObjectNode().put("a", "1"))
+				.build(),
+			JsonParameter.builder()
+				.withKey("formData")
+				.withSchemaId("schema2")
+				.withValue(objectMapper.createObjectNode().put("b", "2"))
+				.build()));
+
+		// Act
+		final var result = webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		verifyNoInteractions(errandServiceMock);
+		assertThat(result).isNotNull();
+		assertThat(result.getViolations()).hasSize(2);
+		assertThat(result.getViolations()).allSatisfy(violation -> assertThat(violation.getMessage()).isEqualTo("duplicate key 'formData'"));
+	}
+
+	@Test
+	void postErrandWithJsonParameterMissingRequiredFields() {
+		// Arrange
+		final var objectMapper = new ObjectMapper();
+		final var body = createErrand();
+		body.setJsonParameters(List.of(
+			JsonParameter.builder()
+				.withValue(objectMapper.createObjectNode().put("a", "1"))
+				.build()));
+
+		// Act
+		final var result = webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		verifyNoInteractions(errandServiceMock);
+		assertThat(result).isNotNull();
+		assertThat(result.getViolations()).hasSizeGreaterThanOrEqualTo(2);
+		assertThat(result.getViolations().stream().map(v -> v.getField()).toList())
+			.contains("jsonParameters[0].key", "jsonParameters[0].schemaId");
+	}
 }

@@ -1,14 +1,5 @@
 package se.sundsvall.casedata.api;
 
-import static java.util.UUID.randomUUID;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.groups.Tuple.tuple;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.zalando.problem.Status.BAD_REQUEST;
-import static org.zalando.problem.Status.NOT_FOUND;
-
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -24,6 +15,15 @@ import org.zalando.problem.violations.Violation;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.service.ErrandExtraParameterService;
+
+import static java.util.UUID.randomUUID;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.zalando.problem.Status.BAD_REQUEST;
+import static org.zalando.problem.Status.NOT_FOUND;
 
 @DirtiesContext
 

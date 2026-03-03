@@ -1,5 +1,18 @@
 package se.sundsvall.casedata.api.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
+import se.sundsvall.casedata.integration.db.model.enums.Priority;
+
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
@@ -9,22 +22,13 @@ import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Random;
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.integration.db.model.enums.Channel;
-import se.sundsvall.casedata.integration.db.model.enums.Priority;
-
 class ErrandTest {
 
 	@BeforeAll
 	static void setup() {
 		registerValueGenerator(() -> OffsetDateTime.now().plusDays(new Random().nextInt()), OffsetDateTime.class);
 		registerValueGenerator(() -> LocalDate.now().plusDays(new Random().nextInt()), LocalDate.class);
+		registerValueGenerator(() -> new ObjectMapper().createObjectNode().put("random", UUID.randomUUID().toString()), JsonNode.class);
 	}
 
 	@Test
@@ -43,7 +47,7 @@ class ErrandTest {
 		// Arrange
 		final var id = 1L;
 		final var version = 1;
-		final var errandNumber = "PRH-2022-000001";
+		final var errandNumber = "SGP-2022-000001";
 		final var externalCaseId = "caa230c6-abb4-4592-ad9a-34e263c2787b";
 		final var caseType = "BUILDING_PERMIT";
 		final var channel = Channel.EMAIL;
@@ -67,6 +71,7 @@ class ErrandTest {
 		final var createdBy = "user1";
 		final var updatedBy = "user2";
 		final var extraParameters = List.of(ExtraParameter.builder().withKey("key1").withValues(List.of("value1")).build());
+		final var jsonParameters = List.of(JsonParameter.builder().withKey("formData1").withValue(new ObjectMapper().createObjectNode()).build());
 		final var created = OffsetDateTime.parse("2023-10-01T12:00:00Z");
 		final var updated = OffsetDateTime.parse("2023-10-02T12:00:00Z");
 		final var suspension = new Suspension();
@@ -105,6 +110,7 @@ class ErrandTest {
 			.withCreatedBy(createdBy)
 			.withUpdatedBy(updatedBy)
 			.withExtraParameters(extraParameters)
+			.withJsonParameters(jsonParameters)
 			.withCreated(created)
 			.withUpdated(updated)
 			.withSuspension(suspension)
@@ -120,7 +126,7 @@ class ErrandTest {
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertBasicFields(bean, id, errandNumber, externalCaseId, caseType, channel, priority, description, caseTitleAddition, diaryNumber, phase, suspension, municipalityId, namespace, status);
 		assertDates(bean, startDate, endDate, applicationReceived, created, updated);
-		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, extraParameters, relatesTo, labels, notifications);
+		assertCollections(bean, statuses, stakeholders, facilities, decisions, notes, extraParameters, jsonParameters, relatesTo, labels, notifications);
 		assertClients(bean, createdByClient, updatedByClient, createdBy, updatedBy);
 	}
 
@@ -152,13 +158,14 @@ class ErrandTest {
 	}
 
 	private void assertCollections(final Errand bean, final List<Status> statuses, final List<Stakeholder> stakeholders, final List<Facility> facilities, final List<Decision> decisions, final List<Note> notes, final List<ExtraParameter> extraParameters,
-		final List<RelatedErrand> relatesTo, final List<String> labels, final List<Notification> notifications) {
+		final List<JsonParameter> jsonParameters, final List<RelatedErrand> relatesTo, final List<String> labels, final List<Notification> notifications) {
 		assertThat(bean.getStatuses()).isEqualTo(statuses);
 		assertThat(bean.getStakeholders()).isEqualTo(stakeholders);
 		assertThat(bean.getFacilities()).isEqualTo(facilities);
 		assertThat(bean.getDecisions()).isEqualTo(decisions);
 		assertThat(bean.getNotes()).isEqualTo(notes);
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
+		assertThat(bean.getJsonParameters()).isEqualTo(jsonParameters);
 		assertThat(bean.getRelatesTo()).isEqualTo(relatesTo);
 		assertThat(bean.getLabels()).isEqualTo(labels);
 		assertThat(bean.getNotifications()).isEqualTo(notifications);

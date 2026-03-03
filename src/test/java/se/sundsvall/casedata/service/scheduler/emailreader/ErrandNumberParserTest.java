@@ -1,16 +1,16 @@
 package se.sundsvall.casedata.service.scheduler.emailreader;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.text.MessageFormat;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ErrandNumberParserTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = {
-		"PRH-2022-01", "PRH-2022-000001", "PH-2022-000001", "PRH-2022-011111111111", "##PRH-2022-011111111111", "asd"
+		"SGP-2022-01", "SGP-2022-000001", "PH-2022-000001", "SGP-2022-011111111111", "##SGP-2022-011111111111", "asd"
 	})
 	void parseSubject(final String errandNumber) {
 
@@ -23,7 +23,7 @@ class ErrandNumberParserTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = {
-		"PRH-2022-01", "PRH-2022-000001", "PH-2022-000001", "PRH-2022-011111111111", "##PRH-2022-011111111111", "asd"
+		"SGP-2022-01", "SGP-2022-000001", "PH-2022-000001", "SGP-2022-011111111111", "##SGP-2022-011111111111", "asd"
 	})
 	void parseSubjectWithNoSpaceAfterErrandNUmber(final String errandNumber) {
 
@@ -34,7 +34,7 @@ class ErrandNumberParserTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = {
-		"", "PRH-2022-01", "Ärende PRH-2022-000001 Ansökan"
+		"", "SGP-2022-01", "Ärende SGP-2022-000001 Ansökan"
 	})
 	void parseSubjectFaultyValues(final String subject) {
 

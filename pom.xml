@@ -4,13 +4,13 @@
 	<parent>
 		<groupId>se.sundsvall.dept44</groupId>
 		<artifactId>dept44-service-parent</artifactId>
-		<version>7.0.0</version>
+		<version>7.0.1</version>
 		<relativePath />
 		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>se.sundsvall</groupId>
 	<artifactId>api-service-case-data</artifactId>
-	<version>11.10</version>
+	<version>11.11</version>
 	<name>api-service-case-data</name>
 	<description>api-service-case-data</description>
 	<properties>
@@ -73,7 +73,7 @@
 		<!-- Test -->
 		<dependency>
 			<groupId>org.testcontainers</groupId>
-			<artifactId>mariadb</artifactId>
+			<artifactId>testcontainers-mariadb</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -341,6 +341,30 @@
 								<sourceFolder>${generated-sources-java-path}</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<modelPackage>generated.se.sundsvall.paratransit</modelPackage>
+								<openApiNullable>false</openApiNullable>
+								<generatePom>false</generatePom>
+								<useBeanValidation>false</useBeanValidation>
+								<useSwaggerAnnotations>false</useSwaggerAnnotations>
+								<interfaceOnly>true</interfaceOnly>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>eventlog</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/contract/eventlog-api.yaml</inputSpec>
+							<output>${generated-sources-path}</output>
+							<generatorName>spring</generatorName>
+							<generateApis>false</generateApis>
+							<generateSupportingFiles>false</generateSupportingFiles>
+							<configOptions>
+								<useSpringBoot3>true</useSpringBoot3>
+								<sourceFolder>${generated-sources-java-path}</sourceFolder>
+								<dateLibrary>java8</dateLibrary>
+								<modelPackage>generated.se.sundsvall.eventlog</modelPackage>
 								<openApiNullable>false</openApiNullable>
 								<generatePom>false</generatePom>
 								<useBeanValidation>false</useBeanValidation>
