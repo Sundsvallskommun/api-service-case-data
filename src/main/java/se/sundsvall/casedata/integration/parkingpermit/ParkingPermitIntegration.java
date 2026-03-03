@@ -1,12 +1,12 @@
 package se.sundsvall.casedata.integration.parkingpermit;
 
-import feign.FeignException;
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static se.sundsvall.casedata.service.util.Constants.PROCESS_ENGINE_PROBLEM_DETAIL;
@@ -27,7 +27,7 @@ public class ParkingPermitIntegration {
 	public StartProcessResponse startProcess(final ErrandEntity errand) {
 		try {
 			return parkingPermitClient.startProcess(errand.getMunicipalityId(), errand.getNamespace(), errand.getId());
-		} catch (final FeignException e) {
+		} catch (final ThrowableProblem e) {
 			LOGGER.warn(COULD_NOT_START_PROCESS.formatted(errand.getCaseType(), errand.getId(), e));
 			throw Problem.valueOf(SERVICE_UNAVAILABLE, PROCESS_ENGINE_PROBLEM_DETAIL);
 		}
@@ -36,7 +36,7 @@ public class ParkingPermitIntegration {
 	public void updateProcess(final ErrandEntity errand) {
 		try {
 			parkingPermitClient.updateProcess(errand.getMunicipalityId(), errand.getNamespace(), errand.getProcessId());
-		} catch (final FeignException e) {
+		} catch (final ThrowableProblem e) {
 			LOGGER.warn(COULD_NOT_UPDATE_PROCESS.formatted(errand.getCaseType(), errand.getProcessId(), e));
 			throw Problem.valueOf(SERVICE_UNAVAILABLE, PROCESS_ENGINE_PROBLEM_DETAIL);
 		}

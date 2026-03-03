@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.integration.parkingpermit;
 
-import feign.FeignException;
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
@@ -40,10 +40,7 @@ class ParkingPermitIntegrationTest {
 	@Test
 	void startProcessWhenThrowsTest() {
 		final var errand = createErrandEntity();
-		when(parkingPermitClient.startProcess(errand.getMunicipalityId(), errand.getNamespace(), errand.getId())).thenThrow(new FeignException(500, "test") {
-
-			private static final long serialVersionUID = 1L;
-		});
+		when(parkingPermitClient.startProcess(errand.getMunicipalityId(), errand.getNamespace(), errand.getId())).thenThrow(Problem.valueOf(INTERNAL_SERVER_ERROR, "test"));
 
 		assertThatThrownBy(() -> parkingPermitIntegration.startProcess(errand))
 			.isInstanceOf(Problem.class)
@@ -64,10 +61,7 @@ class ParkingPermitIntegrationTest {
 	@Test
 	void updateProcessWhenThrowsTest() {
 		final var errand = createErrandEntity();
-		when(parkingPermitClient.updateProcess(errand.getMunicipalityId(), errand.getNamespace(), errand.getProcessId())).thenThrow(new FeignException(500, "test") {
-
-			private static final long serialVersionUID = 1L;
-		});
+		when(parkingPermitClient.updateProcess(errand.getMunicipalityId(), errand.getNamespace(), errand.getProcessId())).thenThrow(Problem.valueOf(INTERNAL_SERVER_ERROR, "test"));
 
 		assertThatThrownBy(() -> parkingPermitIntegration.updateProcess(errand))
 			.isInstanceOf(Problem.class)

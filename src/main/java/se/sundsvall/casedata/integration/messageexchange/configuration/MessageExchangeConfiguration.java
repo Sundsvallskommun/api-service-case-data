@@ -19,7 +19,7 @@ public class MessageExchangeConfiguration {
 
 	@Bean
 	JsonFormWriter jsonFormWriter() {
-		// Needed for Feign to handle json objects sent as requestpart correctly
+		// Needed for Feign to handle JSON objects sent as requestPart correctly
 		return new JsonFormWriter();
 	}
 

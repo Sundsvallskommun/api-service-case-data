@@ -31,7 +31,7 @@
 	"stakeholders": [
 		{
 			"id": 2,
-			"version": 0,
+			"version": 1,
 			"municipalityId": "2281",
 			"namespace": "SBK_PARKING_PERMIT",
 			"type": "PERSON",
@@ -87,7 +87,7 @@
 		},
 		{
 			"id": 3,
-			"version": 0,
+			"version": 1,
 			"municipalityId": "2281",
 			"namespace": "SBK_PARKING_PERMIT",
 			"type": "ORGANIZATION",
@@ -145,7 +145,7 @@
 	"facilities": [
 		{
 			"id": 1,
-			"version": 0,
+			"version": 1,
 			"municipalityId": "2281",
 			"namespace": "SBK_PARKING_PERMIT",
 			"description": "Test facility",
@@ -165,7 +165,7 @@
 	"decisions": [
 		{
 			"id": 1,
-			"version": 0,
+			"version": 1,
 			"municipalityId": "2281",
 			"namespace": "SBK_PARKING_PERMIT",
 			"decisionType": "FINAL",
@@ -181,7 +181,7 @@
 			],
 			"decidedBy": {
 				"id": 1,
-				"version": 0,
+				"version": 1,
 				"municipalityId": "2281",
 				"namespace": "SBK_PARKING_PERMIT",
 				"type": "PERSON",
@@ -250,13 +250,13 @@
 	"notes": [
 		{
 			"id": 1,
-			"version": 0,
+			"version": 1,
 			"municipalityId": "2281",
 			"namespace": "SBK_PARKING_PERMIT",
 			"title": "Test note",
 			"text": "Test text",
 			"createdBy": "",
-			"updatedBy": "UNKNOWN",
+			"updatedBy": "",
 			"noteType": "PUBLIC",
 			"extraParameters": {
 				"test4": "test4",
@@ -268,13 +268,13 @@
 		},
 		{
 			"id": 2,
-			"version": 0,
+			"version": 1,
 			"municipalityId": "2281",
 			"namespace": "SBK_PARKING_PERMIT",
 			"title": "sRGrJyRKNn",
 			"text": "IHmVWzpAJl",
 			"createdBy": "",
-			"updatedBy": "UNKNOWN",
+			"updatedBy": "",
 			"noteType": "PUBLIC",
 			"extraParameters": {
 				"test4": "test4",
