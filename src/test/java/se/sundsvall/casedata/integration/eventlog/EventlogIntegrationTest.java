@@ -54,7 +54,7 @@ class EventlogIntegrationTest {
 		assertThat(capturedEvent.getMetadata().get(0).getKey()).isEqualTo("Status");
 		assertThat(capturedEvent.getMetadata().get(0).getValue()).isEqualTo(status.getStatusType());
 		assertThat(capturedEvent.getMetadata().get(1).getKey()).isEqualTo("ExternalCaseId");
-		assertThat(capturedEvent.getMetadata().get(1).getValue()).isEqualTo(String.valueOf(errand.getId()));
+		assertThat(capturedEvent.getMetadata().get(1).getValue()).isEqualTo(String.valueOf(errand.getExternalCaseId()));
 
 		verifyNoMoreInteractions(eventlogClientMock);
 	}

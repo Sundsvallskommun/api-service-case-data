@@ -31,12 +31,9 @@ public class EventlogIntegration {
 				.sourceType("Errand")
 				.metadata(List.of(
 					new Metadata().key("Status").value(status.getStatusType()),
-					new Metadata().key("ExternalCaseId").value(String.valueOf(errand.getId()))
+					new Metadata().key("ExternalCaseId").value(String.valueOf(errand.getExternalCaseId()))));
 
-				));
-
-			final var uuid = UUID.randomUUID().toString();
-			eventlogClient.createEvent(municipalityId, uuid, event);
+			eventlogClient.createEvent(municipalityId, UUID.randomUUID().toString(), event);
 		} catch (final Exception e) {
 			LOG.error("Failed to send event to eventlog for errand with id: {}", errand.getId(), e);
 		}
