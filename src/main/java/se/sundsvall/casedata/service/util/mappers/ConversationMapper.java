@@ -10,7 +10,6 @@ import java.util.Optional;
 import org.apache.commons.lang3.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
-import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.ConversationAttachment;
 import se.sundsvall.casedata.api.model.conversation.ConversationType;
@@ -20,10 +19,11 @@ import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.api.model.conversation.MessageType;
 import se.sundsvall.casedata.api.model.conversation.ReadBy;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+import se.sundsvall.dept44.problem.Problem;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 public final class ConversationMapper {
 

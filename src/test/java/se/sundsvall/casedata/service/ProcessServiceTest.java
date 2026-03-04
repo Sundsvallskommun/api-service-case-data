@@ -13,14 +13,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.landandexploitation.configuration.LandAndExploitationProperties;
 import se.sundsvall.casedata.integration.paratransit.ParatransitIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.ParkingPermitIntegration;
 import se.sundsvall.casedata.integration.parkingpermit.configuration.ParkingPermitProperties;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,6 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
 @ExtendWith(MockitoExtension.class)
@@ -191,7 +191,7 @@ class ProcessServiceTest {
 	@Test
 	void startProcessWhenParkingPermitThrowsException() {
 		// Arrange
-		final var thrownException = Problem.valueOf(Status.I_AM_A_TEAPOT, "Big and stout");
+		final var thrownException = Problem.valueOf(UNAVAILABLE_FOR_LEGAL_REASONS, "Just illegal");
 		final var errand = createErrandEntity();
 		errand.setNamespace("SBK_PARKING_PERMIT");
 		errand.setCaseType("PARKING_PERMIT");
@@ -212,7 +212,7 @@ class ProcessServiceTest {
 	@Test
 	void startProcessWhenParatransitThrowsException() {
 		// Arrange
-		final var thrownException = Problem.valueOf(Status.I_AM_A_TEAPOT, "Big and stout");
+		final var thrownException = Problem.valueOf(UNAVAILABLE_FOR_LEGAL_REASONS, "Just illegal");
 		final var errand = createErrandEntity();
 		errand.setNamespace("SBK_PARKING_PERMIT");
 		errand.setCaseType("PARATRANSIT");
@@ -233,7 +233,7 @@ class ProcessServiceTest {
 	@Test
 	void startProcessWhenMexThrowsException() {
 		// Arrange
-		final var thrownException = Problem.valueOf(Status.I_AM_A_TEAPOT, "Big and stout");
+		final var thrownException = Problem.valueOf(UNAVAILABLE_FOR_LEGAL_REASONS, "Just illegal");
 		final var errand = createErrandEntity();
 		errand.setNamespace("SBK_MEX");
 		errand.setCaseType("MEX_TYPE_1");

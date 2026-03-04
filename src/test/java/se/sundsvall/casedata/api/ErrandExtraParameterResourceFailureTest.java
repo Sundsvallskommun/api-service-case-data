@@ -5,28 +5,29 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.zalando.problem.Problem;
-import org.zalando.problem.violations.ConstraintViolationProblem;
-import org.zalando.problem.violations.Violation;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.ExtraParameter;
 import se.sundsvall.casedata.service.ErrandExtraParameterService;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
+import se.sundsvall.dept44.problem.violations.Violation;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.zalando.problem.Status.BAD_REQUEST;
-import static org.zalando.problem.Status.NOT_FOUND;
 
 @DirtiesContext
-
+@AutoConfigureWebTestClient
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ErrandExtraParameterResourceFailureTest {
@@ -63,7 +64,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
-			.extracting(Violation::getField, Violation::getMessage)
+			.extracting(Violation::field, Violation::message)
 			.containsExactlyInAnyOrder(tuple("updateErrandParameters.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
 
 		verifyNoInteractions(errandParameterServiceMock);
@@ -88,7 +89,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
-			.extracting(Violation::getField, Violation::getMessage)
+			.extracting(Violation::field, Violation::message)
 			.containsExactlyInAnyOrder(tuple("updateErrandParameters.municipalityId", "not a valid municipality ID"));
 
 		verifyNoInteractions(errandParameterServiceMock);
@@ -112,8 +113,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response).isNotNull();
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
-		assertThat(response.getDetail()).contains("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'");
-		assertThat(response.getDetail()).contains("For input string: \"invalid#\"");
+		assertThat(response.getDetail()).contains("Failed to convert 'errandId' with value: '#invalid#'");
 
 		verifyNoInteractions(errandParameterServiceMock);
 
@@ -135,7 +135,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
-			.extracting(Violation::getField, Violation::getMessage)
+			.extracting(Violation::field, Violation::message)
 			.containsExactlyInAnyOrder(tuple("readErrandParameter.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
 
 		verifyNoInteractions(errandParameterServiceMock);
@@ -156,7 +156,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
-			.extracting(Violation::getField, Violation::getMessage)
+			.extracting(Violation::field, Violation::message)
 			.containsExactlyInAnyOrder(tuple("readErrandParameter.municipalityId", "not a valid municipality ID"));
 
 		verifyNoInteractions(errandParameterServiceMock);
@@ -176,8 +176,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response).isNotNull();
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
-		assertThat(response.getDetail()).contains("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'");
-		assertThat(response.getDetail()).contains("For input string: \"invalid#\"");
+		assertThat(response.getDetail()).contains("Failed to convert 'errandId' with value: '#invalid#'");
 
 		verifyNoInteractions(errandParameterServiceMock);
 	}
@@ -216,7 +215,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
-			.extracting(Violation::getField, Violation::getMessage)
+			.extracting(Violation::field, Violation::message)
 			.containsExactly(tuple("findErrandParameters.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
 
 		verifyNoInteractions(errandParameterServiceMock);
@@ -237,7 +236,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
-			.extracting(Violation::getField, Violation::getMessage)
+			.extracting(Violation::field, Violation::message)
 			.containsExactlyInAnyOrder(tuple("findErrandParameters.municipalityId", "not a valid municipality ID"));
 
 		verifyNoInteractions(errandParameterServiceMock);
@@ -263,7 +262,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
-			.extracting(Violation::getField, Violation::getMessage)
+			.extracting(Violation::field, Violation::message)
 			.containsExactlyInAnyOrder(tuple("updateErrandParameter.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
 
 		verifyNoInteractions(errandParameterServiceMock);
@@ -289,7 +288,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
-			.extracting(Violation::getField, Violation::getMessage)
+			.extracting(Violation::field, Violation::message)
 			.containsExactlyInAnyOrder(tuple("updateErrandParameter.municipalityId", "not a valid municipality ID"));
 
 		verifyNoInteractions(errandParameterServiceMock);
@@ -314,8 +313,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response).isNotNull();
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
-		assertThat(response.getDetail()).contains("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'");
-		assertThat(response.getDetail()).contains("For input string: \"invalid#\"");
+		assertThat(response.getDetail()).contains("Failed to convert 'errandId' with value: '#invalid#'");
 
 		verifyNoInteractions(errandParameterServiceMock);
 	}
@@ -359,7 +357,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
-			.extracting(Violation::getField, Violation::getMessage)
+			.extracting(Violation::field, Violation::message)
 			.containsExactlyInAnyOrder(tuple("deleteErrandParameter.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
 
 		verifyNoInteractions(errandParameterServiceMock);
@@ -380,7 +378,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
-			.extracting(Violation::getField, Violation::getMessage)
+			.extracting(Violation::field, Violation::message)
 			.containsExactlyInAnyOrder(tuple("deleteErrandParameter.municipalityId", "not a valid municipality ID"));
 
 		verifyNoInteractions(errandParameterServiceMock);
@@ -400,8 +398,7 @@ class ErrandExtraParameterResourceFailureTest {
 		assertThat(response).isNotNull();
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
-		assertThat(response.getDetail()).contains("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'");
-		assertThat(response.getDetail()).contains("For input string: \"invalid#\"");
+		assertThat(response.getDetail()).contains("Failed to convert 'errandId' with value: '#invalid#'");
 
 		verifyNoInteractions(errandParameterServiceMock);
 	}

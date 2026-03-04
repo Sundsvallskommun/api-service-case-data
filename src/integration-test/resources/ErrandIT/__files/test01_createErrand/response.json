@@ -5,7 +5,7 @@
 		{
 			"municipalityId": "2281",
 			"noteType": "PUBLIC",
-			"updatedBy": "sRXYGByNYE",
+			"updatedBy": "user123",
 			"createdBy": "user123",
 			"created": "${json-unit.any-string}",
 			"namespace": "SBK_PARKING_PERMIT",
@@ -17,13 +17,13 @@
 			"id": 1,
 			"text": "Test text",
 			"title": "Test note",
-			"version": 0,
+			"version": 1,
 			"updated": "${json-unit.any-string}"
 		},
 		{
 			"municipalityId": "2281",
 			"noteType": "PUBLIC",
-			"updatedBy": "wZLYbWWWfF",
+			"updatedBy": "user123",
 			"createdBy": "user123",
 			"created": "${json-unit.any-string}",
 			"namespace": "SBK_PARKING_PERMIT",
@@ -35,13 +35,13 @@
 			"id": 2,
 			"text": "IHmVWzpAJl",
 			"title": "sRGrJyRKNn",
-			"version": 0,
+			"version": 1,
 			"updated": "${json-unit.any-string}"
 		},
 		{
 			"municipalityId": "2281",
 			"noteType": "PUBLIC",
-			"updatedBy": "UNKNOWN",
+			"updatedBy": "user123",
 			"createdBy": "user123",
 			"created": "${json-unit.any-string}",
 			"namespace": "SBK_PARKING_PERMIT",
@@ -53,7 +53,7 @@
 			"id": 3,
 			"text": "OSOCnSgryb",
 			"title": "EzhsmgQlrP",
-			"version": 0,
+			"version": 1,
 			"updated": "${json-unit.any-string}"
 		}
 	],
@@ -123,7 +123,7 @@
 				"test1": "test1"
 			},
 			"type": "PERSON",
-			"version": 0,
+			"version": 1,
 			"firstName": "Kalle",
 			"contactInformation": [
 				{
@@ -180,7 +180,7 @@
 				"test6": "test6"
 			},
 			"type": "ORGANIZATION",
-			"version": 0,
+			"version": 1,
 			"contactInformation": [
 				{
 					"contactType": "EMAIL",
@@ -258,7 +258,7 @@
 					"test1": "test1"
 				},
 				"type": "PERSON",
-				"version": 0,
+				"version": 1,
 				"firstName": "Kalle",
 				"contactInformation": [
 					{
@@ -280,7 +280,7 @@
 				"updated": "${json-unit.any-string}"
 			},
 			"validFrom": "2012-08-17T11:04:04.33+02:00",
-			"version": 0,
+			"version": 1,
 			"decidedAt": "2002-12-14T10:04:04.33+01:00",
 			"namespace": "SBK_PARKING_PERMIT",
 			"decisionType": "FINAL",
@@ -330,7 +330,7 @@
 			"extraParameters": {},
 			"id": 1,
 			"facilityCollectionName": "Test facility collection",
-			"version": 0,
+			"version": 1,
 			"updated": "${json-unit.any-string}"
 		}
 	],

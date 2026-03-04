@@ -9,13 +9,13 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.Setter;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
 import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.validation.ValidCaseType;
 import se.sundsvall.casedata.service.MetadataService;
+import se.sundsvall.dept44.problem.Problem;
 
 import static java.util.Collections.emptyList;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 import static org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
 
@@ -82,7 +82,7 @@ public class ValidCaseTypeConstraintValidator implements ConstraintValidator<Val
 			.filter(String.class::isInstance)
 			.map(String.class::cast)
 			.findAny()
-			.orElseThrow(() -> Problem.valueOf(Status.INTERNAL_SERVER_ERROR, String.format("Path variable '%s' is not readable from request", variableName)));
+			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, String.format("Path variable '%s' is not readable from request", variableName)));
 	}
 
 }

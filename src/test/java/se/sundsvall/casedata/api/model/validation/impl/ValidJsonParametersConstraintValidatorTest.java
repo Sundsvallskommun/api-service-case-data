@@ -1,7 +1,5 @@
 package se.sundsvall.casedata.api.model.validation.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.List;
 import java.util.Map;
@@ -19,15 +17,14 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.zalando.problem.Status;
 import se.sundsvall.casedata.api.model.JsonParameter;
 import se.sundsvall.casedata.integration.jsonschema.JsonSchemaClient;
-import se.sundsvall.dept44.exception.ClientProblem;
-import se.sundsvall.dept44.exception.ServerProblem;
+import se.sundsvall.dept44.problem.Problem;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -35,6 +32,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 import static org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
 
@@ -107,7 +106,7 @@ class ValidJsonParametersConstraintValidatorTest {
 			.withValue(jsonValue)
 			.build();
 
-		final var clientProblem = new ClientProblem(Status.BAD_REQUEST, problemDetail);
+		final var clientProblem = Problem.valueOf(BAD_REQUEST, problemDetail);
 
 		try (MockedStatic<RequestContextHolder> requestContextHolderMock = Mockito.mockStatic(RequestContextHolder.class)) {
 			requestContextHolderMock.when(RequestContextHolder::getRequestAttributes).thenReturn(requestAttributesMock);
@@ -132,18 +131,18 @@ class ValidJsonParametersConstraintValidatorTest {
 			.withValue(jsonValue)
 			.build();
 
-		final var serverProblem = new ServerProblem(Status.INTERNAL_SERVER_ERROR, "Internal server error");
+		final var serverProblem = Problem.valueOf(INTERNAL_SERVER_ERROR, "Internal server error");
 
 		try (MockedStatic<RequestContextHolder> requestContextHolderMock = Mockito.mockStatic(RequestContextHolder.class)) {
 			requestContextHolderMock.when(RequestContextHolder::getRequestAttributes).thenReturn(requestAttributesMock);
 			when(requestAttributesMock.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, SCOPE_REQUEST)).thenReturn(attributes);
 			doThrow(serverProblem).when(jsonSchemaClientMock).validateJson(MUNICIPALITY_ID, schemaId, jsonValue);
 
-			assertThatThrownBy(() -> validator.isValid(List.of(jsonParameter), constraintValidatorContextMock))
-				.isSameAs(serverProblem);
-
-			verify(jsonSchemaClientMock).validateJson(MUNICIPALITY_ID, schemaId, jsonValue);
-			verifyNoInteractions(constraintValidatorContextMock);
+			assertThat(validator.isValid(List.of(jsonParameter), constraintValidatorContextMock)).isFalse();
+			assertThat(validator.isValid(List.of(jsonParameter), constraintValidatorContextMock)).isFalse();
+			verify(jsonSchemaClientMock, times(2)).validateJson(MUNICIPALITY_ID, schemaId, jsonValue);
+			verify(constraintValidatorContextMock, times(2)).disableDefaultConstraintViolation();
+			verify(constraintValidatorContextMock, times(2)).buildConstraintViolationWithTemplate("Internal server error");
 		}
 	}
 
@@ -205,8 +204,8 @@ class ValidJsonParametersConstraintValidatorTest {
 			.withValue(jsonValue3)
 			.build();
 
-		final var clientProblem1 = new ClientProblem(Status.BAD_REQUEST, "error for schema1");
-		final var clientProblem3 = new ClientProblem(Status.BAD_REQUEST, "error for schema3");
+		final var clientProblem1 = Problem.valueOf(BAD_REQUEST, "error for schema1");
+		final var clientProblem3 = Problem.valueOf(BAD_REQUEST, "error for schema3");
 
 		try (MockedStatic<RequestContextHolder> requestContextHolderMock = Mockito.mockStatic(RequestContextHolder.class)) {
 			requestContextHolderMock.when(RequestContextHolder::getRequestAttributes).thenReturn(requestAttributesMock);

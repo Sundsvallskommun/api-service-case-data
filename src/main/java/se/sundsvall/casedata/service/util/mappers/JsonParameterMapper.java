@@ -1,13 +1,12 @@
 package se.sundsvall.casedata.service.util.mappers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import se.sundsvall.casedata.api.model.JsonParameter;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.JsonParameterEntity;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -54,21 +53,13 @@ public final class JsonParameterMapper {
 		if (jsonNode == null) {
 			return null;
 		}
-		try {
-			return OBJECT_MAPPER.writeValueAsString(jsonNode);
-		} catch (final JsonProcessingException e) {
-			throw new IllegalStateException("Failed to convert JsonNode to String", e);
-		}
+		return OBJECT_MAPPER.writeValueAsString(jsonNode);
 	}
 
 	private static JsonNode toJsonNode(final String value) {
 		if (value == null) {
 			return null;
 		}
-		try {
-			return OBJECT_MAPPER.readTree(value);
-		} catch (final JsonProcessingException e) {
-			throw new IllegalStateException("Failed to convert String to JsonNode", e);
-		}
+		return OBJECT_MAPPER.readTree(value);
 	}
 }

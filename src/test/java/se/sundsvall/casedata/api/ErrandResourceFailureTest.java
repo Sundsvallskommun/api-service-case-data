@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,11 +8,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.zalando.problem.Status;
-import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.Decision;
@@ -26,6 +24,8 @@ import se.sundsvall.casedata.integration.jsonschema.JsonSchemaClient;
 import se.sundsvall.casedata.service.ErrandService;
 import se.sundsvall.casedata.service.MetadataService;
 import se.sundsvall.dept44.exception.ClientProblem;
+import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,6 +34,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
@@ -42,6 +43,7 @@ import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createFacilityEntity;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ErrandResourceFailureTest {
@@ -196,8 +198,8 @@ class ErrandResourceFailureTest {
 		verifyNoInteractions(errandServiceMock);
 		assertThat(result).isNotNull();
 		assertThat(result.getViolations()).hasSize(1);
-		assertThat(result.getViolations().getFirst().getField()).isEqualTo("decisions");
-		assertThat(result.getViolations().getFirst().getMessage()).isEqualTo("Errand can contain one decision of each DecisionType");
+		assertThat(result.getViolations().getFirst().field()).isEqualTo("decisions");
+		assertThat(result.getViolations().getFirst().message()).isEqualTo("Errand can contain one decision of each DecisionType");
 	}
 
 	@Test
@@ -223,8 +225,8 @@ class ErrandResourceFailureTest {
 		verifyNoInteractions(errandServiceMock);
 		assertThat(result).isNotNull();
 		assertThat(result.getViolations()).hasSize(1);
-		assertThat(result.getViolations().getFirst().getField()).isEqualTo("stakeholders");
-		assertThat(result.getViolations().getFirst().getMessage()).isEqualTo("Errand can only contain one stakeholder with role INVOICE_RECIPIENT");
+		assertThat(result.getViolations().getFirst().field()).isEqualTo("stakeholders");
+		assertThat(result.getViolations().getFirst().message()).isEqualTo("Errand can only contain one stakeholder with role INVOICE_RECIPIENT");
 	}
 
 	@Test
@@ -239,7 +241,7 @@ class ErrandResourceFailureTest {
 				.withValue(objectMapper.createObjectNode().put("invalid", "data"))
 				.build()));
 
-		doThrow(new ClientProblem(Status.BAD_REQUEST, "Required property 'firstName' is missing"))
+		doThrow(new ClientProblem(BAD_REQUEST, "Required property 'firstName' is missing"))
 			.when(jsonSchemaClientMock).validateJson(eq(MUNICIPALITY_ID), eq("2281_person_1.0"), any());
 
 		// Act
@@ -257,7 +259,7 @@ class ErrandResourceFailureTest {
 		verifyNoInteractions(errandServiceMock);
 		assertThat(result).isNotNull();
 		assertThat(result.getViolations()).hasSize(1);
-		assertThat(result.getViolations().getFirst().getMessage()).isEqualTo("Required property 'firstName' is missing");
+		assertThat(result.getViolations().getFirst().message()).isEqualTo("Required property 'firstName' is missing");
 	}
 
 	@Test
@@ -292,7 +294,7 @@ class ErrandResourceFailureTest {
 		verifyNoInteractions(errandServiceMock);
 		assertThat(result).isNotNull();
 		assertThat(result.getViolations()).hasSize(2);
-		assertThat(result.getViolations()).allSatisfy(violation -> assertThat(violation.getMessage()).isEqualTo("duplicate key 'formData'"));
+		assertThat(result.getViolations()).allSatisfy(violation -> assertThat(violation.message()).isEqualTo("duplicate key 'formData'"));
 	}
 
 	@Test
@@ -320,7 +322,7 @@ class ErrandResourceFailureTest {
 		verifyNoInteractions(errandServiceMock);
 		assertThat(result).isNotNull();
 		assertThat(result.getViolations()).hasSizeGreaterThanOrEqualTo(2);
-		assertThat(result.getViolations().stream().map(v -> v.getField()).toList())
+		assertThat(result.getViolations().stream().map(v -> v.field()).toList())
 			.contains("jsonParameters[0].key", "jsonParameters[0].schemaId");
 	}
 }

@@ -3,12 +3,13 @@ package se.sundsvall.casedata.api;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.zalando.problem.Problem;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.service.MessageService;
+import se.sundsvall.dept44.problem.Problem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -19,6 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class MessageResourceFailureTest {
@@ -47,9 +49,7 @@ class MessageResourceFailureTest {
 		// Assert
 		verifyNoInteractions(messageServiceMock);
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
-		assertThat(response.getDetail()).isEqualTo(
-			"""
-				Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> se.sundsvall.casedata.api.MessageResource.createMessage(java.lang.String,java.lang.String,java.lang.Long,se.sundsvall.casedata.api.model.MessageRequest)""");
+		assertThat(response.getDetail()).isEqualTo("Failed to read request");
 	}
 
 }

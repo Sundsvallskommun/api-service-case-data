@@ -199,7 +199,7 @@ resilience4j:
         ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
     configs:
       default:
-        ignore-exceptions: org.springframework.data.mapping.PropertyReferenceException
+        ignore-exceptions: org.springframework.data.core.PropertyReferenceException
 server:
   tomcat:
     relaxed-query-chars: '[,]'

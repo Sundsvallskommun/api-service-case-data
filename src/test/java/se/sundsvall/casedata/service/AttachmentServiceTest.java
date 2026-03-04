@@ -9,14 +9,13 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +30,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
@@ -83,7 +83,7 @@ class AttachmentServiceTest {
 		// Act & Assert
 		assertThatThrownBy(() -> attachmentService.findAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND);
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND);
 		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
 	}
 
@@ -179,7 +179,7 @@ class AttachmentServiceTest {
 
 		// Assert
 		assertThat(result)
-			.hasFieldOrPropertyWithValue("status", Status.NOT_FOUND)
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Attachment with id:'1' not found on errand with id:'2' in namespace:'MY_NAMESPACE' for municipality with id:'2281'");
 
 		verify(attachmentRepositoryMock).findWithPessimisticLockingByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);

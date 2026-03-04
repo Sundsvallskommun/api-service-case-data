@@ -7,18 +7,19 @@ import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.zalando.problem.Problem;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.casedata.service.model.MessagingSettings;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toFilterString;
 import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 @Component
 public class MessagingSettingsIntegration {
+
 	private static final String KEY_CONTACT_INFORMATION_EMAIL = "contact_information_email";
 	private static final String KEY_CONTACT_INFORMATION_EMAIL_NAME = "contact_information_email_name";
 	private static final String KEY_CONTACT_INFORMATION_URL = "contact_information_url";

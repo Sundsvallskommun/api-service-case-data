@@ -5,13 +5,12 @@ import java.util.Optional;
 import org.hibernate.query.sqm.PathElementException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
 import se.sundsvall.casedata.api.model.Errand;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchErrand;
@@ -20,11 +19,12 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
+import se.sundsvall.dept44.problem.Problem;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
-import static org.zalando.problem.Status.BAD_REQUEST;
-import static org.zalando.problem.Status.NOT_FOUND;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.SYSTEM;
 import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildMunicipalityIdFilter;
@@ -74,11 +74,11 @@ public class ErrandService {
 
 	public Page<Errand> findAll(final Specification<ErrandEntity> specification, final String municipalityId, final String namespace, final Pageable pageable) {
 		try {
-			return errandRepository.findAll(Specification
-				.allOf(buildMunicipalityIdFilter(municipalityId)
-					.and(buildNamespaceFilter(namespace))
-					.and(specification)
-					.and(distinct())), pageable)
+			final var spec = buildMunicipalityIdFilter(municipalityId)
+				.and(buildNamespaceFilter(namespace))
+				.and(distinct());
+
+			return errandRepository.findAll(specification != null ? spec.and(specification) : spec, pageable)
 				.map(EntityMapper::toErrand);
 		} catch (final PropertyReferenceException | PathElementException | InvalidDataAccessApiUsageException e) {
 			throw Problem.valueOf(BAD_REQUEST, "Invalid filter parameter: " + e.getMessage());
@@ -151,10 +151,10 @@ public class ErrandService {
 
 	public Page<Errand> findAllWithoutNamespace(final Specification<ErrandEntity> specification, final String municipalityId, final Pageable pageable) {
 		try {
-			return errandRepository.findAll(Specification
-				.allOf(buildMunicipalityIdFilter(municipalityId)
-					.and(specification)
-					.and(distinct())), pageable)
+			final var spec = buildMunicipalityIdFilter(municipalityId)
+				.and(distinct());
+
+			return errandRepository.findAll(specification != null ? spec.and(specification) : spec, pageable)
 				.map(EntityMapper::toErrand);
 		} catch (final PropertyReferenceException | PathElementException | InvalidDataAccessApiUsageException e) {
 			throw Problem.valueOf(BAD_REQUEST, "Invalid filter parameter: " + e.getMessage());
