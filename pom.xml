@@ -116,7 +116,8 @@
 							<generateApis>false</generateApis>
 							<output>${generated-sources-path}</output>
 							<configOptions>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJackson3>true</useJackson3>
 								<sourceFolder>${generated-sources-java-path}</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<modelPackage>generated.se.sundsvall.mex</modelPackage>
@@ -141,7 +142,8 @@
 							<generateApis>false</generateApis>
 							<output>${generated-sources-path}</output>
 							<configOptions>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJackson3>true</useJackson3>
 								<sourceFolder>${generated-sources-java-path}</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<modelPackage>generated.se.sundsvall.parkingpermit</modelPackage>
@@ -165,7 +167,8 @@
 							<generateApis>false</generateApis>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<configOptions>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJackson3>true</useJackson3>
 								<sourceFolder>${generated-sources-java-path}</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<apiPackage>generated</apiPackage>
@@ -190,7 +193,8 @@
 							<generateApis>false</generateApis>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<configOptions>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJackson3>true</useJackson3>
 								<sourceFolder>${generated-sources-java-path}</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<apiPackage>generated</apiPackage>
@@ -215,7 +219,8 @@
 							<generateApis>false</generateApis>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<configOptions>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJackson3>true</useJackson3>
 								<sourceFolder>${generated-sources-java-path}</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<apiPackage>generated</apiPackage>
@@ -240,7 +245,8 @@
 							<generateApis>false</generateApis>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<configOptions>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJackson3>true</useJackson3>
 								<sourceFolder>${generated-sources-java-path}</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<apiPackage>generated</apiPackage>
@@ -265,7 +271,8 @@
 							<generateApis>false</generateApis>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<configOptions>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJackson3>true</useJackson3>
 								<sourceFolder>models</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<apiPackage>generated</apiPackage>
@@ -290,7 +297,8 @@
 							<generateApis>false</generateApis>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<configOptions>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJackson3>true</useJackson3>
 								<sourceFolder>models</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<apiPackage>generated</apiPackage>
@@ -315,7 +323,8 @@
 							<generateApis>false</generateApis>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<configOptions>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJackson3>true</useJackson3>
 								<sourceFolder>${generated-sources-java-path}</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<apiPackage>generated</apiPackage>
@@ -341,7 +350,8 @@
 							<output>${generated-sources-path}</output>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<configOptions>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJackson3>true</useJackson3>
 								<sourceFolder>${generated-sources-java-path}</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<modelPackage>generated.se.sundsvall.paratransit</modelPackage>
@@ -365,7 +375,8 @@
 							<generateApis>false</generateApis>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<configOptions>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJackson3>true</useJackson3>
 								<sourceFolder>${generated-sources-java-path}</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<modelPackage>generated.se.sundsvall.eventlog</modelPackage>
