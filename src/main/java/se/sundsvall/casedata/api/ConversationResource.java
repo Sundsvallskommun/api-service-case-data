@@ -8,11 +8,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +40,7 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
@@ -60,9 +67,11 @@ import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_VALIDATION_
 class ConversationResource {
 
 	private final ConversationService conversationService;
+	private final ObjectMapper objectMapper;
 
-	ConversationResource(final ConversationService conversationService) {
+	ConversationResource(final ConversationService conversationService, final ObjectMapper objectMapper) {
 		this.conversationService = conversationService;
+		this.objectMapper = objectMapper;
 	}
 
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
@@ -135,10 +144,12 @@ class ConversationResource {
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "errandId", description = "Errand ID", example = "1") @PathVariable("errandId") final Long errandId,
 		@Parameter(name = "conversationId", description = "Conversation ID", example = "1aefbbb8-de82-414b-b5d7-ba7c5bbe4506") @ValidUuid @PathVariable("conversationId") final String conversationId,
-		@RequestPart("message") @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Message to be posted") @Valid final Message messageRequest,
+		@RequestPart("message") @Schema(description = "Message to be posted", implementation = Message.class) final String messageRequest,
 		@RequestPart(value = "attachments", required = false) final List<MultipartFile> attachments) {
 
-		conversationService.createMessage(municipalityId, namespace, errandId, conversationId, messageRequest, attachments);
+		final var message = objectMapper.readValue(messageRequest, Message.class);
+		validate(message);
+		conversationService.createMessage(municipalityId, namespace, errandId, conversationId, message, attachments);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
@@ -175,6 +186,17 @@ class ConversationResource {
 
 		conversationService.getConversationMessageAttachment(municipalityId, namespace, errandId, conversationId, messageId, attachmentId, response);
 
+	}
+
+	private <T> void validate(final T object) {
+		final var validator = jakarta.validation.Validation.buildDefaultValidatorFactory().getValidator();
+		final Set<ConstraintViolation<T>> violations = validator.validate(object);
+		if (!violations.isEmpty()) {
+			final var sorted = violations.stream()
+				.sorted(Comparator.comparing(v -> v.getPropertyPath().toString()))
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+			throw new ConstraintViolationException(sorted);
+		}
 	}
 
 }

@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "11.11"
 servers:
-  - url: http://localhost:57854
+  - url: http://localhost:55452
     description: Generated server url
 tags:
   - name: Notifications
@@ -2008,7 +2008,6 @@ paths:
             type: string
           example: 1aefbbb8-de82-414b-b5d7-ba7c5bbe4506
       requestBody:
-        description: Message to be posted
         content:
           multipart/form-data:
             schema:
@@ -2016,6 +2015,7 @@ paths:
               properties:
                 message:
                   $ref: "#/components/schemas/Message"
+                  description: Message to be posted
                 attachments:
                   type: array
                   items:
@@ -4720,10 +4720,10 @@ components:
             $ref: "#/components/schemas/Violation"
         title:
           type: string
-        causeAsProblem:
-          $ref: "#/components/schemas/ThrowableProblem"
         detail:
           type: string
+        causeAsProblem:
+          $ref: "#/components/schemas/ThrowableProblem"
         instance:
           type: string
           format: uri
@@ -5309,14 +5309,6 @@ components:
       properties:
         number:
           type: boolean
-        container:
-          type: boolean
-        floatingPointNumber:
-          type: boolean
-        valueNode:
-          type: boolean
-        missingNode:
-          type: boolean
         nodeType:
           type: string
           enum:
@@ -5332,6 +5324,10 @@ components:
         string:
           type: boolean
         integralNumber:
+          type: boolean
+        valueNode:
+          type: boolean
+        missingNode:
           type: boolean
         pojo:
           type: boolean
@@ -5353,6 +5349,10 @@ components:
         boolean:
           type: boolean
         binary:
+          type: boolean
+        floatingPointNumber:
+          type: boolean
+        container:
           type: boolean
         empty:
           type: boolean
@@ -5893,6 +5893,21 @@ components:
           type: array
           items:
             type: string
+    ReadBy:
+      type: object
+      description: Readby model
+      properties:
+        identifier:
+          $ref: "#/components/schemas/Identifier"
+          description: The identifier of the person who read the message.
+          examples:
+            - joe01doe
+        readAt:
+          type: string
+          format: date-time
+          description: The timestamp when the message was read.
+          examples:
+            - 2023-01-01T12:00:00+01:00
     ConversationAttachment:
       type: object
       description: ConversationAttachment model
@@ -5977,21 +5992,6 @@ components:
           readOnly: true
       required:
         - content
-    ReadBy:
-      type: object
-      description: Readby model
-      properties:
-        identifier:
-          $ref: "#/components/schemas/Identifier"
-          description: The identifier of the person who read the message.
-          examples:
-            - joe01doe
-        readAt:
-          type: string
-          format: date-time
-          description: The timestamp when the message was read.
-          examples:
-            - 2023-01-01T12:00:00+01:00
     PatchNotification:
       type: object
       properties:
@@ -6210,17 +6210,17 @@ components:
         totalElements:
           type: integer
           format: int64
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         numberOfElements:
           type: integer
           format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         first:
           type: boolean
         last:
           type: boolean
+        sort:
+          $ref: "#/components/schemas/SortObject"
         size:
           type: integer
           format: int32
@@ -6236,6 +6236,8 @@ components:
     PageableObject:
       type: object
       properties:
+        unpaged:
+          type: boolean
         paged:
           type: boolean
         pageNumber:
@@ -6244,8 +6246,6 @@ components:
         pageSize:
           type: integer
           format: int32
-        unpaged:
-          type: boolean
         sort:
           $ref: "#/components/schemas/SortObject"
         offset:
@@ -6254,9 +6254,9 @@ components:
     SortObject:
       type: object
       properties:
-        sorted:
-          type: boolean
         unsorted:
+          type: boolean
+        sorted:
           type: boolean
         empty:
           type: boolean
@@ -6496,17 +6496,17 @@ components:
         totalElements:
           type: integer
           format: int64
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         numberOfElements:
           type: integer
           format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         first:
           type: boolean
         last:
           type: boolean
+        sort:
+          $ref: "#/components/schemas/SortObject"
         size:
           type: integer
           format: int32
