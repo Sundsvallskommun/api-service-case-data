@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.scheduler;
 
 import generated.se.sundsvall.emailreader.Email;
+import generated.se.sundsvall.emailreader.EmailAttachment;
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -19,6 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.EmailHeader;
+import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageRequest.AttachmentRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.api.model.MessageResponse.AttachmentResponse;
@@ -27,6 +30,7 @@ import se.sundsvall.casedata.integration.db.model.EmailHeaderEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.dept44.common.validators.annotation.impl.ValidUuidConstraintValidator;
@@ -69,7 +73,7 @@ class MessageMapperTest {
 	@ValueSource(booleans = {
 		true, false
 	})
-	void testToMessageResponses(boolean includeViewed) {
+	void testToMessageResponses(final boolean includeViewed) {
 		// Arrange
 		final var bean = createMessage();
 		final var list = List.of(bean);
@@ -415,6 +419,93 @@ class MessageMapperTest {
 
 		// Assert
 		assertThat(result).isEqualTo(expectedContentString);
+	}
+
+	@Test
+	void testToMessageEntityFromMessageRequest() {
+		// Arrange
+		final var errandId = 123L;
+		final var content = new String(Base64.getEncoder().encode("content".getBytes()), StandardCharsets.UTF_8);
+		final var request = MessageRequest.builder()
+			.withMessageId("messageId")
+			.withExternalCaseId("externalCaseId")
+			.withFamilyId("familyId")
+			.withMessage("message")
+			.withHtmlMessage("htmlMessage")
+			.withSubject("subject")
+			.withDirection(Direction.OUTBOUND)
+			.withSent("sent")
+			.withFirstName("firstName")
+			.withLastName("lastName")
+			.withRecipients(List.of("recipient"))
+			.withMessageType(MessageType.EMAIL.name())
+			.withMobileNumber("mobileNumber")
+			.withEmail("email")
+			.withUserId("userId")
+			.withClassification(Classification.INFORMATION)
+			.withUsername("username")
+			.withInternal(true)
+			.withEmailHeaders(List.of(EmailHeader.builder()
+				.withHeader(Header.MESSAGE_ID)
+				.withValues(List.of("<Test@Test>"))
+				.build()))
+			.withAttachments(List.of(AttachmentRequest.builder()
+				.withContent(content)
+				.withContentType("contentType")
+				.withName("name")
+				.build()))
+			.build();
+
+		// Act
+		final var result = messageMapper.toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
+		assertThat(result).isNotNull();
+		assertThat(result.getMessageId()).isEqualTo("messageId");
+		assertThat(result.getErrandId()).isEqualTo(errandId);
+		assertThat(result.getDirection()).isEqualTo(Direction.OUTBOUND);
+		assertThat(result.getSubject()).isEqualTo("subject");
+		assertThat(result.getTextmessage()).isEqualTo("message");
+		assertThat(result.getHtmlMessage()).isEqualTo("htmlMessage");
+		assertThat(result.getEmail()).isEqualTo("email");
+		assertThat(result.getHeaders()).hasSize(1);
+		assertThat(result.getAttachments()).hasSize(1);
+	}
+
+	@Test
+	void testToAttachmentEntityFromEmailAttachment() {
+		// Arrange
+		final var attachment = new EmailAttachment()
+			.id(1L)
+			.name("name")
+			.contentType("contentType");
+
+		// Act
+		final var result = messageMapper.toAttachmentEntity(attachment, "messageId", MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
+		assertThat(result.getAttachmentId()).isEqualTo("1");
+		assertThat(result.getName()).isEqualTo("name");
+		assertThat(result.getContentType()).isEqualTo("contentType");
+		assertThat(result.getMessageID()).isEqualTo("messageId");
+	}
+
+	@Test
+	void testToContentStringFromBlob() {
+		// Arrange
+		final var content = "testContent".getBytes();
+		final var blob = new MariaDbBlob(content);
+
+		// Act
+		final var result = messageMapper.toContentString(blob);
+
+		// Assert
+		assertThat(result).isEqualTo(Base64.getEncoder().encodeToString(content));
+	}
+
+	@Test
+	void testToMessageFromNull() {
+		assertThat(messageMapper.toMessage(null, MUNICIPALITY_ID, NAMESPACE, 123L)).isNull();
 	}
 
 	@Test

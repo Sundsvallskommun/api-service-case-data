@@ -186,7 +186,7 @@ class ConversationResourceTest {
 		final var multipartBodyBuilder = new MultipartBodyBuilder();
 		multipartBodyBuilder.part("attachments", "file-content").filename("test1.txt").contentType(TEXT_PLAIN);
 		multipartBodyBuilder.part("attachments", "file-content").filename("tesst2.txt").contentType(TEXT_PLAIN);
-		multipartBodyBuilder.part("message", messageRequest);
+		multipartBodyBuilder.part("message", "{\"content\":\"content\"}");
 
 		// Act
 		final var response = webTestClient.post()
