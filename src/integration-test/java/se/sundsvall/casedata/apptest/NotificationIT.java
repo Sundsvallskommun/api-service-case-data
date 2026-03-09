@@ -1,5 +1,13 @@
 package se.sundsvall.casedata.apptest;
 
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.context.jdbc.Sql;
+import se.sundsvall.casedata.Application;
+import se.sundsvall.dept44.support.Identifier;
+import se.sundsvall.dept44.test.AbstractAppTest;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -18,14 +26,6 @@ import static se.sundsvall.casedata.apptest.util.TestConstants.RESPONSE_FILE;
 import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
 import static se.sundsvall.dept44.support.Identifier.Type.AD_ACCOUNT;
 
-import java.util.Map;
-import org.junit.jupiter.api.Test;
-import org.springframework.test.context.jdbc.Sql;
-import se.sundsvall.casedata.Application;
-import se.sundsvall.dept44.support.Identifier;
-import se.sundsvall.dept44.test.AbstractAppTest;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
-
 @WireMockAppTestSuite(
 	files = "classpath:/NotificationIT/",
 	classes = Application.class)
@@ -43,7 +43,7 @@ class NotificationIT extends AbstractAppTest {
 	@Test
 	void test01_getNotificationsByOwnerId() {
 		setupCall()
-			.withServicePath(builder -> fromPath(NOTIFICATIONS_PATH)
+			.withServicePath(_ -> fromPath(NOTIFICATIONS_PATH)
 				.queryParam("ownerId", "testUser2")
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
 			.withHttpMethod(GET)
@@ -55,7 +55,7 @@ class NotificationIT extends AbstractAppTest {
 	@Test
 	void test02_getNotificationById() {
 		setupCall()
-			.withServicePath(builder -> fromPath(NOTIFICATION_PATH)
+			.withServicePath(_ -> fromPath(NOTIFICATION_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "notificationId", NOTIFICATION_ID, "errandId", 1)))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
@@ -66,7 +66,7 @@ class NotificationIT extends AbstractAppTest {
 	@Test
 	void test03_createNotification() {
 		final var location = setupCall()
-			.withServicePath(builder -> fromPath(ERRAND_NOTIFICATIONS_PATH)
+			.withServicePath(_ -> fromPath(ERRAND_NOTIFICATIONS_PATH)
 				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", 1)))
 			.withHttpMethod(POST)
 			.withHeader(HEADER_NAME, Identifier.create().withType(AD_ACCOUNT).withValue("creator123").toHeaderValue())
