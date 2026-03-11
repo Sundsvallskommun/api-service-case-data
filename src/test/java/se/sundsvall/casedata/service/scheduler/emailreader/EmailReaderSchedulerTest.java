@@ -2,6 +2,8 @@ package se.sundsvall.casedata.service.scheduler.emailreader;
 
 import generated.se.sundsvall.emailreader.Email;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,7 +27,7 @@ class EmailReaderSchedulerTest {
 	@Test
 	void getAndProcessEmailsSuccess() {
 		// Arrange
-		final var email = new Email(); // Assuming Email is a class used in EmailReaderWorker
+		final var email = new Email();
 		when(emailReaderWorkerMock.getEmails()).thenReturn(Collections.singletonList(email));
 		when(emailReaderWorkerMock.save(email)).thenReturn(true);
 
@@ -42,7 +44,7 @@ class EmailReaderSchedulerTest {
 	@Test
 	void getAndProcessEmailsSaveFails() {
 		// Arrange
-		final var email = new Email(); // Assuming Email is a class used in EmailReaderWorker
+		final var email = new Email();
 		when(emailReaderWorkerMock.getEmails()).thenReturn(Collections.singletonList(email));
 		when(emailReaderWorkerMock.save(email)).thenReturn(false);
 
@@ -66,6 +68,24 @@ class EmailReaderSchedulerTest {
 
 		// Assert
 		verify(emailReaderWorkerMock).getEmails();
+		verifyNoMoreInteractions(emailReaderWorkerMock);
+	}
+
+	@Test
+	void getAndProcessEmailsAutoReplyDeleted() {
+		// Arrange
+		final var email = new Email();
+		email.setId("auto-reply-id");
+		email.setHeaders(Map.of("AUTO_SUBMITTED", List.of("auto-replied")));
+		when(emailReaderWorkerMock.getEmails()).thenReturn(Collections.singletonList(email));
+
+		// Act
+		emailReaderScheduler.getAndProcessEmails();
+
+		// Assert
+		verify(emailReaderWorkerMock).getEmails();
+		verify(emailReaderWorkerMock).deleteMail(email);
+		verify(emailReaderWorkerMock, never()).save(email);
 		verifyNoMoreInteractions(emailReaderWorkerMock);
 	}
 }
