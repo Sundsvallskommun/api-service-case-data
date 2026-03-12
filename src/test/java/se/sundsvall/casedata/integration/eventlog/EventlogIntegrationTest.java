@@ -54,7 +54,35 @@ class EventlogIntegrationTest {
 		assertThat(capturedEvent.getMetadata().get(0).getKey()).isEqualTo("Status");
 		assertThat(capturedEvent.getMetadata().get(0).getValue()).isEqualTo(status.getStatusType());
 		assertThat(capturedEvent.getMetadata().get(1).getKey()).isEqualTo("ExternalCaseId");
-		assertThat(capturedEvent.getMetadata().get(1).getValue()).isEqualTo(String.valueOf(errand.getExternalCaseId()));
+		assertThat(capturedEvent.getMetadata().get(1).getValue()).isEqualTo(errand.getExternalCaseId());
+
+		verifyNoMoreInteractions(eventlogClientMock);
+	}
+
+	@Test
+	void sendEventlogEventWithNullExternalCaseId() {
+
+		// Arrange
+		final var errand = createErrandEntity();
+		errand.setExternalCaseId(null);
+		final var status = createStatus();
+
+		// Act
+		eventlogIntegration.sendEventlogEvent(MUNICIPALITY_ID, errand, status);
+
+		// Assert
+		verify(eventlogClientMock).createEvent(eq(MUNICIPALITY_ID), any(String.class), eventCaptor.capture());
+
+		final var capturedEvent = eventCaptor.getValue();
+		assertThat(capturedEvent.getType()).isEqualTo(EventType.UPDATE);
+		assertThat(capturedEvent.getOwner()).isEqualTo("CaseData");
+		assertThat(capturedEvent.getMessage()).isEqualTo("Status updated to " + status.getStatusType());
+		assertThat(capturedEvent.getSourceType()).isEqualTo("Errand");
+		assertThat(capturedEvent.getMetadata()).hasSize(2);
+		assertThat(capturedEvent.getMetadata().get(0).getKey()).isEqualTo("Status");
+		assertThat(capturedEvent.getMetadata().get(0).getValue()).isEqualTo(status.getStatusType());
+		assertThat(capturedEvent.getMetadata().get(1).getKey()).isEqualTo("ExternalCaseId");
+		assertThat(capturedEvent.getMetadata().get(1).getValue()).isNull();
 
 		verifyNoMoreInteractions(eventlogClientMock);
 	}
