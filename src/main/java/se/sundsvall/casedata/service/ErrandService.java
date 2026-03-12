@@ -111,7 +111,7 @@ public class ErrandService {
 
 		applicationEventPublisher.publishEvent(updatedErrand);
 
-		if (patchErrand.getStatus() != null) {
+		if (patchErrand.getStatus() != null && updatedErrand.getExternalCaseId() != null) {
 			eventlogIntegration.sendEventlogEvent(municipalityId, updatedErrand, patchErrand.getStatus());
 		}
 

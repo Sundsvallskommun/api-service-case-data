@@ -31,7 +31,7 @@ public class EventlogIntegration {
 				.sourceType("Errand")
 				.metadata(List.of(
 					new Metadata().key("Status").value(status.getStatusType()),
-					new Metadata().key("ExternalCaseId").value(String.valueOf(errand.getExternalCaseId()))));
+					new Metadata().key("ExternalCaseId").value(errand.getExternalCaseId())));
 
 			eventlogClient.createEvent(municipalityId, UUID.randomUUID().toString(), event);
 		} catch (final Exception e) {
