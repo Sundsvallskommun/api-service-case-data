@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,13 +22,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import se.sundsvall.casedata.api.model.Decision;
+import se.sundsvall.casedata.api.model.FinalDecision;
 import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.service.DecisionService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
+import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
 
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -41,7 +43,7 @@ import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_VALIDATION_
 
 @RestController
 @Validated
-@RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/decisions")
+@RequestMapping("/{municipalityId}")
 @Tag(name = "Decisions", description = "Decision operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 	Problem.class, ConstraintViolationProblem.class
@@ -56,7 +58,7 @@ class DecisionResource {
 		this.decisionService = decisionService;
 	}
 
-	@GetMapping(path = "/{decisionId}", produces = APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/{namespace}/errands/{errandId}/decisions/{decisionId}", produces = APPLICATION_JSON_VALUE)
 	@Operation(description = "Get decision on errand by decision id.", responses = {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
@@ -69,7 +71,7 @@ class DecisionResource {
 		return ok(decisionService.findDecision(errandId, decisionId, municipalityId, namespace));
 	}
 
-	@PatchMapping(path = "/{decisionId}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@PatchMapping(path = "/{namespace}/errands/{errandId}/decisions/{decisionId}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	@Operation(description = "Update decision on errand.", responses = {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
@@ -82,11 +84,10 @@ class DecisionResource {
 
 		decisionService.update(errandId, decisionId, municipalityId, namespace, patchDecision);
 		return noContent()
-			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
 
-	@PutMapping(path = "/{decisionId}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@PutMapping(path = "/{namespace}/errands/{errandId}/decisions/{decisionId}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	@Operation(description = "Replace decision on errand.", responses = {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
@@ -99,11 +100,10 @@ class DecisionResource {
 
 		decisionService.replaceOnErrand(errandId, decisionId, municipalityId, namespace, decision);
 		return noContent()
-			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
 
-	@PatchMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@PatchMapping(path = "/{namespace}/errands/{errandId}/decisions", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	@Operation(description = "Create and add decision to errand.", responses = {
 		@ApiResponse(responseCode = "201", description = "Created - Successful operation", headers = @Header(name = LOCATION, description = "Location of the created resource.", schema = @Schema(type = "string")), useReturnTypeSchema = true)
 	})
@@ -114,12 +114,13 @@ class DecisionResource {
 		@RequestBody @Valid final Decision decision) {
 
 		final var result = decisionService.addToErrand(errandId, municipalityId, namespace, decision);
-		return created(fromPath("/{municipalityId}/{namespace}/decisions/{decisionId}").buildAndExpand(municipalityId, namespace, result.getId()).toUri())
-			.header(CONTENT_TYPE, ALL_VALUE)
+		return created(fromPath("/{municipalityId}/{namespace}/decisions/{decisionId}")
+			.buildAndExpand(municipalityId, namespace, result.getId())
+			.toUri())
 			.build();
 	}
 
-	@GetMapping(produces = APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/{namespace}/errands/{errandId}/decisions", produces = APPLICATION_JSON_VALUE)
 	@Operation(description = "Get decisions on errand.", responses = {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
@@ -131,7 +132,7 @@ class DecisionResource {
 		return ok(decisionService.findDecisions(errandId, municipalityId, namespace));
 	}
 
-	@DeleteMapping(path = "/{decisionId}", produces = ALL_VALUE)
+	@DeleteMapping(path = "/{namespace}/errands/{errandId}/decisions/{decisionId}", produces = ALL_VALUE)
 	@Operation(description = "Delete decision on errand.", responses = {
 		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	})
@@ -143,7 +144,18 @@ class DecisionResource {
 
 		decisionService.delete(errandId, municipalityId, namespace, decisionId);
 		return noContent()
-			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
+	}
+
+	@GetMapping(path = "/errands/{partyId}/decisions", produces = APPLICATION_JSON_VALUE)
+	@Operation(description = "Get decisions on errand.", responses = {
+		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
+	})
+	ResponseEntity<Page<FinalDecision>> getFinalDecisions(
+		@Parameter(description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(description = "PartyId to find cases for", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable @ValidUuid final String partyId) {
+
+		// TODO: Implement method in service and return result here.
+		return ok(Page.empty());
 	}
 }
