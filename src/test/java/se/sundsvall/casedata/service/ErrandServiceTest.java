@@ -343,4 +343,37 @@ class ErrandServiceTest {
 		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock, notificationServiceMock, applicationEventPublisherMock, eventlogIntegrationMock);
 	}
 
+	@Test
+	void updateWithStatusChangeAndNullExternalCaseId() {
+
+		// Arrange
+		final var errand = createErrandEntity();
+		final var updatedErrand = createErrandEntity();
+		updatedErrand.setExternalCaseId(null);
+		final var status = createStatus();
+		final var patch = createPatchErrand();
+		patch.setStatus(status);
+		final var executingUserId = "executingUserId";
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(errandRepositoryMock.saveAndFlush(errand)).thenReturn(updatedErrand);
+
+		Identifier.set(Identifier.create().withType(Type.AD_ACCOUNT).withValue(executingUserId));
+
+		// Act
+		errandService.update(errand.getId(), MUNICIPALITY_ID, NAMESPACE, patch);
+
+		// Assert
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errand.getId(), MUNICIPALITY_ID, NAMESPACE);
+		verify(errandRepositoryMock).saveAndFlush(errand);
+		verify(applicationEventPublisherMock).publishEvent(updatedErrand);
+		verify(eventlogIntegrationMock, never()).sendEventlogEvent(any(), any(), any());
+		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), notificationCaptor.capture(), same(updatedErrand));
+
+		assertThat(notificationCaptor.getValue().getDescription()).isEqualTo("Ärende uppdaterat");
+		assertThat(notificationCaptor.getValue().getType()).isEqualTo("UPDATE");
+		assertThat(notificationCaptor.getValue().getCreatedBy()).isEqualTo(executingUserId);
+		assertThat(notificationCaptor.getValue().getErrandId()).isEqualTo(updatedErrand.getId());
+		verifyNoMoreInteractions(errandRepositoryMock, processServiceMock, notificationServiceMock, applicationEventPublisherMock, eventlogIntegrationMock);
+	}
+
 }

@@ -4,7 +4,6 @@ import generated.se.sundsvall.eventlog.Event;
 import generated.se.sundsvall.eventlog.EventType;
 import generated.se.sundsvall.eventlog.Metadata;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +31,7 @@ public class EventlogIntegration {
 				.sourceType("Errand")
 				.metadata(List.of(
 					new Metadata().key("Status").value(status.getStatusType()),
-					new Metadata().key("ExternalCaseId").value(Optional.ofNullable(errand.getExternalCaseId())
-						.map(String::valueOf)
-						.orElse(null))));
+					new Metadata().key("ExternalCaseId").value(errand.getExternalCaseId())));
 
 			eventlogClient.createEvent(municipalityId, UUID.randomUUID().toString(), event);
 		} catch (final Exception e) {
