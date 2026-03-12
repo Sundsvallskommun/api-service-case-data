@@ -55,9 +55,10 @@ class Base64MultipartFileTest {
 	void transferToThrowsUnsupportedOperationException() {
 		// Arrange
 		final var file = new Base64MultipartFile("attachments", "file.txt", "text/plain", "data".getBytes());
+		final var destination = new java.io.File("target");
 
 		// Act & Assert
-		assertThatThrownBy(() -> file.transferTo(new java.io.File("target")))
+		assertThatThrownBy(() -> file.transferTo(destination))
 			.isInstanceOf(UnsupportedOperationException.class)
 			.hasMessage("transferTo is not supported");
 	}
