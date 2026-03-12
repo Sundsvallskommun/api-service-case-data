@@ -4278,8 +4278,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  ? /{municipalityId}/{namespace}/errands/{errandId}/communication/conversations/{conversationId}/messages/{messageId}/attachments/{attachmentId}
-    :
+  /{municipalityId}/{namespace}/errands/{errandId}/communication/conversations/{conversationId}/messages/{messageId}/attachments/{attachmentId}:
     get:
       tags:
         - Conversations
