@@ -41,6 +41,9 @@ public class Message {
 	@ArraySchema(schema = @Schema(implementation = ConversationAttachment.class, description = "A list of attachments associated with the message.", accessMode = Schema.AccessMode.READ_ONLY))
 	private List<ConversationAttachment> attachments;
 
+	@ArraySchema(schema = @Schema(description = "List of attachment IDs referencing existing errand attachments to include in the message.", examples = "123"))
+	private List<Long> attachmentIds;
+
 	@Schema(description = "Type of message (user or system created)", examples = "USER_CREATED", accessMode = Schema.AccessMode.READ_ONLY)
 	private MessageType type;
 }

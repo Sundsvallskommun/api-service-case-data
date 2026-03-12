@@ -8,6 +8,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,9 +19,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.ConversationType;
 import se.sundsvall.casedata.api.model.conversation.Message;
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
@@ -46,6 +50,9 @@ class ConversationServiceTest {
 	private static final String CONVERSATION_DEPARTMENT_NAME = "CONVERSATION";
 	private static final String PARATRANSIT_DEPARTMENT_NAME = "PARATRANSIT";
 	@Mock
+	private AttachmentRepository attachmentRepositoryMock;
+
+	@Mock
 	private MessageService messageServiceMock;
 
 	@Mock
@@ -59,6 +66,9 @@ class ConversationServiceTest {
 
 	@Mock
 	private MessageExchangeScheduler messageExchangeSchedulerMock;
+
+	@Captor
+	private ArgumentCaptor<List<MultipartFile>> attachmentsCaptor;
 
 	@InjectMocks
 	private ConversationService conversationService;
@@ -573,6 +583,138 @@ class ConversationServiceTest {
 		verify(messageExchangeClientMock).createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any());
 		verifyNoInteractions(messageExchangeSchedulerMock, messageServiceMock);
 		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
+	}
+
+	@Test
+	void createMessageWithErrandAttachmentIds() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "123";
+		final var messageExchangeId = "messageExchangeId";
+		final var attachmentId1 = 10L;
+		final var attachmentId2 = 20L;
+
+		final var messageContent = Message.builder()
+			.withAttachmentIds(List.of(attachmentId1, attachmentId2))
+			.build();
+
+		final var attachmentEntity1 = se.sundsvall.casedata.integration.db.model.AttachmentEntity.builder()
+			.withId(attachmentId1)
+			.withName("document.pdf")
+			.withMimeType("application/pdf")
+			.withFile("dGVzdA==")
+			.build();
+
+		final var attachmentEntity2 = se.sundsvall.casedata.integration.db.model.AttachmentEntity.builder()
+			.withId(attachmentId2)
+			.withName("image.png")
+			.withMimeType("image/png")
+			.withFile("aW1hZ2U=")
+			.build();
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
+			.thenReturn(Optional.of(ConversationEntity.builder().withType(EXTERNAL.name()).withMessageExchangeId(messageExchangeId).build()));
+
+		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId1, errandId, municipalityId, namespace))
+			.thenReturn(Optional.of(attachmentEntity1));
+		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId2, errandId, municipalityId, namespace))
+			.thenReturn(Optional.of(attachmentEntity2));
+
+		when(messageExchangeClientMock.createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any()))
+			.thenReturn(ResponseEntity.ok().build());
+
+		// Act
+		conversationService.createMessage(municipalityId, namespace, errandId, conversationId, messageContent, null);
+
+		// Assert
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId1, errandId, municipalityId, namespace);
+		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId2, errandId, municipalityId, namespace);
+		verify(messageExchangeClientMock).createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any());
+		verify(messageExchangeSchedulerMock).triggerSyncConversationsAsync();
+		verify(messageServiceMock).sendMessageNotification(municipalityId, namespace, errandId, CONVERSATION_DEPARTMENT_NAME);
+		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock, messageExchangeSchedulerMock, messageServiceMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void createMessageWithNonExistingAttachmentId() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "123";
+		final var messageExchangeId = "messageExchangeId";
+		final var nonExistingAttachmentId = 999L;
+
+		final var messageContent = Message.builder()
+			.withAttachmentIds(List.of(nonExistingAttachmentId))
+			.build();
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
+			.thenReturn(Optional.of(ConversationEntity.builder().withType(EXTERNAL.name()).withMessageExchangeId(messageExchangeId).build()));
+
+		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(nonExistingAttachmentId, errandId, municipalityId, namespace))
+			.thenReturn(Optional.empty());
+
+		// Act & Assert
+		assertThatThrownBy(() -> conversationService.createMessage(municipalityId, namespace, errandId, conversationId, messageContent, null))
+			.isInstanceOf(RuntimeException.class)
+			.hasMessageContaining("Attachment with id '999' not found on errand with id '123'");
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(nonExistingAttachmentId, errandId, municipalityId, namespace);
+		verifyNoInteractions(messageExchangeClientMock, messageExchangeSchedulerMock, messageServiceMock);
+	}
+
+	@Test
+	void createMessageWithBothUploadedAndReferencedAttachments() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "123";
+		final var messageExchangeId = "messageExchangeId";
+		final var attachmentId = 10L;
+
+		final var uploadedAttachment = new MockMultipartFile("attachments", "uploaded.txt", "text/plain", "uploaded content".getBytes());
+
+		final var messageContent = Message.builder()
+			.withAttachmentIds(List.of(attachmentId))
+			.build();
+
+		final var attachmentEntity = se.sundsvall.casedata.integration.db.model.AttachmentEntity.builder()
+			.withId(attachmentId)
+			.withName("errand-doc.pdf")
+			.withMimeType("application/pdf")
+			.withFile("ZXJyYW5k")
+			.build();
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
+			.thenReturn(Optional.of(ConversationEntity.builder().withType(EXTERNAL.name()).withMessageExchangeId(messageExchangeId).build()));
+
+		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, municipalityId, namespace))
+			.thenReturn(Optional.of(attachmentEntity));
+
+		when(messageExchangeClientMock.createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), attachmentsCaptor.capture()))
+			.thenReturn(ResponseEntity.ok().build());
+
+		// Act
+		conversationService.createMessage(municipalityId, namespace, errandId, conversationId, messageContent, List.of(uploadedAttachment));
+
+		// Assert
+		final var capturedAttachments = attachmentsCaptor.getValue();
+		assertThat(capturedAttachments).hasSize(2);
+		assertThat(capturedAttachments.get(0).getOriginalFilename()).isEqualTo("uploaded.txt");
+		assertThat(capturedAttachments.get(1).getOriginalFilename()).isEqualTo("errand-doc.pdf");
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, municipalityId, namespace);
+		verify(messageExchangeClientMock).createMessage(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any(), any());
+		verify(messageExchangeSchedulerMock).triggerSyncConversationsAsync();
+		verify(messageServiceMock).sendMessageNotification(municipalityId, namespace, errandId, CONVERSATION_DEPARTMENT_NAME);
+		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock, messageExchangeSchedulerMock, messageServiceMock, attachmentRepositoryMock);
 	}
 
 	@Test

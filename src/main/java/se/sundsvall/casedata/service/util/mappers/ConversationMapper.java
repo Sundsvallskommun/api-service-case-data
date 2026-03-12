@@ -18,7 +18,9 @@ import se.sundsvall.casedata.api.model.conversation.KeyValues;
 import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.api.model.conversation.MessageType;
 import se.sundsvall.casedata.api.model.conversation.ReadBy;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+import se.sundsvall.casedata.service.util.Base64MultipartFile;
 import se.sundsvall.dept44.problem.Problem;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -207,7 +209,7 @@ public final class ConversationMapper {
 			contentString = Optional.of(attachment.getBytes())
 				.map(ConversationMapper::toContentString)
 				.orElse(null);
-		} catch (final IOException e) {
+		} catch (final IOException _) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to read attachment content");
 		}
 
@@ -239,6 +241,20 @@ public final class ConversationMapper {
 
 	private static String toContentString(final byte[] result) {
 		return new String(Base64.getEncoder().encode(result), UTF_8);
+	}
+
+	public static List<MultipartFile> toMultipartFiles(final List<AttachmentEntity> attachmentEntities) {
+		return Optional.ofNullable(attachmentEntities).orElse(Collections.emptyList()).stream()
+			.map(ConversationMapper::toMultipartFile)
+			.toList();
+	}
+
+	static MultipartFile toMultipartFile(final AttachmentEntity entity) {
+		final var bytes = Optional.ofNullable(entity.getFile())
+			.map(file -> Base64.getDecoder().decode(file))
+			.orElse(new byte[0]);
+
+		return new Base64MultipartFile("attachments", entity.getName(), entity.getMimeType(), bytes);
 	}
 
 }

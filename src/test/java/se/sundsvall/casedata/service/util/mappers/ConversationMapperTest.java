@@ -15,7 +15,9 @@ import se.sundsvall.casedata.api.model.conversation.ConversationType;
 import se.sundsvall.casedata.api.model.conversation.Identifier;
 import se.sundsvall.casedata.api.model.conversation.KeyValues;
 import se.sundsvall.casedata.api.model.conversation.MessageType;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+import se.sundsvall.casedata.service.util.Base64MultipartFile;
 import se.sundsvall.dept44.problem.Problem;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -577,6 +579,58 @@ class ConversationMapperTest {
 		// Assert
 		assertThat(result).isNotNull();
 		assertThat(result.getFile()).isNull();
+	}
+
+	@Test
+	void toMultipartFiles() throws IOException {
+		// Arrange
+		final var base64Content = Base64.getEncoder().encodeToString("test content".getBytes(StandardCharsets.UTF_8));
+		final var entity = AttachmentEntity.builder()
+			.withName("document.pdf")
+			.withMimeType("application/pdf")
+			.withFile(base64Content)
+			.build();
+
+		// Act
+		final var result = ConversationMapper.toMultipartFiles(List.of(entity));
+
+		// Assert
+		assertThat(result).hasSize(1);
+		final var file = result.getFirst();
+		assertThat(file).isInstanceOf(Base64MultipartFile.class);
+		assertThat(file.getName()).isEqualTo("attachments");
+		assertThat(file.getOriginalFilename()).isEqualTo("document.pdf");
+		assertThat(file.getContentType()).isEqualTo("application/pdf");
+		assertThat(file.getBytes()).isEqualTo("test content".getBytes(StandardCharsets.UTF_8));
+		assertThat(file.isEmpty()).isFalse();
+		assertThat(file.getSize()).isEqualTo("test content".getBytes(StandardCharsets.UTF_8).length);
+	}
+
+	@Test
+	void toMultipartFilesWithNullList() {
+		// Act
+		final var result = ConversationMapper.toMultipartFiles(null);
+
+		// Assert
+		assertThat(result).isNotNull().isEmpty();
+	}
+
+	@Test
+	void toMultipartFilesWithNullFileContent() throws IOException {
+		// Arrange
+		final var entity = AttachmentEntity.builder()
+			.withName("empty.txt")
+			.withMimeType("text/plain")
+			.withFile(null)
+			.build();
+
+		// Act
+		final var result = ConversationMapper.toMultipartFiles(List.of(entity));
+
+		// Assert
+		assertThat(result).hasSize(1);
+		assertThat(result.getFirst().isEmpty()).isTrue();
+		assertThat(result.getFirst().getBytes()).isEmpty();
 	}
 
 }

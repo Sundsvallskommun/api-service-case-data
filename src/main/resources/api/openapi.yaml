@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "11.11"
 servers:
-- url: http://localhost:51114
+- url: http://localhost:65021
   description: Generated server url
 tags:
 - name: Notifications
@@ -5307,8 +5307,6 @@ components:
     JsonNode:
       type: object
       properties:
-        floatingPointNumber:
-          type: boolean
         valueNode:
           type: boolean
         missingNode:
@@ -5349,6 +5347,8 @@ components:
         boolean:
           type: boolean
         binary:
+          type: boolean
+        floatingPointNumber:
           type: boolean
         number:
           type: boolean
@@ -5981,6 +5981,15 @@ components:
             $ref: "#/components/schemas/ConversationAttachment"
             description: A list of attachments associated with the message.
             readOnly: true
+        attachmentIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+            description: List of attachment IDs referencing existing errand attachments
+              to include in the message.
+            examples:
+            - "123"
         type:
           type: string
           description: Type of message (user or system created)
