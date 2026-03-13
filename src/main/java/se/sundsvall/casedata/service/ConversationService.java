@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.Strings;
@@ -14,15 +15,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.Message;
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeScheduler;
 import se.sundsvall.dept44.problem.Problem;
 
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.api.model.conversation.ConversationType.EXTERNAL;
@@ -34,6 +39,7 @@ import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toCo
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessageExchangeConversation;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessagePage;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessageRequest;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMultipartFiles;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.updateConversationEntity;
 
 @Service
@@ -41,6 +47,7 @@ public class ConversationService {
 
 	static final String CONVERSATION_DEPARTMENT_NAME = "CONVERSATION";
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConversationService.class);
+	private final AttachmentRepository attachmentRepository;
 	private final ConversationRepository conversationRepository;
 	private final ErrandRepository errandRepository;
 	private final MessageExchangeClient messageExchangeClient;
@@ -51,12 +58,14 @@ public class ConversationService {
 	private String messageExchangeNamespace;
 
 	public ConversationService(
+		final AttachmentRepository attachmentRepository,
 		final ConversationRepository conversationRepository,
 		final ErrandRepository errandRepository,
 		final MessageExchangeClient messageExchangeClient,
 		final MessageService messageService,
 		final MessageExchangeScheduler messageExchangeScheduler) {
 
+		this.attachmentRepository = attachmentRepository;
 		this.conversationRepository = conversationRepository;
 		this.errandRepository = errandRepository;
 		this.messageExchangeClient = messageExchangeClient;
@@ -123,12 +132,23 @@ public class ConversationService {
 
 	public void createMessage(final String municipalityId, final String namespace, final long errandId, final String conversationId, final Message messageRequest, final List<MultipartFile> attachments) {
 		final var entity = getConversationEntity(municipalityId, namespace, errandId, conversationId);
-		final var response = messageExchangeClient.createMessage(municipalityId, messageExchangeNamespace, entity.getMessageExchangeId(), toMessageRequest(messageRequest), attachments);
+
+		final var referencedAttachments = toMultipartFiles(resolveErrandAttachments(municipalityId, namespace, errandId, messageRequest.getAttachmentIds()));
+		final var mergedAttachments = new ArrayList<MultipartFile>();
+		ofNullable(attachments).ifPresent(mergedAttachments::addAll);
+		mergedAttachments.addAll(referencedAttachments);
+		final var effectiveAttachments = Optional.of(mergedAttachments)
+			.filter(list -> !list.isEmpty())
+			.orElse(null);
+
+		final var response = messageExchangeClient.createMessage(municipalityId, messageExchangeNamespace, entity.getMessageExchangeId(), toMessageRequest(messageRequest), effectiveAttachments);
 
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message in Message Exchange");
 		}
-		Optional.ofNullable(attachments).ifPresent(_ -> messageExchangeScheduler.triggerSyncConversationsAsync());
+		if (effectiveAttachments != null) {
+			messageExchangeScheduler.triggerSyncConversationsAsync();
+		}
 
 		try {
 			if (EXTERNAL.name().equals(entity.getType())) {
@@ -141,13 +161,24 @@ public class ConversationService {
 		}
 	}
 
+	private List<AttachmentEntity> resolveErrandAttachments(final String municipalityId, final String namespace, final long errandId, final List<Long> attachmentIds) {
+		if (attachmentIds == null || attachmentIds.isEmpty()) {
+			return emptyList();
+		}
+
+		return attachmentIds.stream()
+			.map(id -> attachmentRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, municipalityId, namespace)
+				.orElseThrow(() -> Problem.valueOf(BAD_REQUEST, "Attachment with id '%s' not found on errand with id '%s'".formatted(id, errandId))))
+			.toList();
+	}
+
 	/**
 	 * Method for determining what department name to use when sending email notification. If case type starts with
 	 * PARATRANSIT then department name PARATRANSIT is returned. If not then CONVERSATION is the returned fallback
 	 * department.
-	 *
+	 * <p/>
 	 * It is not an optimal solution, but right now this is the only way to distinguish between PARATRANSIT cases and other
-	 * cases in the PARKING_PERMIT namespace (the distinction is needed as they use different URLs in Katlan).
+	 * cases in the PARKING_PERMIT namespace. (The distinction is needed as they use different URLs in the Katla web app.)
 	 *
 	 * @param  errandId id of errand to interpret department name on
 	 * @return          department name connected to the messaging settings that should be used when sending email

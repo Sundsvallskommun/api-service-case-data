@@ -156,6 +156,23 @@ class ConversationIT extends AbstractAppTest {
 	}
 
 	/**
+	 * Test to verify that a message can be created with attachmentIds referencing existing errand attachments.
+	 * The referenced attachments should be resolved and sent as multipart files to Message Exchange.
+	 */
+	@Test
+	void test10_createMessageWithAttachmentIds() throws FileNotFoundException {
+		setupCall()
+			.withHttpMethod(POST)
+			.withServicePath(format(PATH + "/{3}/messages", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID))
+			.withContentType(MULTIPART_FORM_DATA)
+			.withRequestFile("message", REQUEST_FILE)
+			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
+			.withHeader(HEADER_NAME, "type=adAccount; someUser123")
+			.withExpectedResponseStatus(NO_CONTENT)
+			.sendRequestAndVerifyResponse();
+	}
+
+	/**
 	 * Test to verify email is NOT sent when creating an message with type internal for an errand where stakeholder with
 	 * reporter role is present, i.e. test of scenario when reporter creates an internal message to the administrator of the
 	 * errand in a case created by the reporter (for example in paratransit)

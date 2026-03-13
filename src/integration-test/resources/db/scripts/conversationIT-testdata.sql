@@ -30,3 +30,7 @@ INSERT INTO conversation_relation_id (conversation_id, relation_id)
 VALUES ('896a44d8-724b-11ed-a840-0242ac110002', 'RELATION-ID-1'),
        ('896a44d8-724b-11ed-a840-0242ac110003', 'RELATION-ID-2'),
        ('896a44d8-724b-11ed-a840-0242ac110004', 'RELATION-ID-3');
+
+-- Insert attachment data for errand 1 (used in test10_createMessageWithAttachmentIds)
+INSERT INTO attachment (id, created, updated, version, category, extension, file, mime_type, name, note, errand_id, decision_id, municipality_id, namespace)
+VALUES (100, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'MEDICAL_CONFIRMATION', '.pdf', 'dGVzdCBjb250ZW50', 'application/pdf', 'errand-attachment.pdf', 'Test attachment', 1, NULL, '2281', 'MY_NAMESPACE');
