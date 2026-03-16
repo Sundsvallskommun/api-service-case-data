@@ -5,7 +5,7 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.12"
+  version: "11.13"
 servers:
   - url: http://localhost:65021
     description: Generated server url
@@ -6565,6 +6565,16 @@ components:
           type: boolean
         sort:
           $ref: "#/components/schemas/SortObject"
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/Message"
+        number:
+          type: integer
+          format: int32
         empty:
           type: boolean
     FinalDecision:
