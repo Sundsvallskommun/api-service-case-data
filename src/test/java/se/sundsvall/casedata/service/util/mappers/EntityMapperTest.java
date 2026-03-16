@@ -257,7 +257,7 @@ class EntityMapperTest {
 		final var decisionDto = toDecision(decision);
 
 		// Assert
-		assertThat(decisionDto).hasNoNullFieldsOrProperties().satisfies(d -> {
+		assertThat(decisionDto).hasNoNullFieldsOrPropertiesExcept("errandId", "errandNumber").satisfies(d -> {
 			assertThat(d.getDescription()).isEqualTo(decision.getDescription());
 			assertThat(d.getDecidedAt()).isEqualTo(decision.getDecidedAt());
 			assertThat(d.getUpdated()).isEqualTo(decision.getUpdated());

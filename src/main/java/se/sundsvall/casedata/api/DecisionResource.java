@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import se.sundsvall.casedata.api.model.Decision;
-import se.sundsvall.casedata.api.model.FinalDecision;
 import se.sundsvall.casedata.api.model.PatchDecision;
 import se.sundsvall.casedata.service.DecisionService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
@@ -148,10 +147,10 @@ class DecisionResource {
 	}
 
 	@GetMapping(path = "/errands/{partyId}/decisions", produces = APPLICATION_JSON_VALUE)
-	@Operation(description = "Get decisions on errand.", responses = {
+	@Operation(description = "Get final decisions connected to a partyId.", responses = {
 		@ApiResponse(responseCode = "200", description = "OK - Successful operation", useReturnTypeSchema = true)
 	})
-	ResponseEntity<Page<FinalDecision>> getFinalDecisions(
+	ResponseEntity<Page<Decision>> getFinalDecisions(
 		@Parameter(description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(description = "PartyId to find cases for", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable @ValidUuid final String partyId) {
 

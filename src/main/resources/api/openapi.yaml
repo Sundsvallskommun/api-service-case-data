@@ -4423,7 +4423,7 @@ paths:
     get:
       tags:
         - Decisions
-      description: Get decisions on errand.
+      description: Get final decisions connected to a partyId.
       operationId: getFinalDecisions
       parameters:
         - name: municipalityId
@@ -4446,7 +4446,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PageFinalDecision"
+                $ref: "#/components/schemas/PageDecision"
         "400":
           description: Bad request
           content:
@@ -5050,6 +5050,19 @@ components:
           description: List of attachments related to the decision
           items:
             $ref: "#/components/schemas/Attachment"
+        errandId:
+          type: integer
+          format: int64
+          description: The id of the errand
+          examples:
+            - "1"
+          readOnly: true
+        errandNumber:
+          type: string
+          description: Errand number
+          examples:
+            - SGP-2022-000001
+          readOnly: true
         extraParameters:
           type: object
           additionalProperties:
@@ -6577,28 +6590,7 @@ components:
           format: int32
         empty:
           type: boolean
-    FinalDecision:
-      type: object
-      properties:
-        errandId:
-          type: integer
-          format: int64
-          description: The id of the errand
-          examples:
-            - "1"
-          readOnly: true
-        errandNumber:
-          type: string
-          description: Errand number
-          examples:
-            - SGP-2022-000001
-          readOnly: true
-        decision:
-          $ref: "#/components/schemas/Decision"
-          description: The final decision
-          examples:
-            - APPROVAL
-    PageFinalDecision:
+    PageDecision:
       type: object
       properties:
         totalElements:
@@ -6613,7 +6605,7 @@ components:
         content:
           type: array
           items:
-            $ref: "#/components/schemas/FinalDecision"
+            $ref: "#/components/schemas/Decision"
         number:
           type: integer
           format: int32

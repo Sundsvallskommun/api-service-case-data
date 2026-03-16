@@ -36,6 +36,12 @@ public class Decision {
 	@Schema(description = "Namespace", examples = "MY_NAMESPACE", accessMode = READ_ONLY)
 	private String namespace;
 
+	@Schema(description = "The id of the errand", accessMode = READ_ONLY, examples = "1")
+	private Long errandId;
+
+	@Schema(description = "Errand number", examples = "SGP-2022-000001", accessMode = READ_ONLY)
+	private String errandNumber;
+
 	@Schema(description = "Type of the decision", examples = "APPROVAL")
 	private DecisionType decisionType;
 
