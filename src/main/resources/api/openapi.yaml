@@ -5,7 +5,7 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.12"
+  version: "11.13"
 servers:
   - url: http://localhost:65021
     description: Generated server url
@@ -4419,6 +4419,55 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+  /{municipalityId}/errands/{partyId}/decisions:
+    get:
+      tags:
+        - Decisions
+      description: Get final decisions connected to a partyId.
+      operationId: getFinalDecisions
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: partyId
+          in: path
+          description: PartyId to find cases for
+          required: true
+          schema:
+            type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        "200":
+          description: OK - Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageDecision"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+
   /api-docs:
     get:
       tags:
@@ -4720,13 +4769,13 @@ components:
             $ref: "#/components/schemas/Violation"
         title:
           type: string
+        instance:
+          type: string
+          format: uri
         detail:
           type: string
         causeAsProblem:
           $ref: "#/components/schemas/ThrowableProblem"
-        instance:
-          type: string
-          format: uri
     ThrowableProblem:
       type: object
       properties:
@@ -5001,6 +5050,19 @@ components:
           description: List of attachments related to the decision
           items:
             $ref: "#/components/schemas/Attachment"
+        errandId:
+          type: integer
+          format: int64
+          description: The id of the errand
+          examples:
+            - "1"
+          readOnly: true
+        errandNumber:
+          type: string
+          description: Errand number
+          examples:
+            - SGP-2022-000001
+          readOnly: true
         extraParameters:
           type: object
           additionalProperties:
@@ -5837,7 +5899,7 @@ components:
           $ref: "#/components/schemas/ConversationType"
           description: The conversation type
           examples:
-            - INTERNAL
+          - INTERNAL
         relationIds:
           type: array
           items:
@@ -6526,6 +6588,38 @@ components:
         number:
           type: integer
           format: int32
+        empty:
+          type: boolean
+    PageDecision:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/Decision"
+        number:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        numberOfElements:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
         empty:
           type: boolean
   securitySchemes: { }

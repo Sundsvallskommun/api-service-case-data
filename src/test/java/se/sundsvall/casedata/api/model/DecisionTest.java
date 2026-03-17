@@ -49,6 +49,8 @@ class DecisionTest {
 		final var extraParameters = new HashMap<String, String>();
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var errandNumber = "SGP-2022-000001";
 
 		// Act
 		final var bean = Decision.builder()
@@ -62,6 +64,8 @@ class DecisionTest {
 			.withExtraParameters(extraParameters)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
+			.withErrandId(errandId)
+			.withErrandNumber(errandNumber)
 			.build();
 
 		// Assert
@@ -75,6 +79,8 @@ class DecisionTest {
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getNamespace()).isEqualTo(namespace);
+		assertThat(bean.getErrandId()).isEqualTo(errandId);
+		assertThat(bean.getErrandNumber()).isEqualTo(errandNumber);
 	}
 
 	@Test

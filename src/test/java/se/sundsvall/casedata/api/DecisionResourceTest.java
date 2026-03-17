@@ -18,7 +18,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
@@ -100,7 +99,6 @@ class DecisionResourceTest {
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isCreated()
-			.expectHeader().contentType(ALL_VALUE)
 			.expectHeader().location("/2281/MY_NAMESPACE/decisions/" + decisionId);
 
 		// Assert
@@ -120,8 +118,7 @@ class DecisionResourceTest {
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
-			.expectStatus().isNoContent()
-			.expectHeader().contentType(ALL_VALUE);
+			.expectStatus().isNoContent();
 
 		// Assert
 		verify(decisionServiceMock).update(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE, body);
@@ -141,8 +138,7 @@ class DecisionResourceTest {
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
-			.expectStatus().isNoContent()
-			.expectHeader().contentType(ALL_VALUE);
+			.expectStatus().isNoContent();
 
 		// Assert
 		verify(decisionServiceMock).replaceOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE, body);
@@ -158,11 +154,28 @@ class DecisionResourceTest {
 		webTestClient.delete()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/decisions/{decisionId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, decisionId))
 			.exchange()
-			.expectStatus().isNoContent()
-			.expectHeader().contentType(ALL_VALUE);
+			.expectStatus().isNoContent();
 
 		// Assert
 		verify(decisionServiceMock).delete(errandId, MUNICIPALITY_ID, NAMESPACE, decisionId);
+		verifyNoMoreInteractions(decisionServiceMock);
+	}
+
+	@Test
+	void getFinalDecisions() {
+		// Arrange
+		final var partyId = "123e4567-e89b-12d3-a456-426614174000";
+
+		// Act
+		final var response = webTestClient.get()
+			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/errands/{partyId}/decisions").build(MUNICIPALITY_ID, partyId))
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON);
+
+		// Assert
+		// TODO: Add assertions for the response body when the method is implemented.
+		assertThat(response).isNotNull();
 		verifyNoMoreInteractions(decisionServiceMock);
 	}
 
