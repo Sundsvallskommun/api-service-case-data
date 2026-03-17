@@ -71,7 +71,7 @@ public final class MessagingMapper {
 				errandEntity.getCaseTitleAddition(),
 				errandEntity.getErrandNumber(),
 				TYPE_REPORTER_SUPPORT_TEXT == supportTextType ? messagingSettings.getKatlaUrl() : messagingSettings.getContactInformationUrl(),
-				errandEntity.getId()))
+				errandEntity.getErrandNumber()))
 			.orElse("");
 	}
 

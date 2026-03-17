@@ -69,7 +69,7 @@ class MessagingMapperTest {
 		assertThat(bean.getMessage()).isEqualTo("""
 			Hej Test,
 			Du har fått ett nytt meddelande kopplat till ditt ärende gällande Case Title Addition, 123456789
-			Gå in på Mina Sidor via länken för att visa meddelandet: https://example.com/contact/privat/arenden/123
+			Gå in på Mina Sidor via länken för att visa meddelandet: https://example.com/contact/privat/arenden/123456789
 
 			Sundsvalls kommun
 			""");
@@ -133,7 +133,7 @@ class MessagingMapperTest {
 			Hej Test,
 			Ett nytt meddelande har skapats kopplat till ärende gällande Case Title Addition, 123456789 där du är
 			rapportör.
-			Gå in på Katla via länken för att visa meddelandet: https://example.com/contact/subpath/arenden/123
+			Gå in på Katla via länken för att visa meddelandet: https://example.com/contact/subpath/arenden/123456789
 
 			Avsändare
 			""");
@@ -190,7 +190,7 @@ class MessagingMapperTest {
 			.isEqualTo("""
 				Hej Test,
 				Du har fått ett nytt meddelande kopplat till ditt ärende gällande Case Title Addition, 123456789
-				Gå in på Mina Sidor via länken för att visa meddelandet: https://example.com/contact/privat/arenden/123
+				Gå in på Mina Sidor via länken för att visa meddelandet: https://example.com/contact/privat/arenden/123456789
 
 				Sundsvalls kommun
 				""");
