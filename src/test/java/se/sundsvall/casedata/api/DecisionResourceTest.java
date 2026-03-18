@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -165,17 +167,24 @@ class DecisionResourceTest {
 	void getFinalDecisions() {
 		// Arrange
 		final var partyId = "123e4567-e89b-12d3-a456-426614174000";
+		final var decisionDto = TestUtil.createDecision();
+		final var pageRequest = PageRequest.of(0, 20);
+		final var page = new PageImpl<>(List.of(decisionDto));
+		when(decisionServiceMock.findFinalDecisions(partyId, MUNICIPALITY_ID, pageRequest)).thenReturn(page);
 
 		// Act
 		final var response = webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path("/{municipalityId}/errands/{partyId}/decisions").build(MUNICIPALITY_ID, partyId))
 			.exchange()
 			.expectStatus().isOk()
-			.expectHeader().contentType(APPLICATION_JSON);
+			.expectHeader().contentType(APPLICATION_JSON)
+			.expectBodyList(Decision.class)
+			.returnResult();
 
 		// Assert
-		// TODO: Add assertions for the response body when the method is implemented.
 		assertThat(response).isNotNull();
+		assertThat(response.getResponseBody()).isNotNull().hasSize(1);
+		verify(decisionServiceMock).findFinalDecisions(partyId, MUNICIPALITY_ID, pageRequest);
 		verifyNoMoreInteractions(decisionServiceMock);
 	}
 

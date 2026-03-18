@@ -10,11 +10,16 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchDecision;
@@ -27,6 +32,7 @@ import se.sundsvall.casedata.integration.db.model.enums.DecisionType;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.dept44.problem.ThrowableProblem;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -167,6 +173,39 @@ class DecisionServiceTest {
 
 		// Act/Assert
 		assertThrows(ThrowableProblem.class, () -> decisionService.findDecisions(id, MUNICIPALITY_ID, NAMESPACE));
+	}
+
+	@Test
+	void findFinalDecisions() {
+		// Arrange
+		final var namespace = "MY_NAMESPACE";
+		final var partyId = "partyId";
+		final var errand1 = toErrandEntity(createErrand(), MUNICIPALITY_ID, NAMESPACE);
+		errand1.getDecisions().getFirst().setDecisionType(DecisionType.FINAL);
+		final var errand2 = toErrandEntity(createErrand(), MUNICIPALITY_ID, namespace);
+		errand2.getDecisions().getFirst().setDecisionType(DecisionType.FINAL);
+
+		when(errandRepositoryMock.findAll(ArgumentMatchers.<Specification<ErrandEntity>>any(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(errand1, errand2)));
+		final Pageable pageable = PageRequest.of(0, 20);
+
+		// Act
+		final var result = decisionService.findFinalDecisions(partyId, MUNICIPALITY_ID, pageable);
+
+		// Assert
+		assertThat(result.getContent()).hasSize(2);
+		verify(errandRepositoryMock).findAll(ArgumentMatchers.<Specification<ErrandEntity>>any(), any(Pageable.class));
+	}
+
+	@Test
+	void findFinalDecisionsNotFound() {
+		// Arrange
+		final var partyId = "partyId";
+
+		when(errandRepositoryMock.findAll(ArgumentMatchers.<Specification<ErrandEntity>>any(), any(Pageable.class))).thenReturn(new PageImpl<>(emptyList()));
+		final Pageable pageable = PageRequest.of(0, 20);
+
+		// Act/Assert
+		assertThrows(ThrowableProblem.class, () -> decisionService.findFinalDecisions(partyId, MUNICIPALITY_ID, pageable));
 	}
 
 	@Test

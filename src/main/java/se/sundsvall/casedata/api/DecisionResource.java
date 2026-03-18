@@ -10,7 +10,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -152,9 +154,9 @@ class DecisionResource {
 	})
 	ResponseEntity<Page<Decision>> getFinalDecisions(
 		@Parameter(description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
-		@Parameter(description = "PartyId to find cases for", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable @ValidUuid final String partyId) {
+		@Parameter(description = "PartyId to find cases for", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable @ValidUuid final String partyId,
+		@ParameterObject final Pageable pageable) {
 
-		// TODO: Implement method in service and return result here.
-		return ok(Page.empty());
+		return ok(decisionService.findFinalDecisions(partyId, municipalityId, pageable));
 	}
 }
