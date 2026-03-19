@@ -14,6 +14,7 @@ public final class MetadataMapper {
 			.withNamespace(namespace)
 			.withType(caseType.getType())
 			.withDisplayName(caseType.getDisplayName())
+			.withAutoProcess(caseType.isAutoProcess())
 			.build();
 	}
 
@@ -27,6 +28,7 @@ public final class MetadataMapper {
 		return CaseType.builder()
 			.withType(entity.getType())
 			.withDisplayName(entity.getDisplayName())
+			.withAutoProcess(entity.isAutoProcess())
 			.build();
 	}
 }

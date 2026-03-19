@@ -1,4 +1,5 @@
 {
 	"type": "type-1",
-	"displayName": "displayname-1"
+	"displayName": "displayname-1",
+	"autoProcess": true
 }
