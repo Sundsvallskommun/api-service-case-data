@@ -5153,9 +5153,9 @@ components:
           description: The display name of the case type
           examples:
             - Färdtjänst
-        autoProcess:
+        startProcess:
           type: boolean
-          description: Whether errands of this case type should automatically start/update a process
+          description: Whether errands of this case type should start/update a process
           examples:
             - "true"
     Errand:

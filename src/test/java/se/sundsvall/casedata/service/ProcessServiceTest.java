@@ -265,7 +265,7 @@ class ProcessServiceTest {
 		errand.setCaseType("UPDATECONTRACT");
 
 		when(caseTypeRepositoryMock.findByMunicipalityIdAndNamespaceAndType(errand.getMunicipalityId(), errand.getNamespace(), errand.getCaseType()))
-			.thenReturn(Optional.of(CaseTypeEntity.builder().withAutoProcess(false).build()));
+			.thenReturn(Optional.of(CaseTypeEntity.builder().withStartProcess(false).build()));
 
 		// Act
 		final var result = processService.startProcess(errand);
@@ -284,7 +284,7 @@ class ProcessServiceTest {
 		errand.setUpdatedByClient("someClient");
 
 		when(caseTypeRepositoryMock.findByMunicipalityIdAndNamespaceAndType(errand.getMunicipalityId(), errand.getNamespace(), errand.getCaseType()))
-			.thenReturn(Optional.of(CaseTypeEntity.builder().withAutoProcess(false).build()));
+			.thenReturn(Optional.of(CaseTypeEntity.builder().withStartProcess(false).build()));
 
 		// Act
 		processService.updateProcess(errand);

@@ -1,0 +1,1 @@
+ALTER TABLE case_type ADD COLUMN start_process bit(1) NOT NULL DEFAULT 1;

@@ -2,16 +2,16 @@
 	{
 		"type": "type-1",
 		"displayName": "displayname-1",
-		"autoProcess": true
+		"startProcess": true
 	},
 	{
 		"type": "type-2",
 		"displayName": "displayname-2",
-		"autoProcess": true
+		"startProcess": true
 	},
 	{
 		"type": "type-3",
 		"displayName": "displayname-3",
-		"autoProcess": true
+		"startProcess": true
 	}
 ]

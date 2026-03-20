@@ -46,6 +46,6 @@ public class CaseTypeEntity {
 	private String municipalityId;
 
 	@Builder.Default
-	@Column(name = "auto_process")
-	private boolean autoProcess = true;
+	@Column(name = "start_process")
+	private boolean startProcess = true;
 }

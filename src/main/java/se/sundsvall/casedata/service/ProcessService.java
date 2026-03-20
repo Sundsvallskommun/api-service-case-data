@@ -87,7 +87,7 @@ public class ProcessService {
 
 	private boolean isProcessingDisabled(final ErrandEntity errand) {
 		return caseTypeRepository.findByMunicipalityIdAndNamespaceAndType(errand.getMunicipalityId(), errand.getNamespace(), errand.getCaseType())
-			.map(caseTypeEntity -> !caseTypeEntity.isAutoProcess())
+			.map(caseTypeEntity -> !caseTypeEntity.isStartProcess())
 			.orElse(false);
 	}
 
