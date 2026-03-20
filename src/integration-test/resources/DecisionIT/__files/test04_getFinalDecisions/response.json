@@ -1,0 +1,59 @@
+{
+	"content": [
+		{
+			"id": 2,
+			"version": 1,
+			"municipalityId": "2281",
+			"namespace": "MY_NAMESPACE",
+			"decisionType": "FINAL",
+			"decisionOutcome": "APPROVAL",
+			"description": "Some description",
+			"errandId": 3,
+			"errandNumber": "ERRAND-NUMBER-3",
+			"law": [],
+			"decidedBy": {
+				"id": 3,
+				"version": 0,
+				"municipalityId": "2281",
+				"namespace": "MY_NAMESPACE",
+				"type": "PERSON",
+				"firstName": "FIRST-NAME-1",
+				"lastName": "LAST-NAME-1",
+				"personId": "d7af5f83-166a-468b-ab86-da8ca30ea97c",
+				"adAccount": "AD-1",
+				"roles": [
+					"APPLICANT"
+				],
+				"addresses": [],
+				"contactInformation": [],
+				"extraParameters": {},
+				"created": "2022-12-02T15:13:45.363+01:00",
+				"updated": "2022-12-02T15:15:01.563+01:00"
+			},
+			"decidedAt": "2024-01-01T12:00:00+01:00",
+			"validFrom": "2024-01-01T12:00:00+01:00",
+			"validTo": "2025-01-01T12:00:00+01:00",
+			"attachments": [],
+			"extraParameters": {},
+			"created": "2024-01-01T12:00:00+01:00",
+			"updated": "2024-01-01T12:00:00+01:00"
+		}
+	],
+	"empty": false,
+	"first": true,
+	"last": true,
+	"number": 0,
+	"numberOfElements": 1,
+	"pageable": {
+		"offset": 0,
+		"pageNumber": 0,
+		"pageSize": 20,
+		"paged": true,
+		"sort": [],
+		"unpaged": false
+	},
+	"size": 20,
+	"sort": [],
+	"totalElements": 1,
+	"totalPages": 1
+}

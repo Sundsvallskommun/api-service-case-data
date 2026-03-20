@@ -31,7 +31,9 @@ class DecisionIT extends AbstractAppTest {
 
 	private static final String DECISION_ID = "1";
 	private static final String ERRAND_ID = "1";
+	private static final String PARTY_ID = "d7af5f83-166a-468b-ab86-da8ca30ea97c";
 	private static final String PATH = "/{0}/{1}/errands/{2}/decisions/{3}";
+	private static final String FINAL_DECISIONS_PATH = "/{0}/errands/{1}/decisions";
 
 	@Test
 	void test01_getDecisionById() {
@@ -77,6 +79,16 @@ class DecisionIT extends AbstractAppTest {
 
 		setupCall()
 			.withServicePath(format("/{0}/{1}/errands/{2}", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test04_getFinalDecisions() {
+		setupCall()
+			.withServicePath(format(FINAL_DECISIONS_PATH, MUNICIPALITY_ID, PARTY_ID))
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(RESPONSE_FILE)
