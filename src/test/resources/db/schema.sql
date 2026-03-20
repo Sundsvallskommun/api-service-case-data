@@ -25,6 +25,7 @@
     ) engine=InnoDB;
 
     create table case_type (
+        start_process bit,
         municipality_id varchar(10) not null,
         namespace varchar(100) not null,
         type varchar(100),

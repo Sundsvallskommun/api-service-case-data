@@ -17,7 +17,8 @@ class MetadataMapperTest {
 		final var namespace = "namespace";
 		final var type = "type";
 		final var displayName = "displayName";
-		final var caseType = CaseType.builder().withType(type).withDisplayName(displayName).build();
+		final var startProcess = false;
+		final var caseType = CaseType.builder().withType(type).withDisplayName(displayName).withStartProcess(startProcess).build();
 
 		// Act
 		final var bean = MetadataMapper.toCaseTypeEntity(municipalityId, namespace, caseType);
@@ -28,6 +29,7 @@ class MetadataMapperTest {
 		assertThat(bean.getNamespace()).isEqualTo(namespace);
 		assertThat(bean.getType()).isEqualTo(type);
 		assertThat(bean.getDisplayName()).isEqualTo(displayName);
+		assertThat(bean.isStartProcess()).isEqualTo(startProcess);
 	}
 
 	@Test
@@ -37,8 +39,8 @@ class MetadataMapperTest {
 		final var displayName = "displayName";
 		final var type2 = "type2";
 		final var displayName2 = "displayName2";
-		final var caseType = CaseTypeEntity.builder().withType(type).withDisplayName(displayName).build();
-		final var caseType2 = CaseTypeEntity.builder().withType(type2).withDisplayName(displayName2).build();
+		final var caseType = CaseTypeEntity.builder().withType(type).withDisplayName(displayName).withStartProcess(true).build();
+		final var caseType2 = CaseTypeEntity.builder().withType(type2).withDisplayName(displayName2).withStartProcess(false).build();
 		final var caseTypes = List.of(caseType, caseType2);
 
 		// Act
@@ -48,8 +50,10 @@ class MetadataMapperTest {
 		assertThat(bean).hasSize(2);
 		assertThat(bean.get(0).getType()).isEqualTo(type);
 		assertThat(bean.get(0).getDisplayName()).isEqualTo(displayName);
+		assertThat(bean.get(0).isStartProcess()).isTrue();
 		assertThat(bean.get(1).getType()).isEqualTo(type2);
 		assertThat(bean.get(1).getDisplayName()).isEqualTo(displayName2);
+		assertThat(bean.get(1).isStartProcess()).isFalse();
 	}
 
 	@Test
@@ -57,7 +61,7 @@ class MetadataMapperTest {
 		// Arrange
 		final var type = "type";
 		final var displayName = "displayName";
-		final var caseType = CaseTypeEntity.builder().withType(type).withDisplayName(displayName).build();
+		final var caseType = CaseTypeEntity.builder().withType(type).withDisplayName(displayName).withStartProcess(true).build();
 
 		// Act
 		final var bean = MetadataMapper.toCaseType(caseType);
@@ -66,5 +70,6 @@ class MetadataMapperTest {
 		assertThat(bean).hasNoNullFieldsOrProperties();
 		assertThat(bean.getType()).isEqualTo(type);
 		assertThat(bean.getDisplayName()).isEqualTo(displayName);
+		assertThat(bean.isStartProcess()).isTrue();
 	}
 }

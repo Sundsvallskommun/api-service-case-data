@@ -1,4 +1,5 @@
 {
 	"type": "NEW_CASE_TYPE",
-	"displayName": "My new casetype"
+	"displayName": "My new casetype",
+	"startProcess": false
 }

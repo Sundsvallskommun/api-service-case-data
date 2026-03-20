@@ -32,6 +32,7 @@ class CaseTypeEntityTest {
 		final var displayName = "displayName";
 		final var namespace = "namespace";
 		final var municipalityId = "1234";
+		final var startProcess = false;
 
 		// Act
 		final var result = CaseTypeEntity.builder()
@@ -40,6 +41,7 @@ class CaseTypeEntityTest {
 			.withDisplayName(displayName)
 			.withNamespace(namespace)
 			.withMunicipalityId(municipalityId)
+			.withStartProcess(startProcess)
 			.build();
 		// Assert
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
@@ -48,11 +50,12 @@ class CaseTypeEntityTest {
 		assertThat(result.getDisplayName()).isEqualTo(displayName);
 		assertThat(result.getNamespace()).isEqualTo(namespace);
 		assertThat(result.getMunicipalityId()).isEqualTo(municipalityId);
+		assertThat(result.isStartProcess()).isEqualTo(startProcess);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(CaseTypeEntity.builder().build()).hasAllNullFieldsOrProperties();
-		assertThat(new CaseTypeEntity()).hasAllNullFieldsOrProperties();
+		assertThat(CaseTypeEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("startProcess");
+		assertThat(new CaseTypeEntity()).hasAllNullFieldsOrPropertiesExcept("startProcess");
 	}
 }

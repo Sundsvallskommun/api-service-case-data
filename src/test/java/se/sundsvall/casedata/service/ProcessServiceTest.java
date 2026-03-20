@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service;
 
 import generated.se.sundsvall.parkingpermit.StartProcessResponse;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.integration.db.CaseTypeRepository;
+import se.sundsvall.casedata.integration.db.model.CaseTypeEntity;
 import se.sundsvall.casedata.integration.landandexploitation.LandAndExploitationIntegration;
 import se.sundsvall.casedata.integration.landandexploitation.configuration.LandAndExploitationProperties;
 import se.sundsvall.casedata.integration.paratransit.ParatransitIntegration;
@@ -32,6 +35,9 @@ import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessServiceTest {
+
+	@Mock
+	private CaseTypeRepository caseTypeRepositoryMock;
 
 	@Mock
 	private ParkingPermitProperties parkingPermitPropertiesMock;
@@ -249,5 +255,41 @@ class ProcessServiceTest {
 		verify(landAndExploitationIntegrationMock).startProcess(errand);
 		verifyNoMoreInteractions(landAndExploitationIntegrationMock);
 		verifyNoInteractions(paratransitIntegrationMock, parkingPermitIntegrationMock);
+	}
+
+	@Test
+	void startProcessWhenProcessingDisabled() {
+		// Arrange
+		final var errand = createErrandEntity();
+		errand.setNamespace("SBK_MEX");
+		errand.setCaseType("UPDATECONTRACT");
+
+		when(caseTypeRepositoryMock.findByMunicipalityIdAndNamespaceAndType(errand.getMunicipalityId(), errand.getNamespace(), errand.getCaseType()))
+			.thenReturn(Optional.of(CaseTypeEntity.builder().withStartProcess(false).build()));
+
+		// Act
+		final var result = processService.startProcess(errand);
+
+		// Assert
+		assertThat(result).isNull();
+		verifyNoInteractions(parkingPermitIntegrationMock, landAndExploitationIntegrationMock, paratransitIntegrationMock);
+	}
+
+	@Test
+	void updateProcessWhenProcessingDisabled() {
+		// Arrange
+		final var errand = createErrandEntity();
+		errand.setNamespace("SBK_MEX");
+		errand.setCaseType("UPDATECONTRACT");
+		errand.setUpdatedByClient("someClient");
+
+		when(caseTypeRepositoryMock.findByMunicipalityIdAndNamespaceAndType(errand.getMunicipalityId(), errand.getNamespace(), errand.getCaseType()))
+			.thenReturn(Optional.of(CaseTypeEntity.builder().withStartProcess(false).build()));
+
+		// Act
+		processService.updateProcess(errand);
+
+		// Assert
+		verifyNoInteractions(parkingPermitIntegrationMock, landAndExploitationIntegrationMock, paratransitIntegrationMock);
 	}
 }

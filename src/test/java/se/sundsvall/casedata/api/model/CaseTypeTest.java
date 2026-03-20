@@ -28,23 +28,26 @@ class CaseTypeTest {
 		// Arrange
 		final var type = "type";
 		final var displayName = "displayName";
+		final var startProcess = true;
 
 		// Act
 		final var result = CaseType.builder()
 			.withType(type)
 			.withDisplayName(displayName)
+			.withStartProcess(startProcess)
 			.build();
 
 		// Assert
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(result.getType()).isEqualTo(type);
 		assertThat(result.getDisplayName()).isEqualTo(displayName);
+		assertThat(result.isStartProcess()).isEqualTo(startProcess);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(CaseType.builder().build()).hasAllNullFieldsOrProperties();
-		assertThat(new CaseType()).hasAllNullFieldsOrProperties();
+		assertThat(CaseType.builder().build()).hasAllNullFieldsOrPropertiesExcept("startProcess");
+		assertThat(new CaseType()).hasAllNullFieldsOrPropertiesExcept("startProcess");
 	}
 
 }

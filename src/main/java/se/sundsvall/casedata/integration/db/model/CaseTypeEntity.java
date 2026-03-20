@@ -44,4 +44,8 @@ public class CaseTypeEntity {
 
 	@Column(name = "municipality_id", length = 10, nullable = false)
 	private String municipalityId;
+
+	@Builder.Default
+	@Column(name = "start_process")
+	private boolean startProcess = true;
 }

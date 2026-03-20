@@ -1,14 +1,17 @@
 [
 	{
 		"type": "type-1",
-		"displayName": "displayname-1"
+		"displayName": "displayname-1",
+		"startProcess": true
 	},
 	{
 		"type": "type-2",
-		"displayName": "displayname-2"
+		"displayName": "displayname-2",
+		"startProcess": true
 	},
 	{
 		"type": "type-3",
-		"displayName": "displayname-3"
+		"displayName": "displayname-3",
+		"startProcess": true
 	}
 ]
