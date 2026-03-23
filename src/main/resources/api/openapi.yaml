@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "11.13"
 servers:
-  - url: http://localhost:65021
+  - url: http://localhost:55998
     description: Generated server url
 tags:
   - name: Notifications
@@ -4459,7 +4459,7 @@ paths:
         - name: sort
           in: query
           description: "Sorting criteria in the format: property,(asc|desc). Default\
-            \ sort order is ascending. Multiple sort criteria are supported."
+          \ sort order is ascending. Multiple sort criteria are supported."
           required: false
           schema:
             type: array
@@ -4492,7 +4492,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-
   /api-docs:
     get:
       tags:
@@ -4794,13 +4793,13 @@ components:
             $ref: "#/components/schemas/Violation"
         title:
           type: string
+        causeAsProblem:
+          $ref: "#/components/schemas/ThrowableProblem"
+        detail:
+          type: string
         instance:
           type: string
           format: uri
-        detail:
-          type: string
-        causeAsProblem:
-          $ref: "#/components/schemas/ThrowableProblem"
     ThrowableProblem:
       type: object
       properties:
@@ -5018,6 +5017,19 @@ components:
           examples:
             - MY_NAMESPACE
           readOnly: true
+        errandId:
+          type: integer
+          format: int64
+          description: The id of the errand
+          examples:
+            - "1"
+          readOnly: true
+        errandNumber:
+          type: string
+          description: Errand number
+          examples:
+            - SGP-2022-000001
+          readOnly: true
         decisionType:
           type: string
           description: Type of the decision
@@ -5075,19 +5087,6 @@ components:
           description: List of attachments related to the decision
           items:
             $ref: "#/components/schemas/Attachment"
-        errandId:
-          type: integer
-          format: int64
-          description: The id of the errand
-          examples:
-            - "1"
-          readOnly: true
-        errandNumber:
-          type: string
-          description: Errand number
-          examples:
-            - SGP-2022-000001
-          readOnly: true
         extraParameters:
           type: object
           additionalProperties:
@@ -5399,9 +5398,7 @@ components:
     JsonNode:
       type: object
       properties:
-        valueNode:
-          type: boolean
-        missingNode:
+        number:
           type: boolean
         nodeType:
           type: string
@@ -5418,6 +5415,10 @@ components:
         string:
           type: boolean
         integralNumber:
+          type: boolean
+        valueNode:
+          type: boolean
+        missingNode:
           type: boolean
         pojo:
           type: boolean
@@ -5440,11 +5441,9 @@ components:
           type: boolean
         binary:
           type: boolean
-        floatingPointNumber:
-          type: boolean
-        number:
-          type: boolean
         container:
+          type: boolean
+        floatingPointNumber:
           type: boolean
         empty:
           type: boolean
@@ -5778,6 +5777,9 @@ components:
         - IN_REPLY_TO
         - REFERENCES
         - MESSAGE_ID
+        - AUTO_SUBMITTED
+        - RETURN_PATH
+        - CONTENT_TYPE
     MessageAttachment:
       type: object
       description: MessageResponse
@@ -5929,7 +5931,7 @@ components:
           $ref: "#/components/schemas/ConversationType"
           description: The conversation type
           examples:
-          - INTERNAL
+            - INTERNAL
         relationIds:
           type: array
           items:
@@ -6313,15 +6315,15 @@ components:
           format: int64
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        numberOfElements:
-          type: integer
-          format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
-        sort:
-          $ref: "#/components/schemas/SortObject"
+        numberOfElements:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -6599,15 +6601,15 @@ components:
           format: int64
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        numberOfElements:
-          type: integer
-          format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
-        sort:
-          $ref: "#/components/schemas/SortObject"
+        numberOfElements:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -6623,10 +6625,21 @@ components:
     PageDecision:
       type: object
       properties:
+        totalPages:
+          type: integer
+          format: int32
         totalElements:
           type: integer
           format: int64
-        totalPages:
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
           type: integer
           format: int32
         size:
@@ -6639,17 +6652,6 @@ components:
         number:
           type: integer
           format: int32
-        first:
-          type: boolean
-        last:
-          type: boolean
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        numberOfElements:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
         empty:
           type: boolean
   securitySchemes: { }
