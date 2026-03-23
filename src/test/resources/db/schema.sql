@@ -90,7 +90,7 @@
     create table email_header (
         id bigint not null auto_increment,
         message_id varchar(255),
-        header enum ('IN_REPLY_TO','MESSAGE_ID','REFERENCES'),
+        header enum ('AUTO_SUBMITTED','CONTENT_TYPE','IN_REPLY_TO','MESSAGE_ID','REFERENCES','RETURN_PATH'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -543,9 +543,9 @@
        foreign key (facility_id) 
        references facility (id);
 
-    alter table if exists json_parameter
-       add constraint fk_json_parameter_errand_id
-       foreign key (errand_id)
+    alter table if exists json_parameter 
+       add constraint fk_json_parameter_errand_id 
+       foreign key (errand_id) 
        references errand (id);
 
     alter table if exists message_attachment 

@@ -277,11 +277,21 @@ public class MessageMapper {
 
 	private List<EmailHeaderEntity> toEmailHeaders(final Map<String, List<String>> headers) {
 		return Optional.ofNullable(headers).orElse(Collections.emptyMap()).entrySet().stream()
-			.map(entry -> EmailHeaderEntity.builder()
-				.withHeader(Header.valueOf(entry.getKey()))
-				.withValues(entry.getValue())
-				.build())
+			.flatMap(entry -> toHeader(entry.getKey())
+				.map(header -> EmailHeaderEntity.builder()
+					.withHeader(header)
+					.withValues(entry.getValue())
+					.build())
+				.stream())
 			.toList();
+	}
+
+	private Optional<Header> toHeader(final String key) {
+		try {
+			return Optional.of(Header.valueOf(key));
+		} catch (final IllegalArgumentException _) {
+			return Optional.empty();
+		}
 	}
 
 }
