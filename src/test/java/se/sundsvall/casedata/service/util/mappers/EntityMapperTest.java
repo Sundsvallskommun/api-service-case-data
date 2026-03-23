@@ -185,7 +185,8 @@ class EntityMapperTest {
 			"suspension",
 			"notifications",
 			"extraParameters",
-			"jsonParameters");
+			"jsonParameters",
+			"confidentiality");
 
 		assertThat(dto.getId()).isEqualTo(entity.getId());
 		assertThat(dto.getVersion()).isEqualTo(entity.getVersion());

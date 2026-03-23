@@ -293,6 +293,7 @@
 	"createdBy": "",
 	"updatedBy": "",
 	"suspension": {},
+	"confidentiality": false,
 	"extraParameters": [
 		{
 			"id": "${json-unit.any-string}",

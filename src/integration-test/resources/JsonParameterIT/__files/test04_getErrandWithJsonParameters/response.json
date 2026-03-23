@@ -30,6 +30,7 @@
 	"createdBy": "UNKNOWN",
 	"updatedBy": "UNKNOWN",
 	"suspension": {},
+	"confidentiality": false,
 	"extraParameters": [],
 	"jsonParameters": [
 		{

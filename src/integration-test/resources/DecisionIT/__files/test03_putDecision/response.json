@@ -137,6 +137,7 @@
 	"jsonParameters": [],
 	"relatesTo": [],
 	"suspension": {},
+	"confidentiality": false,
 	"phase": "Aktualisering",
 	"updatedBy": "user123",
 	"updatedByClient": "WSO2_MS_caseManagement",

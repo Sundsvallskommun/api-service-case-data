@@ -5,7 +5,7 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.13"
+  version: "11.14"
 servers:
   - url: http://localhost:55998
     description: Generated server url
@@ -5351,6 +5351,11 @@ components:
         suspension:
           $ref: "#/components/schemas/Suspension"
           description: Suspension information
+        confidentiality:
+          type: boolean
+          description: Whether the errand is confidential or not
+          examples:
+            - "true"
         extraParameters:
           type: array
           description: Extra parameters for the errand
