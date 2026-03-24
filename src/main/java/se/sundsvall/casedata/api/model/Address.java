@@ -53,7 +53,7 @@ public class Address {
 	@Size(max = 255)
 	private String apartmentNumber;
 
-	@Schema(description = "Indicates if the address is within a zoning plan area", examples = "true")
+	@Schema(description = "Indicates if the address is within a zoning plan area")
 	private Boolean isZoningPlanArea;
 
 	@Schema(description = "Invoice marking, only in combination with addressCategory: INVOICE_ADDRESS", examples = "1234567890", maxLength = 255)

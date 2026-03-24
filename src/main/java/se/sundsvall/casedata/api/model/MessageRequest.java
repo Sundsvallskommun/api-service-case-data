@@ -79,7 +79,7 @@ public class MessageRequest {
 	@Schema(description = "List of email headers on the message")
 	private List<EmailHeader> emailHeaders;
 
-	@Schema(description = "Is message internal", examples = "true")
+	@Schema(description = "Is message internal")
 	private Boolean internal;
 
 	@Data

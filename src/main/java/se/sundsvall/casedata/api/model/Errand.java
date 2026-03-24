@@ -141,7 +141,7 @@ public class Errand {
 	@Valid
 	private Suspension suspension;
 
-	@Schema(description = "Whether the errand is confidential or not", examples = "true")
+	@Schema(description = "Whether the errand is confidential or not")
 	private boolean confidentiality;
 
 	@Schema(description = "Extra parameters for the errand")

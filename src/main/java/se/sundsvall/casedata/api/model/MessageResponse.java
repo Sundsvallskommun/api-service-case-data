@@ -82,7 +82,7 @@ public class MessageResponse {
 	@Schema(description = "The user ID of the user that sent the message", examples = "12")
 	private String userId;
 
-	@Schema(description = "Signal if the message has been viewed or not", examples = "true")
+	@Schema(description = "Signal if the message has been viewed or not")
 	private Boolean viewed;
 
 	@Schema(description = "The classification of the message")
@@ -94,7 +94,7 @@ public class MessageResponse {
 	@Schema(description = "List of email headers on the message")
 	private List<EmailHeader> emailHeaders;
 
-	@Schema(description = "Is message internal", examples = "true")
+	@Schema(description = "Is message internal")
 	private Boolean internal;
 
 	@Getter
