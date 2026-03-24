@@ -57,6 +57,7 @@ class ErrandEntityTest {
 	private static final List<RelatedErrandEntity> RELATES_TO = List.of(new RelatedErrandEntity());
 	private static final List<String> LABELS = List.of("label");
 	private static final StatusEntity STATUS = new StatusEntity();
+	private static final boolean CONFIDENTIALITY = true;
 
 	@BeforeAll
 	static void setup() {
@@ -115,6 +116,7 @@ class ErrandEntityTest {
 			.withRelatesTo(RELATES_TO)
 			.withLabels(LABELS)
 			.withStatus(STATUS)
+			.withConfidential(CONFIDENTIALITY)
 			.build();
 
 		// Assert
@@ -140,6 +142,7 @@ class ErrandEntityTest {
 		assertThat(bean.getPhase()).isEqualTo(PHASE);
 		assertThat(bean.getStatus()).isEqualTo(STATUS);
 		assertThat(bean.getProcessId()).isEqualTo(PROCESS_ID);
+		assertThat(bean.isConfidential()).isEqualTo(CONFIDENTIALITY);
 	}
 
 	private void assertDates(final ErrandEntity bean) {
@@ -193,9 +196,9 @@ class ErrandEntityTest {
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(ErrandEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("version")
+		assertThat(ErrandEntity.builder().build()).hasAllNullFieldsOrPropertiesExcept("confidential", "version")
 			.satisfies(bean -> assertThat(bean.getVersion()).isZero());
-		assertThat(new ErrandEntity()).hasAllNullFieldsOrPropertiesExcept("version")
+		assertThat(new ErrandEntity()).hasAllNullFieldsOrPropertiesExcept("confidential", "version")
 			.satisfies(bean -> assertThat(bean.getVersion()).isZero());
 	}
 }

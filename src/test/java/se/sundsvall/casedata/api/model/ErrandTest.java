@@ -81,7 +81,7 @@ class ErrandTest {
 		final var labels = List.of("label");
 		final var status = new Status();
 		final var notifications = List.of(new Notification());
-		final var confidentiality = true;
+		final var confidential = true;
 
 		// Act
 		final var bean = Errand.builder()
@@ -121,7 +121,7 @@ class ErrandTest {
 			.withLabels(labels)
 			.withStatus(status)
 			.withNotifications(notifications)
-			.withConfidentiality(confidentiality)
+			.withConfidential(confidential)
 			.build();
 
 		// Assert
@@ -149,7 +149,7 @@ class ErrandTest {
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getNamespace()).isEqualTo(namespace);
 		assertThat(bean.getStatus()).isEqualTo(status);
-		assertThat(bean.isConfidentiality()).isTrue();
+		assertThat(bean.isConfidential()).isTrue();
 	}
 
 	private void assertDates(final Errand bean, final LocalDate startDate, final LocalDate endDate, final OffsetDateTime applicationReceived, final OffsetDateTime created, final OffsetDateTime updated) {
@@ -183,12 +183,12 @@ class ErrandTest {
 
 	@Test
 	void testNoDirtOnEmptyBean() {
-		assertThat(Errand.builder().build()).hasAllNullFieldsOrPropertiesExcept("confidentiality", "priority", "version")
+		assertThat(Errand.builder().build()).hasAllNullFieldsOrPropertiesExcept("confidential", "priority", "version")
 			.satisfies(bean -> {
 				assertThat(bean.getPriority()).isEqualTo(Priority.MEDIUM);
 				assertThat(bean.getVersion()).isZero();
 			});
-		assertThat(new Errand()).hasAllNullFieldsOrPropertiesExcept("confidentiality", "priority", "version")
+		assertThat(new Errand()).hasAllNullFieldsOrPropertiesExcept("confidential", "priority", "version")
 			.satisfies(bean -> {
 				assertThat(bean.getPriority()).isEqualTo(Priority.MEDIUM);
 				assertThat(bean.getVersion()).isZero();

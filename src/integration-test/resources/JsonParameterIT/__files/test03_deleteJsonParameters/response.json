@@ -47,7 +47,7 @@
 	"createdBy": "UNKNOWN",
 	"updatedBy": "user123",
 	"suspension": {},
-	"confidentiality": false,
+	"confidential": false,
 	"extraParameters": [],
 	"jsonParameters": [],
 	"created": "2022-12-02T15:13:45.363+01:00",
