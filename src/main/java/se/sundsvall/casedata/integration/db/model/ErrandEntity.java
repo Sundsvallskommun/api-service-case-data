@@ -183,6 +183,9 @@ public class ErrandEntity {
 	@DiffIgnore
 	private String updatedBy;
 
+	@Column(name = "confidentiality")
+	private boolean confidentiality;
+
 	@CreationTimestamp
 	@Column(name = "created")
 	@TimeZoneStorage(TimeZoneStorageType.NORMALIZE)

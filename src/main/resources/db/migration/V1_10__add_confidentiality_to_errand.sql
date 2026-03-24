@@ -1,0 +1,1 @@
+ALTER TABLE errand ADD COLUMN confidentiality bit(1) NOT NULL DEFAULT 0;

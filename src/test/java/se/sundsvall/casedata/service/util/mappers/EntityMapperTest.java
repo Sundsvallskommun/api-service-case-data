@@ -97,6 +97,7 @@ class EntityMapperTest {
 			assertThat(e.getCaseTitleAddition()).isEqualTo(errandDto.getCaseTitleAddition());
 			assertThat(e.getDescription()).isEqualTo(errandDto.getDescription());
 			assertThat(e.getLabels()).isEqualTo(errandDto.getLabels());
+			assertThat(e.isConfidentiality()).isEqualTo(errandDto.isConfidentiality());
 		});
 	}
 
@@ -123,7 +124,8 @@ class EntityMapperTest {
 			"jsonParameters",
 			"municipalityId",
 			"namespace",
-			"priority");
+			"priority",
+			"confidentiality");
 
 		assertThat(entity.getVersion()).isZero();
 		assertThat(entity.getStatuses()).isEmpty();
@@ -161,6 +163,7 @@ class EntityMapperTest {
 			assertThat(e.getDescription()).isEqualTo(errand.getDescription());
 			assertThat(e.getNamespace()).isEqualTo(errand.getNamespace());
 			assertThat(e.getMunicipalityId()).isEqualTo(errand.getMunicipalityId());
+			assertThat(e.isConfidentiality()).isEqualTo(errand.isConfidentiality());
 		});
 	}
 
