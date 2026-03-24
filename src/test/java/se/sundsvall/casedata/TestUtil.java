@@ -121,7 +121,7 @@ public final class TestUtil {
 			.withExtraParameters(createExtraParametersList())
 			.withJsonParameters(createJsonParameterList())
 			.withLabels(new ArrayList<>(List.of("label1", "label2")))
-			.withConfidentiality(true)
+			.withConfidential(true)
 			.build();
 	}
 
@@ -641,7 +641,7 @@ public final class TestUtil {
 			.withDescription("description")
 			.withStatus(StatusEntity.builder().withStatusType("test").withCreated(now()).withDescription("test").build())
 			.withPhase("phase")
-			.withConfidentiality(true)
+			.withConfidential(true)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withUpdated(getRandomOffsetDateTime())

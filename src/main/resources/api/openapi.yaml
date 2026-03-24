@@ -5345,7 +5345,7 @@ components:
         suspension:
           $ref: "#/components/schemas/Suspension"
           description: Suspension information
-        confidentiality:
+        confidential:
           type: boolean
           description: Whether the errand is confidential or not
         extraParameters:

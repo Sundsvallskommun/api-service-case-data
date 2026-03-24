@@ -33,7 +33,7 @@
 	"createdBy": "user123",
 	"updatedBy": "user123",
 	"suspension": {},
-	"confidentiality": false,
+	"confidential": false,
 	"extraParameters": [],
 	"jsonParameters": [
 		{

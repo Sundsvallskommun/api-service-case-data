@@ -102,7 +102,7 @@
     ) engine=InnoDB;
 
     create table errand (
-        confidentiality bit,
+        confidential bit,
         end_date date,
         start_date date,
         version integer,

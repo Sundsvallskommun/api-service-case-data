@@ -36,7 +36,7 @@
 		}
 	],
 	"suspension": {},
-	"confidentiality": false,
+	"confidential": false,
 	"updated": "${json-unit.any-string}",
 	"updatedBy": "",
 	"updatedByClient": "UNKNOWN",

@@ -97,7 +97,7 @@ class EntityMapperTest {
 			assertThat(e.getCaseTitleAddition()).isEqualTo(errandDto.getCaseTitleAddition());
 			assertThat(e.getDescription()).isEqualTo(errandDto.getDescription());
 			assertThat(e.getLabels()).isEqualTo(errandDto.getLabels());
-			assertThat(e.isConfidentiality()).isEqualTo(errandDto.isConfidentiality());
+			assertThat(e.isConfidential()).isEqualTo(errandDto.isConfidential());
 		});
 	}
 
@@ -125,7 +125,7 @@ class EntityMapperTest {
 			"municipalityId",
 			"namespace",
 			"priority",
-			"confidentiality");
+			"confidential");
 
 		assertThat(entity.getVersion()).isZero();
 		assertThat(entity.getStatuses()).isEmpty();
@@ -163,7 +163,7 @@ class EntityMapperTest {
 			assertThat(e.getDescription()).isEqualTo(errand.getDescription());
 			assertThat(e.getNamespace()).isEqualTo(errand.getNamespace());
 			assertThat(e.getMunicipalityId()).isEqualTo(errand.getMunicipalityId());
-			assertThat(e.isConfidentiality()).isEqualTo(errand.isConfidentiality());
+			assertThat(e.isConfidential()).isEqualTo(errand.isConfidential());
 		});
 	}
 
@@ -189,7 +189,7 @@ class EntityMapperTest {
 			"notifications",
 			"extraParameters",
 			"jsonParameters",
-			"confidentiality");
+			"confidential");
 
 		assertThat(dto.getId()).isEqualTo(entity.getId());
 		assertThat(dto.getVersion()).isEqualTo(entity.getVersion());

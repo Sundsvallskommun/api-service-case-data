@@ -183,8 +183,8 @@ public class ErrandEntity {
 	@DiffIgnore
 	private String updatedBy;
 
-	@Column(name = "confidentiality")
-	private boolean confidentiality;
+	@Column(name = "confidential")
+	private boolean confidential;
 
 	@CreationTimestamp
 	@Column(name = "created")
