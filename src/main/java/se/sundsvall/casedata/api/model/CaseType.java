@@ -18,6 +18,6 @@ public class CaseType {
 	@Schema(description = "The display name of the case type", examples = "Färdtjänst")
 	private String displayName;
 
-	@Schema(description = "Whether errands of this case type should start/update a process", examples = "true")
+	@Schema(description = "Whether errands of this case type should start/update a process")
 	private boolean startProcess;
 }

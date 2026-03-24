@@ -294,6 +294,7 @@
 	"jsonParameters": [],
 	"relatesTo": [],
 	"suspension": {},
+	"confidentiality": false,
 	"phase": "Actualization",
 	"updatedBy": "user123",
 	"created": "${json-unit.any-string}",

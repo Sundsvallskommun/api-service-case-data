@@ -47,7 +47,7 @@ public class Facility {
 	@Size(max = 255)
 	private String facilityCollectionName;
 
-	@Schema(description = "Is this the main facility for the case?", examples = "true")
+	@Schema(description = "Is this the main facility for the case?")
 	private boolean mainFacility;
 
 	@Schema(description = "Type of the facility", examples = "INDUSTRIAL")

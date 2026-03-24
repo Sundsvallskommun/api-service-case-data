@@ -65,10 +65,10 @@ public class Notification {
 	@Schema(description = "Timestamp when the notification expires", examples = "2000-10-31T01:30:00.000+02:00")
 	private OffsetDateTime expires;
 
-	@Schema(description = "Acknowledged status of the notification", examples = "true")
+	@Schema(description = "Acknowledged status of the notification")
 	private boolean acknowledged;
 
-	@Schema(description = "Acknowledged status of the notification (global level). I.e. this notification is acknowledged by anyone.", examples = "true")
+	@Schema(description = "Acknowledged status of the notification (global level). I.e. this notification is acknowledged by anyone.")
 	private boolean globalAcknowledged;
 
 	@Schema(description = "Errand id of the notification", examples = "1234", accessMode = READ_ONLY)

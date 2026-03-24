@@ -5,7 +5,7 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.13"
+  version: "11.14"
 servers:
   - url: http://localhost:55998
     description: Generated server url
@@ -4588,8 +4588,6 @@ components:
         isZoningPlanArea:
           type: boolean
           description: Indicates if the address is within a zoning plan area
-          examples:
-            - "true"
         invoiceMarking:
           type: string
           description: "Invoice marking, only in combination with addressCategory:\
@@ -4873,8 +4871,6 @@ components:
         mainFacility:
           type: boolean
           description: Is this the main facility for the case?
-          examples:
-            - "true"
         facilityType:
           type: string
           description: Type of the facility
@@ -5155,8 +5151,6 @@ components:
         startProcess:
           type: boolean
           description: Whether errands of this case type should start/update a process
-          examples:
-            - "true"
     Errand:
       type: object
       properties:
@@ -5351,6 +5345,9 @@ components:
         suspension:
           $ref: "#/components/schemas/Suspension"
           description: Suspension information
+        confidentiality:
+          type: boolean
+          description: Whether the errand is confidential or not
         extraParameters:
           type: array
           description: Extra parameters for the errand
@@ -5659,14 +5656,10 @@ components:
         acknowledged:
           type: boolean
           description: Acknowledged status of the notification
-          examples:
-            - "true"
         globalAcknowledged:
           type: boolean
           description: Acknowledged status of the notification (global level). I.e.
             this notification is acknowledged by anyone.
-          examples:
-            - "true"
         errandId:
           type: integer
           format: int64
@@ -5909,8 +5902,6 @@ components:
         internal:
           type: boolean
           description: Is message internal
-          examples:
-            - "true"
     Conversation:
       type: object
       description: Conversation model
@@ -6138,14 +6129,10 @@ components:
         acknowledged:
           type: boolean
           description: Acknowledged status of the notification
-          examples:
-            - "true"
         globalAcknowledged:
           type: boolean
           description: Acknowledged status of the notification (global level). I.e.
             this notification is acknowledged by anyone.
-          examples:
-            - "true"
       required:
         - errandId
     PatchErrand:
@@ -6570,8 +6557,6 @@ components:
         viewed:
           type: boolean
           description: Signal if the message has been viewed or not
-          examples:
-            - "true"
         classification:
           $ref: "#/components/schemas/Classification"
           description: The classification of the message
@@ -6588,8 +6573,6 @@ components:
         internal:
           type: boolean
           description: Is message internal
-          examples:
-            - "true"
     PageMessage:
       type: object
       properties:
