@@ -71,7 +71,9 @@ class ErrandResource {
 	ResponseEntity<Void> createErrand(
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "referred_from", description = "Source errand reference in format: <service>,<namespace>,<identifier>", example = "ABC-123456") @RequestParam(name = "referred_from", required = false) final String referredFrom,
+		@Parameter(name = "referred_from",
+			description = "Relation reference in format (only source is used): '{relationType}|{sourceResourceId};{sourceType};{sourceService};{sourceNamespace}|{targetResourceId};{targetType};{targetService};{targetNamespace}'",
+			example = "LINK|1234;case;service;MY_NAMESPACE|") @RequestParam(name = "referred_from", required = false) final String referredFrom,
 		@RequestBody @Valid final Errand errand) {
 
 		final Errand result = errandService.create(errand, municipalityId, namespace, referredFrom);

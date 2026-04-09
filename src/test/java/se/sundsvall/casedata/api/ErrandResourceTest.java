@@ -109,7 +109,7 @@ class ErrandResourceTest {
 	@Test
 	void postErrandWithReferredFrom() {
 		// Arrange
-		final var referredFrom = "ABC-123456";
+		final var referredFrom = "|MY_IDENTIFIER;MY_TYPE;MY_SERVICE;SBK_PARKING_PERMIT|";
 		final var body = createErrand();
 		body.setId(123L);
 
@@ -171,7 +171,7 @@ class ErrandResourceTest {
 				.withValue(objectMapper.createObjectNode().put("firstName", "Joe"))
 				.build()));
 
-		when(errandServiceMock.create(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(body);
+		when(errandServiceMock.create(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(null))).thenReturn(body);
 
 		// Act
 		webTestClient.post()
@@ -186,6 +186,6 @@ class ErrandResourceTest {
 		// Assert
 		// Validated twice due to @Validated on class + @Valid on @RequestBody both triggering Default group validation
 		verify(jsonSchemaClientMock, times(2)).validateJson(eq(MUNICIPALITY_ID), eq("2281_person_1.0"), any());
-		verify(errandServiceMock).create(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		verify(errandServiceMock).create(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(null));
 	}
 }

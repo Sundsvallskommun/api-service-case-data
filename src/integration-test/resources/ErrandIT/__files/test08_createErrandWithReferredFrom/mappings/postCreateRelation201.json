@@ -1,7 +1,26 @@
 {
 	"request": {
 		"method": "POST",
-		"urlPath": "/relation/2281/relations"
+		"urlPath": "/relation/2281/relations",
+		"bodyPatterns": [
+			{
+				"equalToJson": {
+					"type": "REFERRED_FROM",
+					"source": {
+						"resourceId": "MY_IDENTIFIER",
+						"type": "mytype",
+						"service": "myservice",
+						"namespace": "SBK_PARKING_PERMIT"
+					},
+					"target": {
+						"resourceId": "${json-unit.any-string}",
+						"type": "case",
+						"service": "casedata",
+						"namespace": "SBK_PARKING_PERMIT"
+					}
+				}
+			}
+		]
 	},
 	"response": {
 		"headers": {

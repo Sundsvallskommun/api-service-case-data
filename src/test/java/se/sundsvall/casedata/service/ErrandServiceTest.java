@@ -1,6 +1,8 @@
 package se.sundsvall.casedata.service;
 
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import generated.se.sundsvall.relation.Relation;
+import generated.se.sundsvall.relation.ResourceIdentifier;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -49,6 +51,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
@@ -390,10 +393,11 @@ class ErrandServiceTest {
 
 	@Test
 	void createWhenReferredFromPresent() {
+		final var referredFromIdentifier = "referredFromIdentifier";
+		final var referredFromType = "referredFromType";
 		final var referredFromService = "referredFromService";
 		final var referredFromNamespace = "referredFromNamespace";
-		final var referredFromIdentifier = "referredFromIdentifier";
-		final var referredFrom = referredFromService + "," + referredFromNamespace + "," + referredFromIdentifier;
+		final var referredFrom = "|" + referredFromIdentifier + ";" + referredFromType + ";" + referredFromService + ";" + referredFromNamespace + "|";
 
 		final var errand = createErrand();
 		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
@@ -416,8 +420,8 @@ class ErrandServiceTest {
 				ResourceIdentifier::getNamespace)
 			.containsExactly(
 				referredFromIdentifier,
-				"case",
-				referredFromService,
+				referredFromType.toLowerCase(),
+				referredFromService.toLowerCase(),
 				referredFromNamespace);
 		assertThat(relation.getTarget())
 			.extracting(ResourceIdentifier::getResourceId,
@@ -427,7 +431,7 @@ class ErrandServiceTest {
 			.containsExactly(
 				String.valueOf(savedErrand.getId()),
 				"case",
-				"case-data",
+				"casedata",
 				referredFromNamespace);
 	}
 
@@ -436,7 +440,8 @@ class ErrandServiceTest {
 		final var referredFromService = "referredFromService";
 		final var referredFromNamespace = "referredFromNamespace";
 		final var referredFromIdentifier = "referredFromIdentifier";
-		final var referredFrom = referredFromService + "," + referredFromNamespace + "," + referredFromIdentifier;
+		final var referredFromType = "referredFromType";
+		final var referredFrom = "|" + referredFromIdentifier + ";" + referredFromType + ";" + referredFromService + ";" + referredFromNamespace + "|";
 
 		final var errand = createErrand();
 		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
