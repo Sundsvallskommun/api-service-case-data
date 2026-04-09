@@ -130,6 +130,26 @@ class ErrandIT extends AbstractAppTest {
 	}
 
 	@Test
+	void test08_createErrandWithMyPagesChannel() {
+
+		final var location = Objects.requireNonNull(setupCall()
+			.withHttpMethod(POST)
+			.withServicePath(format(PATH, MUNICIPALITY_ID, "SBK_PARKING_PERMIT"))
+			.withHeader(HEADER_NAME, "type=adAccount; user123")
+			.withExpectedResponseStatus(CREATED)
+			.withRequest(REQUEST_FILE)
+			.sendRequest()
+			.getResponseHeaders().get(LOCATION)).getFirst();
+
+		setupCall()
+			.withServicePath(location)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
 	void test07_getErrandsWithFilter() {
 		setupCall()
 			.withServicePath(

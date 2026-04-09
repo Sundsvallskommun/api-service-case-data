@@ -1,0 +1,35 @@
+{
+	"phase": "Actualization",
+	"municipalityId": "2281",
+	"externalCaseId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+	"channel": "MY_PAGES",
+	"description": "Errand created via MY_PAGES channel",
+	"priority": "MEDIUM",
+	"caseType": "PARKING_PERMIT",
+	"diaryNumber": "DIARY-456",
+	"status": {
+		"statusType": "Ärende inkommit",
+		"description": "Ärende inkommit",
+		"created": "2025-12-02T15:15:01+01:00"
+	},
+	"stakeholders": [
+		{
+			"firstName": "Test",
+			"lastName": "Testsson",
+			"contactInformation": [
+				{
+					"contactType": "EMAIL",
+					"value": "test@test.com"
+				}
+			],
+			"roles": [
+				"DELEGATE"
+			],
+			"extraParameters": {},
+			"personId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+			"type": "PERSON"
+		}
+	],
+	"extraParameters": [],
+	"startDate": "2024-04-26"
+}
