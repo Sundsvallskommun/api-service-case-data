@@ -128,7 +128,7 @@
         status varchar(255),
         status_description varchar(255),
         updated_by_client varchar(255),
-        channel enum ('EMAIL','ESERVICE','ESERVICE_KATLA','MOBILE','SYSTEM','WEB_UI'),
+        channel enum ('EMAIL','ESERVICE','ESERVICE_KATLA','MOBILE','MY_PAGES','SYSTEM','WEB_UI'),
         description longtext,
         priority enum ('HIGH','LOW','MEDIUM'),
         primary key (id)
