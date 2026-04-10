@@ -113,35 +113,11 @@ public class ErrandService {
 		final var errandEntity = toErrandEntity(errand, municipalityId, namespace);
 		final var resultErrand = errandRepository.save(errandEntity);
 
+		if (isNotBlank(referredFrom)) {
+			createRelation(municipalityId, namespace, resultErrand.getId(), referredFrom);
+		}
 		// Will not start a process if it's not a parking permit or mex errand
 		startProcess(resultErrand);
-
-		if (isNotBlank(referredFrom)) {
-			final var parsedRelation = se.sundsvall.dept44.support.Relation.parseRelation(referredFrom);
-
-			if (isNull(parsedRelation)) {
-				throw Problem.valueOf(BAD_REQUEST, "Invalid format for referred_from parameter. Expected format: '{relationType}|{sourceResourceId};{sourceType};{sourceService};{sourceNamespace}|'");
-			}
-			// Make sure namespaces match
-			if (!namespace.equalsIgnoreCase(parsedRelation.getSource().getNamespace())) {
-				throw Problem.valueOf(BAD_REQUEST, "Mismatch on namespace and referred-from namespace");
-			}
-
-			final var relation = new Relation()
-				.type(REFERRED_FROM_RELATION_TYPE)
-				.source(new ResourceIdentifier()
-					.resourceId(parsedRelation.getSource().getResourceId())
-					.type(parsedRelation.getSource().getType())
-					.service(parsedRelation.getSource().getService())
-					.namespace(parsedRelation.getSource().getNamespace()))
-				.target(new ResourceIdentifier()
-					.resourceId(resultErrand.getId().toString())
-					.type(REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE)
-					.service(REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE)
-					.namespace(namespace));
-
-			relationClient.createRelation(municipalityId, relation);
-		}
 
 		return toErrand(resultErrand);
 	}
@@ -188,6 +164,33 @@ public class ErrandService {
 			errandRepository.delete(errand);
 			throw e;
 		}
+	}
+
+	private void createRelation(final String municipalityId, final String namespace, final Long errandId, final String referredFrom) {
+		final var parsedRelation = se.sundsvall.dept44.support.Relation.parseRelation(referredFrom);
+
+		if (isNull(parsedRelation)) {
+			throw Problem.valueOf(BAD_REQUEST, "Invalid format for referred_from parameter. Expected format: '{relationType}|{sourceResourceId};{sourceType};{sourceService};{sourceNamespace}|'");
+		}
+		// Make sure namespaces match
+		if (!namespace.equalsIgnoreCase(parsedRelation.getSource().getNamespace())) {
+			throw Problem.valueOf(BAD_REQUEST, String.format("Mismatch on namespace ('%s') and referred-from namespace ('%s')", namespace, parsedRelation.getSource().getNamespace()));
+		}
+
+		final var relation = new Relation()
+			.type(REFERRED_FROM_RELATION_TYPE)
+			.source(new ResourceIdentifier()
+				.resourceId(parsedRelation.getSource().getResourceId())
+				.type(parsedRelation.getSource().getType())
+				.service(parsedRelation.getSource().getService())
+				.namespace(parsedRelation.getSource().getNamespace()))
+			.target(new ResourceIdentifier()
+				.resourceId(errandId.toString())
+				.type(REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE)
+				.service(REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE)
+				.namespace(namespace));
+
+		relationClient.createRelation(municipalityId, relation);
 	}
 
 	public Page<Errand> findAllWithoutNamespace(final Specification<ErrandEntity> specification, final String municipalityId, final Pageable pageable) {

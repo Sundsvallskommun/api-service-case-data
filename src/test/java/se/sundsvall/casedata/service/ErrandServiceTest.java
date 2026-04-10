@@ -453,7 +453,7 @@ class ErrandServiceTest {
 			.asInstanceOf(InstanceOfAssertFactories.type(ThrowableProblem.class))
 			.satisfies(thrownProblem -> {
 				assertThat(thrownProblem.getStatus()).isEqualTo(BAD_REQUEST);
-				assertThat(thrownProblem.getMessage()).endsWith("Mismatch on namespace and referred-from namespace");
+				assertThat(thrownProblem.getMessage()).endsWith("Mismatch on namespace ('MY_NAMESPACE') and referred-from namespace ('referredFromNamespace')");
 			});
 
 		verify(relationClientMock, never()).createRelation(any(), any());
