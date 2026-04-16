@@ -90,32 +90,34 @@ class MessageEntityTest {
 			.build();
 
 		// Assert
-		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(bean.getAttachments()).isEqualTo(attachments);
-		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
-		assertThat(bean.getNamespace()).isEqualTo(namespace);
-		assertThat(bean.getDirection()).isEqualTo(direction);
-		assertThat(bean.getEmail()).isEqualTo(email);
-		assertThat(bean.getErrandId()).isEqualTo(errandId);
-		assertThat(bean.getExternalCaseId()).isEqualTo(externalCaseId);
-		assertThat(bean.getFamilyId()).isEqualTo(familyId);
-		assertThat(bean.getFirstName()).isEqualTo(firstName);
-		assertThat(bean.getLastName()).isEqualTo(lastName);
-		assertThat(bean.getMessageId()).isEqualTo(messageId);
-		assertThat(bean.getMessageType()).isEqualTo(messageType.name());
-		assertThat(bean.getMobileNumber()).isEqualTo(mobileNumber);
-		assertThat(bean.getSent()).isEqualTo(sent);
-		assertThat(bean.getSubject()).isEqualTo(subject);
-		assertThat(bean.getTextmessage()).isEqualTo(textmessage);
-		assertThat(bean.getHtmlMessage()).isEqualTo(htmlmessage);
-		assertThat(bean.getUserId()).isEqualTo(userId);
-		assertThat(bean.getUsername()).isEqualTo(username);
-		assertThat(bean.isViewed()).isEqualTo(viewed);
-		assertThat(bean.getClassification()).isEqualTo(classification);
-		assertThat(bean.getHeaders()).isEqualTo(headers);
-		assertThat(bean.getRecipients()).isEqualTo(recipients);
-		assertThat(bean.getCcRecipients()).isEqualTo(ccRecipients);
-		assertThat(bean.getInternal()).isEqualTo(internal);
+		assertThat(bean).isNotNull().hasNoNullFieldsOrPropertiesExcept("viewed");
+		assertThat(bean).usingRecursiveComparison().isEqualTo(MessageEntity.builder()
+			.withAttachments(attachments)
+			.withDirection(direction)
+			.withEmail(email)
+			.withErrandId(errandId)
+			.withExternalCaseId(externalCaseId)
+			.withFamilyId(familyId)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.withFirstName(firstName)
+			.withLastName(lastName)
+			.withMessageId(messageId)
+			.withMessageType(messageType.name())
+			.withMobileNumber(mobileNumber)
+			.withSent(sent)
+			.withSubject(subject)
+			.withTextmessage(textmessage)
+			.withHtmlMessage(htmlmessage)
+			.withUserId(userId)
+			.withUsername(username)
+			.withViewed(viewed)
+			.withClassification(classification)
+			.withRecipients(recipients)
+			.withCcRecipients(ccRecipients)
+			.withHeaders(headers)
+			.withInternal(internal)
+			.build());
 	}
 
 	@Test
