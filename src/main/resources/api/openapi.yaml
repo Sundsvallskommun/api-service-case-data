@@ -1471,6 +1471,13 @@ paths:
             type: string
             pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
+        - name: referred_from
+          in: query
+          description: "Relation reference in format (only source is used): '{relationType}|{sourceResourceId};{sourceType};{sourceService};{sourceNamespace}|{targetResourceId};{targetType};{targetService};{targetNamespace}'"
+          required: false
+          schema:
+            type: string
+          example: "LINK|1234;case;service;MY_NAMESPACE|"
       requestBody:
         content:
           application/json:
@@ -5208,6 +5215,7 @@ components:
             - WEB_UI
             - MOBILE
             - SYSTEM
+            - MY_PAGES
           examples:
             - EMAIL
         priority:
@@ -5899,6 +5907,13 @@ components:
           description: List of email headers on the message
           items:
             $ref: "#/components/schemas/EmailHeader"
+        ccRecipients:
+          type: array
+          description: List of CC email recipients
+          examples:
+            - "[\"cc@ankeborg.se\"]"
+          items:
+            type: string
         internal:
           type: boolean
           description: Is message internal
@@ -6570,6 +6585,13 @@ components:
           description: List of email headers on the message
           items:
             $ref: "#/components/schemas/EmailHeader"
+        ccRecipients:
+          type: array
+          description: "The CC recipients of the message, if email"
+          examples:
+            - "[\"cc@ankeborg.se\"]"
+          items:
+            type: string
         internal:
           type: boolean
           description: Is message internal
