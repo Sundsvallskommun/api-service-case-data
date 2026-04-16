@@ -89,7 +89,7 @@ class ErrandResourceTest {
 		final var facilities = List.of(facility);
 		body.setFacilities(facilities);
 
-		when(errandServiceMock.create(body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(body);
+		when(errandServiceMock.create(body, MUNICIPALITY_ID, NAMESPACE, null)).thenReturn(body);
 
 		// Act
 		webTestClient.post()
@@ -102,7 +102,59 @@ class ErrandResourceTest {
 			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + body.getId());
 
 		// Assert
-		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE);
+		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE, null);
+		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@Test
+	void postErrandWithReferredFrom() {
+		// Arrange
+		final var referredFrom = "|MY_IDENTIFIER;MY_TYPE;MY_SERVICE;SBK_PARKING_PERMIT|";
+		final var body = createErrand();
+		body.setId(123L);
+
+		when(errandServiceMock.create(body, MUNICIPALITY_ID, NAMESPACE, referredFrom)).thenReturn(body);
+
+		// Act
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder
+				.path(BASE_URL)
+				.queryParam("referred_from", referredFrom)
+				.build(MUNICIPALITY_ID, NAMESPACE))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isCreated()
+			.expectHeader().contentType(ALL_VALUE)
+			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + body.getId());
+
+		// Assert
+		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE, referredFrom);
+		verifyNoMoreInteractions(errandServiceMock);
+	}
+
+	@Test
+	void postErrandWithoutReferredFrom() {
+		// Arrange
+		final var body = createErrand();
+		body.setId(123L);
+
+		when(errandServiceMock.create(body, MUNICIPALITY_ID, NAMESPACE, null)).thenReturn(body);
+
+		// Act
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder
+				.path(BASE_URL)
+				.build(MUNICIPALITY_ID, NAMESPACE))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isCreated()
+			.expectHeader().contentType(ALL_VALUE)
+			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + body.getId());
+
+		// Assert
+		verify(errandServiceMock).create(body, MUNICIPALITY_ID, NAMESPACE, null);
 		verifyNoMoreInteractions(errandServiceMock);
 	}
 
@@ -119,7 +171,7 @@ class ErrandResourceTest {
 				.withValue(objectMapper.createObjectNode().put("firstName", "Joe"))
 				.build()));
 
-		when(errandServiceMock.create(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(body);
+		when(errandServiceMock.create(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(null))).thenReturn(body);
 
 		// Act
 		webTestClient.post()
@@ -134,6 +186,6 @@ class ErrandResourceTest {
 		// Assert
 		// Validated twice due to @Validated on class + @Valid on @RequestBody both triggering Default group validation
 		verify(jsonSchemaClientMock, times(2)).validateJson(eq(MUNICIPALITY_ID), eq("2281_person_1.0"), any());
-		verify(errandServiceMock).create(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		verify(errandServiceMock).create(any(), eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(null));
 	}
 }

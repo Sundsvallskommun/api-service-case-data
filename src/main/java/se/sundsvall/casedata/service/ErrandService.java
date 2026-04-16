@@ -1,5 +1,7 @@
 package se.sundsvall.casedata.service;
 
+import generated.se.sundsvall.relation.Relation;
+import generated.se.sundsvall.relation.ResourceIdentifier;
 import java.util.List;
 import java.util.Optional;
 import org.hibernate.query.sqm.PathElementException;
@@ -17,12 +19,14 @@ import se.sundsvall.casedata.api.model.PatchErrand;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
+import se.sundsvall.casedata.integration.relation.RelationClient;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.casedata.service.util.mappers.PatchMapper;
 import se.sundsvall.dept44.problem.Problem;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.ERRAND;
@@ -43,19 +47,29 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 @Transactional
 public class ErrandService {
 
+	private static final String REFERRED_FROM_RELATION_TYPE = "REFERRED_FROM";
+	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE = "case";
+	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE = "casedata";
+
 	private final ErrandRepository errandRepository;
 	private final ProcessService processService;
 	private final NotificationService notificationService;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final EventlogIntegration eventlogIntegration;
+	private final RelationClient relationClient;
 
-	public ErrandService(final ErrandRepository errandRepository, final ProcessService processService, final NotificationService notificationService,
-		final ApplicationEventPublisher applicationEventPublisher, final EventlogIntegration eventlogIntegration) {
+	public ErrandService(final ErrandRepository errandRepository,
+		final ProcessService processService,
+		final NotificationService notificationService,
+		final ApplicationEventPublisher applicationEventPublisher,
+		final EventlogIntegration eventlogIntegration,
+		final RelationClient relationClient) {
 		this.errandRepository = errandRepository;
 		this.processService = processService;
 		this.notificationService = notificationService;
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.eventlogIntegration = eventlogIntegration;
+		this.relationClient = relationClient;
 	}
 
 	private String determineSubType(final ErrandEntity updatedErrand) {
@@ -88,7 +102,7 @@ public class ErrandService {
 	/**
 	 * Saves an errand and update the process in ParkingPermit if it's a parking permit errand
 	 */
-	public Errand create(final Errand errand, final String municipalityId, final String namespace) {
+	public Errand create(final Errand errand, final String municipalityId, final String namespace, final String referredFrom) {
 
 		final var statuses = Optional.ofNullable(errand.getStatus())
 			.map(List::of)
@@ -99,6 +113,9 @@ public class ErrandService {
 		final var errandEntity = toErrandEntity(errand, municipalityId, namespace);
 		final var resultErrand = errandRepository.save(errandEntity);
 
+		if (isNotBlank(referredFrom)) {
+			createRelation(municipalityId, namespace, resultErrand.getId(), referredFrom);
+		}
 		// Will not start a process if it's not a parking permit or mex errand
 		startProcess(resultErrand);
 
@@ -149,6 +166,33 @@ public class ErrandService {
 		}
 	}
 
+	private void createRelation(final String municipalityId, final String namespace, final Long errandId, final String referredFrom) {
+		final var parsedRelation = se.sundsvall.dept44.support.Relation.parseRelation(referredFrom);
+
+		if (isNull(parsedRelation)) {
+			throw Problem.valueOf(BAD_REQUEST, "Invalid format for referred_from parameter. Expected format: '{relationType}|{sourceResourceId};{sourceType};{sourceService};{sourceNamespace}|'");
+		}
+		// Make sure namespaces match
+		if (!namespace.equalsIgnoreCase(parsedRelation.getSource().getNamespace())) {
+			throw Problem.valueOf(BAD_REQUEST, String.format("Mismatch on namespace ('%s') and referred-from namespace ('%s')", namespace, parsedRelation.getSource().getNamespace()));
+		}
+
+		final var relation = new Relation()
+			.type(REFERRED_FROM_RELATION_TYPE)
+			.source(new ResourceIdentifier()
+				.resourceId(parsedRelation.getSource().getResourceId())
+				.type(parsedRelation.getSource().getType())
+				.service(parsedRelation.getSource().getService())
+				.namespace(parsedRelation.getSource().getNamespace()))
+			.target(new ResourceIdentifier()
+				.resourceId(errandId.toString())
+				.type(REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE)
+				.service(REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE)
+				.namespace(namespace));
+
+		relationClient.createRelation(municipalityId, relation);
+	}
+
 	public Page<Errand> findAllWithoutNamespace(final Specification<ErrandEntity> specification, final String municipalityId, final Pageable pageable) {
 		try {
 			final var spec = buildMunicipalityIdFilter(municipalityId)
@@ -160,5 +204,4 @@ public class ErrandService {
 			throw Problem.valueOf(BAD_REQUEST, "Invalid filter parameter: " + e.getMessage());
 		}
 	}
-
 }

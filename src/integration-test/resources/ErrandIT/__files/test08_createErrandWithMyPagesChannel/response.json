@@ -1,0 +1,69 @@
+{
+	"municipalityId": "2281",
+	"externalCaseId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+	"notifications": [],
+	"errandNumber": "${json-unit.regex}^SGP-\\d{4}-000001$",
+	"createdByClient": "UNKNOWN",
+	"channel": "MY_PAGES",
+	"description": "Errand created via MY_PAGES channel",
+	"extraParameters": [],
+	"stakeholders": [
+		{
+			"lastName": "Testsson",
+			"municipalityId": "2281",
+			"addresses": [],
+			"created": "${json-unit.any-string}",
+			"roles": [
+				"DELEGATE"
+			],
+			"extraParameters": {},
+			"type": "PERSON",
+			"version": 1,
+			"firstName": "Test",
+			"contactInformation": [
+				{
+					"contactType": "EMAIL",
+					"value": "test@test.com"
+				}
+			],
+			"namespace": "SBK_PARKING_PERMIT",
+			"personId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+			"id": "${json-unit.any-number}",
+			"updated": "${json-unit.any-string}"
+		}
+	],
+	"caseType": "PARKING_PERMIT",
+	"diaryNumber": "DIARY-456",
+	"processId": "49011dea-ee10-11ec-9505-0242c0a84503",
+	"decisions": [],
+	"id": "${json-unit.any-number}",
+	"jsonParameters": [],
+	"relatesTo": [],
+	"notes": [],
+	"suspension": {},
+	"confidential": false,
+	"phase": "Actualization",
+	"updatedBy": "user123",
+	"created": "${json-unit.any-string}",
+	"updatedByClient": "UNKNOWN",
+	"priority": "MEDIUM",
+	"version": 1,
+	"labels": [],
+	"createdBy": "user123",
+	"namespace": "SBK_PARKING_PERMIT",
+	"status": {
+		"statusType": "Ärende inkommit",
+		"description": "Ärende inkommit",
+		"created": "${json-unit.any-string}"
+	},
+	"statuses": [
+		{
+			"created": "${json-unit.any-string}",
+			"statusType": "Ärende inkommit",
+			"description": "Ärende inkommit"
+		}
+	],
+	"facilities": [],
+	"updated": "${json-unit.any-string}",
+	"startDate": "2024-04-26"
+}

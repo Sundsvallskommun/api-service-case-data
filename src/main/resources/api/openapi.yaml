@@ -5,10 +5,8 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.15"
+  version: "12.1"
 servers:
-  - url: https://server.com
-    description: New server
   - url: http://localhost:55998
     description: Generated server url
 tags:
@@ -5883,13 +5881,6 @@ components:
             - "[\"kalle.anka@ankeborg.se\"]"
           items:
             type: string
-        ccRecipients:
-          type: array
-          description: List of CC email recipients
-          examples:
-            - "[\"cc@ankeborg.se\"]"
-          items:
-            type: string
         userId:
           type: string
           description: The user ID of the user that sent the message
@@ -6551,13 +6542,6 @@ components:
           description: "The recipients of the message, if email"
           examples:
             - "[\"kalle.anka@ankeborg.se\"]"
-          items:
-            type: string
-        ccRecipients:
-          type: array
-          description: "The CC recipients of the message, if email"
-          examples:
-            - "[\"cc@ankeborg.se\"]"
           items:
             type: string
         email:
