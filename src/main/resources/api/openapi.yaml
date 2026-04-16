@@ -1471,7 +1471,7 @@ paths:
             type: string
             pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
-        - name: referred_from
+        - name: referredFrom
           in: query
           description: "Relation reference in format (only source is used): '{relationType}|{sourceResourceId};{sourceType};{sourceService};{sourceNamespace}|{targetResourceId};{targetType};{targetService};{targetNamespace}'"
           required: false

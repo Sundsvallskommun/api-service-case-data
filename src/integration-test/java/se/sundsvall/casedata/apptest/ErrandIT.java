@@ -162,8 +162,8 @@ class ErrandIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test08_createErrandWithReferredFrom() {
-		final var referredFromParam = format("?referred_from=|{0};{1};{2};{3}|", "MY_IDENTIFIER", "MY_TYPE", "MY_SERVICE", "SBK_PARKING_PERMIT");
+	void test09_createErrandWithReferredFrom() {
+		final var referredFromParam = format("?referredFrom=|{0};{1};{2};{3}|", "MY_IDENTIFIER", "MY_TYPE", "MY_SERVICE", "SBK_PARKING_PERMIT");
 		final var location = Objects.requireNonNull(setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(format(PATH + "{2}", MUNICIPALITY_ID, "SBK_PARKING_PERMIT", referredFromParam))

@@ -119,7 +119,7 @@ class ErrandResourceTest {
 		webTestClient.post()
 			.uri(uriBuilder -> uriBuilder
 				.path(BASE_URL)
-				.queryParam("referred_from", referredFrom)
+				.queryParam("referredFrom", referredFrom)
 				.build(MUNICIPALITY_ID, NAMESPACE))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
