@@ -76,6 +76,9 @@ public class MessageResponse {
 	@Schema(description = "The recipients of the message, if email", examples = "[\"kalle.anka@ankeborg.se\"]")
 	private List<String> recipients;
 
+	@Schema(description = "The CC recipients of the message, if email", examples = "[\"cc@ankeborg.se\"]")
+	private List<String> ccRecipients;
+
 	@Schema(description = "The email of the user that sent the message", examples = "kalle.anka@ankeborg.se")
 	private String email;
 

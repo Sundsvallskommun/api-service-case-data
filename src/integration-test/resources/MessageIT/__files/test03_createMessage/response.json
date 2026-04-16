@@ -15,6 +15,7 @@
 	"recipients": [
 		"patch@sundsvall.se"
 	],
+	"ccRecipients": [],
 	"email": "johndoe@email.com",
 	"userId": "userId",
 	"viewed": false,

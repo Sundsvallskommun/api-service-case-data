@@ -67,6 +67,9 @@ public class MessageRequest {
 	@Schema(description = "List of email recipients", examples = "[\"kalle.anka@ankeborg.se\"]")
 	private List<String> recipients;
 
+	@Schema(description = "List of CC email recipients", examples = "[\"cc@ankeborg.se\"]")
+	private List<String> ccRecipients;
+
 	@Schema(description = "The user ID of the user that sent the message", examples = "12")
 	private String userId;
 

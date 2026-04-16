@@ -17,6 +17,7 @@
 		"johndoe@email.com",
 		"someemail@sundsvall.se"
 	],
+	"ccRecipients": [],
 	"email": "johndoe@email.com",
 	"userId": "userid",
 	"viewed": true,

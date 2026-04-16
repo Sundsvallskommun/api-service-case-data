@@ -104,6 +104,13 @@ public class MessageEntity {
 	@Column(name = "recipient_email")
 	private List<String> recipients;
 
+	@ElementCollection
+	@CollectionTable(name = "message_cc_recipients",
+		joinColumns = @JoinColumn(name = "message_id"),
+		foreignKey = @ForeignKey(name = "fk_message_cc_recipients_message_id"))
+	@Column(name = "recipient_email")
+	private List<String> ccRecipients;
+
 	@Column(name = "userID")
 	private String userId;
 
