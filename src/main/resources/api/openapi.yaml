@@ -5,8 +5,10 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "11.14"
+  version: "11.15"
 servers:
+  - url: https://server.com
+    description: New server
   - url: http://localhost:55998
     description: Generated server url
 tags:

@@ -100,31 +100,33 @@ class MessageResponseTest {
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(bean.getAttachments()).isEqualTo(attachments);
-		assertThat(bean.getDirection()).isEqualTo(direction);
-		assertThat(bean.getEmail()).isEqualTo(email);
-		assertThat(bean.getErrandId()).isEqualTo(errandId);
-		assertThat(bean.getExternalCaseId()).isEqualTo(externalCaseId);
-		assertThat(bean.getFamilyId()).isEqualTo(familyId);
-		assertThat(bean.getFirstName()).isEqualTo(firstName);
-		assertThat(bean.getLastName()).isEqualTo(lastName);
-		assertThat(bean.getMessage()).isEqualTo(message);
-		assertThat(bean.getHtmlMessage()).isEqualTo(htmlMessage);
-		assertThat(bean.getMessageId()).isEqualTo(messageId);
-		assertThat(bean.getMessageType()).isEqualTo(messageType.name());
-		assertThat(bean.getMobileNumber()).isEqualTo(mobileNumber);
-		assertThat(bean.getSent()).isEqualTo(sent);
-		assertThat(bean.getSubject()).isEqualTo(subject);
-		assertThat(bean.getUserId()).isEqualTo(userId);
-		assertThat(bean.getUsername()).isEqualTo(userName);
-		assertThat(bean.getViewed()).isEqualTo(viewed);
-		assertThat(bean.getClassification()).isEqualTo(classification);
-		assertThat(bean.getEmailHeaders()).isEqualTo(headers);
-		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
-		assertThat(bean.getNamespace()).isEqualTo(namespace);
-		assertThat(bean.getRecipients()).isEqualTo(recipients);
-		assertThat(bean.getCcRecipients()).isEqualTo(ccRecipients);
-		assertThat(bean.getInternal()).isEqualTo(internal);
+		assertThat(bean).usingRecursiveComparison().isEqualTo(MessageResponse.builder()
+			.withAttachments(attachments)
+			.withDirection(direction)
+			.withEmail(email)
+			.withErrandId(errandId)
+			.withExternalCaseId(externalCaseId)
+			.withFamilyId(familyId)
+			.withFirstName(firstName)
+			.withLastName(lastName)
+			.withMessage(message)
+			.withHtmlMessage(htmlMessage)
+			.withMessageId(messageId)
+			.withMessageType(messageType.name())
+			.withMobileNumber(mobileNumber)
+			.withSent(sent)
+			.withSubject(subject)
+			.withUserId(userId)
+			.withUsername(userName)
+			.withViewed(viewed)
+			.withClassification(classification)
+			.withEmailHeaders(headers)
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.withRecipients(recipients)
+			.withCcRecipients(ccRecipients)
+			.withInternal(internal)
+			.build());
 	}
 
 	@Test
