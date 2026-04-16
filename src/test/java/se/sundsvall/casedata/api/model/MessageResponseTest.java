@@ -66,6 +66,7 @@ class MessageResponseTest {
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
 		final var recipients = List.of("recipient");
+		final var ccRecipients = List.of("cc@example.com");
 		final var internal = true;
 
 		// Act
@@ -93,6 +94,7 @@ class MessageResponseTest {
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.withRecipients(recipients)
+			.withCcRecipients(ccRecipients)
 			.withInternal(internal)
 			.build();
 
@@ -121,6 +123,7 @@ class MessageResponseTest {
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getNamespace()).isEqualTo(namespace);
 		assertThat(bean.getRecipients()).isEqualTo(recipients);
+		assertThat(bean.getCcRecipients()).isEqualTo(ccRecipients);
 		assertThat(bean.getInternal()).isEqualTo(internal);
 	}
 

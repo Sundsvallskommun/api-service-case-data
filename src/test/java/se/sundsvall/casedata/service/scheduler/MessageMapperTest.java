@@ -100,7 +100,8 @@ class MessageMapperTest {
 				MessageResponse::getSubject,
 				MessageResponse::getUserId,
 				MessageResponse::getUsername,
-				MessageResponse::getRecipients)
+				MessageResponse::getRecipients,
+				MessageResponse::getCcRecipients)
 			.containsExactly(tuple(
 				bean.getDirection(),
 				bean.getEmail(),
@@ -117,7 +118,8 @@ class MessageMapperTest {
 				bean.getSubject(),
 				bean.getUserId(),
 				bean.getUsername(),
-				bean.getRecipients()));
+				bean.getRecipients(),
+				bean.getCcRecipients()));
 		assertThat(dto.getFirst().getEmailHeaders()).allSatisfy(s -> {
 			assertThat(s.getHeader()).isNotNull().isInstanceOf(Header.class);
 			assertThat(s.getValues()).isNotNull().isNotEmpty();
@@ -156,7 +158,8 @@ class MessageMapperTest {
 				MessageResponse::getSubject,
 				MessageResponse::getUserId,
 				MessageResponse::getUsername,
-				MessageResponse::getRecipients)
+				MessageResponse::getRecipients,
+				MessageResponse::getCcRecipients)
 			.containsExactly(
 				bean.getDirection(),
 				bean.getEmail(),
@@ -173,7 +176,8 @@ class MessageMapperTest {
 				bean.getSubject(),
 				bean.getUserId(),
 				bean.getUsername(),
-				bean.getRecipients());
+				bean.getRecipients(),
+				bean.getCcRecipients());
 
 		assertThat(dto.getEmailHeaders()).allSatisfy(s -> {
 			assertThat(s.getHeader()).isNotNull().isInstanceOf(Header.class);
@@ -371,6 +375,8 @@ class MessageMapperTest {
 		final var userId = "userID";
 		final var username = "username";
 		final var viewed = true;
+		final var recipients = List.of("recipient@example.com");
+		final var ccRecipients = List.of("cc@example.com");
 
 		return MessageEntity.builder()
 			.withAttachments(attachments)
@@ -391,6 +397,8 @@ class MessageMapperTest {
 			.withUsername(username)
 			.withViewed(viewed)
 			.withHeaders(headers)
+			.withRecipients(recipients)
+			.withCcRecipients(ccRecipients)
 			.build();
 	}
 
@@ -438,6 +446,7 @@ class MessageMapperTest {
 			.withFirstName("firstName")
 			.withLastName("lastName")
 			.withRecipients(List.of("recipient"))
+			.withCcRecipients(List.of("cc@example.com"))
 			.withMessageType(MessageType.EMAIL.name())
 			.withMobileNumber("mobileNumber")
 			.withEmail("email")
@@ -468,6 +477,8 @@ class MessageMapperTest {
 		assertThat(result.getTextmessage()).isEqualTo("message");
 		assertThat(result.getHtmlMessage()).isEqualTo("htmlMessage");
 		assertThat(result.getEmail()).isEqualTo("email");
+		assertThat(result.getRecipients()).containsExactly("recipient");
+		assertThat(result.getCcRecipients()).containsExactly("cc@example.com");
 		assertThat(result.getHeaders()).hasSize(1);
 		assertThat(result.getAttachments()).hasSize(1);
 	}
@@ -515,6 +526,7 @@ class MessageMapperTest {
 			.id("someId")
 			.subject("Test Subject")
 			.recipients(List.of("recipient@example.com"))
+			.ccRecipients(List.of("cc@example.com"))
 			.sender("sender@example.com")
 			.message("Test Message")
 			.receivedAt(OffsetDateTime.now())
@@ -535,6 +547,7 @@ class MessageMapperTest {
 		assertThat(result.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(result.getNamespace()).isEqualTo(namespace);
 		assertThat(result.getRecipients()).isEqualTo(email.getRecipients());
+		assertThat(result.getCcRecipients()).isEqualTo(email.getCcRecipients());
 		assertThat(result.getSubject()).isEqualTo(email.getSubject());
 		assertThat(result.getTextmessage()).isEqualTo(email.getMessage());
 		assertThat(result.getSent()).isEqualTo(email.getReceivedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));

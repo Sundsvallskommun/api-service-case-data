@@ -53,6 +53,7 @@ class MessageEntityTest {
 		final var viewed = true;
 		final var classification = Classification.INFORMATION;
 		final var recipients = List.of("recipient@sundsvall.se");
+		final var ccRecipients = List.of("cc@sundsvall.se");
 		final var headers = List.of(EmailHeaderEntity.builder()
 			.withHeader(Header.MESSAGE_ID)
 			.withValues(List.of("<messageID@test.com>"))
@@ -83,6 +84,7 @@ class MessageEntityTest {
 			.withViewed(viewed)
 			.withClassification(classification)
 			.withRecipients(recipients)
+			.withCcRecipients(ccRecipients)
 			.withHeaders(headers)
 			.withInternal(internal)
 			.build();
@@ -112,6 +114,7 @@ class MessageEntityTest {
 		assertThat(bean.getClassification()).isEqualTo(classification);
 		assertThat(bean.getHeaders()).isEqualTo(headers);
 		assertThat(bean.getRecipients()).isEqualTo(recipients);
+		assertThat(bean.getCcRecipients()).isEqualTo(ccRecipients);
 		assertThat(bean.getInternal()).isEqualTo(internal);
 	}
 

@@ -15,6 +15,7 @@
 		"messageType": "MYPAGES",
 		"mobileNumber": "0701740605",
 		"recipients": [],
+		"ccRecipients": [],
 		"email": "johndoe@email.com",
 		"userId": "userid",
 		"attachments": [],

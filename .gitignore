@@ -45,3 +45,10 @@ application-default.yml
 # Claude Code
 .claude/
 /CLAUDE.md
+
+# Local Docker
+docker-compose.yml
+docker/init.sql
+
+# Local application config
+src/main/resources/application-local.yml

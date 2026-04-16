@@ -44,6 +44,7 @@ class MessageRequestTest {
 		final var mobileNumber = "+46701740605";
 		final var email = "email@sundsvall.se";
 		final var recipients = List.of("email@sundsvall.se");
+		final var ccRecipients = List.of("cc@sundsvall.se");
 		final var userId = "12";
 		final var classification = Classification.INFORMATION;
 		final var attachments = List.of(MessageRequest.AttachmentRequest.builder().build());
@@ -66,6 +67,7 @@ class MessageRequestTest {
 			.withMobileNumber(mobileNumber)
 			.withEmail(email)
 			.withRecipients(recipients)
+			.withCcRecipients(ccRecipients)
 			.withUserId(userId)
 			.withClassification(classification)
 			.withAttachments(attachments)
@@ -89,6 +91,7 @@ class MessageRequestTest {
 		assertThat(result.getMobileNumber()).isEqualTo(mobileNumber);
 		assertThat(result.getEmail()).isEqualTo(email);
 		assertThat(result.getRecipients()).isEqualTo(recipients);
+		assertThat(result.getCcRecipients()).isEqualTo(ccRecipients);
 		assertThat(result.getUserId()).isEqualTo(userId);
 		assertThat(result.getClassification()).isEqualTo(classification);
 		assertThat(result.getAttachments()).isEqualTo(attachments);

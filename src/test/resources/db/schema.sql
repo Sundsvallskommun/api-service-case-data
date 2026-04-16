@@ -250,6 +250,11 @@
         primary key (id)
     ) engine=InnoDB;
 
+    create table message_cc_recipients (
+        message_id varchar(255) not null,
+        recipient_email varchar(255)
+    ) engine=InnoDB;
+
     create table message_exchange_sync (
         active bit,
         municipality_id varchar(4) not null,
@@ -554,9 +559,14 @@
        foreign key (message_attachment_data_id) 
        references message_attachment_data (id);
 
-    alter table if exists message_recipients 
-       add constraint fk_message_recipients_message_id 
-       foreign key (message_id) 
+    alter table if exists message_cc_recipients
+       add constraint fk_message_cc_recipients_message_id
+       foreign key (message_id)
+       references message (messageid);
+
+    alter table if exists message_recipients
+       add constraint fk_message_recipients_message_id
+       foreign key (message_id)
        references message (messageid);
 
     alter table if exists note 
