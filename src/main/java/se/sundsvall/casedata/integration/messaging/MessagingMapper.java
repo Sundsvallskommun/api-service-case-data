@@ -11,6 +11,7 @@ import generated.se.sundsvall.messaging.Sms;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
@@ -36,21 +37,21 @@ public final class MessagingMapper {
 		// Private constructor to prevent instantiation
 	}
 
-	public static EmailRequest toEmailRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, final StakeholderEntity stakeholderEntity, int supportTextType) {
+	public static EmailRequest toEmailRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, final StakeholderEntity stakeholderEntity, int supportTextType, CaseType caseType) {
 		return new EmailRequest()
-			.subject(SUBJECT_TEMPLATE.formatted(errandEntity.getCaseTitleAddition(), errandEntity.getErrandNumber()))
-			.message(createBody(errandEntity, messagingSettings, supportTextType))
+			.subject(SUBJECT_TEMPLATE.formatted(caseType.getDisplayName(), errandEntity.getErrandNumber()))
+			.message(createBody(errandEntity, messagingSettings, supportTextType, caseType))
 			.emailAddress(findStakeholderEmail(stakeholderEntity))
 			.sender(new EmailSender()
 				.name(messagingSettings.getContactInformationEmailName())
 				.address(messagingSettings.getContactInformationEmail()));
 	}
 
-	public static MessageRequest toMessagingMessageRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings) {
+	public static MessageRequest toMessagingMessageRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, CaseType caseType) {
 		return new MessageRequest()
 			.messages(List.of(new generated.se.sundsvall.messaging.Message()
-				.subject(SUBJECT_TEMPLATE.formatted(errandEntity.getCaseTitleAddition(), errandEntity.getErrandNumber()))
-				.message(createBody(errandEntity, messagingSettings, TYPE_OWNER_SUPPORT_TEXT))
+				.subject(SUBJECT_TEMPLATE.formatted(caseType.getDisplayName(), errandEntity.getErrandNumber()))
+				.message(createBody(errandEntity, messagingSettings, TYPE_OWNER_SUPPORT_TEXT, caseType))
 				.party(new MessageParty().partyId(findErrandOwnerPartyId(errandEntity)))
 				.sender(new MessageSender()
 					.sms(new Sms()
@@ -60,7 +61,7 @@ public final class MessagingMapper {
 						.address(messagingSettings.getContactInformationEmail())))));
 	}
 
-	static String createBody(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, int supportTextType) {
+	static String createBody(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, int supportTextType, CaseType caseType) {
 		final var nullableSupportText = TYPE_REPORTER_SUPPORT_TEXT == supportTextType ? messagingSettings.getReporterSupportText() : messagingSettings.getOwnerSupportText();
 
 		return ofNullable(nullableSupportText)
@@ -68,7 +69,7 @@ public final class MessagingMapper {
 			.map(supportText -> String.format(
 				supportText,
 				findErrandOwnerFirstName(errandEntity, TYPE_REPORTER_SUPPORT_TEXT == supportTextType ? REPORTER : APPLICANT),
-				errandEntity.getCaseTitleAddition(),
+				caseType.getDisplayName(),
 				errandEntity.getErrandNumber(),
 				TYPE_REPORTER_SUPPORT_TEXT == supportTextType ? messagingSettings.getKatlaUrl() : messagingSettings.getContactInformationUrl(),
 				errandEntity.getErrandNumber()))

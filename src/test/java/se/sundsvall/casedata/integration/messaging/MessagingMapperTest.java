@@ -2,6 +2,7 @@ package se.sundsvall.casedata.integration.messaging;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
@@ -23,7 +24,7 @@ class MessagingMapperTest {
 		final var firstName = "Test";
 		final var namespace = "my-namespace";
 		final var municipalityId = "2281";
-		final var caseTitleAddition = "Case Title Addition";
+		final var displayName = "Case type displayName";
 		final var errandNumber = "123456789";
 		final var emailAddress = "test™@example.com";
 		final var emailName = "Test";
@@ -40,7 +41,6 @@ class MessagingMapperTest {
 			.withId(123L)
 			.withNamespace(namespace)
 			.withMunicipalityId(municipalityId)
-			.withCaseTitleAddition(caseTitleAddition)
 			.withErrandNumber(errandNumber)
 			.withStakeholders(List.of(StakeholderEntity.builder()
 				.withFirstName(firstName)
@@ -61,14 +61,15 @@ class MessagingMapperTest {
 			.build();
 
 		// Act
-		final var bean = MessagingMapper.toEmailRequest(errandEntity, messagingSettings, errandEntity.getStakeholders().getFirst(), TYPE_OWNER_SUPPORT_TEXT);
+		final var bean = MessagingMapper.toEmailRequest(errandEntity, messagingSettings, errandEntity.getStakeholders().getFirst(), TYPE_OWNER_SUPPORT_TEXT,
+			CaseType.builder().withDisplayName(displayName).build());
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrPropertiesExcept("party", "htmlMessage");
-		assertThat(bean.getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case Title Addition 123456789");
+		assertThat(bean.getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayName 123456789");
 		assertThat(bean.getMessage()).isEqualTo("""
 			Hej Test,
-			Du har fått ett nytt meddelande kopplat till ditt ärende gällande Case Title Addition, 123456789
+			Du har fått ett nytt meddelande kopplat till ditt ärende gällande Case type displayName, 123456789
 			Gå in på Mina Sidor via länken för att visa meddelandet: https://example.com/contact/privat/arenden/123456789
 
 			Sundsvalls kommun
@@ -84,7 +85,7 @@ class MessagingMapperTest {
 		final var firstName = "Test";
 		final var namespace = "my-namespace";
 		final var municipalityId = "2281";
-		final var caseTitleAddition = "Case Title Addition";
+		final var displayName = "Case type displayName";
 		final var errandNumber = "123456789";
 		final var emailAddress = "test™@example.com";
 		final var emailName = "Test";
@@ -103,7 +104,6 @@ class MessagingMapperTest {
 			.withId(123L)
 			.withNamespace(namespace)
 			.withMunicipalityId(municipalityId)
-			.withCaseTitleAddition(caseTitleAddition)
 			.withErrandNumber(errandNumber)
 			.withStakeholders(List.of(StakeholderEntity.builder()
 				.withFirstName(firstName)
@@ -124,14 +124,15 @@ class MessagingMapperTest {
 			.build();
 
 		// Act
-		final var bean = MessagingMapper.toEmailRequest(errandEntity, messagingSettings, errandEntity.getStakeholders().getFirst(), TYPE_REPORTER_SUPPORT_TEXT);
+		final var bean = MessagingMapper.toEmailRequest(errandEntity, messagingSettings, errandEntity.getStakeholders().getFirst(), TYPE_REPORTER_SUPPORT_TEXT,
+			CaseType.builder().withDisplayName(displayName).build());
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrPropertiesExcept("party", "htmlMessage");
-		assertThat(bean.getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case Title Addition 123456789");
+		assertThat(bean.getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayName 123456789");
 		assertThat(bean.getMessage()).isEqualTo("""
 			Hej Test,
-			Ett nytt meddelande har skapats kopplat till ärende gällande Case Title Addition, 123456789 där du är
+			Ett nytt meddelande har skapats kopplat till ärende gällande Case type displayName, 123456789 där du är
 			rapportör.
 			Gå in på Katla via länken för att visa meddelandet: https://example.com/contact/subpath/arenden/123456789
 
@@ -148,7 +149,7 @@ class MessagingMapperTest {
 		// Arrange
 		final var namespace = "my-namespace";
 		final var municipalityId = "2281";
-		final var caseTitleAddition = "Case Title Addition";
+		final var displayName = "Case type displayName";
 		final var errandNumber = "123456789";
 		final var emailAddress = "test™@example.com";
 		final var supportText = """
@@ -164,7 +165,6 @@ class MessagingMapperTest {
 			.withId(123L)
 			.withNamespace(namespace)
 			.withMunicipalityId(municipalityId)
-			.withCaseTitleAddition(caseTitleAddition)
 			.withErrandNumber(errandNumber)
 			.withStakeholders(List.of(StakeholderEntity.builder()
 				.withPersonId("123e4567-e89b-12d3-a456-426614174000")
@@ -181,7 +181,7 @@ class MessagingMapperTest {
 			.build();
 
 		// Act
-		final var bean = MessagingMapper.toMessagingMessageRequest(errandEntity, messagingSettings);
+		final var bean = MessagingMapper.toMessagingMessageRequest(errandEntity, messagingSettings, CaseType.builder().withDisplayName(displayName).build());
 
 		// Assert
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
@@ -189,7 +189,7 @@ class MessagingMapperTest {
 		assertThat(bean.getMessages().getFirst().getMessage())
 			.isEqualTo("""
 				Hej Test,
-				Du har fått ett nytt meddelande kopplat till ditt ärende gällande Case Title Addition, 123456789
+				Du har fått ett nytt meddelande kopplat till ditt ärende gällande Case type displayName, 123456789
 				Gå in på Mina Sidor via länken för att visa meddelandet: https://example.com/contact/privat/arenden/123456789
 
 				Sundsvalls kommun

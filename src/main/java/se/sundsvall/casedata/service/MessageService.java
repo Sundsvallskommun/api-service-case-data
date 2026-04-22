@@ -149,7 +149,7 @@ public class MessageService {
 		final var errandEntity = fetchErrand(municipalityId, namespace, errandId);
 
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
-		final var request = toMessagingMessageRequest(errandEntity, messagingSettings);
+		final var request = toMessagingMessageRequest(errandEntity, messagingSettings, metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType()));
 
 		sendMessageNotification(errandEntity, request);
 	}
@@ -174,9 +174,9 @@ public class MessageService {
 
 	/**
 	 * Method determins if email notification is to be sent or not. If no identifier is present or if identifier is present
-	 * and identifier is of any other type than ad account, or if type is ad account and value of
-	 * stakeholder is not equal to identifier value (i.e. a user that is not same as the stakeholder is creating the
-	 * message) an email should be sent.
+	 * and identifier is of any other type than ad account, or if type is ad account and value of stakeholder is not equal
+	 * to identifier
+	 * value (i.e. a user that is not same as the stakeholder is creating the message) an email should be sent.
 	 *
 	 * @param  stakeholderEntity the stakehlolder to evaluate against
 	 * @return                   true if email notification is to be sent, false otherwise
@@ -209,7 +209,8 @@ public class MessageService {
 
 	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName) {
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
-		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity, TYPE_REPORTER_SUPPORT_TEXT);
+		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity, TYPE_REPORTER_SUPPORT_TEXT,
+			metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType()));
 		messagingClient.sendEmail(errandEntity.getMunicipalityId(), request);
 	}
 
