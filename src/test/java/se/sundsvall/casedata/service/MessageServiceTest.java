@@ -293,7 +293,7 @@ class MessageServiceTest {
 			.withCaseType(DEPARTMENT_NAME_PARATRANSIT)
 			.build();
 
-		when(metadataserviceMock.getCaseType(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_NAME_PARATRANSIT)).thenReturn(CaseType.builder().build());
+		when(metadataserviceMock.getCaseType(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_NAME_PARATRANSIT)).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
 		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_NAME_PARATRANSIT)).thenReturn(MessagingSettings.builder().build());
 		when(messageRepositoryMock.save(any(MessageEntity.class))).thenReturn(MessageEntity.builder().build());
 		when(messageMapperMock.toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(MessageEntity.builder().build());
@@ -316,7 +316,7 @@ class MessageServiceTest {
 		verify(messageMapperMock).toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageRepositoryMock).save(any());
 		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
-		assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case Title Addition 123456789");
+		assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
 		assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(emailAddress);
 		verifyNoMoreInteractions(messageRepositoryMock, messageMapperMock, messagingClientMock);
 	}
@@ -374,6 +374,7 @@ class MessageServiceTest {
 			.build();
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
 		when(messagingClientMock.sendMessage(eq(MUNICIPALITY_ID), any())).thenReturn(new MessageResult().messageId(messageId));
 
 		// Act
@@ -418,6 +419,7 @@ class MessageServiceTest {
 
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
 		when(messagingClientMock.sendMessage(eq(MUNICIPALITY_ID), any())).thenReturn(null);
 
 		// Act & Assert
@@ -449,6 +451,7 @@ class MessageServiceTest {
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		if (emailShouldBeSent) {
 			when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+			when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
 		}
 
 		// Act
@@ -459,7 +462,7 @@ class MessageServiceTest {
 		if (emailShouldBeSent) {
 			verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
 			verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
-			assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case Title Addition 123456789");
+			assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
 			assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(stakeholderEntity.getContactInformation().getFirst().getValue());
 		}
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);

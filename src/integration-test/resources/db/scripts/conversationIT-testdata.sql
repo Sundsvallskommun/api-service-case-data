@@ -34,3 +34,7 @@ VALUES ('896a44d8-724b-11ed-a840-0242ac110002', 'RELATION-ID-1'),
 -- Insert attachment data for errand 1 (used in test10_createMessageWithAttachmentIds)
 INSERT INTO attachment (id, created, updated, version, category, extension, file, mime_type, name, note, errand_id, decision_id, municipality_id, namespace)
 VALUES (100, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'MEDICAL_CONFIRMATION', '.pdf', 'dGVzdCBjb250ZW50', 'application/pdf', 'errand-attachment.pdf', 'Test attachment', 1, NULL, '2281', 'MY_NAMESPACE');
+
+INSERT INTO case_type(id, type, display_name, municipality_id, namespace)
+VALUES ('1', 'PARKING_PERMIT', 'Nytt parkeringstillstånd', '2281', 'MY_NAMESPACE'),
+       ('2', 'PARATRANSIT', 'Ansökan färdtjänst', '2281', 'MY_NAMESPACE');
