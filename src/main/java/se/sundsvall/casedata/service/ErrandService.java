@@ -172,10 +172,6 @@ public class ErrandService {
 		if (isNull(parsedRelation)) {
 			throw Problem.valueOf(BAD_REQUEST, "Invalid format for referred_from parameter. Expected format: '{relationType}|{sourceResourceId};{sourceType};{sourceService};{sourceNamespace}|'");
 		}
-		// Make sure namespaces match
-		if (!namespace.equalsIgnoreCase(parsedRelation.getSource().getNamespace())) {
-			throw Problem.valueOf(BAD_REQUEST, String.format("Mismatch on namespace ('%s') and referred-from namespace ('%s')", namespace, parsedRelation.getSource().getNamespace()));
-		}
 
 		final var relation = new Relation()
 			.type(REFERRED_FROM_RELATION_TYPE)
