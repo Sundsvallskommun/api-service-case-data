@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Stream;
-import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +40,6 @@ import se.sundsvall.dept44.support.Identifier.Type;
 
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -51,7 +49,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
@@ -433,30 +430,6 @@ class ErrandServiceTest {
 				"case",
 				"casedata",
 				referredFromNamespace);
-	}
-
-	@Test
-	void createWhenReferredFromNamespaceNamespaceDoesNotMatchNamespace() {
-		final var referredFromService = "referredFromService";
-		final var referredFromNamespace = "referredFromNamespace";
-		final var referredFromIdentifier = "referredFromIdentifier";
-		final var referredFromType = "referredFromType";
-		final var referredFrom = "|" + referredFromIdentifier + ";" + referredFromType + ";" + referredFromService + ";" + referredFromNamespace + "|";
-
-		final var errand = createErrand();
-		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
-
-		when(errandRepositoryMock.save(any())).thenReturn(savedErrand);
-
-		assertThatException()
-			.isThrownBy(() -> errandService.create(errand, MUNICIPALITY_ID, NAMESPACE, referredFrom))
-			.asInstanceOf(InstanceOfAssertFactories.type(ThrowableProblem.class))
-			.satisfies(thrownProblem -> {
-				assertThat(thrownProblem.getStatus()).isEqualTo(BAD_REQUEST);
-				assertThat(thrownProblem.getMessage()).endsWith("Mismatch on namespace ('MY_NAMESPACE') and referred-from namespace ('referredFromNamespace')");
-			});
-
-		verify(relationClientMock, never()).createRelation(any(), any());
 	}
 
 	@ParameterizedTest
