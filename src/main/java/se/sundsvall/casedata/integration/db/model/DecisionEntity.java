@@ -26,7 +26,6 @@ import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -140,7 +139,7 @@ public class DecisionEntity {
 
 	@Override
 	public String toString() {
-		final var errandId = Objects.requireNonNullElse(errand, new ErrandEntity()).getId() == null ? 0 : errand.getId();
+		final var errandId = errand == null ? null : errand.getId();
 		return "DecisionEntity{" +
 			"id=" + id +
 			", version=" + version +
