@@ -23,6 +23,7 @@ import se.sundsvall.casedata.integration.relation.RelationClient;
 import se.sundsvall.casedata.service.MessageExchangeSyncService;
 import se.sundsvall.dept44.problem.Problem;
 
+import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
 
@@ -102,7 +103,8 @@ public class MessageExchangeWorker {
 	}
 
 	private boolean resourceIdentifierMatchesErrand(final ResourceIdentifier resourceIdentifier) {
-		return "case-data".equalsIgnoreCase(resourceIdentifier.getService()) && Longs.tryParse(resourceIdentifier.getResourceId()) != null && errandRepository.findById(Long.parseLong(resourceIdentifier.getResourceId())).isPresent();
+		final var service = ofNullable(resourceIdentifier.getService()).orElse("").replace("-", "").replace("_", "");
+		return "casedata".equalsIgnoreCase(service) && Longs.tryParse(resourceIdentifier.getResourceId()) != null && errandRepository.findById(Long.parseLong(resourceIdentifier.getResourceId())).isPresent();
 	}
 
 	private Function<Relation, ConversationEntity> createConversation(final Conversation conversation) {
