@@ -2,11 +2,12 @@ package se.sundsvall.casedata.service.scheduler.messageexchange;
 
 import com.google.common.primitives.Longs;
 import generated.se.sundsvall.messageexchange.Conversation;
-import generated.se.sundsvall.relation.Relation;
 import generated.se.sundsvall.relation.ResourceIdentifier;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -36,6 +37,7 @@ public class MessageExchangeWorker {
 	private final RelationClient relationClient;
 	private final ErrandRepository errandRepository;
 	private final MessageExchangeSyncService messageExchangeSyncService;
+	private static final String THIS_SERVICE = "casedata";
 
 	public MessageExchangeWorker(final MessageExchangeClient messageExchangeClient, final MessageExchangeSyncRepository messageExchangeSyncRepository,
 		final ConversationRepository conversationRepository,
@@ -81,41 +83,40 @@ public class MessageExchangeWorker {
 		conversation.getExternalReferences().stream()
 			.filter(keyValues -> keyValues.getKey() != null && keyValues.getKey().equals(RELATION_ID_KEY))
 			.flatMap(keyValues -> keyValues.getValues().stream())
-			.filter(isNotPresentInConversationRelations(conversationEntities))
 			.map(relationId -> relationClient.getRelation(conversation.getMunicipalityId(), relationId))
 			.filter(response -> response.getStatusCode().is2xxSuccessful())
 			.map(HttpEntity::getBody)
-			.filter(relationTargetConnectedToCaseDataErrand())
+			.filter(Objects::nonNull)
+			.flatMap(relation -> Stream.of(relation.getTarget(), relation.getSource()))
+			.filter(Objects::nonNull)
+			.filter(resourceIdentifierMatchesErrand())
+			.filter(resourceIdentifierDoesNotExistInEntityList(conversationEntities))
 			.map(createConversation(conversation))
 			.forEach(conversationEntities::add);
 
 		return conversationEntities;
 	}
 
-	private Predicate<String> isNotPresentInConversationRelations(final List<ConversationEntity> conversationEntities) {
-		// if targetRelationId matches existing conversationEntity it means the conversation is already added
-		return relationId -> conversationEntities.stream().noneMatch(conversationEntity -> relationId.equals(conversationEntity.getTargetRelationId()));
+	private Predicate<ResourceIdentifier> resourceIdentifierDoesNotExistInEntityList(final List<ConversationEntity> conversationEntities) {
+		// Check if conversation is already present in the list
+		return identifier -> conversationEntities.stream().map(ConversationEntity::getErrandId).noneMatch(errandId -> errandId.equals(identifier.getResourceId()));
 	}
 
-	private Predicate<Relation> relationTargetConnectedToCaseDataErrand() {
-		// Only match target, since source will be created through case-data service and already added
-		return relation -> resourceIdentifierMatchesErrand(relation.getTarget());
+	private Predicate<ResourceIdentifier> resourceIdentifierMatchesErrand() {
+		return resourceIdentifier -> {
+			final var service = ofNullable(resourceIdentifier.getService()).orElse("").replace("-", "").replace("_", "");
+			return THIS_SERVICE.equalsIgnoreCase(service) && Longs.tryParse(resourceIdentifier.getResourceId()) != null && errandRepository.findById(Long.parseLong(resourceIdentifier.getResourceId())).isPresent();
+		};
 	}
 
-	private boolean resourceIdentifierMatchesErrand(final ResourceIdentifier resourceIdentifier) {
-		final var service = ofNullable(resourceIdentifier.getService()).orElse("").replace("-", "").replace("_", "");
-		return "casedata".equalsIgnoreCase(service) && Longs.tryParse(resourceIdentifier.getResourceId()) != null && errandRepository.findById(Long.parseLong(resourceIdentifier.getResourceId())).isPresent();
-	}
-
-	private Function<Relation, ConversationEntity> createConversation(final Conversation conversation) {
-		return relation -> {
-			final var errand = errandRepository.findById(Long.parseLong(relation.getTarget().getResourceId()))
+	private Function<ResourceIdentifier, ConversationEntity> createConversation(final Conversation conversation) {
+		return identifier -> {
+			final var errand = errandRepository.findById(Long.parseLong(identifier.getResourceId()))
 				.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, "Bug in relation filter"));
 			return ConversationEntity.builder().withErrandId(errand.getId().toString())
 				.withMessageExchangeId(conversation.getId())
 				.withNamespace(errand.getNamespace())
 				.withMunicipalityId(errand.getMunicipalityId())
-				.withTargetRelationId(relation.getId())
 				.withType("INTERNAL")
 				.build();
 		};
