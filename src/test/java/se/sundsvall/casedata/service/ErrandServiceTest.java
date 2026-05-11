@@ -390,11 +390,12 @@ class ErrandServiceTest {
 
 	@Test
 	void createWhenReferredFromPresent() {
+		final var relationType = "some_relation_type";
 		final var referredFromIdentifier = "referredFromIdentifier";
 		final var referredFromType = "referredFromType";
 		final var referredFromService = "referredFromService";
 		final var referredFromNamespace = "referredFromNamespace";
-		final var referredFrom = "|" + referredFromIdentifier + ";" + referredFromType + ";" + referredFromService + ";" + referredFromNamespace + "|";
+		final var referredFrom = relationType + "|" + referredFromIdentifier + ";" + referredFromType + ";" + referredFromService + ";" + referredFromNamespace + "|";
 
 		final var errand = createErrand();
 		final var savedErrand = toErrandEntity(errand, MUNICIPALITY_ID, NAMESPACE);
@@ -409,7 +410,7 @@ class ErrandServiceTest {
 
 		final var relation = relationCaptor.getValue();
 
-		assertThat(relation.getType()).isEqualTo("REFERRED_FROM");
+		assertThat(relation.getType()).isEqualTo(relationType.toUpperCase());
 		assertThat(relation.getSource())
 			.extracting(ResourceIdentifier::getResourceId,
 				ResourceIdentifier::getType,
