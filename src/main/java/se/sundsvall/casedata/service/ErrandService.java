@@ -47,7 +47,6 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toOwnerId;
 @Transactional
 public class ErrandService {
 
-	private static final String REFERRED_FROM_RELATION_TYPE = "REFERRED_FROM";
 	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_TYPE = "case";
 	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE = "casedata";
 
@@ -174,7 +173,7 @@ public class ErrandService {
 		}
 
 		final var relation = new Relation()
-			.type(REFERRED_FROM_RELATION_TYPE)
+			.type(parsedRelation.getType())
 			.source(new ResourceIdentifier()
 				.resourceId(parsedRelation.getSource().getResourceId())
 				.type(parsedRelation.getSource().getType())
