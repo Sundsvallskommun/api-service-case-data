@@ -24,6 +24,7 @@ import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
 import se.sundsvall.casedata.service.NotificationService;
@@ -341,7 +342,7 @@ class EmailReaderWorkerTest {
 		final var municipalityId = "someMunicipalityId";
 		final var namespace = "someNamespace";
 		final var messageAttachment = MessageAttachmentEntity.builder().withAttachmentData(MessageAttachmentDataEntity.builder().build()).build();
-		final var attachmentEntity = new AttachmentEntity().withErrandId(errandId);
+		final var attachmentEntity = new AttachmentEntity().withErrandId(errandId).withChannel(Channel.EMAIL);
 
 		when(messageMapperMock.toAttachmentEntity(attachment, messageId, municipalityId, namespace)).thenReturn(messageAttachment);
 		when(messageMapperMock.toAttachmentEntity(messageAttachment)).thenReturn(attachmentEntity);

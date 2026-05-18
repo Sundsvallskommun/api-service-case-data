@@ -4959,6 +4959,16 @@ components:
           description: Category of the attachment
           examples:
             - DOCUMENT
+        channel:
+          type: string
+          description: Channel through which the attachment was received
+          enum:
+            - EMAIL
+            - ESERVICE
+            - WEB_UI
+            - MY_PAGES
+          examples:
+            - EMAIL
         name:
           type: string
           description: Name of the attachment

@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,11 +17,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
+import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.dept44.problem.Problem;
 
@@ -291,12 +294,14 @@ class MessageExchangeSyncServiceTest {
 		final var file = ResponseEntity.ok()
 			.header("Content-Type", "application/octet-stream")
 			.body(new InputStreamResource(new ByteArrayInputStream(new byte[0])));
+		final var attachmentCaptor = ArgumentCaptor.forClass(Attachment.class);
 
 		// Act
-		service.saveAttachment(errandId, municipalityId, namespace, file);
+		service.saveAttachment(errandId, municipalityId, namespace, file, Channel.WEB_UI);
 
 		// Assert
-		verify(attachmentServiceMock).create(eq(errandId), any(), eq(municipalityId), eq(namespace));
+		verify(attachmentServiceMock).create(eq(errandId), attachmentCaptor.capture(), eq(municipalityId), eq(namespace));
+		assertThat(attachmentCaptor.getValue().getChannel()).isEqualTo(Channel.WEB_UI.name());
 		verifyNoMoreInteractions(attachmentServiceMock);
 		verifyNoInteractions(conversationRepositoryMock, messageExchangeClientMock);
 	}
@@ -312,7 +317,7 @@ class MessageExchangeSyncServiceTest {
 			.build();
 
 		// Act & Assert
-		assertThatThrownBy(() -> service.saveAttachment(errandId, municipalityId, namespace, file))
+		assertThatThrownBy(() -> service.saveAttachment(errandId, municipalityId, namespace, file, Channel.WEB_UI))
 			.isInstanceOf(Problem.class)
 			.hasMessageContaining("Failed to retrieve attachment from Message Exchange");
 
@@ -329,10 +334,33 @@ class MessageExchangeSyncServiceTest {
 			.body(new InputStreamResource(new ByteArrayInputStream(new byte[0])));
 
 		// Act & Assert
-		assertThatThrownBy(() -> service.saveAttachment(errandId, municipalityId, namespace, file))
+		assertThatThrownBy(() -> service.saveAttachment(errandId, municipalityId, namespace, file, Channel.MY_PAGES))
 			.isInstanceOf(Problem.class)
 			.hasMessageContaining("Failed to retrieve attachment from Message Exchange");
 
 		verifyNoInteractions(conversationRepositoryMock, messageExchangeClientMock);
+	}
+
+	@Test
+	void resolveChannelFromAdAccount() {
+		final var identifier = new generated.se.sundsvall.messageexchange.Identifier().type("adAccount").value("joe01doe");
+		assertThat(MessageExchangeSyncService.resolveChannel(identifier)).isEqualTo(Channel.WEB_UI);
+	}
+
+	@Test
+	void resolveChannelFromPartyId() {
+		final var identifier = new generated.se.sundsvall.messageexchange.Identifier().type("partyId").value("d8b40f9e-1234-4abc-9012-3456789abcde");
+		assertThat(MessageExchangeSyncService.resolveChannel(identifier)).isEqualTo(Channel.MY_PAGES);
+	}
+
+	@Test
+	void resolveChannelFromNullIdentifier() {
+		assertThat(MessageExchangeSyncService.resolveChannel(null)).isNull();
+	}
+
+	@Test
+	void resolveChannelFromUnknownType() {
+		final var identifier = new generated.se.sundsvall.messageexchange.Identifier().type("something-else").value("x");
+		assertThat(MessageExchangeSyncService.resolveChannel(identifier)).isNull();
 	}
 }

@@ -38,6 +38,7 @@ class AttachmentTest {
 	void builderTest() {
 		// Arrange
 		final var category = "category";
+		final var channel = "EMAIL";
 		final var name = "name";
 		final var note = "note";
 		final var extension = "extension";
@@ -51,6 +52,7 @@ class AttachmentTest {
 		// Act
 		final var bean = Attachment.builder()
 			.withCategory(category)
+			.withChannel(channel)
 			.withName(name)
 			.withNote(note)
 			.withExtension(extension)
@@ -64,6 +66,7 @@ class AttachmentTest {
 
 		// Assert
 		assertThat(bean.getCategory()).isEqualTo(category);
+		assertThat(bean.getChannel()).isEqualTo(channel);
 		assertThat(bean.getName()).isEqualTo(name);
 		assertThat(bean.getNote()).isEqualTo(note);
 		assertThat(bean.getExtension()).isEqualTo(extension);

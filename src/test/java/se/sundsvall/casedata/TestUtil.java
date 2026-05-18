@@ -200,6 +200,7 @@ public final class TestUtil {
 			.withUpdated(getRandomOffsetDateTime())
 			.withId(RANDOM.nextLong(1, 100000))
 			.withCategory(category.toString())
+			.withChannel("EMAIL")
 			.withName(RandomStringUtils.secure().next(10, true, false) + ".pdf")
 			.withNote(RandomStringUtils.secure().next(20, true, false))
 			.withExtension(".pdf")
@@ -616,6 +617,7 @@ public final class TestUtil {
 			.withNamespace(NAMESPACE)
 			.withErrandId(RANDOM.nextLong(1, 100000))
 			.withCategory(AttachmentCategory.POLICE_REPORT.name())
+			.withChannel(Channel.EMAIL)
 			.build();
 	}
 

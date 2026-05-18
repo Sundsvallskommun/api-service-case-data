@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.TimeZoneStorage;
 import se.sundsvall.casedata.api.model.validation.ValidAttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.ValidMapValueSize;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
@@ -47,6 +48,14 @@ public class Attachment {
 	@Schema(description = "Category of the attachment", examples = "DOCUMENT")
 	@ValidAttachmentCategory
 	private String category;
+
+	@Schema(description = "Channel through which the attachment was received", examples = "EMAIL", allowableValues = {
+		"EMAIL", "ESERVICE", "WEB_UI", "MY_PAGES"
+	}, nullable = true)
+	@OneOf(value = {
+		"EMAIL", "ESERVICE", "WEB_UI", "MY_PAGES"
+	}, nullable = true)
+	private String channel;
 
 	@Schema(description = "Name of the attachment", examples = "Test Document")
 	private String name;

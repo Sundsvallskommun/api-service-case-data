@@ -11,6 +11,7 @@ import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.dept44.problem.Problem;
 
@@ -82,16 +83,28 @@ public class MessageExchangeSyncService {
 
 	void syncAttachment(final ConversationEntity conversationEntity, final Message message, final generated.se.sundsvall.messageexchange.Attachment attachment) {
 		final var file = messageExchangeClient.readErrandAttachment(conversationEntity.getMunicipalityId(), messageExchangeNamespace, conversationEntity.getMessageExchangeId(), message.getId(), attachment.getId());
-		saveAttachment(Long.valueOf(conversationEntity.getErrandId()), conversationEntity.getMunicipalityId(), conversationEntity.getNamespace(), file);
+		saveAttachment(Long.valueOf(conversationEntity.getErrandId()), conversationEntity.getMunicipalityId(), conversationEntity.getNamespace(), file, resolveChannel(message.getCreatedBy()));
 	}
 
-	void saveAttachment(final Long errandId, final String municipalityId, final String namespace, final ResponseEntity<InputStreamResource> file) {
+	static Channel resolveChannel(final generated.se.sundsvall.messageexchange.Identifier createdBy) {
+		return ofNullable(createdBy)
+			.map(generated.se.sundsvall.messageexchange.Identifier::getType)
+			.map(type -> switch (type)
+			{
+				case "adAccount" -> Channel.WEB_UI;
+				case "partyId" -> Channel.MY_PAGES;
+				default -> null;
+			})
+			.orElse(null);
+	}
+
+	void saveAttachment(final Long errandId, final String municipalityId, final String namespace, final ResponseEntity<InputStreamResource> file, final Channel channel) {
 		if (file == null || file.getBody() == null || file.getHeaders().getContentType() == null) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve attachment from Message Exchange");
 		}
 		final Attachment attachment;
 		try {
-			attachment = toAttachment(file.getBody().getContentAsByteArray(), file.getHeaders().getContentDisposition().getFilename(), file.getHeaders().getContentType().toString(), errandId, municipalityId, namespace);
+			attachment = toAttachment(file.getBody().getContentAsByteArray(), file.getHeaders().getContentDisposition().getFilename(), file.getHeaders().getContentType().toString(), errandId, municipalityId, namespace, channel);
 		} catch (final IOException _) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert attachment from Message Exchange");
 		}
