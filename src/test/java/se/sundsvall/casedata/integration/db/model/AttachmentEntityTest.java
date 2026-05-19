@@ -6,6 +6,7 @@ import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
 
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
@@ -39,6 +40,7 @@ class AttachmentEntityTest {
 		// Arrange
 		final var id = 1L;
 		final var category = "category";
+		final var channel = Channel.EMAIL;
 		final var name = "name";
 		final var note = "note";
 		final var extension = "extension";
@@ -55,6 +57,7 @@ class AttachmentEntityTest {
 		final var bean = AttachmentEntity.builder()
 			.withId(id)
 			.withCategory(category)
+			.withChannel(channel)
 			.withName(name)
 			.withNote(note)
 			.withExtension(extension)
@@ -72,6 +75,7 @@ class AttachmentEntityTest {
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(bean.getId()).isEqualTo(id);
 		assertThat(bean.getCategory()).isEqualTo(category);
+		assertThat(bean.getChannel()).isEqualTo(channel);
 		assertThat(bean.getName()).isEqualTo(name);
 		assertThat(bean.getNote()).isEqualTo(note);
 		assertThat(bean.getExtension()).isEqualTo(extension);

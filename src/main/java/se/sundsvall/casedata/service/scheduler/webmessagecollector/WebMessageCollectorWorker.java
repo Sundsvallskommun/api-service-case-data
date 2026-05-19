@@ -13,6 +13,7 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.MessageAttachmentRepository;
 import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollectorClient;
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.NotificationService;
@@ -100,7 +101,9 @@ public class WebMessageCollectorWorker {
 		messageAttachment.setAttachmentData(messageMapper.toMessageAttachmentData(data));
 		// Save the attachment
 		messageAttachmentRepository.saveAndFlush(messageAttachment);
-		attachmentRepository.saveAndFlush(messageMapper.toAttachmentEntity(messageAttachment).withErrandId(errandId));
+		attachmentRepository.saveAndFlush(messageMapper.toAttachmentEntity(messageAttachment)
+			.withErrandId(errandId)
+			.withChannel(Channel.ESERVICE));
 	}
 
 	private Map<String, List<MessageDTO>> getMessages() {

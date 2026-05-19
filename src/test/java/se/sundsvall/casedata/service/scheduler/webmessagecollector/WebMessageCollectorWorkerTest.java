@@ -24,6 +24,7 @@ import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.webmessagecollector.WebMessageCollectorClient;
 import se.sundsvall.casedata.integration.webmessagecollector.configuration.WebMessageCollectorProperties;
 import se.sundsvall.casedata.service.NotificationService;
@@ -169,6 +170,7 @@ class WebMessageCollectorWorkerTest {
 		assertThat(attachmentCaptor.getValue()).isNotNull();
 		assertThat(attachmentCaptor.getValue().getErrandId()).isEqualTo(errandId);
 		assertThat(attachmentCaptor.getValue().getName()).isEqualTo("fileName");
+		assertThat(attachmentCaptor.getValue().getChannel()).isEqualTo(Channel.ESERVICE);
 	}
 
 	@Test

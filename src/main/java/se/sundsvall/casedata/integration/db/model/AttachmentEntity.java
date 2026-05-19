@@ -4,6 +4,8 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +32,7 @@ import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.javers.core.metamodel.annotation.DiffIgnore;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
 
 import static org.hibernate.Length.LONG32;
 
@@ -71,6 +74,11 @@ public class AttachmentEntity {
 
 	@Column(name = "extension")
 	private String extension;
+
+	@With
+	@Enumerated(EnumType.STRING)
+	@Column(name = "channel", columnDefinition = "varchar(255)")
+	private Channel channel;
 
 	@Column(name = "mime_type")
 	private String mimeType;

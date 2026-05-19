@@ -31,6 +31,7 @@ import se.sundsvall.casedata.integration.db.model.NotificationEntity;
 import se.sundsvall.casedata.integration.db.model.RelatedErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.StatusEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.db.model.enums.NotificationSubType;
 
 import static java.time.OffsetDateTime.now;
@@ -210,6 +211,7 @@ public final class EntityMapper {
 		return ofNullable(attachment)
 			.map(obj -> AttachmentEntity.builder()
 				.withCategory(obj.getCategory())
+				.withChannel(ofNullable(obj.getChannel()).map(Channel::valueOf).orElse(null))
 				.withName(obj.getName())
 				.withNote(obj.getNote())
 				.withExtension(obj.getExtension())
@@ -233,6 +235,7 @@ public final class EntityMapper {
 				.withCreated(obj.getCreated())
 				.withUpdated(obj.getUpdated())
 				.withCategory(obj.getCategory())
+				.withChannel(ofNullable(obj.getChannel()).map(Channel::name).orElse(null))
 				.withName(obj.getName())
 				.withNote(obj.getNote())
 				.withExtension(obj.getExtension())

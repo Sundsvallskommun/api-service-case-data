@@ -17,6 +17,7 @@ import se.sundsvall.casedata.api.model.conversation.KeyValues;
 import se.sundsvall.casedata.api.model.conversation.MessageType;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.service.util.Base64MultipartFile;
 import se.sundsvall.dept44.problem.Problem;
 
@@ -519,7 +520,7 @@ class ConversationMapperTest {
 		final var result = ConversationMapper.toAttachment(attachment, errandId, municipalityId, namespace);
 
 		// Assert
-		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "category", "note", "extension");
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "category", "channel", "note", "extension");
 		assertThat(result.getName()).isEqualTo(fileName);
 		assertThat(result.getMimeType()).isEqualTo(mimeType);
 	}
@@ -549,10 +550,11 @@ class ConversationMapperTest {
 		final Long errandId = 42L;
 		final String municipalityId = "1234";
 		final String namespace = "test-namespace";
+		final var channel = Channel.SYSTEM;
 		final String expectedBase64 = Base64.getEncoder().encodeToString(content);
 
 		// Act
-		final Attachment result = ConversationMapper.toAttachment(content, filename, mimeType, errandId, municipalityId, namespace);
+		final Attachment result = ConversationMapper.toAttachment(content, filename, mimeType, errandId, municipalityId, namespace, channel);
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -562,6 +564,7 @@ class ConversationMapperTest {
 		assertThat(result.getFile()).isEqualTo(expectedBase64);
 		assertThat(result.getName()).isEqualTo(filename);
 		assertThat(result.getMimeType()).isEqualTo(mimeType);
+		assertThat(result.getChannel()).isEqualTo(channel.name());
 	}
 
 	@Test
@@ -574,7 +577,7 @@ class ConversationMapperTest {
 		final String namespace = "test-namespace";
 
 		// Act
-		final Attachment result = ConversationMapper.toAttachment(null, filename, mimeType, errandId, municipalityId, namespace);
+		final Attachment result = ConversationMapper.toAttachment(null, filename, mimeType, errandId, municipalityId, namespace, Channel.SYSTEM);
 
 		// Assert
 		assertThat(result).isNotNull();

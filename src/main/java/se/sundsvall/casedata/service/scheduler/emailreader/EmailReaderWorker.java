@@ -16,6 +16,7 @@ import se.sundsvall.casedata.integration.db.MessageRepository;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentDataEntity;
 import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
 import se.sundsvall.casedata.service.NotificationService;
@@ -97,7 +98,9 @@ public class EmailReaderWorker {
 
 		try {
 			final var messageAttachment = messageMapper.toAttachmentEntity(attachment, messageId, municipalityId, namespace);
-			final var attachmentEntity = messageMapper.toAttachmentEntity(messageAttachment).withErrandId(errandId);
+			final var attachmentEntity = messageMapper.toAttachmentEntity(messageAttachment)
+				.withErrandId(errandId)
+				.withChannel(Channel.EMAIL);
 
 			messageAttachment.setAttachmentData(MessageAttachmentDataEntity.builder().build()); // Create empty attachment data to populate later
 			// Save the attachment

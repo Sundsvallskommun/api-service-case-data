@@ -20,6 +20,7 @@ import se.sundsvall.casedata.api.model.conversation.MessageType;
 import se.sundsvall.casedata.api.model.conversation.ReadBy;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
+import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.service.util.Base64MultipartFile;
 import se.sundsvall.dept44.problem.Problem;
 
@@ -223,7 +224,7 @@ public final class ConversationMapper {
 			.build();
 	}
 
-	public static se.sundsvall.casedata.api.model.Attachment toAttachment(final byte[] content, final String filename, final String mimeType, final Long errandId, final String municipalityId, final String namespace) {
+	public static se.sundsvall.casedata.api.model.Attachment toAttachment(final byte[] content, final String filename, final String mimeType, final Long errandId, final String municipalityId, final String namespace, final Channel channel) {
 
 		final String contentString = Optional.ofNullable(content)
 			.map(ConversationMapper::toContentString)
@@ -236,6 +237,7 @@ public final class ConversationMapper {
 			.withFile(contentString)
 			.withName(filename)
 			.withMimeType(mimeType)
+			.withChannel(Optional.ofNullable(channel).map(Channel::name).orElse(null))
 			.build();
 	}
 

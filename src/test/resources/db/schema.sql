@@ -13,6 +13,7 @@
         municipality_id varchar(255),
         name varchar(255),
         namespace varchar(255),
+        channel varchar(255),
         file longtext,
         primary key (id)
     ) engine=InnoDB;
