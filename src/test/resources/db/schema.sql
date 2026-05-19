@@ -13,7 +13,7 @@
         municipality_id varchar(255),
         name varchar(255),
         namespace varchar(255),
-        channel enum ('EMAIL','ESERVICE','ESERVICE_KATLA','MOBILE','MY_PAGES','SYSTEM','WEB_UI'),
+        channel varchar(255),
         file longtext,
         primary key (id)
     ) engine=InnoDB;

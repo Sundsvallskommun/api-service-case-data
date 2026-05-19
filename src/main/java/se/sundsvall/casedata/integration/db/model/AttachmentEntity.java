@@ -77,7 +77,7 @@ public class AttachmentEntity {
 
 	@With
 	@Enumerated(EnumType.STRING)
-	@Column(name = "channel")
+	@Column(name = "channel", columnDefinition = "varchar(255)")
 	private Channel channel;
 
 	@Column(name = "mime_type")
