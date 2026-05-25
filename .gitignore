@@ -52,3 +52,4 @@ docker/init.sql
 
 # Local application config
 src/main/resources/application-local.yml
+/build.log

@@ -1,12 +1,11 @@
 package se.sundsvall.casedata.service;
 
-import generated.se.sundsvall.messaging.Message;
-import generated.se.sundsvall.messaging.MessageParty;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
@@ -27,13 +26,17 @@ import se.sundsvall.dept44.support.Identifier.Type;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ObjectUtils.notEqual;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.APPLICANT;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_OWNER_SUPPORT_TEXT;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_REPORTER_SUPPORT_TEXT;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.findStakeholderEmail;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailRequest;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toMessagingMessageRequest;
 import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
@@ -46,6 +49,7 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotifica
 @Transactional
 public class MessageService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageService.class);
 	private static final String NOTIFICATION_TYPE = "UPDATE";
 	private static final String NOTIFICATION_DESCRIPTION = "Meddelande skickat";
 	private final MessageRepository messageRepository;
@@ -137,8 +141,10 @@ public class MessageService {
 	}
 
 	/**
-	 * Method for sending notification message to external applicant stakeholder by partyId (called from
-	 * ConversationService.createMessage).
+	 * Method for sending notification message to external applicant stakeholder (called from
+	 * ConversationService.createMessage). The applicant's own email address on the stakeholder is used in first hand.
+	 * Only if no email is present on the applicant but a partyId (personId) is, the call is delegated to messaging
+	 * /messages so that ContactSettings can be consulted to determine a recipient address.
 	 *
 	 * @param municipalityId of the errand that the message belongs to
 	 * @param namespace      of the errand that the message belongs to
@@ -147,11 +153,32 @@ public class MessageService {
 	 */
 	public void sendMessageNotification(final String municipalityId, final String namespace, final Long errandId, final String departmentName) {
 		final var errandEntity = fetchErrand(municipalityId, namespace, errandId);
+		final var applicantStakeholder = getApplicantStakeholder(errandEntity);
+
+		if (creatorIsSameAsApplicant(applicantStakeholder)) {
+			return;
+		}
 
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
-		final var request = toMessagingMessageRequest(errandEntity, messagingSettings, metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType()));
+		final var caseType = metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType());
 
-		sendMessageNotification(errandEntity, request);
+		final var applicantEmail = findStakeholderEmail(applicantStakeholder);
+		if (isNotBlank(applicantEmail)) {
+			final var emailRequest = toEmailRequest(errandEntity, messagingSettings, applicantStakeholder, TYPE_OWNER_SUPPORT_TEXT, caseType);
+			messagingClient.sendEmail(municipalityId, emailRequest);
+			return;
+		}
+
+		if (applicantStakeholder != null && isNotBlank(applicantStakeholder.getPersonId())) {
+			final var messageRequest = toMessagingMessageRequest(errandEntity, messagingSettings, caseType);
+			final var result = messagingClient.sendMessage(municipalityId, messageRequest);
+			if (result == null) {
+				throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message notification");
+			}
+			return;
+		}
+
+		LOGGER.warn("Cannot send applicant notification for errand '{}' in namespace '{}' for municipality '{}': applicant stakeholder has neither email nor partyId", errandId, namespace, municipalityId);
 	}
 
 	/**
@@ -190,23 +217,6 @@ public class MessageService {
 			.orElse(true);
 	}
 
-	private void sendMessageNotification(final ErrandEntity errandEntity, final generated.se.sundsvall.messaging.MessageRequest request) {
-		final var partyId = ofNullable(request.getMessages())
-			.map(List::getFirst)
-			.map(Message::getParty)
-			.map(MessageParty::getPartyId)
-			.map(UUID::toString)
-			.orElse(null);
-
-		if (Identifier.get() != null && !Identifier.get().getValue().equalsIgnoreCase(partyId)) {
-			final var message = messagingClient.sendMessage(errandEntity.getMunicipalityId(), request);
-
-			if (message == null) {
-				throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message notification");
-			}
-		}
-	}
-
 	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName) {
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
 		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity, TYPE_REPORTER_SUPPORT_TEXT,
@@ -215,12 +225,40 @@ public class MessageService {
 	}
 
 	private StakeholderEntity getReporterStakeholder(final ErrandEntity errandEntity) {
+		return getStakeholderByRole(errandEntity, REPORTER.name());
+	}
+
+	private StakeholderEntity getApplicantStakeholder(final ErrandEntity errandEntity) {
+		return getStakeholderByRole(errandEntity, APPLICANT.name());
+	}
+
+	private StakeholderEntity getStakeholderByRole(final ErrandEntity errandEntity, final String role) {
 		return ofNullable(errandEntity.getStakeholders())
 			.orElse(emptyList())
 			.stream()
-			.filter(stakeholder -> ofNullable(stakeholder.getRoles()).orElse(emptyList()).contains(REPORTER.name()))
+			.filter(stakeholder -> ofNullable(stakeholder.getRoles()).orElse(emptyList()).contains(role))
 			.findFirst()
 			.orElse(null);
+	}
+
+	/**
+	 * Determines if the current Identifier (i.e. the user creating the message) is the same as the provided applicant
+	 * stakeholder. Only Identifiers of type {@link Type#PARTY_ID} are evaluated against the applicant's
+	 * {@code personId} — for any other Identifier type the creator is assumed to be different from the applicant (an
+	 * internal user with an adAccount Identifier is never the external applicant). If both have a partyId and they
+	 * match, the creator is considered to be the applicant and no notification should be sent (a user does not need to
+	 * be notified of their own message).
+	 *
+	 * @param  applicantStakeholder the applicant stakeholder of the errand, or null if none was found
+	 * @return                      true if the creator is the same as the applicant, false otherwise
+	 */
+	boolean creatorIsSameAsApplicant(final StakeholderEntity applicantStakeholder) {
+		final var identifier = Identifier.get();
+		if (identifier == null || applicantStakeholder == null || identifier.getType() != Type.PARTY_ID) {
+			return false;
+		}
+		final var applicantPartyId = applicantStakeholder.getPersonId();
+		return isNotBlank(applicantPartyId) && identifier.getValue().equalsIgnoreCase(applicantPartyId);
 	}
 
 	private boolean doesCaseTypeExist(final String municpalityId, final String namespace, final String type) {
