@@ -44,6 +44,7 @@ import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOU
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
+import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 @Service
 @Transactional
@@ -178,7 +179,7 @@ public class MessageService {
 			return;
 		}
 
-		LOGGER.warn("Cannot send applicant notification for errand '{}' in namespace '{}' for municipality '{}': applicant stakeholder has neither email nor partyId", errandId, namespace, municipalityId);
+		LOGGER.warn("Cannot send applicant notification for errand '{}' in namespace '{}' for municipality '{}': applicant stakeholder has neither email nor partyId", errandId, sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
 	}
 
 	/**
