@@ -72,6 +72,7 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.A
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
 import static se.sundsvall.casedata.integration.db.model.enums.ContactType.EMAIL;
 import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
+import static se.sundsvall.dept44.support.Identifier.Type.AD_ACCOUNT;
 import static se.sundsvall.dept44.support.Identifier.Type.PARTY_ID;
 
 @ExtendWith(MockitoExtension.class)
@@ -362,15 +363,58 @@ class MessageServiceTest {
 	}
 
 	@Test
-	void sendMessageNotification() {
+	void sendMessageNotificationSendsEmailWhenApplicantHasEmail() {
+		// Arrange
+		Identifier.set(Identifier.create().withType(PARTY_ID).withValue(UUID.randomUUID().toString()));
+		final var errandId = 1L;
+		final var emailAddress = "applicant@example.com";
+		final var applicant = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withContactInformation(List.of(ContactInformationEntity.builder()
+				.withContactType(EMAIL)
+				.withValue(emailAddress)
+				.build()))
+			.build();
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withErrandNumber("123456789")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(applicant))
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
+
+		// Act
+		messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
+
+		// Assert
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
+		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
+		assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(emailAddress);
+		assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
+		verify(messagingClientMock, never()).sendMessage(any(), any());
+		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
+	}
+
+	@Test
+	void sendMessageNotificationFallsBackToMessagesWhenApplicantHasOnlyPartyId() {
 		// Arrange
 		Identifier.set(Identifier.create().withType(PARTY_ID).withValue(UUID.randomUUID().toString()));
 		final var errandId = 1L;
 		final var messageId = UUID.randomUUID();
+		final var applicant = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withPersonId("123e4567-e89b-12d3-a456-426614174000")
+			.build();
 		final var errand = ErrandEntity.builder()
 			.withId(errandId)
+			.withErrandNumber("123456789")
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(applicant))
 			.build();
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
@@ -385,8 +429,106 @@ class MessageServiceTest {
 		verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
 		verify(messagingClientMock).sendMessage(eq(MUNICIPALITY_ID), messageRequestCaptor.capture());
 		assertThat(messageRequestCaptor.getValue().getMessages()).hasSize(1);
+		assertThat(messageRequestCaptor.getValue().getMessages().getFirst().getParty().getPartyId())
+			.isEqualTo(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
+		verify(messagingClientMock, never()).sendEmail(any(), any());
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
+	}
 
+	@Test
+	void sendMessageNotificationSkipsWhenApplicantHasNoContactInfo() {
+		// Arrange
+		Identifier.set(Identifier.create().withType(PARTY_ID).withValue(UUID.randomUUID().toString()));
+		final var errandId = 1L;
+		final var applicant = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withOrganizationName("Testbolag AB")
+			.build();
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(applicant))
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
+
+		// Act
+		messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
+
+		// Assert
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messagingClientMock, never()).sendEmail(any(), any());
+		verify(messagingClientMock, never()).sendMessage(any(), any());
+		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
+	}
+
+	@Test
+	void sendMessageNotificationDoesNotSkipWhenCreatorIsAdAccountIdentifier() {
+		// Arrange: AD_ACCOUNT-type Identifiers (internal users) should never be evaluated against applicant.personId,
+		// even when the value happens to look like a UUID. Verifies that the type check in creatorIsSameAsApplicant
+		// prevents accidental skipping of notifications to external applicants.
+		final var applicantPartyId = "123e4567-e89b-12d3-a456-426614174000";
+		Identifier.set(Identifier.create().withType(AD_ACCOUNT).withValue(applicantPartyId));
+		final var errandId = 1L;
+		final var emailAddress = "applicant@example.com";
+		final var applicant = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withPersonId(applicantPartyId)
+			.withContactInformation(List.of(ContactInformationEntity.builder()
+				.withContactType(EMAIL)
+				.withValue(emailAddress)
+				.build()))
+			.build();
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withErrandNumber("123456789")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(applicant))
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
+
+		// Act
+		messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
+
+		// Assert
+		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
+		assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(emailAddress);
+	}
+
+	@Test
+	void sendMessageNotificationSkipsWhenCreatorIsApplicant() {
+		// Arrange
+		final var applicantPartyId = "123e4567-e89b-12d3-a456-426614174000";
+		Identifier.set(Identifier.create().withType(PARTY_ID).withValue(applicantPartyId));
+		final var errandId = 1L;
+		final var applicant = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withPersonId(applicantPartyId)
+			.withContactInformation(List.of(ContactInformationEntity.builder()
+				.withContactType(EMAIL)
+				.withValue("applicant@example.com")
+				.build()))
+			.build();
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(applicant))
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+
+		// Act
+		messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
+
+		// Assert
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoInteractions(messagingSettingsIntegrationMock, messagingClientMock);
+		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
 	}
 
 	@Test
@@ -408,14 +550,18 @@ class MessageServiceTest {
 	@Test
 	void sendMessageNotificationFailed() {
 		// Arrange
+		Identifier.set(Identifier.create().withType(PARTY_ID).withValue("e82c8029-7676-467d-8ebb-8638d0abd2b4"));
 		final var errandId = 1L;
+		final var applicant = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withPersonId("123e4567-e89b-12d3-a456-426614174000")
+			.build();
 		final var errand = ErrandEntity.builder()
 			.withId(errandId)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(applicant))
 			.build();
-
-		Identifier.set(Identifier.create().withType(PARTY_ID).withValue("e82c8029-7676-467d-8ebb-8638d0abd2b4"));
 
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());

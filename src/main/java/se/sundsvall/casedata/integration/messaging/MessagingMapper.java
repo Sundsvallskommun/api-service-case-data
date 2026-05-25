@@ -99,7 +99,7 @@ public final class MessagingMapper {
 			.orElse(null);
 	}
 
-	static String findStakeholderEmail(final StakeholderEntity stakeholderEntity) {
+	public static String findStakeholderEmail(final StakeholderEntity stakeholderEntity) {
 		if (isNull(stakeholderEntity)) {
 			return null;
 		}

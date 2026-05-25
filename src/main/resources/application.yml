@@ -197,6 +197,8 @@ resilience4j:
         ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
       json-schema:
         ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
+      messaging:
+        ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
     configs:
       default:
         ignore-exceptions: org.springframework.data.core.PropertyReferenceException

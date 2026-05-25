@@ -192,4 +192,25 @@ class ConversationIT extends AbstractAppTest {
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 	}
+
+	/**
+	 * Test to verify that an email (and not a /messages call) is sent when creating a message in an EXTERNAL conversation
+	 * where the applicant stakeholder is an ORGANIZATION with an email under contactInformation but no personId.
+	 * This mirrors the production MEX case that caused the original bug (partyId missing on the /messages call).
+	 */
+	@Test
+	void test11_createMessageInExternalConversationToApplicantOrganization() throws FileNotFoundException {
+		final var errandId = 4;
+		final var externalConversationId = "896a44d8-724b-11ed-a840-0242ac110005";
+
+		setupCall()
+			.withHttpMethod(POST)
+			.withServicePath(format(PATH + "/{3}/messages", MUNICIPALITY_ID, NAMESPACE, errandId, externalConversationId))
+			.withContentType(MULTIPART_FORM_DATA)
+			.withRequestFile("message", REQUEST_FILE)
+			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
+			.withHeader(HEADER_NAME, "type=adAccount; someUser123")
+			.withExpectedResponseStatus(NO_CONTENT)
+			.sendRequestAndVerifyResponse();
+	}
 }

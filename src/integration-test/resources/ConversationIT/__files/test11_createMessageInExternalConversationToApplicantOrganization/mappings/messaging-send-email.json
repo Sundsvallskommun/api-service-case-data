@@ -1,0 +1,30 @@
+{
+	"request": {
+		"method": "POST",
+		"url": "/messaging/2281/email",
+		"bodyPatterns": [
+			{
+				"equalToJson": {
+					"emailAddress": "applicant.org@testdomain.local",
+					"subject": "Nytt meddelande kopplat till ärendet Nytt parkeringstillstånd ERRAND-NUMBER-4",
+					"message": "Hej , om du vill kontakta oss så kan det göras via e-post eller telefon",
+					"sender": {
+						"name": "Sundsvalls kommun",
+						"address": "no-reply.6@localhost.local"
+					},
+					"attachments": [],
+					"headers": {}
+				},
+				"ignoreArrayOrder": true
+			}
+		]
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"bodyFileName": "test11_createMessageInExternalConversationToApplicantOrganization/response/messaging-send-email.json",
+		"status": 200
+	},
+	"name": "messaging-send-email"
+}
