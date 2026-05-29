@@ -51,7 +51,7 @@ public class Errand {
 	@ValidCaseType
 	private String caseType;
 
-	@Schema(description = "How the errand was created", examples = "EMAIL", nullable = true)
+	@Schema(description = "How the errand was created", examples = "EMAIL")
 	private Channel channel;
 
 	@Schema(description = "Priority of the errand", defaultValue = "MEDIUM", examples = "HIGH")
@@ -73,7 +73,7 @@ public class Errand {
 	@Size(max = 255)
 	private String phase;
 
-	@Schema(description = "The current status of the errand", maxLength = 255, nullable = true)
+	@Schema(description = "The current status of the errand")
 	private Status status;
 
 	@Schema(description = "The statuses connected to the errand", accessMode = READ_ONLY)
