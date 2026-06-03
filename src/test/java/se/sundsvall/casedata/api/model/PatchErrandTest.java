@@ -62,6 +62,7 @@ class PatchErrandTest {
 		final var relatesTo = List.of(new RelatedErrand());
 		final var labels = List.of("label");
 		final var status = new Status();
+		final var confidential = Boolean.TRUE;
 
 		// Act
 		final var result = PatchErrand.builder()
@@ -82,6 +83,7 @@ class PatchErrandTest {
 			.withRelatesTo(relatesTo)
 			.withLabels(labels)
 			.withStatus(status)
+			.withConfidential(confidential)
 			.build();
 
 		// Assert
@@ -103,6 +105,7 @@ class PatchErrandTest {
 		assertThat(result.getRelatesTo()).isEqualTo(relatesTo);
 		assertThat(result.getLabels()).isEqualTo(labels);
 		assertThat(result.getStatus()).isEqualTo(status);
+		assertThat(result.getConfidential()).isEqualTo(confidential);
 	}
 
 	@Test

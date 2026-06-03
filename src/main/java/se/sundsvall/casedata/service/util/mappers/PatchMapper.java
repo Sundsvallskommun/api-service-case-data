@@ -65,6 +65,8 @@ public final class PatchMapper {
 			errand.getStatuses().add(statusEntity);
 		});
 
+		ofNullable(patch.getConfidential()).ifPresent(errand::setConfidential);
+
 		return errand;
 	}
 

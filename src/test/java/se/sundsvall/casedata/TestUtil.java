@@ -353,6 +353,7 @@ public final class TestUtil {
 			.withSuspension(Suspension.builder().withSuspendedFrom(now()).withSuspendedTo(now().plusDays(5)).build())
 			.withRelatesTo(new ArrayList<>(List.of(new RelatedErrand())))
 			.withLabels(new ArrayList<>(List.of("label-xxx", "label-yyy")))
+			.withConfidential(true)
 			.build();
 	}
 
