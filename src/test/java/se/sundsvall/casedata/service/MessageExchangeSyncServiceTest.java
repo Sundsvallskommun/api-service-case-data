@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import se.sundsvall.casedata.api.model.Attachment;
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
@@ -46,6 +47,9 @@ class MessageExchangeSyncServiceTest {
 
 	@Mock
 	private AttachmentService attachmentServiceMock;
+
+	@Mock
+	private AttachmentRepository attachmentRepositoryMock;
 
 	@Mock
 	private ConversationRepository conversationRepositoryMock;
@@ -268,8 +272,9 @@ class MessageExchangeSyncServiceTest {
 			.withNamespace(namespace)
 			.build();
 		final var message = new generated.se.sundsvall.messageexchange.Message();
-		final var attachment = new generated.se.sundsvall.messageexchange.Attachment().id("attachmentId");
+		final var attachment = new generated.se.sundsvall.messageexchange.Attachment().id("attachmentId").fileName("file.txt");
 
+		when(attachmentRepositoryMock.existsByErrandIdAndMunicipalityIdAndNamespaceAndName(errandId, municipalityId, namespace, attachment.getFileName())).thenReturn(false);
 		when(messageExchangeClientMock.readErrandAttachment(eq(municipalityId), any(), any(), any(), eq(attachment.getId())))
 			.thenReturn(ResponseEntity.ok()
 				.header("Content-Type", "application/octet-stream")
@@ -279,10 +284,36 @@ class MessageExchangeSyncServiceTest {
 		service.syncAttachment(conversationEntity, message, attachment);
 
 		// Assert
+		verify(attachmentRepositoryMock).existsByErrandIdAndMunicipalityIdAndNamespaceAndName(errandId, municipalityId, namespace, attachment.getFileName());
 		verify(messageExchangeClientMock).readErrandAttachment(eq(municipalityId), any(), any(), any(), eq(attachment.getId()));
 		verify(attachmentServiceMock).create(eq(errandId), any(), eq(municipalityId), eq(namespace));
-		verifyNoMoreInteractions(attachmentServiceMock, messageExchangeClientMock);
+		verifyNoMoreInteractions(attachmentServiceMock, attachmentRepositoryMock, messageExchangeClientMock);
 		verifyNoInteractions(conversationRepositoryMock);
+	}
+
+	@Test
+	void syncAttachmentSkipsDuplicateFileName() {
+		// Arrange
+		final var errandId = 123L;
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var conversationEntity = ConversationEntity.builder()
+			.withErrandId(String.valueOf(errandId))
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.build();
+		final var message = new generated.se.sundsvall.messageexchange.Message();
+		final var attachment = new generated.se.sundsvall.messageexchange.Attachment().id("attachmentId").fileName("file.txt");
+
+		when(attachmentRepositoryMock.existsByErrandIdAndMunicipalityIdAndNamespaceAndName(errandId, municipalityId, namespace, attachment.getFileName())).thenReturn(true);
+
+		// Act
+		service.syncAttachment(conversationEntity, message, attachment);
+
+		// Assert
+		verify(attachmentRepositoryMock).existsByErrandIdAndMunicipalityIdAndNamespaceAndName(errandId, municipalityId, namespace, attachment.getFileName());
+		verifyNoMoreInteractions(attachmentRepositoryMock);
+		verifyNoInteractions(attachmentServiceMock, messageExchangeClientMock, conversationRepositoryMock);
 	}
 
 	@Test
