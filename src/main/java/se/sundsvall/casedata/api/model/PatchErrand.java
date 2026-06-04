@@ -87,4 +87,7 @@ public class PatchErrand {
 	@Valid
 	@Schema(description = "The current status of the errand")
 	private Status status;
+
+	@Schema(description = "Whether the errand is confidential or not")
+	private Boolean confidential;
 }

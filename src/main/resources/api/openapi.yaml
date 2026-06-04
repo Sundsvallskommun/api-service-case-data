@@ -5,7 +5,7 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "12.4"
+  version: "12.5"
 servers:
 - url: http://localhost:36179
   description: Generated server url
@@ -6270,6 +6270,9 @@ components:
         status:
           $ref: "#/components/schemas/Status"
           description: The current status of the errand
+        confidential:
+          type: boolean
+          description: Whether the errand is confidential or not
     PatchDecision:
       type: object
       properties:
