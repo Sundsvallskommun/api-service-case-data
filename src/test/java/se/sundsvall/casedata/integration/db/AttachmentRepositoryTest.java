@@ -80,6 +80,18 @@ class AttachmentRepositoryTest {
 	}
 
 	@Test
+	void existsByErrandIdAndMunicipalityIdAndNamespaceAndName() {
+
+		// Arrange
+		final var errandId = 2L;
+
+		// Act & Assert
+		assertThat(attachmentRepository.existsByErrandIdAndMunicipalityIdAndNamespaceAndName(errandId, MUNICIPALITY_ID, NAMESPACE, "test2.pdf")).isTrue();
+		assertThat(attachmentRepository.existsByErrandIdAndMunicipalityIdAndNamespaceAndName(errandId, MUNICIPALITY_ID, NAMESPACE, "does-not-exist.pdf")).isFalse();
+		assertThat(attachmentRepository.existsByErrandIdAndMunicipalityIdAndNamespaceAndName(666L, MUNICIPALITY_ID, NAMESPACE, "test2.pdf")).isFalse();
+	}
+
+	@Test
 	void findByIdAndErrandIdAndMunicipalityIdAndNamespace() {
 
 		// Arrange

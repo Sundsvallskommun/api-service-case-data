@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import se.sundsvall.casedata.api.model.Attachment;
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
@@ -30,6 +31,7 @@ public class MessageExchangeSyncService {
 
 	private final MessageExchangeClient messageExchangeClient;
 	private final AttachmentService attachmentService;
+	private final AttachmentRepository attachmentRepository;
 	private final ConversationRepository conversationRepository;
 	private final ErrandRepository errandRepository;
 	private final NotificationService notificationService;
@@ -40,12 +42,14 @@ public class MessageExchangeSyncService {
 	public MessageExchangeSyncService(
 		final MessageExchangeClient messageExchangeClient,
 		final AttachmentService attachmentService,
+		final AttachmentRepository attachmentRepository,
 		final ConversationRepository conversationRepository,
 		final ErrandRepository errandRepository,
 		final NotificationService notificationService) {
 
 		this.messageExchangeClient = messageExchangeClient;
 		this.attachmentService = attachmentService;
+		this.attachmentRepository = attachmentRepository;
 		this.conversationRepository = conversationRepository;
 		this.notificationService = notificationService;
 		this.errandRepository = errandRepository;
@@ -82,8 +86,16 @@ public class MessageExchangeSyncService {
 	}
 
 	void syncAttachment(final ConversationEntity conversationEntity, final Message message, final generated.se.sundsvall.messageexchange.Attachment attachment) {
+		final var errandId = Long.valueOf(conversationEntity.getErrandId());
+
+		// Attachments referenced via Message.attachmentIds already exist on the errand but are round-tripped through Message
+		// Exchange. Skip storing a duplicate when the errand already has an attachment with the same file name.
+		if (attachmentRepository.existsByErrandIdAndMunicipalityIdAndNamespaceAndName(errandId, conversationEntity.getMunicipalityId(), conversationEntity.getNamespace(), attachment.getFileName())) {
+			return;
+		}
+
 		final var file = messageExchangeClient.readErrandAttachment(conversationEntity.getMunicipalityId(), messageExchangeNamespace, conversationEntity.getMessageExchangeId(), message.getId(), attachment.getId());
-		saveAttachment(Long.valueOf(conversationEntity.getErrandId()), conversationEntity.getMunicipalityId(), conversationEntity.getNamespace(), file, resolveChannel(message.getCreatedBy()));
+		saveAttachment(errandId, conversationEntity.getMunicipalityId(), conversationEntity.getNamespace(), file, resolveChannel(message.getCreatedBy()));
 	}
 
 	static Channel resolveChannel(final generated.se.sundsvall.messageexchange.Identifier createdBy) {
