@@ -95,8 +95,25 @@ public final class MessagingMapper {
 			.filter(stakeholder -> stakeholder.getRoles().contains(APPLICANT.name()))
 			.findFirst()
 			.map(StakeholderEntity::getPersonId)
-			.map(UUID::fromString)
+			.filter(StringUtils::isNotBlank)
+			.map(MessagingMapper::toUuidOrNull)
 			.orElse(null);
+	}
+
+	/**
+	 * Parses the provided value into a UUID. Returns null instead of throwing if the value is not a valid UUID (e.g. an
+	 * organisationsnummer, personnummer or any other arbitrary string), so that a non-UUID personId does not abort the
+	 * notification flow.
+	 *
+	 * @param  value the value to parse
+	 * @return       the parsed UUID, or null if the value is not a valid UUID
+	 */
+	static UUID toUuidOrNull(final String value) {
+		try {
+			return UUID.fromString(value);
+		} catch (final Exception e) {
+			return null;
+		}
 	}
 
 	public static String findStakeholderEmail(final StakeholderEntity stakeholderEntity) {

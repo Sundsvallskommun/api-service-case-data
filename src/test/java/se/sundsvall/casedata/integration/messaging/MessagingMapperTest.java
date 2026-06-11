@@ -2,12 +2,16 @@ package se.sundsvall.casedata.integration.messaging;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.service.model.MessagingSettings;
 
+import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.APPLICANT;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.REPORTER;
@@ -200,6 +204,85 @@ class MessagingMapperTest {
 		assertThat(bean.getMessages().getFirst().getSender().getEmail().getAddress()).isEqualTo(emailAddress);
 		assertThat(bean.getMessages().getFirst().getSender().getSms()).isNotNull();
 		assertThat(bean.getMessages().getFirst().getSender().getSms().getName()).isEqualTo(smsSender);
+	}
+
+	@Test
+	void findErrandOwnerPartyIdReturnsUuidForValidPersonId() {
+		final var partyId = randomUUID();
+		final var errandEntity = ErrandEntity.builder()
+			.withStakeholders(List.of(StakeholderEntity.builder()
+				.withRoles(List.of(APPLICANT.name()))
+				.withPersonId(partyId.toString())
+				.build()))
+			.build();
+
+		assertThat(MessagingMapper.findErrandOwnerPartyId(errandEntity)).isEqualTo(partyId);
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"556002-1361",  // organisationsnummer
+		"199001011234", // personnummer
+		"not-a-uuid",
+		""
+	})
+	void findErrandOwnerPartyIdReturnsNullForNonUuidPersonId(final String personId) {
+		final var errandEntity = ErrandEntity.builder()
+			.withStakeholders(List.of(StakeholderEntity.builder()
+				.withRoles(List.of(APPLICANT.name()))
+				.withPersonId(personId)
+				.build()))
+			.build();
+
+		// A non-UUID personId must not abort the notification flow - it resolves to a null partyId instead of throwing
+		assertThat(MessagingMapper.findErrandOwnerPartyId(errandEntity)).isNull();
+	}
+
+	@Test
+	void findErrandOwnerPartyIdReturnsNullWhenNoStakeholders() {
+		assertThat(MessagingMapper.findErrandOwnerPartyId(ErrandEntity.builder().build())).isNull();
+	}
+
+	@Test
+	void toMessagingMessageRequestDoesNotThrowForNonUuidPersonId() {
+		final var errandEntity = ErrandEntity.builder()
+			.withId(123L)
+			.withNamespace("my-namespace")
+			.withMunicipalityId("2281")
+			.withErrandNumber("KS-26060031")
+			.withStakeholders(List.of(StakeholderEntity.builder()
+				.withRoles(List.of(APPLICANT.name()))
+				.withFirstName("Test")
+				.withPersonId("556002-1361")
+				.build()))
+			.build();
+		final var messagingSettings = MessagingSettings.builder()
+			.withContactInformationEmail("noreply@example.com")
+			.withSmsSender("TestSender")
+			.build();
+
+		final var request = MessagingMapper.toMessagingMessageRequest(errandEntity, messagingSettings, CaseType.builder().withDisplayName("displayName").build());
+
+		assertThat(request.getMessages()).hasSize(1);
+		assertThat(request.getMessages().getFirst().getParty().getPartyId()).isNull();
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"556002-1361",
+		"not-a-uuid",
+		"   ",
+		""
+	})
+	@NullSource
+	void toUuidOrNullReturnsNullForInvalidValues(final String value) {
+		assertThat(MessagingMapper.toUuidOrNull(value)).isNull();
+	}
+
+	@Test
+	void toUuidOrNullReturnsUuidForValidValue() {
+		final var uuid = randomUUID();
+		assertThat(MessagingMapper.toUuidOrNull(uuid.toString())).isEqualTo(uuid);
 	}
 
 	@Test
