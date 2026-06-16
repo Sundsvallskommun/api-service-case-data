@@ -5,7 +5,7 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "12.5"
+  version: "13.0"
 servers:
 - url: http://localhost:36179
   description: Generated server url
@@ -1027,8 +1027,10 @@ paths:
     get:
       tags:
       - Attachments
-      description: Get attachment on errand by attachment id.
-      operationId: getAttachments
+      summary: Get a streamed attachment.
+      description: Fetches the binary content of the attachment that matches the provided
+        id in a streamed manner.
+      operationId: getAttachment
       parameters:
       - name: municipalityId
         in: path
@@ -1062,74 +1064,6 @@ paths:
       responses:
         "200":
           description: OK - Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Attachment"
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-    put:
-      tags:
-      - Attachments
-      description: Replace attachment on errand.
-      operationId: putAttachmentOnErrand
-      parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality ID
-        required: true
-        schema:
-          type: string
-        example: 2281
-      - name: namespace
-        in: path
-        description: Namespace
-        required: true
-        schema:
-          type: string
-          pattern: "[\\w|\\-]+"
-        example: MY_NAMESPACE
-      - name: errandId
-        in: path
-        description: Errand ID
-        required: true
-        schema:
-          type: integer
-          format: int64
-        example: 123
-      - name: attachmentId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Attachment"
-        required: true
-      responses:
-        "204":
-          description: No content - Successful operation
         "400":
           description: Bad request
           content:
@@ -1211,7 +1145,8 @@ paths:
     patch:
       tags:
       - Attachments
-      description: Update attachment on errand.
+      description: "Update attachment metadata on errand. The binary content cannot\
+        \ be updated; replace it by deleting and recreating the attachment."
       operationId: patchAttachment
       parameters:
       - name: municipalityId
@@ -2057,7 +1992,7 @@ paths:
     get:
       tags:
       - Attachments
-      description: Get attachments by errand id.
+      description: Get attachments metadata by errand id.
       operationId: getAttachmentsByErrandId
       parameters:
       - name: municipalityId
@@ -2115,7 +2050,8 @@ paths:
     post:
       tags:
       - Attachments
-      description: Create attachment on errand.
+      description: "Create attachment on errand. The metadata is supplied as a JSON\
+        \ part named 'attachment' and the binary content as a file part named 'file'."
       operationId: postAttachment
       parameters:
       - name: municipalityId
@@ -2143,9 +2079,19 @@ paths:
         example: 123
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: "#/components/schemas/Attachment"
+              type: object
+              properties:
+                attachment:
+                  $ref: "#/components/schemas/Attachment"
+                  description: Attachment metadata
+                file:
+                  type: string
+                  format: binary
+              required:
+              - attachment
+              - file
         required: true
       responses:
         "201":
@@ -4994,11 +4940,12 @@ components:
           description: MIME type of the attachment
           examples:
           - application/pdf
-        file:
+        hash:
           type: string
-          description: Base64 encoded file content
+          description: SHA-256 hash (hex encoded) of the attachment's raw content
           examples:
-          - dGVzdCBjb250ZW50
+          - 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+          readOnly: true
         extraParameters:
           type: object
           additionalProperties:

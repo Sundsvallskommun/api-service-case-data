@@ -2,6 +2,7 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -24,7 +25,6 @@ import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.service.util.Base64MultipartFile;
 import se.sundsvall.dept44.problem.Problem;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -205,44 +205,25 @@ public final class ConversationMapper {
 
 	public static se.sundsvall.casedata.api.model.Attachment toAttachment(final MultipartFile attachment, final Long errandId, final String municipalityId, final String namespace) {
 
-		final String contentString;
-		try {
-			contentString = Optional.of(attachment.getBytes())
-				.map(ConversationMapper::toContentString)
-				.orElse(null);
-		} catch (final IOException _) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to read attachment content");
-		}
-
 		return se.sundsvall.casedata.api.model.Attachment.builder()
 			.withErrandId(errandId)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
-			.withFile(contentString)
 			.withName(attachment.getOriginalFilename())
 			.withMimeType(attachment.getContentType())
 			.build();
 	}
 
-	public static se.sundsvall.casedata.api.model.Attachment toAttachment(final byte[] content, final String filename, final String mimeType, final Long errandId, final String municipalityId, final String namespace, final Channel channel) {
-
-		final String contentString = Optional.ofNullable(content)
-			.map(ConversationMapper::toContentString)
-			.orElse(null);
+	public static se.sundsvall.casedata.api.model.Attachment toAttachment(final String filename, final String mimeType, final Long errandId, final String municipalityId, final String namespace, final Channel channel) {
 
 		return se.sundsvall.casedata.api.model.Attachment.builder()
 			.withErrandId(errandId)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
-			.withFile(contentString)
 			.withName(filename)
 			.withMimeType(mimeType)
 			.withChannel(Optional.ofNullable(channel).map(Channel::name).orElse(null))
 			.build();
-	}
-
-	private static String toContentString(final byte[] result) {
-		return new String(Base64.getEncoder().encode(result), UTF_8);
 	}
 
 	public static List<MultipartFile> toMultipartFiles(final List<AttachmentEntity> attachmentEntities) {
@@ -252,11 +233,24 @@ public final class ConversationMapper {
 	}
 
 	static MultipartFile toMultipartFile(final AttachmentEntity entity) {
-		final var bytes = Optional.ofNullable(entity.getFile())
+		return new Base64MultipartFile("attachments", entity.getName(), entity.getMimeType(), readContent(entity));
+	}
+
+	/**
+	 * Reads the raw bytes of an attachment, preferring the binary {@code content} blob and falling back to decoding the
+	 * legacy base64 {@code file} column for rows not yet migrated. Mirrors the read fallback in AttachmentService.
+	 */
+	private static byte[] readContent(final AttachmentEntity entity) {
+		if (entity.getContent() != null) {
+			try {
+				return entity.getContent().getBinaryStream().readAllBytes();
+			} catch (final IOException | SQLException e) {
+				throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to read attachment content");
+			}
+		}
+		return Optional.ofNullable(entity.getFile())
 			.map(file -> Base64.getDecoder().decode(file))
 			.orElse(new byte[0]);
-
-		return new Base64MultipartFile("attachments", entity.getName(), entity.getMimeType(), bytes);
 	}
 
 }

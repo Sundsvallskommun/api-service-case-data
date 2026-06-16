@@ -7,6 +7,7 @@ import java.time.OffsetDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+import javax.sql.rowset.serial.SerialBlob;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -19,15 +20,11 @@ import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.service.util.Base64MultipartFile;
-import se.sundsvall.dept44.problem.Problem;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.RELATION_ID_KEY;
 
 class ConversationMapperTest {
@@ -520,55 +517,36 @@ class ConversationMapperTest {
 		final var result = ConversationMapper.toAttachment(attachment, errandId, municipalityId, namespace);
 
 		// Assert
-		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "category", "channel", "note", "extension");
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "category", "channel", "note", "extension", "hash");
 		assertThat(result.getName()).isEqualTo(fileName);
 		assertThat(result.getMimeType()).isEqualTo(mimeType);
 	}
 
 	@Test
-	void toAttachmentThrowsIOException() throws IOException {
+	void toAttachmentFromMetadata() {
 		// Arrange
-		final var attachment = spy(new MockMultipartFile("attachment", "attachment-name", "application/pdf", new byte[0]));
-		final var errandId = 12345L;
-		final var municipalityId = "2281";
-		final var namespace = "namespace";
-
-		when(attachment.getBytes()).thenThrow(new IOException("Failed to read attachment content"));
-
-		// Act & Assert
-		assertThatThrownBy(() -> ConversationMapper.toAttachment(attachment, errandId, municipalityId, namespace))
-			.isInstanceOf(Problem.class)
-			.hasMessageContaining("Failed to read attachment content");
-	}
-
-	@Test
-	void toAttachmentFromBytes() {
-		// Arrange
-		final byte[] content = "test content".getBytes(StandardCharsets.UTF_8);
 		final String filename = "file.txt";
 		final String mimeType = "text/plain";
 		final Long errandId = 42L;
 		final String municipalityId = "1234";
 		final String namespace = "test-namespace";
 		final var channel = Channel.SYSTEM;
-		final String expectedBase64 = Base64.getEncoder().encodeToString(content);
 
 		// Act
-		final Attachment result = ConversationMapper.toAttachment(content, filename, mimeType, errandId, municipalityId, namespace, channel);
+		final Attachment result = ConversationMapper.toAttachment(filename, mimeType, errandId, municipalityId, namespace, channel);
 
 		// Assert
 		assertThat(result).isNotNull();
 		assertThat(result.getErrandId()).isEqualTo(errandId);
 		assertThat(result.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(result.getNamespace()).isEqualTo(namespace);
-		assertThat(result.getFile()).isEqualTo(expectedBase64);
 		assertThat(result.getName()).isEqualTo(filename);
 		assertThat(result.getMimeType()).isEqualTo(mimeType);
 		assertThat(result.getChannel()).isEqualTo(channel.name());
 	}
 
 	@Test
-	void toAttachmentFromByteswithNullContent() {
+	void toAttachmentFromMetadataWithNullChannel() {
 		// Arrange
 		final String filename = "file.txt";
 		final String mimeType = "text/plain";
@@ -577,11 +555,11 @@ class ConversationMapperTest {
 		final String namespace = "test-namespace";
 
 		// Act
-		final Attachment result = ConversationMapper.toAttachment(null, filename, mimeType, errandId, municipalityId, namespace, Channel.SYSTEM);
+		final Attachment result = ConversationMapper.toAttachment(filename, mimeType, errandId, municipalityId, namespace, null);
 
 		// Assert
 		assertThat(result).isNotNull();
-		assertThat(result.getFile()).isNull();
+		assertThat(result.getChannel()).isNull();
 	}
 
 	@Test
@@ -607,6 +585,24 @@ class ConversationMapperTest {
 		assertThat(file.getBytes()).isEqualTo("test content".getBytes(StandardCharsets.UTF_8));
 		assertThat(file.isEmpty()).isFalse();
 		assertThat(file.getSize()).isEqualTo("test content".getBytes(StandardCharsets.UTF_8).length);
+	}
+
+	@Test
+	void toMultipartFilesPrefersBinaryContent() throws Exception {
+		// Arrange - a migrated row has the binary 'content' blob populated and no legacy base64 'file'.
+		final var content = "test content".getBytes(StandardCharsets.UTF_8);
+		final var entity = AttachmentEntity.builder()
+			.withName("document.pdf")
+			.withMimeType("application/pdf")
+			.withContent(new SerialBlob(content))
+			.build();
+
+		// Act
+		final var result = ConversationMapper.toMultipartFiles(List.of(entity));
+
+		// Assert
+		assertThat(result).hasSize(1);
+		assertThat(result.getFirst().getBytes()).isEqualTo(content);
 	}
 
 	@Test

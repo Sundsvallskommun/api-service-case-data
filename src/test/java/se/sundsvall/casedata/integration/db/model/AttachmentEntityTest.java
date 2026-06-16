@@ -6,6 +6,7 @@ import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mariadb.jdbc.MariaDbBlob;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
@@ -46,6 +47,8 @@ class AttachmentEntityTest {
 		final var extension = "extension";
 		final var mimeType = "mimeType";
 		final var file = "file";
+		final var content = new MariaDbBlob("content".getBytes());
+		final var hash = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08";
 		final var errandId = 123L;
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -63,6 +66,8 @@ class AttachmentEntityTest {
 			.withExtension(extension)
 			.withMimeType(mimeType)
 			.withFile(file)
+			.withContent(content)
+			.withHash(hash)
 			.withErrandId(errandId)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
@@ -81,6 +86,8 @@ class AttachmentEntityTest {
 		assertThat(bean.getExtension()).isEqualTo(extension);
 		assertThat(bean.getMimeType()).isEqualTo(mimeType);
 		assertThat(bean.getFile()).isEqualTo(file);
+		assertThat(bean.getContent()).isEqualTo(content);
+		assertThat(bean.getHash()).isEqualTo(hash);
 		assertThat(bean.getErrandId()).isEqualTo(errandId);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getNamespace()).isEqualTo(namespace);

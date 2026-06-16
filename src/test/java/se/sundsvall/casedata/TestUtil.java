@@ -205,7 +205,6 @@ public final class TestUtil {
 			.withNote(RandomStringUtils.secure().next(20, true, false))
 			.withExtension(".pdf")
 			.withMimeType("application/pdf")
-			.withFile("dGVzdA==")
 			.withErrandId(RANDOM.nextLong(1, 100000))
 			.withExtraParameters(createExtraParameters())
 			.build();
@@ -610,6 +609,7 @@ public final class TestUtil {
 			.withId(1L)
 			.withExtraParameters(createExtraParameters())
 			.withFile("file")
+			.withHash("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")
 			.withName("name")
 			.withExtension("extension")
 			.withMimeType("mimeType")

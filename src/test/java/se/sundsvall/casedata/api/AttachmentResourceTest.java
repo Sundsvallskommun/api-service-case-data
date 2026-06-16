@@ -5,21 +5,29 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.service.AttachmentService;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
+import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
 import static se.sundsvall.casedata.TestUtil.createAttachment;
@@ -43,22 +51,15 @@ class AttachmentResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-		final var attachment = createAttachment(AttachmentCategory.SIGNATURE);
-		when(attachmentServiceMock.findAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachment);
 
 		// Act
-		final var response = webTestClient.get()
+		webTestClient.get()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
 			.exchange()
-			.expectStatus().isOk()
-			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody(Attachment.class)
-			.returnResult()
-			.getResponseBody();
+			.expectStatus().isOk();
 
 		// Assert
-		assertThat(response).isNotNull();
-		verify(attachmentServiceMock).findAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentServiceMock).findAttachmentAsStreamedResponse(eq(errandId), eq(attachmentId), eq(MUNICIPALITY_ID), eq(NAMESPACE), any());
 		verifyNoMoreInteractions(attachmentServiceMock);
 	}
 
@@ -90,46 +91,48 @@ class AttachmentResourceTest {
 		// Arrange
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-		final var body = createAttachment(AttachmentCategory.MEDICAL_CONFIRMATION);
 		final var attachment = createAttachmentEntity();
 		attachment.setId(attachmentId);
-		body.setId(attachmentId);
 
-		when(attachmentServiceMock.create(errandId, body, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachment);
+		when(attachmentServiceMock.create(eq(errandId), any(Attachment.class), any(MultipartFile.class), eq(MUNICIPALITY_ID), eq(NAMESPACE))).thenReturn(attachment);
+
+		final var multipartBodyBuilder = new MultipartBodyBuilder();
+		multipartBodyBuilder.part("attachment", "{\"category\":\"MEDICAL_CONFIRMATION\",\"name\":\"document.pdf\"}");
+		multipartBodyBuilder.part("file", "file-content").filename("document.pdf").contentType(TEXT_PLAIN);
 
 		// Act
 		webTestClient.post()
 			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
-			.contentType(APPLICATION_JSON)
-			.bodyValue(body)
+			.contentType(MULTIPART_FORM_DATA)
+			.body(fromMultipartData(multipartBodyBuilder.build()))
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL_VALUE)
 			.expectHeader().location("/2281/MY_NAMESPACE/errands/" + errandId + "/attachments/" + attachmentId);
 
 		// Assert
-		verify(attachmentServiceMock).create(errandId, body, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentServiceMock).create(eq(errandId), any(Attachment.class), any(MultipartFile.class), eq(MUNICIPALITY_ID), eq(NAMESPACE));
+		verifyNoMoreInteractions(attachmentServiceMock);
 	}
 
 	@Test
-	void putAttachmentOnErrand() {
+	void postAttachmentWithEmptyFile() {
 		// Arrange
 		final var errandId = 123L;
-		final var attachmentId = 456L;
-		final var body = createAttachment(AttachmentCategory.OTHER);
-		body.setId(attachmentId);
+		final var multipartBodyBuilder = new MultipartBodyBuilder();
+		multipartBodyBuilder.part("attachment", "{\"category\":\"MEDICAL_CONFIRMATION\",\"name\":\"document.pdf\"}");
+		multipartBodyBuilder.part("file", new byte[0]).filename("empty.pdf").contentType(TEXT_PLAIN);
 
 		// Act
-		webTestClient.put()
-			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
-			.contentType(APPLICATION_JSON)
-			.bodyValue(body)
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.contentType(MULTIPART_FORM_DATA)
+			.body(fromMultipartData(multipartBodyBuilder.build()))
 			.exchange()
-			.expectStatus().isNoContent()
-			.expectHeader().contentType(ALL_VALUE);
+			.expectStatus().isBadRequest();
 
 		// Assert
-		verify(attachmentServiceMock).replace(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, body);
+		verifyNoInteractions(attachmentServiceMock);
 	}
 
 	@Test
@@ -156,11 +159,8 @@ class AttachmentResourceTest {
 	@Test
 	void deleteAttachment() {
 		// Arrange
-		final var attachmentEntity = createAttachment(AttachmentCategory.CORPORATE_TAX_CARD);
 		final var errandId = 123L;
 		final var attachmentId = 456L;
-
-		when(attachmentServiceMock.findAttachment(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachmentEntity);
 
 		// Act
 		webTestClient.delete()

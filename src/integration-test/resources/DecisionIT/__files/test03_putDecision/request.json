@@ -11,7 +11,6 @@
 		{
 			"note": "Test note",
 			"extension": "test extension",
-			"file": "test file",
 			"errandNumber": "test errandNumber",
 			"name": "Test name",
 			"mimeType": "test mimeType",
