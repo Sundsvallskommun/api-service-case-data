@@ -120,6 +120,18 @@ springdoc:
     operationsSorter: alpha
 
 #----------------------------------------
+# Attachment storage
+#----------------------------------------
+attachment:
+  storage:
+    # Write mode during the base64 -> binary migration:
+    #   DUAL   - write both the base64 'file' column and the binary 'content' blob + hash (safe rollback, transition default)
+    #   BLOB   - write only the binary 'content' blob + hash (end state)
+    #   BASE64 - write only the legacy base64 'file' column (rollback target)
+    # The read path always prefers the blob and falls back to decoding 'file', independently of this setting.
+    write-mode: DUAL
+
+#----------------------------------------
 # Integration settings
 #----------------------------------------
 integration:

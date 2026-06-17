@@ -6,6 +6,7 @@
         errand_id bigint,
         id bigint not null auto_increment,
         updated datetime(6),
+        hash varchar(64),
         note varchar(1000),
         category varchar(255),
         extension varchar(255),
@@ -14,6 +15,7 @@
         name varchar(255),
         namespace varchar(255),
         channel varchar(255),
+        content longblob,
         file longtext,
         primary key (id)
     ) engine=InnoDB;

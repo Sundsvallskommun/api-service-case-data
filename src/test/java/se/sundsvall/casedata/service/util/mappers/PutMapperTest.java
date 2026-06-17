@@ -2,52 +2,21 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.enums.StakeholderType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.casedata.TestUtil.createAttachment;
-import static se.sundsvall.casedata.TestUtil.createAttachmentEntity;
 import static se.sundsvall.casedata.TestUtil.createDecision;
 import static se.sundsvall.casedata.TestUtil.createDecisionEntity;
 import static se.sundsvall.casedata.TestUtil.createNote;
 import static se.sundsvall.casedata.TestUtil.createNoteEntity;
 import static se.sundsvall.casedata.TestUtil.createStakeholder;
 import static se.sundsvall.casedata.TestUtil.createStakeholderEntity;
-import static se.sundsvall.casedata.service.util.mappers.PutMapper.putAttachment;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putDecision;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putNote;
 import static se.sundsvall.casedata.service.util.mappers.PutMapper.putStakeholder;
 
 class PutMapperTest {
-
-	@Test
-	void putAttachmentTest() {
-		final var attachment = createAttachmentEntity();
-		final var attachmentDTO = createAttachment(AttachmentCategory.RECEIVED_CONTRACT);
-
-		assertThat(attachment).satisfies(a -> {
-			assertThat(a.getCategory()).isNotEqualTo(attachmentDTO.getCategory());
-			assertThat(a.getName()).isNotEqualTo(attachmentDTO.getName());
-			assertThat(a.getNote()).isNotEqualTo(attachmentDTO.getNote());
-			assertThat(a.getExtension()).isNotEqualTo(attachmentDTO.getExtension());
-			assertThat(a.getMimeType()).isNotEqualTo(attachmentDTO.getMimeType());
-			assertThat(a.getFile()).isNotEqualTo(attachmentDTO.getFile());
-		});
-
-		putAttachment(attachment, attachmentDTO);
-
-		assertThat(attachment).satisfies(a -> {
-			assertThat(a.getCategory()).isEqualTo(attachmentDTO.getCategory());
-			assertThat(a.getName()).isEqualTo(attachmentDTO.getName());
-			assertThat(a.getNote()).isEqualTo(attachmentDTO.getNote());
-			assertThat(a.getExtension()).isEqualTo(attachmentDTO.getExtension());
-			assertThat(a.getMimeType()).isEqualTo(attachmentDTO.getMimeType());
-			assertThat(a.getFile()).isEqualTo(attachmentDTO.getFile());
-			assertThat(a.getExtraParameters()).containsAllEntriesOf(attachmentDTO.getExtraParameters());
-		});
-	}
 
 	@Test
 	void putStakeholderTest() {

@@ -54,7 +54,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.never;
@@ -213,7 +213,7 @@ class MessageServiceTest {
 		verify(blobMock).getBinaryStream();
 		verify(servletResponseMock).addHeader(CONTENT_TYPE, contentType);
 		verify(servletResponseMock).addHeader(CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
-		verify(servletResponseMock).setContentLength(content.length());
+		verify(servletResponseMock).setContentLengthLong(content.length());
 		verify(servletResponseMock).getOutputStream();
 	}
 
@@ -243,7 +243,7 @@ class MessageServiceTest {
 		verify(messageAttachmentDataEntityMock).getFile();
 		verify(servletResponseMock).addHeader(CONTENT_TYPE, contentType);
 		verify(servletResponseMock).addHeader(CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
-		verify(servletResponseMock, never()).setContentLength(anyInt());
+		verify(servletResponseMock, never()).setContentLengthLong(anyLong());
 		verify(servletResponseMock, never()).getOutputStream();
 	}
 

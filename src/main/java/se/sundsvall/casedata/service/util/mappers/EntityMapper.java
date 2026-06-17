@@ -219,7 +219,6 @@ public final class EntityMapper {
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
 				.withMimeType(obj.getMimeType())
-				.withFile(obj.getFile())
 				.withExtraParameters(ofNullable(obj.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -241,7 +240,7 @@ public final class EntityMapper {
 				.withExtension(obj.getExtension())
 				.withMimeType(obj.getMimeType())
 				.withErrandId(obj.getErrandId())
-				.withFile(obj.getFile())
+				.withHash(obj.getHash())
 				.withExtraParameters(ofNullable(obj.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);

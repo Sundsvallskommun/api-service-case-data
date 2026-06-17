@@ -2,12 +2,10 @@ package se.sundsvall.casedata.service.util.mappers;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import se.sundsvall.casedata.api.model.Attachment;
 import se.sundsvall.casedata.api.model.Decision;
 import se.sundsvall.casedata.api.model.Facility;
 import se.sundsvall.casedata.api.model.Note;
 import se.sundsvall.casedata.api.model.Stakeholder;
-import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.DecisionEntity;
 import se.sundsvall.casedata.integration.db.model.FacilityEntity;
 import se.sundsvall.casedata.integration.db.model.NoteEntity;
@@ -16,19 +14,6 @@ import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 public final class PutMapper {
 
 	private PutMapper() {}
-
-	public static AttachmentEntity putAttachment(final AttachmentEntity oldAttachmentEntity, final Attachment attachment) {
-		Optional.ofNullable(attachment).ifPresent(newAttachment -> {
-			oldAttachmentEntity.setExtraParameters(newAttachment.getExtraParameters());
-			oldAttachmentEntity.setCategory(newAttachment.getCategory());
-			oldAttachmentEntity.setName(newAttachment.getName());
-			oldAttachmentEntity.setNote(newAttachment.getNote());
-			oldAttachmentEntity.setExtension(newAttachment.getExtension());
-			oldAttachmentEntity.setMimeType(newAttachment.getMimeType());
-			oldAttachmentEntity.setFile(newAttachment.getFile());
-		});
-		return oldAttachmentEntity;
-	}
 
 	public static StakeholderEntity putStakeholder(final StakeholderEntity oldStakeholder, final Stakeholder stakeholder) {
 		Optional.ofNullable(stakeholder).ifPresent(newStakeholder -> {

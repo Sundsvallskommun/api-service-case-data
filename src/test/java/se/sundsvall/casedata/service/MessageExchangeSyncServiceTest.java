@@ -286,7 +286,7 @@ class MessageExchangeSyncServiceTest {
 		// Assert
 		verify(attachmentRepositoryMock).existsByErrandIdAndMunicipalityIdAndNamespaceAndName(errandId, municipalityId, namespace, attachment.getFileName());
 		verify(messageExchangeClientMock).readErrandAttachment(eq(municipalityId), any(), any(), any(), eq(attachment.getId()));
-		verify(attachmentServiceMock).create(eq(errandId), any(), eq(municipalityId), eq(namespace));
+		verify(attachmentServiceMock).create(eq(errandId), any(), any(), eq(municipalityId), eq(namespace));
 		verifyNoMoreInteractions(attachmentServiceMock, attachmentRepositoryMock, messageExchangeClientMock);
 		verifyNoInteractions(conversationRepositoryMock);
 	}
@@ -331,7 +331,7 @@ class MessageExchangeSyncServiceTest {
 		service.saveAttachment(errandId, municipalityId, namespace, file, Channel.WEB_UI);
 
 		// Assert
-		verify(attachmentServiceMock).create(eq(errandId), attachmentCaptor.capture(), eq(municipalityId), eq(namespace));
+		verify(attachmentServiceMock).create(eq(errandId), attachmentCaptor.capture(), any(), eq(municipalityId), eq(namespace));
 		assertThat(attachmentCaptor.getValue().getChannel()).isEqualTo(Channel.WEB_UI.name());
 		verifyNoMoreInteractions(attachmentServiceMock);
 		verifyNoInteractions(conversationRepositoryMock, messageExchangeClientMock);

@@ -13,9 +13,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import java.sql.Blob;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,6 +87,14 @@ public class AttachmentEntity {
 
 	@Column(name = "file", length = LONG32)
 	private String file;
+
+	@Lob
+	@Column(name = "content", columnDefinition = "longblob")
+	@DiffIgnore
+	private Blob content;
+
+	@Column(name = "hash", length = 64)
+	private String hash;
 
 	@With
 	@Column(name = "errand_id")

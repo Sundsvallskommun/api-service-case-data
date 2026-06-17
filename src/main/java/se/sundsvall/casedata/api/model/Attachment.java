@@ -69,8 +69,8 @@ public class Attachment {
 	@Schema(description = "MIME type of the attachment", examples = "application/pdf")
 	private String mimeType;
 
-	@Schema(description = "Base64 encoded file content", examples = "dGVzdCBjb250ZW50")
-	private String file;
+	@Schema(description = "SHA-256 hash (hex encoded) of the attachment's raw content", accessMode = READ_ONLY, examples = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")
+	private String hash;
 
 	@Schema(description = "Additional parameters for the attachment", examples = "{\"key1\": \"value1\", \"key2\": \"value2\"}")
 	@ValidMapValueSize(max = 8192)

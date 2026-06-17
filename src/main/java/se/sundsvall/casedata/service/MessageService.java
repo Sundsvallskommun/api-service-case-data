@@ -1,14 +1,11 @@
 package se.sundsvall.casedata.service;
 
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StreamUtils;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -27,8 +24,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ObjectUtils.notEqual;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.APPLICANT;
@@ -43,6 +38,7 @@ import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARA
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ENTITY_NOT_FOUND;
+import static se.sundsvall.casedata.service.util.ResponseStreamer.streamBlob;
 import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotification;
 import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
@@ -119,20 +115,11 @@ public class MessageService {
 
 	public void findMessageAttachmentAsStreamedResponse(final Long errandId, final String attachmentId, final String municipalityId, final String namespace, final HttpServletResponse response) {
 		verifyErrandExists(errandId, municipalityId, namespace);
-		try {
-			final var attachmentEntity = messageAttachmentRepository
-				.findByAttachmentIdAndMunicipalityIdAndNamespace(attachmentId, municipalityId, namespace)
-				.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND.formatted(attachmentId, namespace, municipalityId)));
+		final var attachmentEntity = messageAttachmentRepository
+			.findByAttachmentIdAndMunicipalityIdAndNamespace(attachmentId, municipalityId, namespace)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND.formatted(attachmentId, namespace, municipalityId)));
 
-			final var file = attachmentEntity.getAttachmentData().getFile();
-
-			response.addHeader(CONTENT_TYPE, attachmentEntity.getContentType());
-			response.addHeader(CONTENT_DISPOSITION, "attachment; filename=\"" + attachmentEntity.getName() + "\"");
-			response.setContentLength((int) file.length());
-			StreamUtils.copy(file.getBinaryStream(), response.getOutputStream());
-		} catch (final IOException | SQLException e) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "%s occurred when copying file with attachment id '%s' to response: %s".formatted(e.getClass().getSimpleName(), attachmentId, e.getMessage()));
-		}
+		streamBlob(response, attachmentEntity.getName(), attachmentEntity.getContentType(), attachmentEntity.getAttachmentData().getFile(), attachmentId);
 	}
 
 	private void verifyErrandExists(final Long errandId, final String municipalityId, final String namespace) {
@@ -266,7 +253,7 @@ public class MessageService {
 		try {
 			metadataService.getCaseType(municpalityId, namespace, type);
 			return true;
-		} catch (final Exception ignored) {
+		} catch (final Exception _) {
 			return false;
 		}
 	}
