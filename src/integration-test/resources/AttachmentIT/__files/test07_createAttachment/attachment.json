@@ -1,14 +1,12 @@
 {
 	"note": "This is a note for test07",
-	"extension": ".pdf",
-	"file": "dGVzdDA3",
-	"errandNumber": "1234567890",
-	"name": "myfile07.pdf",
+	"extension": ".png",
+	"name": "uploaded.png",
 	"extraParameters": {
 		"property2": "value2",
 		"property1": "value1",
 		"property3": "value3"
 	},
-	"mimeType": "application/pdf",
+	"mimeType": "image/png",
 	"category": "SIGNATURE"
 }
