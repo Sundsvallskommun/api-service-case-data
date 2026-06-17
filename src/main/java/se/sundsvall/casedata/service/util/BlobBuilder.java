@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Base64;
 import java.util.Base64.Decoder;
@@ -22,5 +23,14 @@ public class BlobBuilder {
 
 	public Blob createBlob(final byte[] content) {
 		return Hibernate.getLobHelper().createBlob(content);
+	}
+
+	/**
+	 * Creates a streamed blob from the supplied input stream without materialising the content in memory. The stream is
+	 * read lazily by the JDBC driver when the blob is persisted, so it must remain open until the enclosing transaction
+	 * flushes.
+	 */
+	public Blob createBlob(final InputStream stream, final long length) {
+		return Hibernate.getLobHelper().createBlob(stream, length);
 	}
 }

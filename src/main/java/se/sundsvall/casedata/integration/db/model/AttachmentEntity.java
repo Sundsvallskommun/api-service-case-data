@@ -43,7 +43,8 @@ import static org.hibernate.Length.LONG32;
 	indexes = {
 		@Index(name = "idx_attachment_errand_id", columnList = "errand_id"),
 		@Index(name = "idx_attachment_municipality_id", columnList = "municipality_id"),
-		@Index(name = "idx_attachment_namespace", columnList = "namespace")
+		@Index(name = "idx_attachment_namespace", columnList = "namespace"),
+		@Index(name = "idx_attachment_hash", columnList = "hash")
 	})
 @Getter
 @Setter

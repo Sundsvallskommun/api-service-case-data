@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.service.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Base64;
@@ -44,5 +45,17 @@ class BlobBuilderTest {
 
 		// Assert
 		assertThat(blob.getBinaryStream().readAllBytes()).isEqualTo(fileContent.getBytes());
+	}
+
+	@Test
+	void createBlobFromStream() throws IOException, SQLException {
+		// Arrange
+		final var fileContent = "text-content-of-file".getBytes(UTF_8);
+
+		// Act
+		final var blob = blobBuilder.createBlob(new ByteArrayInputStream(fileContent), fileContent.length);
+
+		// Assert
+		assertThat(blob.getBinaryStream().readAllBytes()).isEqualTo(fileContent);
 	}
 }
