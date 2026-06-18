@@ -120,3 +120,5 @@ scheduler:
     enabled: false
   messageexchange:
     enabled: false
+  attachment-migration:
+    enabled: false
