@@ -243,8 +243,8 @@ public class MessageMapper {
 	}
 
 	public String toContentString(final Blob blob) {
-		try {
-			return toContentString(blob.getBinaryStream().readAllBytes());
+		try (final var in = blob.getBinaryStream()) {
+			return toContentString(in.readAllBytes());
 		} catch (final Exception e) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert binary stream to base64 representation");
 		}

@@ -52,8 +52,8 @@ public final class AttachmentContents {
 	}
 
 	private static byte[] readBlob(final Blob blob, final Object attachmentId) {
-		try {
-			return blob.getBinaryStream().readAllBytes();
+		try (final var in = blob.getBinaryStream()) {
+			return in.readAllBytes();
 		} catch (final IOException | SQLException e) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "%s occurred when reading content of attachment with id '%s': %s".formatted(e.getClass().getSimpleName(), attachmentId, e.getMessage()));
 		}
