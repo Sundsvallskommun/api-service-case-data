@@ -2,6 +2,8 @@ package se.sundsvall.casedata.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -17,11 +19,11 @@ import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.enums.NotificationSubType;
+import se.sundsvall.casedata.service.util.AttachmentContents;
 import se.sundsvall.casedata.service.util.BlobBuilder;
 import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.dept44.problem.Problem;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -81,11 +83,16 @@ public class AttachmentService {
 		if (blob != null) {
 			streamBlob(response, attachmentEntity.getName(), attachmentEntity.getMimeType(), blob, attachmentId);
 		} else {
-			streamBytes(response, attachmentEntity.getName(), attachmentEntity.getMimeType(), decode(attachmentEntity.getFile(), attachmentId), attachmentId);
+			streamBytes(response, attachmentEntity.getName(), attachmentEntity.getMimeType(), AttachmentContents.decodeBase64(attachmentEntity.getFile(), attachmentId), attachmentId);
 		}
 	}
 
 	public AttachmentEntity create(final Long errandId, final Attachment attachment, final MultipartFile file, final String municipalityId, final String namespace) {
+		// Verify the errand exists before materialising the upload, so a request to a missing errand fails fast and cheaply.
+		if (!errandRepository.existsByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)) {
+			throw Problem.valueOf(NOT_FOUND, ERRAND_ENTITY_NOT_FOUND.formatted(errandId, namespace, municipalityId));
+		}
+
 		final var attachmentEntity = toAttachmentEntity(errandId, attachment, municipalityId, namespace);
 		applyContent(attachmentEntity, file);
 		final var errandEntity = findErrandEntity(errandId, municipalityId, namespace);
@@ -111,19 +118,42 @@ public class AttachmentService {
 	 * Persists the uploaded content according to the configured {@link AttachmentStorageMode}: as a base64 string in the
 	 * legacy {@code file} column ({@code BASE64}/{@code DUAL}) and/or as a binary blob in {@code content} together with a
 	 * SHA-256 (hex) {@code hash} ({@code DUAL}/{@code BLOB}). An empty or missing upload leaves all columns unset.
+	 *
+	 * <p>
+	 * In the {@code BLOB} end state the content is streamed (the hash via a {@link DigestInputStream}, the blob lazily from
+	 * the upload) so the whole file is never held in memory. The {@code DUAL}/{@code BASE64} modes must read the bytes once
+	 * to produce the legacy base64 column and reuse them for the blob and hash.
 	 */
 	private void applyContent(final AttachmentEntity attachmentEntity, final MultipartFile file) {
-		final var content = readBytes(file);
-		if (content.length == 0) {
+		if (file == null || file.isEmpty()) {
 			return;
 		}
 		if (writeMode.writesBase64()) {
+			final var content = readBytes(file);
 			attachmentEntity.setFile(encode(content));
+			if (writeMode.writesBlob()) {
+				attachmentEntity.setContent(blobBuilder.createBlob(content));
+				attachmentEntity.setHash(computeHash(content));
+			}
+		} else if (writeMode.writesBlob()) {
+			applyStreamedBlob(attachmentEntity, file);
 		}
-		if (writeMode.writesBlob()) {
-			attachmentEntity.setContent(blobBuilder.createBlob(content));
-			attachmentEntity.setHash(computeHash(content));
+	}
+
+	/**
+	 * Streams the upload into the {@code content} blob and computes its SHA-256 hash without materialising the whole file
+	 * in memory. The upload is read twice from its (temp-file backed) source: once through a {@link DigestInputStream} to
+	 * compute the hash and once lazily by the JDBC driver when the blob is flushed.
+	 */
+	private void applyStreamedBlob(final AttachmentEntity attachmentEntity, final MultipartFile file) {
+		final var digest = newDigest();
+		try (final var in = new DigestInputStream(file.getInputStream(), digest)) {
+			in.transferTo(OutputStream.nullOutputStream());
+			attachmentEntity.setContent(blobBuilder.createBlob(file.getInputStream(), file.getSize()));
+		} catch (final IOException e) {
+			throw Problem.valueOf(BAD_REQUEST, "%s occurred when reading uploaded file: %s".formatted(e.getClass().getSimpleName(), e.getMessage()));
 		}
+		attachmentEntity.setHash(HexFormat.of().formatHex(digest.digest()));
 	}
 
 	private static String encode(final byte[] content) {
@@ -131,9 +161,6 @@ public class AttachmentService {
 	}
 
 	private byte[] readBytes(final MultipartFile file) {
-		if (file == null || file.isEmpty()) {
-			return new byte[0];
-		}
 		try {
 			return file.getBytes();
 		} catch (final IOException e) {
@@ -142,22 +169,14 @@ public class AttachmentService {
 	}
 
 	private static String computeHash(final byte[] content) {
-		try {
-			final var digest = MessageDigest.getInstance(HASH_ALGORITHM);
-			return HexFormat.of().formatHex(digest.digest(content));
-		} catch (final NoSuchAlgorithmException e) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "%s algorithm is not available: %s".formatted(HASH_ALGORITHM, e.getMessage()));
-		}
+		return HexFormat.of().formatHex(newDigest().digest(content));
 	}
 
-	private byte[] decode(final String base64Content, final Long attachmentId) {
-		if (base64Content == null || base64Content.isBlank()) {
-			return new byte[0];
-		}
+	private static MessageDigest newDigest() {
 		try {
-			return Base64.getDecoder().decode(base64Content.getBytes(UTF_8));
-		} catch (final IllegalArgumentException e) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Attachment with id '%s' has malformed base64 content and cannot be streamed: %s".formatted(attachmentId, e.getMessage()));
+			return MessageDigest.getInstance(HASH_ALGORITHM);
+		} catch (final NoSuchAlgorithmException e) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "%s algorithm is not available: %s".formatted(HASH_ALGORITHM, e.getMessage()));
 		}
 	}
 

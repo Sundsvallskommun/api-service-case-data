@@ -1,10 +1,7 @@
 package se.sundsvall.casedata.service.util.mappers;
 
 import jakarta.validation.Valid;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -22,11 +19,10 @@ import se.sundsvall.casedata.api.model.conversation.ReadBy;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
+import se.sundsvall.casedata.service.util.AttachmentContents;
 import se.sundsvall.casedata.service.util.Base64MultipartFile;
-import se.sundsvall.dept44.problem.Problem;
 
 import static java.util.Collections.emptyList;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 public final class ConversationMapper {
 
@@ -236,21 +232,8 @@ public final class ConversationMapper {
 		return new Base64MultipartFile("attachments", entity.getName(), entity.getMimeType(), readContent(entity));
 	}
 
-	/**
-	 * Reads the raw bytes of an attachment, preferring the binary {@code content} blob and falling back to decoding the
-	 * legacy base64 {@code file} column for rows not yet migrated. Mirrors the read fallback in AttachmentService.
-	 */
 	private static byte[] readContent(final AttachmentEntity entity) {
-		if (entity.getContent() != null) {
-			try {
-				return entity.getContent().getBinaryStream().readAllBytes();
-			} catch (final IOException | SQLException e) {
-				throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to read attachment content");
-			}
-		}
-		return Optional.ofNullable(entity.getFile())
-			.map(file -> Base64.getDecoder().decode(file))
-			.orElse(new byte[0]);
+		return AttachmentContents.toBytes(entity);
 	}
 
 }

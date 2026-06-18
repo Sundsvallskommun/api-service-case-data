@@ -393,10 +393,13 @@
     create index idx_attachment_municipality_id 
        on attachment (municipality_id);
 
-    create index idx_attachment_namespace 
+    create index idx_attachment_namespace
        on attachment (namespace);
 
-    create index idx_case_type_municipality_namespace 
+    create index idx_attachment_hash
+       on attachment (hash);
+
+    create index idx_case_type_municipality_namespace
        on case_type (municipality_id, namespace);
 
     alter table if exists case_type 

@@ -30,7 +30,9 @@ public final class ResponseStreamer {
 		try {
 			addHeaders(response, fileName, mimeType);
 			response.setContentLengthLong(blob.length());
-			StreamUtils.copy(blob.getBinaryStream(), response.getOutputStream());
+			try (final InputStream in = blob.getBinaryStream()) {
+				StreamUtils.copy(in, response.getOutputStream());
+			}
 		} catch (final IOException | SQLException e) {
 			throw copyFailed(attachmentId, e);
 		}
