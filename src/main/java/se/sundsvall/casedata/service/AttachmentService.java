@@ -2,12 +2,7 @@ package se.sundsvall.casedata.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.HexFormat;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,7 +20,6 @@ import se.sundsvall.casedata.service.util.mappers.EntityMapper;
 import se.sundsvall.dept44.problem.Problem;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ATTACHMENT_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
@@ -43,7 +37,6 @@ public class AttachmentService {
 	private static final String NOTIFICATION_ADD_ATTACHMENT = "En bilaga har lagts till i ärendet.";
 	private static final String NOTIFICATION_UPDATE_ATTACHMENT = "En bilaga har uppdaterats i ärendet.";
 	private static final String NOTIFICATION_REMOVE_ATTACHMENT = "En bilaga har tagits bort från ärendet.";
-	private static final String HASH_ALGORITHM = "SHA-256";
 	private final AttachmentRepository attachmentRepository;
 
 	private final NotificationService notificationService;
@@ -120,7 +113,7 @@ public class AttachmentService {
 	 * SHA-256 (hex) {@code hash} ({@code DUAL}/{@code BLOB}). An empty or missing upload leaves all columns unset.
 	 *
 	 * <p>
-	 * In the {@code BLOB} end state the content is streamed (the hash via a {@link DigestInputStream}, the blob lazily from
+	 * In the {@code BLOB} end state the content is streamed (the hash via a {@code DigestInputStream}, the blob lazily from
 	 * the upload) so the whole file is never held in memory. The {@code DUAL}/{@code BASE64} modes must read the bytes once
 	 * to produce the legacy base64 column and reuse them for the blob and hash.
 	 */
@@ -133,7 +126,7 @@ public class AttachmentService {
 			attachmentEntity.setFile(encode(content));
 			if (writeMode.writesBlob()) {
 				attachmentEntity.setContent(blobBuilder.createBlob(content));
-				attachmentEntity.setHash(computeHash(content));
+				attachmentEntity.setHash(AttachmentContents.sha256Hex(content));
 			}
 		} else if (writeMode.writesBlob()) {
 			applyStreamedBlob(attachmentEntity, file);
@@ -142,18 +135,16 @@ public class AttachmentService {
 
 	/**
 	 * Streams the upload into the {@code content} blob and computes its SHA-256 hash without materialising the whole file
-	 * in memory. The upload is read twice from its (temp-file backed) source: once through a {@link DigestInputStream} to
-	 * compute the hash and once lazily by the JDBC driver when the blob is flushed.
+	 * in memory. The upload is read twice from its (temp-file backed) source: once through a {@link ContentHasher}
+	 * {@code DigestInputStream} to compute the hash and once lazily by the JDBC driver when the blob is flushed.
 	 */
 	private void applyStreamedBlob(final AttachmentEntity attachmentEntity, final MultipartFile file) {
-		final var digest = newDigest();
-		try (final var in = new DigestInputStream(file.getInputStream(), digest)) {
-			in.transferTo(OutputStream.nullOutputStream());
+		try {
+			attachmentEntity.setHash(AttachmentContents.sha256Hex(file.getInputStream()));
 			attachmentEntity.setContent(blobBuilder.createBlob(file.getInputStream(), file.getSize()));
 		} catch (final IOException e) {
 			throw Problem.valueOf(BAD_REQUEST, "%s occurred when reading uploaded file: %s".formatted(e.getClass().getSimpleName(), e.getMessage()));
 		}
-		attachmentEntity.setHash(HexFormat.of().formatHex(digest.digest()));
 	}
 
 	private static String encode(final byte[] content) {
@@ -165,18 +156,6 @@ public class AttachmentService {
 			return file.getBytes();
 		} catch (final IOException e) {
 			throw Problem.valueOf(BAD_REQUEST, "%s occurred when reading uploaded file: %s".formatted(e.getClass().getSimpleName(), e.getMessage()));
-		}
-	}
-
-	private static String computeHash(final byte[] content) {
-		return HexFormat.of().formatHex(newDigest().digest(content));
-	}
-
-	private static MessageDigest newDigest() {
-		try {
-			return MessageDigest.getInstance(HASH_ALGORITHM);
-		} catch (final NoSuchAlgorithmException e) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "%s algorithm is not available: %s".formatted(HASH_ALGORITHM, e.getMessage()));
 		}
 	}
 
