@@ -175,6 +175,8 @@ public final class ConversationMapper {
 				.withFileName(attachment.getFileName())
 				.withMimeType(attachment.getMimeType())
 				.withFileSize(Optional.ofNullable(attachment.getFileSize()).orElse(0))
+				.withHash(attachment.getHash())
+				.withCreated(attachment.getCreated())
 				.build())
 			.toList();
 	}
