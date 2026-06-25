@@ -41,6 +41,7 @@ class ConversationAttachmentTest {
 		final var fileName = "test-file.txt";
 		final var fileSize = 1024;
 		final var mimeType = "text/plain";
+		final var hash = "a3b4c5d6e7f8...";
 		final var created = "2023-01-01T00:00:00+01:00";
 
 		// Act
@@ -49,6 +50,7 @@ class ConversationAttachmentTest {
 			.withFileName(fileName)
 			.withFileSize(fileSize)
 			.withMimeType(mimeType)
+			.withHash(hash)
 			.withCreated(OffsetDateTime.parse(created))
 			.build();
 		// Assert
@@ -57,6 +59,7 @@ class ConversationAttachmentTest {
 		assertThat(result.getFileName()).isEqualTo(fileName);
 		assertThat(result.getFileSize()).isEqualTo(fileSize);
 		assertThat(result.getMimeType()).isEqualTo(mimeType);
+		assertThat(result.getHash()).isEqualTo(hash);
 		assertThat(result.getCreated()).isEqualTo(OffsetDateTime.parse(created));
 
 	}
