@@ -41,7 +41,7 @@ public final class MessagingMapper {
 		return new EmailRequest()
 			.subject(SUBJECT_TEMPLATE.formatted(caseType.getDisplayName(), errandEntity.getErrandNumber()))
 			.message(createBody(errandEntity, messagingSettings, supportTextType, caseType))
-			.emailAddress(findStakeholderEmail(stakeholderEntity))
+			.recipients(ofNullable(findStakeholderEmail(stakeholderEntity)).map(List::of).orElse(null))
 			.sender(new EmailSender()
 				.name(messagingSettings.getContactInformationEmailName())
 				.address(messagingSettings.getContactInformationEmail()));

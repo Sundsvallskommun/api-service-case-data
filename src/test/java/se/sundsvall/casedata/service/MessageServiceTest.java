@@ -318,7 +318,7 @@ class MessageServiceTest {
 		verify(messageRepositoryMock).save(any());
 		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
 		assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
-		assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(emailAddress);
+		assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(emailAddress);
 		verifyNoMoreInteractions(messageRepositoryMock, messageMapperMock, messagingClientMock);
 	}
 
@@ -393,7 +393,7 @@ class MessageServiceTest {
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
 		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
-		assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(emailAddress);
+		assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(emailAddress);
 		assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
 		verify(messagingClientMock, never()).sendMessage(any(), any());
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
@@ -497,7 +497,7 @@ class MessageServiceTest {
 
 		// Assert
 		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
-		assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(emailAddress);
+		assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(emailAddress);
 	}
 
 	@Test
@@ -609,7 +609,7 @@ class MessageServiceTest {
 			verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
 			verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
 			assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
-			assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(stakeholderEntity.getContactInformation().getFirst().getValue());
+			assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(stakeholderEntity.getContactInformation().getFirst().getValue());
 		}
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
 
