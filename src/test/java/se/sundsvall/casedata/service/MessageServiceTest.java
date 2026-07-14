@@ -615,6 +615,33 @@ class MessageServiceTest {
 
 	}
 
+	@Test
+	void sendEmailNotificationWhenReporterHasNoEmail() {
+		// Arrange - reporter passes isEmailNotificationToBeSent (Identifier removed in setup) but has no email
+		final var errandId = 1L;
+		final var reporter = StakeholderEntity.builder()
+			.withAdAccount("abc123")
+			.withRoles(List.of(StakeholderRole.REPORTER.name()))
+			.withContactInformation(emptyList())
+			.build();
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withErrandNumber("123456789")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(reporter))
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+
+		// Act
+		messageService.sendEmailNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
+
+		// Assert - no doomed downstream call is made when the reporter has no email
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoInteractions(messagingSettingsIntegrationMock, messagingClientMock);
+		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
+	}
+
 	@MethodSource("reporterEmailArgumentProvider")
 	@ParameterizedTest(name = "{0}")
 	void isEmailNotificationToBeSent(String name, String identifierValue, StakeholderEntity stakeholderEntity, boolean expectedOutcome) {
