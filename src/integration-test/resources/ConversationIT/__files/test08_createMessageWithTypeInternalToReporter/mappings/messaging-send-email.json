@@ -5,7 +5,10 @@
 		"bodyPatterns": [
 			{
 				"equalToJson": {
-					"emailAddress": "reporter.email@testdomain.local",
+					"recipients": [
+						"reporter.email@testdomain.local"
+					],
+					"cc": [],
 					"subject": "Nytt meddelande kopplat till ärendet Ansökan färdtjänst ERRAND-NUMBER-3",
 					"message": "Hej Reporter, du har ett meddelande rörande ärende med titel Ansökan färdtjänst (ärendenr ERRAND-NUMBER-3). Använd länken https://katla.domain.tld/ERRAND-NUMBER-3 för att komma till ärendet.",
 					"sender": {

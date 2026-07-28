@@ -24,6 +24,7 @@
 					"fileName": "file1.txt",
 					"fileSize": 5068,
 					"mimeType": "image/jpeg",
+					"hash": "a3b4c5d6e7f8a1b2c3d4e5f6a7b8c9d0",
 					"created": "2023-01-01T10:05:00+01:00"
 				}
 			],
@@ -54,6 +55,7 @@
 					"fileName": "file2.txt",
 					"fileSize": 2048,
 					"mimeType": "text/plain",
+					"hash": "b4c5d6e7f8a1b2c3d4e5f6a7b8c9d0e1",
 					"created": "2023-01-01T11:05:00+01:00"
 				}
 			],

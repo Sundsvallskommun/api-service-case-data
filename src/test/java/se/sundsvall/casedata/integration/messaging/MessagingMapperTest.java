@@ -69,7 +69,8 @@ class MessagingMapperTest {
 			CaseType.builder().withDisplayName(displayName).build());
 
 		// Assert
-		assertThat(bean).isNotNull().hasNoNullFieldsOrPropertiesExcept("party", "htmlMessage");
+		assertThat(bean).isNotNull().hasNoNullFieldsOrPropertiesExcept("party", "htmlMessage", "emailAddress");
+		assertThat(bean.getRecipients()).containsExactly(emailAddress);
 		assertThat(bean.getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayName 123456789");
 		assertThat(bean.getMessage()).isEqualTo("""
 			Hej Test,
@@ -132,7 +133,8 @@ class MessagingMapperTest {
 			CaseType.builder().withDisplayName(displayName).build());
 
 		// Assert
-		assertThat(bean).isNotNull().hasNoNullFieldsOrPropertiesExcept("party", "htmlMessage");
+		assertThat(bean).isNotNull().hasNoNullFieldsOrPropertiesExcept("party", "htmlMessage", "emailAddress");
+		assertThat(bean.getRecipients()).containsExactly(emailAddress);
 		assertThat(bean.getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayName 123456789");
 		assertThat(bean.getMessage()).isEqualTo("""
 			Hej Test,

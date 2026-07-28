@@ -5,7 +5,10 @@
 		"bodyPatterns": [
 			{
 				"equalToJson": {
-					"emailAddress": "applicant.org@testdomain.local",
+					"recipients": [
+						"applicant.org@testdomain.local"
+					],
+					"cc": [],
 					"subject": "Nytt meddelande kopplat till ärendet Nytt parkeringstillstånd ERRAND-NUMBER-4",
 					"message": "Hej , om du vill kontakta oss så kan det göras via e-post eller telefon",
 					"sender": {

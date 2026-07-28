@@ -318,7 +318,7 @@ class MessageServiceTest {
 		verify(messageRepositoryMock).save(any());
 		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
 		assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
-		assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(emailAddress);
+		assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(emailAddress);
 		verifyNoMoreInteractions(messageRepositoryMock, messageMapperMock, messagingClientMock);
 	}
 
@@ -393,7 +393,7 @@ class MessageServiceTest {
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
 		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
-		assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(emailAddress);
+		assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(emailAddress);
 		assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
 		verify(messagingClientMock, never()).sendMessage(any(), any());
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
@@ -497,7 +497,7 @@ class MessageServiceTest {
 
 		// Assert
 		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
-		assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(emailAddress);
+		assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(emailAddress);
 	}
 
 	@Test
@@ -609,10 +609,37 @@ class MessageServiceTest {
 			verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
 			verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
 			assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
-			assertThat(emailRequestCaptor.getValue().getEmailAddress()).isEqualTo(stakeholderEntity.getContactInformation().getFirst().getValue());
+			assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(stakeholderEntity.getContactInformation().getFirst().getValue());
 		}
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
 
+	}
+
+	@Test
+	void sendEmailNotificationWhenReporterHasNoEmail() {
+		// Arrange - reporter passes isEmailNotificationToBeSent (Identifier removed in setup) but has no email
+		final var errandId = 1L;
+		final var reporter = StakeholderEntity.builder()
+			.withAdAccount("abc123")
+			.withRoles(List.of(StakeholderRole.REPORTER.name()))
+			.withContactInformation(emptyList())
+			.build();
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withErrandNumber("123456789")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(reporter))
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+
+		// Act
+		messageService.sendEmailNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
+
+		// Assert - no doomed downstream call is made when the reporter has no email
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoInteractions(messagingSettingsIntegrationMock, messagingClientMock);
+		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
 	}
 
 	@MethodSource("reporterEmailArgumentProvider")

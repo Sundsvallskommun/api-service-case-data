@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>se.sundsvall.dept44</groupId>
 		<artifactId>dept44-service-parent</artifactId>
-		<version>8.0.7</version>
+		<version>8.0.8</version>
 		<relativePath />
 		<!-- lookup parent from the repository -->
 	</parent>
@@ -16,8 +16,8 @@
 	<properties>
 		<generated-sources-path>${project.build.directory}/generated-sources</generated-sources-path>
 		<generated-sources-java-path>src/main/java</generated-sources-java-path>
-		<javers.version>7.11.1</javers.version>
-		<spring-filter.version>3.2.5</spring-filter.version>
+		<javers.version>7.11.7</javers.version>
+		<spring-filter.version>4.0.1</spring-filter.version>
 	</properties>
 	<dependencies>
 		<!-- Dept44-->

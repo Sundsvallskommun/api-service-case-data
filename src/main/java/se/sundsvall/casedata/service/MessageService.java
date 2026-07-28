@@ -23,6 +23,7 @@ import se.sundsvall.dept44.support.Identifier.Type;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ObjectUtils.notEqual;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -206,6 +207,11 @@ public class MessageService {
 	}
 
 	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName) {
+		if (isBlank(findStakeholderEmail(stakeholderEntity))) {
+			LOGGER.warn("Cannot send reporter notification for errand '{}' in namespace '{}' for municipality '{}': reporter stakeholder has no email", errandEntity.getId(), sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
+			return;
+		}
+
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
 		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity, TYPE_REPORTER_SUPPORT_TEXT,
 			metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType()));
