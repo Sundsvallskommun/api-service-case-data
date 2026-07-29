@@ -391,23 +391,29 @@ class ConversationMapperTest {
 		final var fileName = "attachment-name";
 		final var mimeType = "application/pdf";
 		final var fileSize = 123;
+		final var hash = "a3b4c5d6e7f8...";
+		final var created = OffsetDateTime.parse("2023-01-01T00:00:00Z");
 		final var attachments = List.of(
 			new generated.se.sundsvall.messageexchange.Attachment()
 				.id(attachmentId)
 				.fileName(fileName)
 				.mimeType(mimeType)
-				.fileSize(fileSize));
+				.fileSize(fileSize)
+				.hash(hash)
+				.created(created));
 
 		// Act
 		final var result = ConversationMapper.toAttachments(attachments);
 
 		// Assert
 		assertThat(result).isNotNull().hasSize(1);
-		assertThat(result.getFirst()).hasNoNullFieldsOrPropertiesExcept("created");
+		assertThat(result.getFirst()).hasNoNullFieldsOrProperties();
 		assertThat(result.getFirst().getId()).isEqualTo(attachmentId);
 		assertThat(result.getFirst().getFileName()).isEqualTo(fileName);
 		assertThat(result.getFirst().getMimeType()).isEqualTo(mimeType);
 		assertThat(result.getFirst().getFileSize()).isEqualTo(fileSize);
+		assertThat(result.getFirst().getHash()).isEqualTo(hash);
+		assertThat(result.getFirst().getCreated()).isEqualTo(created);
 	}
 
 	@Test

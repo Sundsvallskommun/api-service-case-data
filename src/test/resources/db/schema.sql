@@ -1,11 +1,11 @@
 
     create table attachment (
-        version integer,
-        created datetime(6),
+        version integer not null,
+        created datetime(6) not null,
         decision_id bigint,
         errand_id bigint,
         id bigint not null auto_increment,
-        updated datetime(6),
+        updated datetime(6) not null,
         hash varchar(64),
         note varchar(1000),
         category varchar(255),
@@ -56,13 +56,13 @@
     ) engine=InnoDB;
 
     create table decision (
-        version integer,
-        created datetime(6),
+        version integer not null,
+        created datetime(6) not null,
         decided_at datetime(6),
         decided_by_id bigint,
         errand_id bigint,
         id bigint not null auto_increment,
-        updated datetime(6),
+        updated datetime(6) not null,
         valid_from datetime(6),
         valid_to datetime(6),
         municipality_id varchar(255),
@@ -81,7 +81,7 @@
     ) engine=InnoDB;
 
     create table decision_laws (
-        law_order integer not null,
+        law_order integer not null check ((law_order>=0)),
         decision_id bigint not null,
         article varchar(255),
         chapter varchar(255),
@@ -98,7 +98,7 @@
     ) engine=InnoDB;
 
     create table email_header_values (
-        value_index integer not null,
+        value_index integer not null check ((value_index>=0)),
         email_header_id bigint not null,
         value varchar(255),
         primary key (value_index, email_header_id)
@@ -108,14 +108,14 @@
         confidential bit,
         end_date date,
         start_date date,
-        version integer,
+        version integer not null,
         application_received datetime(6),
-        created datetime(6),
+        created datetime(6) not null,
         id bigint not null auto_increment,
         status_created datetime(6),
         suspended_from datetime(6),
         suspended_to datetime(6),
-        updated datetime(6),
+        updated datetime(6) not null,
         created_by varchar(36),
         updated_by varchar(36),
         case_title_addition varchar(255),
@@ -151,14 +151,14 @@
     ) engine=InnoDB;
 
     create table errand_labels (
-        value_order integer not null,
+        value_order integer not null check ((value_order>=0)),
         errand_id bigint not null,
         value varchar(255),
         primary key (value_order, errand_id)
     ) engine=InnoDB;
 
     create table errand_statuses (
-        status_order integer not null,
+        status_order integer not null check ((status_order>=0)),
         created datetime(6),
         errand_id bigint not null,
         description varchar(255),
@@ -171,11 +171,11 @@
         latitude float(53),
         longitude float(53),
         main_facility bit,
-        version integer,
-        created datetime(6),
+        version integer not null,
+        created datetime(6) not null,
         errand_id bigint,
         id bigint not null auto_increment,
-        updated datetime(6),
+        updated datetime(6) not null,
         apartment_number varchar(255),
         attention varchar(255),
         care_of varchar(255),
@@ -263,7 +263,7 @@
         municipality_id varchar(4) not null,
         id bigint not null auto_increment,
         latest_synced_sequence_number bigint default 0,
-        updated datetime(6),
+        updated datetime(6) not null,
         namespace varchar(32) not null,
         primary key (id)
     ) engine=InnoDB;
@@ -274,11 +274,11 @@
     ) engine=InnoDB;
 
     create table note (
-        version integer,
-        created datetime(6),
+        version integer not null,
+        created datetime(6) not null,
         errand_id bigint,
         id bigint not null auto_increment,
-        updated datetime(6),
+        updated datetime(6) not null,
         created_by varchar(36),
         updated_by varchar(36),
         text varchar(10000),
@@ -327,11 +327,11 @@
     ) engine=InnoDB;
 
     create table stakeholder (
-        version integer,
-        created datetime(6),
+        version integer not null,
+        created datetime(6) not null,
         errand_id bigint,
         id bigint not null auto_increment,
-        updated datetime(6),
+        updated datetime(6) not null,
         ad_account varchar(255),
         authorized_signatory varchar(255),
         first_name varchar(255),
@@ -346,7 +346,7 @@
     ) engine=InnoDB;
 
     create table stakeholder_addresses (
-        address_order integer not null,
+        address_order integer not null check ((address_order>=0)),
         is_zoning_plan_area bit,
         latitude float(53),
         longitude float(53),
@@ -366,7 +366,7 @@
     ) engine=InnoDB;
 
     create table stakeholder_contact_information (
-        contact_information_order integer not null,
+        contact_information_order integer not null check ((contact_information_order>=0)),
         stakeholder_id bigint not null,
         value varchar(255),
         contact_type enum ('CELLPHONE','EMAIL','PHONE'),
@@ -381,7 +381,7 @@
     ) engine=InnoDB;
 
     create table stakeholder_roles (
-        role_order integer not null,
+        role_order integer not null check ((role_order>=0)),
         stakeholder_id bigint not null,
         roles varchar(255),
         primary key (role_order, stakeholder_id)
@@ -565,14 +565,14 @@
        foreign key (message_attachment_data_id) 
        references message_attachment_data (id);
 
-    alter table if exists message_cc_recipients
-       add constraint fk_message_cc_recipients_message_id
-       foreign key (message_id)
+    alter table if exists message_cc_recipients 
+       add constraint fk_message_cc_recipients_message_id 
+       foreign key (message_id) 
        references message (messageid);
 
-    alter table if exists message_recipients
-       add constraint fk_message_recipients_message_id
-       foreign key (message_id)
+    alter table if exists message_recipients 
+       add constraint fk_message_recipients_message_id 
+       foreign key (message_id) 
        references message (messageid);
 
     alter table if exists note 

@@ -222,6 +222,15 @@ server:
 # Logbook
 #----------------------------------------
 logbook:
+  # Exclude the attachment endpoints from payload logging. Their bodies are large
+  # base64 blobs (whole-file downloads/uploads). Logging them forces Logbook to
+  # buffer the body and JsonPath-parse it in full before the '$..file' redaction
+  # can run - which trips Jackson's 20M-char StreamReadConstraints limit and
+  # spikes the heap (contributing to OOM restarts). These bodies carry no useful
+  # log value, so we skip them entirely. Metadata for other endpoints is
+  # unaffected, and errands that *embed* attachments are still redacted below.
+  excluded:
+    paths: '**/attachments,**/attachments/**'
   body-filters:
     json-path:
       - key: '$..file'
@@ -273,8 +282,8 @@ scheduler:
   # API). 'shedlock-lock-at-most-for' is the crash-safety net and must exceed the worst-case duration of one batch.
   attachment-migration:
     name: attachment_migration
-    enabled: false
+    enabled: true
     cron: 0 */1 * * * *
     shedlock-lock-at-most-for: PT15M
     maximum-execution-time: PT5M
-    batch-size: 100
+    batch-size: 250

@@ -30,6 +30,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.With;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -39,6 +40,9 @@ import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import static org.hibernate.Length.LONG32;
 
 @Entity
+// Write only changed columns, so a metadata update neither rewrites the large 'content' blob nor resets
+// 'content'/'hash' that were filled in after the entity was loaded.
+@DynamicUpdate
 @Table(name = "attachment",
 	indexes = {
 		@Index(name = "idx_attachment_errand_id", columnList = "errand_id"),

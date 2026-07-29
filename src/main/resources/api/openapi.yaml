@@ -5995,6 +5995,11 @@ components:
         mimeType:
           type: string
           description: Mime type of the file
+        hash:
+          type: string
+          description: Hash of the file content
+          examples:
+          - a3b4c5d6e7f8...
         created:
           type: string
           format: date-time

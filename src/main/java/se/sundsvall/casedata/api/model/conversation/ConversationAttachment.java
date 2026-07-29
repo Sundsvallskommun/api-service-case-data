@@ -26,6 +26,9 @@ public class ConversationAttachment {
 	@Schema(description = "Mime type of the file")
 	private String mimeType;
 
+	@Schema(description = "Hash of the file content", examples = "a3b4c5d6e7f8...")
+	private String hash;
+
 	@Schema(description = "The attachment created date", examples = "2023-01-01T00:00:00+01:00")
 	private OffsetDateTime created;
 
