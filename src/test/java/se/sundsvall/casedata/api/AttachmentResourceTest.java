@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.api;
 
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
@@ -129,7 +131,108 @@ class AttachmentResourceTest {
 			.contentType(MULTIPART_FORM_DATA)
 			.body(fromMultipartData(multipartBodyBuilder.build()))
 			.exchange()
-			.expectStatus().isBadRequest();
+			.expectStatus().isBadRequest()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+			.expectBody()
+			.jsonPath("$.title").isEqualTo("Bad Request")
+			.jsonPath("$.status").isEqualTo(400)
+			.jsonPath("$.detail").isEqualTo("The 'file' part must not be empty");
+
+		// Assert
+		verifyNoInteractions(attachmentServiceMock);
+	}
+
+	@Test
+	void postAttachmentWithoutFilePart() {
+		// Arrange - the 'file' part is mandatory; omitting it must fail as a client error, not a server error.
+		final var errandId = 123L;
+		final var multipartBodyBuilder = new MultipartBodyBuilder();
+		multipartBodyBuilder.part("attachment", "{\"category\":\"MEDICAL_CONFIRMATION\",\"name\":\"document.pdf\"}");
+
+		// Act
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.contentType(MULTIPART_FORM_DATA)
+			.body(fromMultipartData(multipartBodyBuilder.build()))
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+			.expectBody()
+			.jsonPath("$.status").isEqualTo(400);
+
+		// Assert
+		verifyNoInteractions(attachmentServiceMock);
+	}
+
+	@Test
+	void postAttachmentWithMalformedMetadata() {
+		// Arrange - the 'attachment' part is parsed by hand (it is a string part, not a @RequestBody), so unparsable
+		// JSON must surface as a client error rather than escaping as an unhandled exception.
+		final var errandId = 123L;
+		final var multipartBodyBuilder = new MultipartBodyBuilder();
+		multipartBodyBuilder.part("attachment", "{\"category\":\"MEDICAL_CONFIRMATION\",");
+		multipartBodyBuilder.part("file", "file-content").filename("document.pdf").contentType(TEXT_PLAIN);
+
+		// Act
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.contentType(MULTIPART_FORM_DATA)
+			.body(fromMultipartData(multipartBodyBuilder.build()))
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+			.expectBody()
+			.jsonPath("$.title").isEqualTo("Bad Request")
+			.jsonPath("$.status").isEqualTo(400)
+			.jsonPath("$.detail").isEqualTo("The 'attachment' part must be valid JSON");
+
+		// Assert
+		verifyNoInteractions(attachmentServiceMock);
+	}
+
+	@Test
+	void postAttachmentWithInvalidCategory() {
+		// Arrange - metadata in the multipart part is validated by hand in the resource; the violation must be
+		// reported in the same shape as a @Valid @RequestBody violation.
+		final var errandId = 123L;
+		final var multipartBodyBuilder = new MultipartBodyBuilder();
+		multipartBodyBuilder.part("attachment", "{\"category\":\"NOT_A_VALID_CATEGORY\",\"name\":\"document.pdf\"}");
+		multipartBodyBuilder.part("file", "file-content").filename("document.pdf").contentType(TEXT_PLAIN);
+
+		// Act
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL).build(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.contentType(MULTIPART_FORM_DATA)
+			.body(fromMultipartData(multipartBodyBuilder.build()))
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+			.expectBody()
+			.jsonPath("$.title").isEqualTo("Constraint Violation")
+			.jsonPath("$.violations[0].field").isEqualTo("category")
+			.jsonPath("$.violations[0].message").<String>value(message -> assertThat(message).startsWith("Invalid attachment category."));
+
+		// Assert
+		verifyNoInteractions(attachmentServiceMock);
+	}
+
+	@Test
+	void patchAttachmentWithInvalidCategory() {
+		// Arrange
+		final var errandId = 123L;
+		final var attachmentId = 456L;
+
+		// Act
+		webTestClient.patch()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{attachmentId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, attachmentId))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(Map.of("category", "NOT_A_VALID_CATEGORY"))
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+			.expectBody()
+			.jsonPath("$.title").isEqualTo("Constraint Violation")
+			.jsonPath("$.violations[0].field").isEqualTo("category");
 
 		// Assert
 		verifyNoInteractions(attachmentServiceMock);

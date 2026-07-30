@@ -36,6 +36,7 @@ import se.sundsvall.casedata.service.AttachmentService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -114,7 +115,7 @@ class AttachmentResource {
 			throw Problem.valueOf(BAD_REQUEST, "The 'file' part must not be empty");
 		}
 
-		final var attachmentMetadata = objectMapper.readValue(attachment, Attachment.class);
+		final var attachmentMetadata = parseMetadata(attachment);
 		validate(attachmentMetadata);
 
 		final var result = attachmentService.create(errandId, attachmentMetadata, file, municipalityId, namespace);
@@ -154,6 +155,19 @@ class AttachmentResource {
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
+	}
+
+	/**
+	 * Parses the 'attachment' metadata part. Jackson's parse failures are unchecked, so without this they would escape
+	 * as an unhandled exception and be reported as a server error - unparsable input from a client is a bad request.
+	 * The parser message is deliberately not echoed back, to avoid reflecting the submitted payload in the response.
+	 */
+	private Attachment parseMetadata(final String attachment) {
+		try {
+			return objectMapper.readValue(attachment, Attachment.class);
+		} catch (final JacksonException e) {
+			throw Problem.valueOf(BAD_REQUEST, "The 'attachment' part must be valid JSON");
+		}
 	}
 
 	private <T> void validate(final T object) {

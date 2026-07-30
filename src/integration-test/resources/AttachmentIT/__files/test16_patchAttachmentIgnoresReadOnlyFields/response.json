@@ -1,0 +1,18 @@
+[
+	{
+		"note": "Read-only fields must be ignored",
+		"municipalityId": "2281",
+		"extension": ".png",
+		"errandId": 1,
+		"created": "2022-12-02T15:13:45.363+01:00",
+		"extraParameters": {},
+		"mimeType": "image/png",
+		"version": 2,
+		"namespace": "MY_NAMESPACE",
+		"name": "test_image.png",
+		"id": 1,
+		"hash": "429e40fd4fee7d2533ebef54d5d442c8f12adb10b63fe5c7a81cc78914c6f795",
+		"category": "SIGNATURE",
+		"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
+	}
+]
