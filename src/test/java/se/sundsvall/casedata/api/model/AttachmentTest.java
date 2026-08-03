@@ -43,7 +43,7 @@ class AttachmentTest {
 		final var note = "note";
 		final var extension = "extension";
 		final var mimeType = "mimeType";
-		final var file = "file";
+		final var hash = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08";
 		final var errandId = 123L;
 		final var extraParameters = new HashMap<String, String>();
 		final var municipalityId = "municipalityId";
@@ -57,7 +57,7 @@ class AttachmentTest {
 			.withNote(note)
 			.withExtension(extension)
 			.withMimeType(mimeType)
-			.withFile(file)
+			.withHash(hash)
 			.withErrandId(errandId)
 			.withExtraParameters(extraParameters)
 			.withMunicipalityId(municipalityId)
@@ -71,7 +71,7 @@ class AttachmentTest {
 		assertThat(bean.getNote()).isEqualTo(note);
 		assertThat(bean.getExtension()).isEqualTo(extension);
 		assertThat(bean.getMimeType()).isEqualTo(mimeType);
-		assertThat(bean.getFile()).isEqualTo(file);
+		assertThat(bean.getHash()).isEqualTo(hash);
 		assertThat(bean.getErrandId()).isEqualTo(errandId);
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);

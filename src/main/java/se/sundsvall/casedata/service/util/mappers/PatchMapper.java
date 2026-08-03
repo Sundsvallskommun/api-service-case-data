@@ -107,7 +107,6 @@ public final class PatchMapper {
 		ofNullable(patch.getNote()).ifPresent(attachmentEntity::setNote);
 		ofNullable(patch.getExtension()).ifPresent(attachmentEntity::setExtension);
 		ofNullable(patch.getMimeType()).ifPresent(attachmentEntity::setMimeType);
-		ofNullable(patch.getFile()).ifPresent(attachmentEntity::setFile);
 		return attachmentEntity;
 	}
 

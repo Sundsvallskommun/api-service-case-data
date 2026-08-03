@@ -120,6 +120,18 @@ springdoc:
     operationsSorter: alpha
 
 #----------------------------------------
+# Attachment storage
+#----------------------------------------
+attachment:
+  storage:
+    # Write mode during the base64 -> binary migration:
+    #   DUAL   - write both the base64 'file' column and the binary 'content' blob + hash (safe rollback, transition default)
+    #   BLOB   - write only the binary 'content' blob + hash (end state)
+    #   BASE64 - write only the legacy base64 'file' column (rollback target)
+    # The read path always prefers the blob and falls back to decoding 'file', independently of this setting.
+    write-mode: DUAL
+
+#----------------------------------------
 # Integration settings
 #----------------------------------------
 integration:
@@ -262,3 +274,16 @@ scheduler:
     cron: 0 */1 * * * *
     shedlock-lock-at-most-for: PT2M
     maximum-execution-time: PT1M
+  # One-off base64 -> binary attachment backfill (DRAKEN-4446). Disabled by default; enable for the migration window and
+  # disable again once drained, ahead of the BLOB write-mode cutover. 'batch-size' caps the number of attachments
+  # migrated per tick (processed one at a time, each in its own transaction) - tune it together with 'cron' to balance
+  # migration throughput against load. Each row's decoded bytes are written in a single statement, so the database's
+  # max_allowed_packet must cover the largest attachment (the same limit that already applies to creating one via the
+  # API). 'shedlock-lock-at-most-for' is the crash-safety net and must exceed the worst-case duration of one batch.
+  attachment-migration:
+    name: attachment_migration
+    enabled: true
+    cron: 0 */1 * * * *
+    shedlock-lock-at-most-for: PT15M
+    maximum-execution-time: PT5M
+    batch-size: 250

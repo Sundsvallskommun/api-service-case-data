@@ -128,13 +128,12 @@ class PatchMapperTest {
 
 		final var patchedAttachment = patchAttachment(attachment, patch);
 
-		assertThat(patchedAttachment).isNotNull().hasNoNullFieldsOrPropertiesExcept("municipalityId", "namespace").satisfies(a -> {
+		assertThat(patchedAttachment).isNotNull().hasNoNullFieldsOrPropertiesExcept("municipalityId", "namespace", "content").satisfies(a -> {
 			assertThat(a.getCategory()).isEqualTo(patch.getCategory());
 			assertThat(a.getName()).isEqualTo(patch.getName());
 			assertThat(a.getNote()).isEqualTo(patch.getNote());
 			assertThat(a.getExtension()).isEqualTo(patch.getExtension());
 			assertThat(a.getMimeType()).isEqualTo(patch.getMimeType());
-			assertThat(a.getFile()).isEqualTo(patch.getFile());
 			assertThat(a.getExtraParameters()).containsAllEntriesOf(patch.getExtraParameters());
 		});
 	}

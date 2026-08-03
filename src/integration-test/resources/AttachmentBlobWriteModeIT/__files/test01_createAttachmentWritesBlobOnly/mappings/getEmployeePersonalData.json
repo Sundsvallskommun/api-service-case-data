@@ -1,7 +1,7 @@
 {
 	"request": {
 		"method": "GET",
-		"urlPath": "/employee/2281/portalpersondata/personal/someUser123"
+		"urlPath": "/employee/2281/portalpersondata/personal/user123"
 	},
 	"response": {
 		"headers": {
@@ -12,19 +12,19 @@
 			"city": "",
 			"postalCode": "",
 			"orgTree": "2|28|KSK Avd Digitalisering och IT",
-			"lastname": "Joe",
+			"lastname": "Usersson",
 			"aboutMe": "",
 			"companyId": 1,
-			"givenname": "Joe Doe",
-			"loginName": "PERSONAL\\someUser123",
+			"givenname": "User",
+			"loginName": "PERSONAL\\user123",
 			"isManager": false,
 			"personid": "b10be261-b417-4c3e-a42a-9b94c27c17fe",
 			"company": "Sundsvalls kommun",
-			"fullname": "Doe Joe",
-			"email": "joe.doe@sundsvall.se",
-			"mailNickname": "joe.doe"
+			"fullname": "Usersson User",
+			"email": "user.usersson@sundsvall.se",
+			"mailNickname": "user.usersson"
 		},
 		"status": 200
 	},
-	"name": "api-employee-getOwnerPersonalData"
+	"name": "api-employee-getEmployeePersonalData"
 }

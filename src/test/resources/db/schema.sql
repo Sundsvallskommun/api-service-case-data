@@ -6,6 +6,7 @@
         errand_id bigint,
         id bigint not null auto_increment,
         updated datetime(6) not null,
+        hash varchar(64),
         note varchar(1000),
         category varchar(255),
         extension varchar(255),
@@ -14,6 +15,7 @@
         name varchar(255),
         namespace varchar(255),
         channel varchar(255),
+        content longblob,
         file longtext,
         primary key (id)
     ) engine=InnoDB;
@@ -391,10 +393,13 @@
     create index idx_attachment_municipality_id 
        on attachment (municipality_id);
 
-    create index idx_attachment_namespace 
+    create index idx_attachment_namespace
        on attachment (namespace);
 
-    create index idx_case_type_municipality_namespace 
+    create index idx_attachment_hash
+       on attachment (hash);
+
+    create index idx_case_type_municipality_namespace
        on case_type (municipality_id, namespace);
 
     alter table if exists case_type 
