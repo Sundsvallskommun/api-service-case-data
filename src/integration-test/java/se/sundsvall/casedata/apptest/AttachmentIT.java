@@ -40,6 +40,8 @@ class AttachmentIT extends AbstractAppTest {
 	private static final String ATTACHMENTS_PATH = "/{0}/{1}/errands/{2}/attachments";
 	private static final String ATTACHMENT_BY_ID_PATH = "/{0}/{1}/errands/{2}/attachments/{3}";
 	private static final String ADMIN_IDENTIFIER = "type=adAccount; user123";
+	private static final String OTHER_NAMESPACE = "OTHER_NAMESPACE";
+	private static final String OTHER_MUNICIPALITY_ID = "2262";
 
 	@Test
 	void test01_getAttachment() throws IOException {
@@ -179,6 +181,116 @@ class AttachmentIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(IMAGE_PNG_VALUE))
 			.withExpectedBinaryResponse("test_image.png")
+			.sendRequestAndVerifyResponse();
+	}
+
+	// The tenant-scoping tests below send a throwaway 'file' part (content.bin); the binary content is irrelevant to
+	// them, the request is rejected on the errand lookup before the upload is ever read. Pure request validation
+	// (empty/missing file part, unparsable metadata, invalid category) needs no database and lives in
+	// AttachmentResourceTest instead.
+
+	@Test
+	void test12_createAttachmentOnMissingErrand() throws IOException {
+		setupCall()
+			.withHttpMethod(POST)
+			.withServicePath(format(ATTACHMENTS_PATH, MUNICIPALITY_ID, NAMESPACE, 666))
+			.withContentType(MULTIPART_FORM_DATA)
+			.withRequestFile("attachment", "attachment.json")
+			.withRequestFile("file", "content.bin")
+			.withHeader(HEADER_NAME, ADMIN_IDENTIFIER)
+			.withExpectedResponseStatus(NOT_FOUND)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test13_createAttachmentInOtherNamespace() throws IOException {
+		// Errand 1 exists, but not in this namespace - an upload must not leak across the tenant boundary.
+		setupCall()
+			.withHttpMethod(POST)
+			.withServicePath(format(ATTACHMENTS_PATH, MUNICIPALITY_ID, OTHER_NAMESPACE, ERRAND_ID))
+			.withContentType(MULTIPART_FORM_DATA)
+			.withRequestFile("attachment", "attachment.json")
+			.withRequestFile("file", "content.bin")
+			.withHeader(HEADER_NAME, ADMIN_IDENTIFIER)
+			.withExpectedResponseStatus(NOT_FOUND)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test14_createAttachmentInOtherMunicipality() throws IOException {
+		// Same as above for the municipality dimension of the tenant key.
+		setupCall()
+			.withHttpMethod(POST)
+			.withServicePath(format(ATTACHMENTS_PATH, OTHER_MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
+			.withContentType(MULTIPART_FORM_DATA)
+			.withRequestFile("attachment", "attachment.json")
+			.withRequestFile("file", "content.bin")
+			.withHeader(HEADER_NAME, ADMIN_IDENTIFIER)
+			.withExpectedResponseStatus(NOT_FOUND)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test15_patchAttachmentBelongingToOtherErrand() {
+		// Attachment 2 exists, but on errand 2. Addressing it through errand 1 must not find it.
+		setupCall()
+			.withHttpMethod(PATCH)
+			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "2"))
+			.withHeader(HEADER_NAME, ADMIN_IDENTIFIER)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(NOT_FOUND)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test16_patchAttachmentIgnoresReadOnlyFields() {
+		// The request deliberately carries id, errandId, municipalityId, namespace, version and hash. None of them are
+		// patchable: the content hash in particular must keep describing the stored bytes.
+		setupCall()
+			.withHttpMethod(PATCH)
+			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
+			.withHeader(HEADER_NAME, ADMIN_IDENTIFIER)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(NO_CONTENT)
+			.sendRequest();
+
+		setupCall()
+			.withHttpMethod(GET)
+			.withServicePath(format(ATTACHMENTS_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test17_patchAttachmentMergesExtraParameters() {
+		// extraParameters are merged into the existing map, not replaced - two consecutive patches must leave both
+		// keys in place.
+		setupCall()
+			.withHttpMethod(PATCH)
+			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
+			.withHeader(HEADER_NAME, ADMIN_IDENTIFIER)
+			.withRequest("request-first.json")
+			.withExpectedResponseStatus(NO_CONTENT)
+			.sendRequest();
+
+		setupCall()
+			.withHttpMethod(PATCH)
+			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, "1"))
+			.withHeader(HEADER_NAME, ADMIN_IDENTIFIER)
+			.withRequest("request-second.json")
+			.withExpectedResponseStatus(NO_CONTENT)
+			.sendRequest();
+
+		setupCall()
+			.withHttpMethod(GET)
+			.withServicePath(format(ATTACHMENTS_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 }
