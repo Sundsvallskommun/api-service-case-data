@@ -44,8 +44,8 @@ public final class PutMapper {
 			oldDecision.setValidTo(newDecision.getValidTo());
 			oldDecision.setDecidedBy(EntityMapper.toStakeholderEntity(newDecision.getDecidedBy(), oldDecision.getMunicipalityId(), oldDecision.getNamespace()));
 			oldDecision.setLaw(new ArrayList<>(newDecision.getLaw().stream().map(EntityMapper::toLawEntity).toList()));
-			oldDecision.getAttachments().clear();
-			newDecision.getAttachments().forEach(attachment -> oldDecision.getAttachments().add(EntityMapper.toAttachmentEntity(oldDecision.getErrand().getId(), attachment, oldDecision.getMunicipalityId(), oldDecision.getNamespace())));
+			// Attachments are deliberately left untouched. They are managed through the decision attachment endpoints, so a
+			// replaced decision keeps the attachments that were uploaded to it.
 		});
 		return oldDecision;
 	}

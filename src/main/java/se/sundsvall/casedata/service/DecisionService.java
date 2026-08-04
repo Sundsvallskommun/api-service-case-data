@@ -26,6 +26,7 @@ import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpe
 import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.buildStakeholderFilter;
 import static se.sundsvall.casedata.integration.db.specification.ErrandEntitySpecification.distinct;
 import static se.sundsvall.casedata.service.model.EventType.UPDATE;
+import static se.sundsvall.casedata.service.util.Constants.DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_CREATED;
 import static se.sundsvall.casedata.service.util.Constants.NOTIFICATION_DECISION_UPDATED;
@@ -42,7 +43,6 @@ public class DecisionService {
 	private static final String DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID = "Decision was not found on errand with id: %s";
 	private static final String FINAL_DECISION_WAS_NOT_FOUND_ON_ERRAND_WITH_ID = "Final decision was not found on errand with id: %s";
 	private static final String FINAL_DECISION_WAS_NOT_FOUND_BY_PARTY_ID = "Final decision was not found by partyId: %s";
-	private static final String DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Decision with id: %s was not found on errand with id: %s";
 	private static final String ROLE_APPLICANT = "APPLICANT";
 
 	private final DecisionRepository decisionRepository;

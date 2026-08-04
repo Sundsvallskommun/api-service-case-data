@@ -240,6 +240,7 @@ public final class EntityMapper {
 				.withExtension(obj.getExtension())
 				.withMimeType(obj.getMimeType())
 				.withErrandId(obj.getErrandId())
+				.withDecisionId(obj.getDecisionId())
 				.withHash(obj.getHash())
 				.withExtraParameters(ofNullable(obj.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
@@ -260,7 +261,9 @@ public final class EntityMapper {
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
 				.withLaw(new ArrayList<>(ofNullable(obj.getLaw()).orElse(emptyList()).stream().map(EntityMapper::toLawEntity).toList()))
-				.withAttachments(new ArrayList<>(ofNullable(obj.getAttachments()).orElse(emptyList()).stream().map(e -> toAttachmentEntity(errand.getId(), e, municipalityId, namespace)).toList()))
+				// Attachments are not created here. They are managed through the decision attachment endpoints, which is the
+				// only way to supply the binary content.
+				.withAttachments(new ArrayList<>())
 				.withExtraParameters(ofNullable(obj.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);
@@ -283,7 +286,7 @@ public final class EntityMapper {
 				.withValidFrom(obj.getValidFrom())
 				.withValidTo(obj.getValidTo())
 				.withLaw(new ArrayList<>(obj.getLaw().stream().map(EntityMapper::toLaw).toList()))
-				.withAttachments(new ArrayList<>(obj.getAttachments().stream().map(EntityMapper::toAttachment).toList()))
+				.withAttachments(new ArrayList<>(ofNullable(obj.getAttachments()).orElse(emptyList()).stream().map(EntityMapper::toAttachment).toList()))
 				.withExtraParameters(ofNullable(obj.getExtraParameters()).orElse(new LinkedHashMap<>()))
 				.build())
 			.orElse(null);

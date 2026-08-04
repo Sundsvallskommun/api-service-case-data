@@ -523,7 +523,7 @@ class ConversationMapperTest {
 		final var result = ConversationMapper.toAttachment(attachment, errandId, municipalityId, namespace);
 
 		// Assert
-		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "category", "channel", "note", "extension", "hash");
+		assertThat(result).isNotNull().hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "category", "channel", "note", "extension", "hash", "decisionId");
 		assertThat(result.getName()).isEqualTo(fileName);
 		assertThat(result.getMimeType()).isEqualTo(mimeType);
 	}

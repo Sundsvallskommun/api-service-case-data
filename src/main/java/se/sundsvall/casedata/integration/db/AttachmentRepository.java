@@ -22,4 +22,16 @@ public interface AttachmentRepository extends JpaRepository<AttachmentEntity, Lo
 
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	Optional<AttachmentEntity> findWithPessimisticLockingByIdAndErrandIdAndMunicipalityIdAndNamespace(final Long id, final Long errandId, final String municipalityId, final String namespace);
+
+	/*
+	 * Attachments belonging to a decision carry decision_id and no errand_id, so they are reached through the queries
+	 * below and are never returned by the errand-scoped queries above.
+	 */
+
+	List<AttachmentEntity> findAllByDecisionIdAndMunicipalityIdAndNamespace(final Long decisionId, final String municipalityId, final String namespace);
+
+	Optional<AttachmentEntity> findByIdAndDecisionIdAndMunicipalityIdAndNamespace(final Long id, final Long decisionId, final String municipalityId, final String namespace);
+
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	Optional<AttachmentEntity> findWithPessimisticLockingByIdAndDecisionIdAndMunicipalityIdAndNamespace(final Long id, final Long decisionId, final String municipalityId, final String namespace);
 }

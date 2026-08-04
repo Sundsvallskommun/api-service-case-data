@@ -70,7 +70,7 @@ public class Decision {
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime validTo;
 
-	@Schema(description = "List of attachments related to the decision")
+	@Schema(description = "List of attachments related to the decision. Attachments are managed through the decision attachment endpoints and sending them in this payload is rejected", accessMode = READ_ONLY)
 	private List<Attachment> attachments;
 
 	@Schema(description = "Additional parameters for the decision", examples = "{\"key1\": \"value1\", \"key2\": \"value2\"}")

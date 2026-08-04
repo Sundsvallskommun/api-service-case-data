@@ -34,6 +34,9 @@ public class Attachment {
 	@Schema(description = "Errand id associated with the attachment", accessMode = READ_ONLY, examples = "123456")
 	private Long errandId;
 
+	@Schema(description = "Decision id associated with the attachment, null for attachments belonging directly to the errand", accessMode = READ_ONLY, examples = "123456")
+	private Long decisionId;
+
 	@Schema(description = "Namespace", examples = "MY_NAMESPACE", accessMode = READ_ONLY)
 	private String namespace;
 

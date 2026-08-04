@@ -45,6 +45,7 @@ class AttachmentTest {
 		final var mimeType = "mimeType";
 		final var hash = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08";
 		final var errandId = 123L;
+		final var decisionId = 456L;
 		final var extraParameters = new HashMap<String, String>();
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -59,6 +60,7 @@ class AttachmentTest {
 			.withMimeType(mimeType)
 			.withHash(hash)
 			.withErrandId(errandId)
+			.withDecisionId(decisionId)
 			.withExtraParameters(extraParameters)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
@@ -73,6 +75,7 @@ class AttachmentTest {
 		assertThat(bean.getMimeType()).isEqualTo(mimeType);
 		assertThat(bean.getHash()).isEqualTo(hash);
 		assertThat(bean.getErrandId()).isEqualTo(errandId);
+		assertThat(bean.getDecisionId()).isEqualTo(decisionId);
 		assertThat(bean.getExtraParameters()).isEqualTo(extraParameters);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getNamespace()).isEqualTo(namespace);

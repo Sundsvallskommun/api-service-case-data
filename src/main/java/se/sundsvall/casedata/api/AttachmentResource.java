@@ -8,17 +8,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,7 +30,6 @@ import se.sundsvall.casedata.service.AttachmentService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
-import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -115,8 +108,8 @@ class AttachmentResource {
 			throw Problem.valueOf(BAD_REQUEST, "The 'file' part must not be empty");
 		}
 
-		final var attachmentMetadata = parseMetadata(attachment);
-		validate(attachmentMetadata);
+		final var attachmentMetadata = AttachmentMetadataParts.parse(objectMapper, attachment);
+		AttachmentMetadataParts.validate(validator, attachmentMetadata);
 
 		final var result = attachmentService.create(errandId, attachmentMetadata, file, municipalityId, namespace);
 		return created(fromPath("/{municipalityId}/{namespace}/errands/{errandId}/attachments/{id}").buildAndExpand(municipalityId, namespace, errandId, result.getId()).toUri())
@@ -157,26 +150,4 @@ class AttachmentResource {
 			.build();
 	}
 
-	/**
-	 * Parses the 'attachment' metadata part. Jackson's parse failures are unchecked, so without this they would escape
-	 * as an unhandled exception and be reported as a server error - unparsable input from a client is a bad request.
-	 * The parser message is deliberately not echoed back, to avoid reflecting the submitted payload in the response.
-	 */
-	private Attachment parseMetadata(final String attachment) {
-		try {
-			return objectMapper.readValue(attachment, Attachment.class);
-		} catch (final JacksonException e) {
-			throw Problem.valueOf(BAD_REQUEST, "The 'attachment' part must be valid JSON");
-		}
-	}
-
-	private <T> void validate(final T object) {
-		final Set<ConstraintViolation<T>> violations = validator.validate(object);
-		if (!violations.isEmpty()) {
-			final var sorted = violations.stream()
-				.sorted(Comparator.comparing(v -> v.getPropertyPath().toString()))
-				.collect(Collectors.toCollection(LinkedHashSet::new));
-			throw new ConstraintViolationException(sorted);
-		}
-	}
 }

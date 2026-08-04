@@ -34,7 +34,6 @@ public class ValidCaseTypeConstraintValidator implements ConstraintValidator<Val
 	@Override
 	public void initialize(final ValidCaseType constraintAnnotation) {
 		this.nullable = constraintAnnotation.nullable();
-		ConstraintValidator.super.initialize(constraintAnnotation);
 	}
 
 	@Override

@@ -32,12 +32,14 @@ import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
 
 import static org.springframework.http.HttpHeaders.LOCATION;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_REGEXP;
 import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_VALIDATION_MESSAGE;
@@ -99,6 +101,7 @@ class DecisionResource {
 		@PathVariable final Long decisionId,
 		@RequestBody @Valid final Decision decision) {
 
+		rejectAttachments(decision);
 		decisionService.replaceOnErrand(errandId, decisionId, municipalityId, namespace, decision);
 		return noContent()
 			.build();
@@ -114,6 +117,7 @@ class DecisionResource {
 		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable final Long errandId,
 		@RequestBody @Valid final Decision decision) {
 
+		rejectAttachments(decision);
 		final var result = decisionService.addToErrand(errandId, municipalityId, namespace, decision);
 		return created(fromPath("/{municipalityId}/{namespace}/decisions/{decisionId}")
 			.buildAndExpand(municipalityId, namespace, result.getId())
@@ -158,5 +162,16 @@ class DecisionResource {
 		@ParameterObject final Pageable pageable) {
 
 		return ok(decisionService.findFinalDecisions(partyId, municipalityId, pageable));
+	}
+
+	/**
+	 * Attachments are read-only on a decision: they can only be created through the decision attachment endpoints, since
+	 * that is the only way to supply the binary content. Supplying them here is rejected rather than silently discarded,
+	 * so a client does not believe it has uploaded something.
+	 */
+	private void rejectAttachments(final Decision decision) {
+		if (!isEmpty(decision.getAttachments())) {
+			throw Problem.valueOf(BAD_REQUEST, "The 'attachments' field is read-only. Use /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}/attachments to manage attachments on a decision");
+		}
 	}
 }

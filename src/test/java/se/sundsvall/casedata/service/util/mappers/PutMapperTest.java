@@ -78,6 +78,24 @@ class PutMapperTest {
 	}
 
 	@Test
+	void putDecisionKeepsExistingAttachments() {
+		// Arrange - attachments are owned by the decision attachment endpoints, so replacing a decision must neither remove
+		// the attachments already uploaded to it nor create new ones from the payload.
+		final var decision = createDecisionEntity();
+		final var decisionDto = createDecision();
+		final var existingAttachments = List.copyOf(decision.getAttachments());
+
+		assertThat(existingAttachments).isNotEmpty();
+		assertThat(decisionDto.getAttachments()).isNotEmpty();
+
+		// Act
+		putDecision(decision, decisionDto);
+
+		// Assert
+		assertThat(decision.getAttachments()).containsExactlyElementsOf(existingAttachments);
+	}
+
+	@Test
 	void putNoteTest() {
 		final var note = createNoteEntity();
 		final var noteDto = createNote();

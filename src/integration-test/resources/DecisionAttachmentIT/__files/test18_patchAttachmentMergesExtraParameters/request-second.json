@@ -1,0 +1,7 @@
+{
+	"note": "Second patch",
+	"category": "POLICE_REPORT",
+	"extraParameters": {
+		"property2": "value2"
+	}
+}

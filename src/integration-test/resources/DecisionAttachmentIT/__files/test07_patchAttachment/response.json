@@ -1,0 +1,35 @@
+[
+	{
+		"note": "This is a note for test07",
+		"municipalityId": "2281",
+		"extension": ".png",
+		"decisionId": 1,
+		"created": "2022-12-02T15:13:45.363+01:00",
+		"extraParameters": {
+			"property7": "value7"
+		},
+		"mimeType": "image/png",
+		"version": 2,
+		"namespace": "MY_NAMESPACE",
+		"name": "patched.png",
+		"id": 1,
+		"hash": "429e40fd4fee7d2533ebef54d5d442c8f12adb10b63fe5c7a81cc78914c6f795",
+		"category": "POLICE_REPORT",
+		"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
+	},
+	{
+		"note": "NOTE-2",
+		"municipalityId": "2281",
+		"extension": ".png",
+		"decisionId": 1,
+		"created": "2022-12-02T15:13:45.363+01:00",
+		"extraParameters": {},
+		"mimeType": "image/png",
+		"version": 1,
+		"namespace": "MY_NAMESPACE",
+		"name": "decision_legacy.png",
+		"id": 2,
+		"category": "POLICE_REPORT",
+		"updated": "2022-12-02T15:15:01.563+01:00"
+	}
+]

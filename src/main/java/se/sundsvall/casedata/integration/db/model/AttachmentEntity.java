@@ -21,6 +21,7 @@ import java.sql.Blob;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -104,6 +105,20 @@ public class AttachmentEntity {
 	@With
 	@Column(name = "errand_id")
 	private Long errandId;
+
+	/**
+	 * Read-only view of the foreign key owned by {@link DecisionEntity#getAttachments()}, so attachments can be queried by
+	 * their owning decision and errand attachments can be told apart from decision attachments. Writes go through the
+	 * decision's collection - assigning this field has no effect.
+	 *
+	 * <p>
+	 * Kept out of the JaVers diff: the foreign key is written when the decision's collection is flushed, so on a newly
+	 * created attachment this field is still null when the change is recorded and would only ever be audited as such.
+	 */
+	@Column(name = "decision_id", insertable = false, updatable = false)
+	@Setter(AccessLevel.NONE)
+	@DiffIgnore
+	private Long decisionId;
 
 	@With
 	@Column(name = "municipality_id")
