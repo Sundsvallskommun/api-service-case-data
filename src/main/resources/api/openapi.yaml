@@ -16,8 +16,6 @@ tags:
   description: History operations
 - name: Conversations
   description: Conversation operations
-- name: Decision attachments
-  description: Decision attachment operations
 - name: Metadata for caseTypes
   description: Metadata caseTypes operations
 - name: Facilities
@@ -1212,7 +1210,7 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}/attachments/{attachmentId}:
     get:
       tags:
-      - Decision attachments
+      - Decisions
       summary: Get a streamed decision attachment.
       description: Fetches the binary content of the attachment that matches the provided
         id in a streamed manner.
@@ -1280,7 +1278,7 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-      - Decision attachments
+      - Decisions
       description: Delete attachment on decision.
       operationId: deleteDecisionAttachment
       parameters:
@@ -1346,7 +1344,7 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-      - Decision attachments
+      - Decisions
       description: Update attachment metadata on decision. The binary content cannot
         be updated; replace it by deleting and recreating the attachment.
       operationId: patchDecisionAttachment
@@ -2335,7 +2333,7 @@ paths:
   /{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}/attachments:
     get:
       tags:
-      - Decision attachments
+      - Decisions
       description: Get attachments metadata by decision id.
       operationId: getAttachmentsByDecisionId
       parameters:
@@ -2401,7 +2399,7 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-      - Decision attachments
+      - Decisions
       description: Create attachment on decision. The metadata is supplied as a JSON
         part named 'attachment' and the binary content as a file part named 'file'.
       operationId: postDecisionAttachment

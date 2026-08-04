@@ -53,7 +53,7 @@ import static se.sundsvall.casedata.service.util.Constants.NAMESPACE_VALIDATION_
 @RestController
 @Validated
 @RequestMapping("/{municipalityId}/{namespace}/errands/{errandId}/decisions/{decisionId}/attachments")
-@Tag(name = "Decision attachments", description = "Decision attachment operations")
+@Tag(name = "Decisions", description = "Decision operations")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 	Problem.class, ConstraintViolationProblem.class
 })))
