@@ -9,11 +9,6 @@ import se.sundsvall.casedata.integration.db.model.enums.TimelinessReview;
 public class ValidTimelinessReviewValueConstraintValidator implements ConstraintValidator<ValidTimelinessReviewValue, String> {
 
 	@Override
-	public void initialize(ValidTimelinessReviewValue constraintAnnotation) {
-		ConstraintValidator.super.initialize(constraintAnnotation);
-	}
-
-	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
 		if (value == null || value.isBlank()) {
 			context.disableDefaultConstraintViolation();

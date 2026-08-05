@@ -1,0 +1,11 @@
+{
+	"note": "This is a note for test06",
+	"extension": ".png",
+	"name": "uploaded.png",
+	"extraParameters": {
+		"property1": "value1",
+		"property2": "value2"
+	},
+	"mimeType": "image/png",
+	"category": "SIGNATURE"
+}

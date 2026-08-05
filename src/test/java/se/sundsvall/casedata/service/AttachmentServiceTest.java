@@ -2,13 +2,9 @@ package se.sundsvall.casedata.service;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.util.Base64;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.rowset.serial.SerialBlob;
@@ -20,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.casedata.TestUtil;
 import se.sundsvall.casedata.api.model.Attachment;
@@ -28,7 +23,6 @@ import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
-import se.sundsvall.casedata.service.util.BlobBuilder;
 import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static java.util.Optional.empty;
@@ -37,7 +31,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.doReturn;
@@ -70,7 +63,7 @@ class AttachmentServiceTest {
 	private AttachmentRepository attachmentRepositoryMock;
 
 	@Mock
-	private BlobBuilder blobBuilderMock;
+	private AttachmentContentWriter contentWriterMock;
 
 	@Mock
 	private HttpServletResponse servletResponseMock;
@@ -307,19 +300,14 @@ class AttachmentServiceTest {
 	}
 
 	@Test
-	void createWithDualWriteMode() throws Exception {
-		// Arrange - DUAL is the default write mode: both the base64 'file' and the binary 'content' + 'hash' are written.
+	void create() {
+		// Arrange - how the content itself is stored is the content writer's responsibility and is covered by
+		// AttachmentContentWriterTest; here only the delegation and the surrounding persistence matter.
 		final var errandId = 123L;
-		final var content = "test content".getBytes(StandardCharsets.UTF_8);
-		final var expectedHash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(content));
-		final var expectedBase64 = Base64.getEncoder().encodeToString(content);
-		final var blob = new SerialBlob(content);
-		final var file = new MockMultipartFile("file", "document.pdf", "application/pdf", content);
+		final var file = new MockMultipartFile("file", "document.pdf", "application/pdf", "test content".getBytes(StandardCharsets.UTF_8));
 		final var savedEntity = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.POWER_OF_ATTORNEY), MUNICIPALITY_ID, NAMESPACE);
-		savedEntity.setErrandId(errandId);
 		final var errandEntity = TestUtil.createErrandEntity();
 		doReturn(savedEntity).when(attachmentRepositoryMock).save(any(AttachmentEntity.class));
-		when(blobBuilderMock.createBlob(any(byte[].class))).thenReturn(blob);
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errandEntity));
 
@@ -328,95 +316,12 @@ class AttachmentServiceTest {
 
 		// Assert
 		assertEquals(savedEntity, result);
-		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(blobBuilderMock).createBlob(content);
 		verify(attachmentRepositoryMock).save(attachmentArgumentCaptor.capture());
+		verify(contentWriterMock).applyContent(attachmentArgumentCaptor.getValue(), file);
+		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(notificationServiceMock).create(eq(MUNICIPALITY_ID), eq(NAMESPACE), any(), same(errandEntity));
 		verifyNoMoreInteractions(attachmentRepositoryMock);
-		assertThat(attachmentArgumentCaptor.getValue().getContent()).isEqualTo(blob);
-		assertThat(attachmentArgumentCaptor.getValue().getHash()).isEqualTo(expectedHash);
-		assertThat(attachmentArgumentCaptor.getValue().getFile()).isEqualTo(expectedBase64);
-	}
-
-	@Test
-	void createWithBlobWriteMode() throws Exception {
-		// Arrange - BLOB write mode (end state): only the binary 'content' + 'hash' are written, no base64 'file'. The
-		// content must be streamed (hash via DigestInputStream, blob from the input stream) and never fully materialised
-		// via getBytes().
-		ReflectionTestUtils.setField(attachmentService, "writeMode", AttachmentStorageMode.BLOB);
-		final var errandId = 123L;
-		final var content = "test content".getBytes(StandardCharsets.UTF_8);
-		final var expectedHash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(content));
-		final var blob = new SerialBlob(content);
-		final var file = mock(MultipartFile.class);
-		when(file.isEmpty()).thenReturn(false);
-		when(file.getSize()).thenReturn((long) content.length);
-		// A fresh stream per call: pass 1 computes the hash, pass 2 backs the blob.
-		when(file.getInputStream()).thenReturn(new ByteArrayInputStream(content), new ByteArrayInputStream(content));
-		final var savedEntity = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.POWER_OF_ATTORNEY), MUNICIPALITY_ID, NAMESPACE);
-		final var errandEntity = TestUtil.createErrandEntity();
-		doReturn(savedEntity).when(attachmentRepositoryMock).save(any(AttachmentEntity.class));
-		when(blobBuilderMock.createBlob(any(InputStream.class), anyLong())).thenReturn(blob);
-		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
-		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errandEntity));
-
-		// Act
-		attachmentService.create(errandId, createAttachment(AttachmentCategory.ROAD_ALLOWANCE_APPROVAL), file, MUNICIPALITY_ID, NAMESPACE);
-
-		// Assert
-		verify(blobBuilderMock).createBlob(any(InputStream.class), eq((long) content.length));
-		verify(file, never()).getBytes();
-		verify(attachmentRepositoryMock).save(attachmentArgumentCaptor.capture());
-		assertThat(attachmentArgumentCaptor.getValue().getContent()).isEqualTo(blob);
-		assertThat(attachmentArgumentCaptor.getValue().getHash()).isEqualTo(expectedHash);
-		assertThat(attachmentArgumentCaptor.getValue().getFile()).isNull();
-	}
-
-	@Test
-	void createWithBase64WriteMode() {
-		// Arrange - BASE64 write mode (rollback target): only the legacy base64 'file' is written, no blob/hash.
-		ReflectionTestUtils.setField(attachmentService, "writeMode", AttachmentStorageMode.BASE64);
-		final var errandId = 123L;
-		final var content = "test content".getBytes(StandardCharsets.UTF_8);
-		final var expectedBase64 = Base64.getEncoder().encodeToString(content);
-		final var file = new MockMultipartFile("file", "document.pdf", "application/pdf", content);
-		final var savedEntity = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.POWER_OF_ATTORNEY), MUNICIPALITY_ID, NAMESPACE);
-		final var errandEntity = TestUtil.createErrandEntity();
-		doReturn(savedEntity).when(attachmentRepositoryMock).save(any(AttachmentEntity.class));
-		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
-		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errandEntity));
-
-		// Act
-		attachmentService.create(errandId, createAttachment(AttachmentCategory.ROAD_ALLOWANCE_APPROVAL), file, MUNICIPALITY_ID, NAMESPACE);
-
-		// Assert
-		verify(attachmentRepositoryMock).save(attachmentArgumentCaptor.capture());
-		verifyNoInteractions(blobBuilderMock);
-		assertThat(attachmentArgumentCaptor.getValue().getFile()).isEqualTo(expectedBase64);
-		assertThat(attachmentArgumentCaptor.getValue().getContent()).isNull();
-		assertThat(attachmentArgumentCaptor.getValue().getHash()).isNull();
-	}
-
-	@Test
-	void createWithEmptyFile() {
-		// Arrange - an empty upload leaves all columns unset regardless of write mode.
-		final var errandId = 123L;
-		final var file = new MockMultipartFile("file", "empty.pdf", "application/pdf", new byte[0]);
-		final var savedEntity = toAttachmentEntity(errandId, createAttachment(AttachmentCategory.POWER_OF_ATTORNEY), MUNICIPALITY_ID, NAMESPACE);
-		final var errandEntity = TestUtil.createErrandEntity();
-		doReturn(savedEntity).when(attachmentRepositoryMock).save(any(AttachmentEntity.class));
-		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
-		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errandEntity));
-
-		// Act
-		attachmentService.create(errandId, createAttachment(AttachmentCategory.ROAD_ALLOWANCE_APPROVAL), file, MUNICIPALITY_ID, NAMESPACE);
-
-		// Assert
-		verify(attachmentRepositoryMock).save(attachmentArgumentCaptor.capture());
-		verifyNoInteractions(blobBuilderMock);
-		assertThat(attachmentArgumentCaptor.getValue().getContent()).isNull();
-		assertThat(attachmentArgumentCaptor.getValue().getHash()).isNull();
-		assertThat(attachmentArgumentCaptor.getValue().getFile()).isNull();
+		assertThat(attachmentArgumentCaptor.getValue().getErrandId()).isEqualTo(errandId);
 	}
 
 	@Test
@@ -434,8 +339,9 @@ class AttachmentServiceTest {
 		assertThat(exception)
 			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasFieldOrPropertyWithValue("detail", "Errand with id:'123' not found in namespace:'MY_NAMESPACE' for municipality with id:'2281'");
-		verifyNoInteractions(file, blobBuilderMock, notificationServiceMock);
+		verifyNoInteractions(file, contentWriterMock, notificationServiceMock);
 		verify(errandRepositoryMock).existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(errandRepositoryMock, attachmentRepositoryMock);
 	}
+
 }

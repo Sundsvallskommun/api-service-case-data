@@ -9,11 +9,6 @@ import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 public class ValidAttachmentCategoryConstraintValidator implements ConstraintValidator<ValidAttachmentCategory, String> {
 
 	@Override
-	public void initialize(final ValidAttachmentCategory constraintAnnotation) {
-		ConstraintValidator.super.initialize(constraintAnnotation);
-	}
-
-	@Override
 	public boolean isValid(final String value, final ConstraintValidatorContext context) {
 		if (value == null || value.isEmpty()) {
 			context.disableDefaultConstraintViolation();

@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 	"spring.flyway.enabled=true",
 	"scheduler.attachment-migration.enabled=true",
 	"spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
-	"spring.datasource.url=jdbc:tc:mariadb:10.6.4:////",
+	"spring.datasource.url=jdbc:tc:mariadb:10.6:///shedlock?TC_TMPFS=/var/lib/mysql:rw",
 	"server.shutdown=immediate",
 	"spring.lifecycle.timeout-per-shutdown-phase=0s"
 })

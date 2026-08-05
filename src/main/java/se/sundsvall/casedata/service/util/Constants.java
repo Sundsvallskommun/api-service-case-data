@@ -6,6 +6,8 @@ public final class Constants {
 	public static final String ERRAND_ENTITY_NOT_FOUND = "Errand with id:'%s' not found in namespace:'%s' for municipality with id:'%s'";
 
 	public static final String ATTACHMENT_ENTITY_NOT_FOUND = "Attachment with id:'%s' not found on errand with id:'%s' in namespace:'%s' for municipality with id:'%s'";
+	public static final String DECISION_ATTACHMENT_ENTITY_NOT_FOUND = "Attachment with id:'%s' not found on decision with id:'%s' in namespace:'%s' for municipality with id:'%s'";
+	public static final String DECISION_WITH_ID_X_WAS_NOT_FOUND_ON_ERRAND_WITH_ID_X = "Decision with id: %s was not found on errand with id: %s";
 
 	public static final String MESSAGE_ENTITY_NOT_FOUND = "Message with id:'%s' not found in namespace:'%s' for municipality with id:'%s'";
 	public static final String MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND = "MessageAttachment with id:'%s' not found in namespace:'%s' for municipality with id:'%s'";
@@ -28,11 +30,18 @@ public final class Constants {
 	public static final String X_JWT_ASSERTION_HEADER_KEY = "x-jwt-assertion";
 	public static final List<String> CAMUNDA_USERS = List.of("WSO2_Camunda", "WSO2_MS_PwParatransit");
 
+	public static final String NOTIFICATION_UPDATE_TYPE = "UPDATE";
 	public static final String NOTIFICATION_ERRAND_UPDATED = "Ärende uppdaterat";
 	public static final String NOTIFICATION_NOTE_CREATED = "Notering skapad";
 	public static final String NOTIFICATION_NOTE_UPDATED = "Notering uppdaterad";
 	public static final String NOTIFICATION_DECISION_CREATED = "Beslut skapat";
 	public static final String NOTIFICATION_DECISION_UPDATED = "Beslut uppdaterat";
+	public static final String NOTIFICATION_ATTACHMENT_CREATED = "En bilaga har lagts till i ärendet.";
+	public static final String NOTIFICATION_ATTACHMENT_UPDATED = "En bilaga har uppdaterats i ärendet.";
+	public static final String NOTIFICATION_ATTACHMENT_DELETED = "En bilaga har tagits bort från ärendet.";
+	public static final String NOTIFICATION_DECISION_ATTACHMENT_CREATED = "En bilaga har lagts till i ett beslut i ärendet.";
+	public static final String NOTIFICATION_DECISION_ATTACHMENT_UPDATED = "En bilaga har uppdaterats i ett beslut i ärendet.";
+	public static final String NOTIFICATION_DECISION_ATTACHMENT_DELETED = "En bilaga har tagits bort från ett beslut i ärendet.";
 
 	public static final List<String> PARKIKNG_PERMIT_CASE_TYPES = List.of(
 		"PARKING_PERMIT",

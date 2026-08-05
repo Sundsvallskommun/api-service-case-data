@@ -15,7 +15,6 @@ public class ValidFacilityTypeConstraintValidator implements ConstraintValidator
 	@Override
 	public void initialize(final ValidFacilityType constraintAnnotation) {
 		this.nullable = constraintAnnotation.nullable();
-		ConstraintValidator.super.initialize(constraintAnnotation);
 	}
 
 	@Override

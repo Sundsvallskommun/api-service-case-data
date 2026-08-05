@@ -9,6 +9,7 @@ import se.sundsvall.casedata.api.model.Errand;
 import se.sundsvall.casedata.api.model.Stakeholder;
 import se.sundsvall.casedata.api.model.validation.enums.AttachmentCategory;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.AddressCategory;
@@ -484,7 +485,8 @@ class EntityMapperTest {
 		final var attachment = toAttachmentEntity(errandId, attachmentDto, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
-		assertThat(attachment).hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "file", "content", "hash").satisfies(a -> {
+		// decisionId is not mapped here - it is owned by the decision and only set when an attachment is saved through one.
+		assertThat(attachment).hasNoNullFieldsOrPropertiesExcept("id", "created", "updated", "file", "content", "hash", "decisionId").satisfies(a -> {
 			assertThat(a.getErrandId()).isEqualTo(errandId);
 			assertThat(a.getCategory()).isEqualTo(attachmentDto.getCategory());
 			assertThat(a.getVersion()).isEqualTo(attachmentDto.getVersion());
@@ -500,7 +502,8 @@ class EntityMapperTest {
 		final var attachmentDto = toAttachment(attachment);
 
 		// Assert
-		assertThat(attachmentDto).hasNoNullFieldsOrProperties().satisfies(a -> {
+		assertThat(attachmentDto).hasNoNullFieldsOrPropertiesExcept("decisionId").satisfies(a -> {
+			assertThat(a.getDecisionId()).isNull();
 			assertThat(a.getCategory()).isEqualTo(attachment.getCategory());
 			assertThat(a.getCreated()).isEqualTo(attachment.getCreated());
 			assertThat(a.getUpdated()).isEqualTo(attachment.getUpdated());
@@ -510,6 +513,40 @@ class EntityMapperTest {
 			assertThat(a.getNamespace()).isEqualTo(attachment.getNamespace());
 			assertThat(a.getHash()).isEqualTo(attachment.getHash());
 		});
+	}
+
+	@Test
+	void toAttachmentMapsDecisionId() {
+		// Arrange - an attachment owned by a decision carries the decision id and no errand id. The decision id is written
+		// by the decision's collection, so it can only be set here through the builder.
+		final var attachment = AttachmentEntity.builder()
+			.withId(1L)
+			.withDecisionId(456L)
+			.withName("decision.pdf")
+			.build();
+
+		// Act
+		final var attachmentDto = toAttachment(attachment);
+
+		// Assert
+		assertThat(attachmentDto.getDecisionId()).isEqualTo(456L);
+		assertThat(attachmentDto.getErrandId()).isNull();
+	}
+
+	@Test
+	void toDecisionEntityIgnoresAttachments() {
+		// Arrange - attachments can only be created through the decision attachment endpoints, since that is the only way
+		// to supply the binary content.
+		final var decisionDto = createDecision();
+		final var errandEntity = createErrandEntity();
+
+		assertThat(decisionDto.getAttachments()).isNotEmpty();
+
+		// Act
+		final var decision = toDecisionEntity(decisionDto, errandEntity, MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert
+		assertThat(decision.getAttachments()).isEmpty();
 	}
 
 	@Test

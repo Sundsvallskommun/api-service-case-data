@@ -10,10 +10,10 @@ import org.mariadb.jdbc.MariaDbBlob;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
-import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEqualsExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCodeExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToStringExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSettersExcluding;
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static java.time.OffsetDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,12 +28,14 @@ class AttachmentEntityTest {
 
 	@Test
 	void testBean() {
+		// decisionId is excluded throughout because it is deliberately read-only - the foreign key is owned by the
+		// decision's attachment collection - and these matchers need a setter to exercise a property.
 		MatcherAssert.assertThat(AttachmentEntity.class, allOf(
 			hasValidBeanConstructor(),
-			hasValidGettersAndSetters(),
-			hasValidBeanHashCode(),
-			hasValidBeanEquals(),
-			hasValidBeanToString()));
+			hasValidGettersAndSettersExcluding("decisionId"),
+			hasValidBeanHashCodeExcluding("decisionId"),
+			hasValidBeanEqualsExcluding("decisionId"),
+			hasValidBeanToStringExcluding("decisionId")));
 	}
 
 	@Test
@@ -50,6 +52,7 @@ class AttachmentEntityTest {
 		final var content = new MariaDbBlob("content".getBytes());
 		final var hash = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08";
 		final var errandId = 123L;
+		final var decisionId = 456L;
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
 		final var created = now();
@@ -69,6 +72,7 @@ class AttachmentEntityTest {
 			.withContent(content)
 			.withHash(hash)
 			.withErrandId(errandId)
+			.withDecisionId(decisionId)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.withCreated(created)
@@ -89,6 +93,7 @@ class AttachmentEntityTest {
 		assertThat(bean.getContent()).isEqualTo(content);
 		assertThat(bean.getHash()).isEqualTo(hash);
 		assertThat(bean.getErrandId()).isEqualTo(errandId);
+		assertThat(bean.getDecisionId()).isEqualTo(decisionId);
 		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getNamespace()).isEqualTo(namespace);
 		assertThat(bean.getCreated()).isEqualTo(created);

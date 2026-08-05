@@ -17,7 +17,6 @@ public class ValidMapValueSizeValidator implements ConstraintValidator<ValidMapV
 	public void initialize(final ValidMapValueSize constraintAnnotation) {
 		max = constraintAnnotation.max();
 		nullable = constraintAnnotation.nullable();
-		ConstraintValidator.super.initialize(constraintAnnotation);
 	}
 
 	@Override

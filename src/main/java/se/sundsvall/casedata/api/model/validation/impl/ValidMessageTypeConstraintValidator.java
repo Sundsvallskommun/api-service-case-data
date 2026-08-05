@@ -15,7 +15,6 @@ public class ValidMessageTypeConstraintValidator implements ConstraintValidator<
 	@Override
 	public void initialize(final ValidMessageType constraintAnnotation) {
 		this.nullable = constraintAnnotation.nullable();
-		ConstraintValidator.super.initialize(constraintAnnotation);
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import se.sundsvall.casedata.service.DecisionService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -92,6 +93,7 @@ class DecisionResourceTest {
 		final var decisionId = 456L;
 		final var body = TestUtil.createDecision();
 		body.setId(decisionId);
+		body.setAttachments(null);
 		when(decisionServiceMock.addToErrand(errandId, MUNICIPALITY_ID, NAMESPACE, body)).thenReturn(body);
 
 		// Act
@@ -133,6 +135,7 @@ class DecisionResourceTest {
 		final var decisionId = 456L;
 		final var body = TestUtil.createDecision();
 		body.setId(decisionId);
+		body.setAttachments(null);
 
 		// Act
 		webTestClient.put()
@@ -144,6 +147,47 @@ class DecisionResourceTest {
 
 		// Assert
 		verify(decisionServiceMock).replaceOnErrand(errandId, decisionId, MUNICIPALITY_ID, NAMESPACE, body);
+	}
+
+	@Test
+	void createDecisionWithAttachmentsIsRejected() {
+		// Arrange - attachments can only be created through the decision attachment endpoints, since that is the only way
+		// to supply the binary content. Sending them here must not be silently discarded.
+		final var errandId = 123L;
+		final var body = TestUtil.createDecision();
+
+		// Act
+		webTestClient.patch()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/decisions").build(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody()
+			.jsonPath("$.title").isEqualTo("Bad Request")
+			.jsonPath("$.detail").<String>value(detail -> assertThat(detail).startsWith("The 'attachments' field is read-only."));
+
+		// Assert
+		verifyNoInteractions(decisionServiceMock);
+	}
+
+	@Test
+	void putDecisionWithAttachmentsIsRejected() {
+		// Arrange
+		final var errandId = 123L;
+		final var decisionId = 456L;
+		final var body = TestUtil.createDecision();
+
+		// Act
+		webTestClient.put()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/{errandId}/decisions/{decisionId}").build(MUNICIPALITY_ID, NAMESPACE, errandId, decisionId))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest();
+
+		// Assert
+		verifyNoInteractions(decisionServiceMock);
 	}
 
 	@Test

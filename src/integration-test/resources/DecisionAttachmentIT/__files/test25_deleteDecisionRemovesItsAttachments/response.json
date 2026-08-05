@@ -1,0 +1,18 @@
+[
+	{
+		"note": "NOTE-3",
+		"municipalityId": "2281",
+		"extension": ".png",
+		"errandId": 1,
+		"created": "2022-12-02T15:13:45.363+01:00",
+		"extraParameters": {},
+		"mimeType": "image/png",
+		"version": 1,
+		"namespace": "MY_NAMESPACE",
+		"name": "errand_image.png",
+		"id": 3,
+		"hash": "429e40fd4fee7d2533ebef54d5d442c8f12adb10b63fe5c7a81cc78914c6f795",
+		"category": "PASSPORT_PHOTO",
+		"updated": "2022-12-02T15:15:01.563+01:00"
+	}
+]

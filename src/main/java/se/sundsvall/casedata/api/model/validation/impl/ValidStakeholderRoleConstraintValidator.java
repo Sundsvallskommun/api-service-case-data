@@ -10,11 +10,6 @@ import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 public class ValidStakeholderRoleConstraintValidator implements ConstraintValidator<ValidStakeholderRole, List<String>> {
 
 	@Override
-	public void initialize(final ValidStakeholderRole constraintAnnotation) {
-		ConstraintValidator.super.initialize(constraintAnnotation);
-	}
-
-	@Override
 	public boolean isValid(final List<String> value, final ConstraintValidatorContext context) {
 		if ((value == null) || value.isEmpty()) {
 			context.disableDefaultConstraintViolation();

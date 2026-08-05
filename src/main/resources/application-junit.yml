@@ -23,7 +23,8 @@ spring:
         format_sql: 'true'
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:mariadb:10.6:///junit
+    # See application-it.yml: the database files live in RAM, since nothing in them needs to survive the container.
+    url: jdbc:tc:mariadb:10.6:///junit?TC_TMPFS=/var/lib/mysql:rw
     hikari:
       maximum-pool-size: 2
 

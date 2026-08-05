@@ -1,7 +1,10 @@
 spring:
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:mariadb:10.6:///ittest
+    # TC_TMPFS keeps the database files in RAM instead of on the container's (WSL2/overlay backed) volume. The
+    # integration tests reset their data before every test method, so the suite is dominated by writes, and none of the
+    # data needs to survive the container.
+    url: jdbc:tc:mariadb:10.6:///ittest?TC_TMPFS=/var/lib/mysql:rw
     hikari:
       maximum-pool-size: 2
   flyway:

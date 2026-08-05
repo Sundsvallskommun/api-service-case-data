@@ -28,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
@@ -47,11 +48,13 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
+import static se.sundsvall.casedata.TestUtil.createAttachmentEntity;
 import static se.sundsvall.casedata.TestUtil.createErrand;
 import static se.sundsvall.casedata.TestUtil.createErrandEntity;
 import static se.sundsvall.casedata.TestUtil.createPatchErrand;
@@ -71,6 +74,9 @@ class ErrandServiceTest {
 
 	@Mock
 	private ErrandRepository errandRepositoryMock;
+
+	@Mock
+	private AttachmentRepository attachmentRepositoryMock;
 
 	@Mock
 	private ProcessService processServiceMock;
@@ -164,16 +170,20 @@ class ErrandServiceTest {
 	@Test
 	void delete() {
 
-		// Arrange
+		// Arrange - the errand's own attachments have no foreign key and no mapped relation on the errand, so they have to
+		// be deleted explicitly or they are left behind as rows no endpoint can reach.
 		final var id = 1L;
 		final var entity = createErrandEntity();
+		final var attachments = List.of(createAttachmentEntity());
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(entity));
+		when(attachmentRepositoryMock.findAllByErrandIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE)).thenReturn(attachments);
 
 		// Act
 		errandService.delete(id, MUNICIPALITY_ID, NAMESPACE);
 
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
+		verify(attachmentRepositoryMock).deleteAll(attachments);
 		verify(errandRepositoryMock).delete(entity);
 	}
 
@@ -193,6 +203,7 @@ class ErrandServiceTest {
 
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(id, MUNICIPALITY_ID, NAMESPACE);
 		verify(errandRepositoryMock, never()).delete(any(ErrandEntity.class));
+		verifyNoInteractions(attachmentRepositoryMock);
 	}
 
 	@Test

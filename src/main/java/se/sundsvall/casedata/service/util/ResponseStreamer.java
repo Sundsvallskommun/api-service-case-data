@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 import org.springframework.util.StreamUtils;
+import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.problem.ThrowableProblem;
 
@@ -21,6 +22,20 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public final class ResponseStreamer {
 
 	private ResponseStreamer() {}
+
+	/**
+	 * Streams an attachment's content, preferring the binary blob and falling back to decoding the legacy base64 column
+	 * for rows not yet migrated. The id is supplied by the caller rather than read from the entity, so a failure is
+	 * reported against the id the request asked for.
+	 */
+	public static void streamAttachment(final HttpServletResponse response, final AttachmentEntity attachmentEntity, final Long attachmentId) {
+		final var blob = attachmentEntity.getContent();
+		if (blob != null) {
+			streamBlob(response, attachmentEntity.getName(), attachmentEntity.getMimeType(), blob, attachmentId);
+		} else {
+			streamBytes(response, attachmentEntity.getName(), attachmentEntity.getMimeType(), AttachmentContents.decodeBase64(attachmentEntity.getFile(), attachmentId), attachmentId);
+		}
+	}
 
 	/**
 	 * Streams the content of a {@link Blob}. The headers are written before the blob is touched, so a failure while

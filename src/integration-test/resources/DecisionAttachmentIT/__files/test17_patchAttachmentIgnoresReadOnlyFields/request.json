@@ -1,0 +1,12 @@
+{
+	"id": 999,
+	"version": 42,
+	"errandId": 999,
+	"decisionId": 999,
+	"municipalityId": "2262",
+	"namespace": "OTHER_NAMESPACE",
+	"hash": "0000000000000000000000000000000000000000000000000000000000000000",
+	"created": "2000-01-01T00:00:00.000+01:00",
+	"note": "Read-only fields must be ignored",
+	"category": "SIGNATURE"
+}

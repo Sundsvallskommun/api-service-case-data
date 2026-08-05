@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.api.model.Errand;
 import se.sundsvall.casedata.api.model.Notification;
 import se.sundsvall.casedata.api.model.PatchErrand;
+import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.eventlog.EventlogIntegration;
@@ -51,6 +52,7 @@ public class ErrandService {
 	private static final String REFERRED_FROM_RESOURCE_IDENTIFIER_SERVICE = "casedata";
 
 	private final ErrandRepository errandRepository;
+	private final AttachmentRepository attachmentRepository;
 	private final ProcessService processService;
 	private final NotificationService notificationService;
 	private final ApplicationEventPublisher applicationEventPublisher;
@@ -58,12 +60,14 @@ public class ErrandService {
 	private final RelationClient relationClient;
 
 	public ErrandService(final ErrandRepository errandRepository,
+		final AttachmentRepository attachmentRepository,
 		final ProcessService processService,
 		final NotificationService notificationService,
 		final ApplicationEventPublisher applicationEventPublisher,
 		final EventlogIntegration eventlogIntegration,
 		final RelationClient relationClient) {
 		this.errandRepository = errandRepository;
+		this.attachmentRepository = attachmentRepository;
 		this.processService = processService;
 		this.notificationService = notificationService;
 		this.applicationEventPublisher = applicationEventPublisher;
@@ -143,7 +147,15 @@ public class ErrandService {
 	}
 
 	public void delete(final Long errandId, final String municipalityId, final String namespace) {
-		errandRepository.delete(findErrandEntity(errandId, municipalityId, namespace));
+		final var errandEntity = findErrandEntity(errandId, municipalityId, namespace);
+
+		// The errand's own attachments are linked by a plain errand_id column, with neither a foreign key nor a mapped
+		// relation on the errand, so they are not removed along with it and would be left behind as rows no endpoint can
+		// reach. Deleting them one by one rather than with a bulk query keeps them in the JaVers history. Attachments
+		// belonging to the errand's decisions are handled by the cascade from the decision itself.
+		attachmentRepository.deleteAll(attachmentRepository.findAllByErrandIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace));
+
+		errandRepository.delete(errandEntity);
 	}
 
 	private ErrandEntity findErrandEntity(final Long errandId, final String municipalityId, final String namespace) {
