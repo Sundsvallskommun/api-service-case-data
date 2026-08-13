@@ -24,16 +24,16 @@ public final class ResponseStreamer {
 	private ResponseStreamer() {}
 
 	/**
-	 * Streams an attachment's content, preferring the binary blob and falling back to decoding the legacy base64 column
-	 * for rows not yet migrated. The id is supplied by the caller rather than read from the entity, so a failure is
-	 * reported against the id the request asked for.
+	 * Streams an attachment's binary content. An attachment stored without content is served as an empty body. The id is
+	 * supplied by the caller rather than read from the entity, so a failure is reported against the id the request asked
+	 * for.
 	 */
 	public static void streamAttachment(final HttpServletResponse response, final AttachmentEntity attachmentEntity, final Long attachmentId) {
 		final var blob = attachmentEntity.getContent();
 		if (blob != null) {
 			streamBlob(response, attachmentEntity.getName(), attachmentEntity.getMimeType(), blob, attachmentId);
 		} else {
-			streamBytes(response, attachmentEntity.getName(), attachmentEntity.getMimeType(), AttachmentContents.decodeBase64(attachmentEntity.getFile(), attachmentId), attachmentId);
+			streamBytes(response, attachmentEntity.getName(), attachmentEntity.getMimeType(), new byte[0], attachmentId);
 		}
 	}
 
@@ -54,7 +54,7 @@ public final class ResponseStreamer {
 	}
 
 	/**
-	 * Streams already-materialised bytes (e.g. legacy base64 content decoded in memory).
+	 * Streams already-materialised bytes.
 	 */
 	public static void streamBytes(final HttpServletResponse response, final String fileName, final String mimeType, final byte[] content, final Object attachmentId) {
 		try (final InputStream in = new ByteArrayInputStream(content)) {

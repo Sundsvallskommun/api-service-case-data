@@ -105,7 +105,6 @@ class AttachmentRepositoryTest {
 		assertThat(result.getCategory()).isEqualTo("MEDICAL_CONFIRMATION");
 		assertThat(result.getErrandId()).isEqualTo(errandId);
 		assertThat(result.getExtension()).isEqualTo(".pdf");
-		assertThat(result.getFile()).isEqualTo("FILE-1");
 		assertThat(result.getId()).isEqualTo(id);
 		assertThat(result.getMimeType()).isEqualTo("application/pdf");
 		assertThat(result.getName()).isEqualTo("test1.pdf");
@@ -138,7 +137,6 @@ class AttachmentRepositoryTest {
 		final var note = "note";
 		final var extension = ".pdf";
 		final var mimeType = "application/pdf";
-		final var file = "file";
 		final var errandId = 3L;
 		final var municipalityId = "2281";
 		final var extraParameters = Map.of("key", "value");
@@ -151,7 +149,6 @@ class AttachmentRepositoryTest {
 			.withExtension(extension)
 			.withErrandId(errandId)
 			.withMimeType(mimeType)
-			.withFile(file)
 			.withExtraParameters(extraParameters)
 			.build();
 
@@ -165,7 +162,6 @@ class AttachmentRepositoryTest {
 		assertThat(result.getErrandId()).isEqualTo(errandId);
 		assertThat(result.getExtension()).isEqualTo(extension);
 		assertThat(result.getExtraParameters()).isEqualTo(extraParameters);
-		assertThat(result.getFile()).isEqualTo(file);
 		assertThat(result.getId()).isPositive();
 		assertThat(result.getMimeType()).isEqualTo(mimeType);
 		assertThat(result.getName()).isEqualTo(name);

@@ -8,6 +8,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
@@ -26,30 +27,29 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 /**
- * Exercises the end-state storage mode of the base64-to-binary migration (DRAKEN-4446), where an upload is written
- * only as a binary blob and its SHA-256 hash - the legacy base64 {@code file} column is left untouched.
+ * Exercises how an uploaded attachment is persisted - as a binary blob plus its SHA-256 hash - and that it can be read
+ * back out again unchanged.
  *
  * <p>
- * This mode takes a different code path than the default {@code DUAL} mode covered by {@link AttachmentIT}: the
- * content is never materialised as a {@code byte[]}, it is streamed twice from the (temp-file backed) upload, once
- * through a {@code DigestInputStream} for the hash and once lazily by the JDBC driver when the blob is flushed. That
- * double read cannot be proven with a mocked {@code MultipartFile}, which is why it is verified here against a real
- * servlet container and a real database.
+ * On the way in the content is never materialised as a {@code byte[]}; it is streamed twice from the (temp-file backed)
+ * upload, once through a {@code DigestInputStream} for the hash and once lazily by the JDBC driver when the blob is
+ * flushed. That double read cannot be proven with a mocked {@code MultipartFile}, which is why it is verified here
+ * against a real servlet container and a real database. Both tests then download the attachment again and compare it
+ * byte for byte with what was uploaded, so a write that stores the wrong bytes and a read that returns them wrongly are
+ * both caught.
  */
-@WireMockAppTestSuite(files = "classpath:/AttachmentBlobWriteModeIT", classes = Application.class)
-@TestPropertySource(properties = "attachment.storage.write-mode=BLOB")
+@WireMockAppTestSuite(files = "classpath:/AttachmentBinaryStorageIT", classes = Application.class)
 @Sql({
 	"/db/scripts/truncate.sql",
 	"/db/scripts/attachmentIT-testdata.sql"
 })
-class AttachmentBlobWriteModeIT extends AbstractAppTest {
+class AttachmentBinaryStorageIT extends AbstractAppTest {
 
 	private static final Long ERRAND_ID = 4L;
 	private static final String ATTACHMENTS_PATH = "/{0}/{1}/errands/{2}/attachments";
@@ -57,7 +57,7 @@ class AttachmentBlobWriteModeIT extends AbstractAppTest {
 
 	// Precomputed SHA-256 of the shared test image, the same value the test data SQL stores for the fixture rows.
 	private static final String TEST_IMAGE_HASH = "429e40fd4fee7d2533ebef54d5d442c8f12adb10b63fe5c7a81cc78914c6f795";
-	private static final String TEST_IMAGE_RESOURCE = "/AttachmentBlobWriteModeIT/__files/test01_createAttachmentWritesBlobOnly/test_image.png";
+	private static final String TEST_IMAGE_RESOURCE = "/AttachmentBinaryStorageIT/__files/test01_createAttachmentStoresBlobAndHash/test_image.png";
 
 	// Large enough that the digest is fed in many chunks rather than a single read, but deliberately below the test
 	// database's max_allowed_packet (1 MiB by default in the Testcontainers image). A blob write that exceeds that
@@ -72,7 +72,7 @@ class AttachmentBlobWriteModeIT extends AbstractAppTest {
 	private JdbcTemplate jdbcTemplate;
 
 	@Test
-	void test01_createAttachmentWritesBlobOnly() throws IOException {
+	void test01_createAttachmentStoresBlobAndHash() throws IOException {
 		final var location = setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(format(ATTACHMENTS_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
@@ -94,7 +94,7 @@ class AttachmentBlobWriteModeIT extends AbstractAppTest {
 			.withExpectedBinaryResponse("test_image.png")
 			.sendRequest();
 
-		assertStoredAsBlobOnly(attachmentIdFrom(location), sizeOfClasspathFile(TEST_IMAGE_RESOURCE), TEST_IMAGE_HASH);
+		assertStoredAsBlob(attachmentIdFrom(location), sizeOfClasspathFile(TEST_IMAGE_RESOURCE), TEST_IMAGE_HASH);
 	}
 
 	@Test
@@ -116,22 +116,32 @@ class AttachmentBlobWriteModeIT extends AbstractAppTest {
 			.sendRequest()
 			.getResponseHeaders().get(LOCATION).getFirst();
 
-		assertStoredAsBlobOnly(attachmentIdFrom(location), content.length, sha256Hex(content));
+		// The content survives the round trip and comes back byte for byte, so the streamed write and the streamed read
+		// agree at a size where the blob is copied in several chunks. The expected content is generated at runtime
+		// rather than committed as a fixture, so the download goes through the rest template instead of
+		// withExpectedBinaryResponse (which reads its expectation from __files).
+		final var downloaded = restTemplate.getForEntity(location, byte[].class);
+
+		assertThat(downloaded.getStatusCode()).isEqualTo(OK);
+		assertThat(downloaded.getHeaders().getFirst(CONTENT_TYPE)).isEqualTo(APPLICATION_OCTET_STREAM_VALUE);
+		assertThat(downloaded.getHeaders().getContentLength()).as("streamed content length").isEqualTo(content.length);
+		assertThat(downloaded.getBody()).as("downloaded content").isEqualTo(content);
+
+		assertStoredAsBlob(attachmentIdFrom(location), content.length, sha256Hex(content));
 	}
 
 	/**
-	 * Asserts that the row holds the content as a binary blob only, and that the hash the application computed while
+	 * Asserts that the row holds the content as a binary blob, and that the hash the application computed while
 	 * streaming the upload describes exactly the bytes that ended up in the database. The hash is cross-checked
 	 * against MariaDB's own digest of the stored blob, so a silently truncated or re-encoded write cannot pass.
 	 */
-	private void assertStoredAsBlobOnly(final long attachmentId, final long expectedSize, final String expectedHash) {
+	private void assertStoredAsBlob(final long attachmentId, final long expectedSize, final String expectedHash) {
 		final var row = jdbcTemplate.queryForMap("""
-			select file, octet_length(content) as content_length, hash, lower(sha2(content, 256)) as database_hash
+			select octet_length(content) as content_length, hash, lower(sha2(content, 256)) as database_hash
 			from attachment
 			where id = ?
 			""", attachmentId);
 
-		assertThat(row.get("file")).as("the legacy base64 column must not be written in BLOB mode").isNull();
 		assertThat(((Number) row.get("content_length")).longValue()).as("stored blob size").isEqualTo(expectedSize);
 		assertThat(row.get("hash")).as("hash computed by the application").isEqualTo(expectedHash);
 		assertThat(row.get("database_hash")).as("hash computed by MariaDB over the stored blob").isEqualTo(expectedHash);

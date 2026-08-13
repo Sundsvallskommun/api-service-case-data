@@ -27,6 +27,7 @@ import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
+import se.sundsvall.casedata.service.AttachmentContentWriter;
 import se.sundsvall.casedata.service.NotificationService;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
@@ -61,6 +62,9 @@ class EmailReaderWorkerTest {
 
 	@Mock
 	private MessageMapper messageMapperMock;
+
+	@Mock
+	private AttachmentContentWriter attachmentContentWriterMock;
 
 	@Mock
 	private MessageAttachmentRepository messageAttachmentRepositoryMock;
@@ -386,12 +390,12 @@ class EmailReaderWorkerTest {
 
 		when(emailReaderClientMock.getAttachment(any(), any())).thenReturn(data);
 		when(messageMapperMock.toMessageAttachmentData(data)).thenReturn(MessageAttachmentDataEntity.builder().build());
-		when(messageMapperMock.toContentString(data)).thenReturn("someContentString");
 
 		// Act
 		emailReaderWorker.processAttachmentData(1L, messageAttachment, attachmentEntity);
 
 		// Assert
+		verify(attachmentContentWriterMock).applyContent(attachmentEntity, data);
 		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachment);
 		verify(attachmentRepositoryMock).saveAndFlush(attachmentEntity);
 		verifyNoMoreInteractions(messageAttachmentRepositoryMock, attachmentRepositoryMock);

@@ -25,14 +25,15 @@ VALUES (1, 1, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', '2024-01-01 
         '2024-01-01 12:00:00.000', '2025-01-01 12:00:00.000', 'Decision on errand 2', 'APPROVAL',
         'FINAL', '2281', 'MY_NAMESPACE');
 
--- Attachments 1 and 2 are owned by decision 1 (no errand id). Attachment 1 is blob-stored, attachment 2 is legacy base64.
-INSERT INTO attachment (id, created, updated, version, category, extension, file, content, hash,
+-- Attachments 1 and 2 are owned by decision 1 (no errand id).
+INSERT INTO attachment (id, created, updated, version, category, extension, content, hash,
                         mime_type, name, note, errand_id, decision_id, municipality_id, namespace)
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'MEDICAL_CONFIRMATION', '.png',
-        NULL, FROM_BASE64(@png), '429e40fd4fee7d2533ebef54d5d442c8f12adb10b63fe5c7a81cc78914c6f795',
+        FROM_BASE64(@png), '429e40fd4fee7d2533ebef54d5d442c8f12adb10b63fe5c7a81cc78914c6f795',
         'image/png', 'decision_image.png', 'NOTE-1', NULL, 1, '2281', 'MY_NAMESPACE'),
        (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'POLICE_REPORT', '.png',
-        @png, NULL, NULL, 'image/png', 'decision_legacy.png', 'NOTE-2', NULL, 1, '2281', 'MY_NAMESPACE'),
+        FROM_BASE64(@png), '429e40fd4fee7d2533ebef54d5d442c8f12adb10b63fe5c7a81cc78914c6f795',
+        'image/png', 'decision_image_2.png', 'NOTE-2', NULL, 1, '2281', 'MY_NAMESPACE'),
        (3, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'PASSPORT_PHOTO', '.png',
-        NULL, FROM_BASE64(@png), '429e40fd4fee7d2533ebef54d5d442c8f12adb10b63fe5c7a81cc78914c6f795',
+        FROM_BASE64(@png), '429e40fd4fee7d2533ebef54d5d442c8f12adb10b63fe5c7a81cc78914c6f795',
         'image/png', 'errand_image.png', 'NOTE-3', 1, NULL, '2281', 'MY_NAMESPACE');

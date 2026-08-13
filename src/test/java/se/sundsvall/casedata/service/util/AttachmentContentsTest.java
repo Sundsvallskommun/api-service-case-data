@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.security.MessageDigest;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.Base64;
 import java.util.HexFormat;
 import javax.sql.rowset.serial.SerialBlob;
 import org.junit.jupiter.api.Test;
@@ -21,21 +20,10 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 class AttachmentContentsTest {
 
 	@Test
-	void toBytesPrefersBinaryContent() throws SQLException {
+	void toBytesReadsBinaryContent() throws SQLException {
 		final var content = "binary content".getBytes(UTF_8);
 		final var entity = AttachmentEntity.builder()
 			.withContent(new SerialBlob(content))
-			.withFile("should-be-ignored")
-			.build();
-
-		assertThat(AttachmentContents.toBytes(entity)).isEqualTo(content);
-	}
-
-	@Test
-	void toBytesFallsBackToLegacyBase64() {
-		final var content = "legacy content".getBytes(UTF_8);
-		final var entity = AttachmentEntity.builder()
-			.withFile(Base64.getEncoder().encodeToString(content))
 			.build();
 
 		assertThat(AttachmentContents.toBytes(entity)).isEqualTo(content);
@@ -56,20 +44,6 @@ class AttachmentContentsTest {
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", INTERNAL_SERVER_ERROR)
 			.hasMessageContaining("attachment with id '42'");
-	}
-
-	@Test
-	void decodeBase64WithNullOrBlankYieldsEmpty() {
-		assertThat(AttachmentContents.decodeBase64(null, 1L)).isEmpty();
-		assertThat(AttachmentContents.decodeBase64("   ", 1L)).isEmpty();
-	}
-
-	@Test
-	void decodeBase64WithMalformedContentThrows() {
-		assertThatThrownBy(() -> AttachmentContents.decodeBase64("not valid base64 @@@", 7L))
-			.isInstanceOf(ThrowableProblem.class)
-			.hasFieldOrPropertyWithValue("status", INTERNAL_SERVER_ERROR)
-			.hasMessageContaining("Attachment with id '7' has malformed base64 content");
 	}
 
 	private static String referenceHash(final byte[] content) throws Exception {

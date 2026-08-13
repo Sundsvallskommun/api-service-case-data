@@ -8,29 +8,24 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.Base64;
 import java.util.HexFormat;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.dept44.problem.Problem;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
- * Single source of truth for an attachment's raw bytes and their content hash during the base64-to-binary migration.
+ * Single source of truth for an attachment's raw bytes and their content hash.
  *
  * <p>
- * For reading bytes it prefers the binary {@code content} blob and falls back to decoding the legacy base64
- * {@code file}
- * column for rows not yet migrated. Callers that can stream (e.g. the download endpoint) should read the blob directly
- * rather than materialising it via {@link #toBytes(AttachmentEntity)}; that helper exists for the legacy decode and for
- * callers that genuinely need a {@code byte[]} (e.g. building a multipart file).
+ * Content is stored as a binary blob in the {@code attachment.content} column. Callers that can stream (e.g. the
+ * download endpoint) should read the blob directly rather than materialising it via {@link #toBytes(AttachmentEntity)};
+ * that helper exists for callers that genuinely need a {@code byte[]} (e.g. building a multipart file).
  *
  * <p>
- * The {@code sha256Hex} methods compute the SHA-256 content hash identically on every code path (the live upload in
- * {@code AttachmentService} and the base64-to-binary backfill job): the lower-case hex encoding of the SHA-256 digest
- * over the file's raw bytes, which matches MariaDB's {@code lower(sha2(content, 256))} (verified by
- * {@code AttachmentHashConsistencyTest}) so the application- and database-side hashes are interchangeable.
+ * The {@code sha256Hex} methods compute the SHA-256 content hash identically on every code path: the lower-case hex
+ * encoding of the SHA-256 digest over the file's raw bytes, which matches MariaDB's {@code lower(sha2(content, 256))}
+ * (verified by {@code AttachmentHashConsistencyTest}) so the application- and database-side hashes are interchangeable.
  */
 public final class AttachmentContents {
 
@@ -66,30 +61,15 @@ public final class AttachmentContents {
 	}
 
 	/**
-	 * Returns the raw bytes of the attachment, preferring the binary {@code content} blob and falling back to decoding the
-	 * legacy base64 {@code file} column. Materialises the content in memory.
+	 * Returns the raw bytes of the attachment, materialising the {@code content} blob in memory. An attachment stored
+	 * without content yields an empty array.
 	 */
 	public static byte[] toBytes(final AttachmentEntity attachment) {
 		final var blob = attachment.getContent();
-		if (blob != null) {
-			return readBlob(blob, attachment.getId());
-		}
-		return decodeBase64(attachment.getFile(), attachment.getId());
-	}
-
-	/**
-	 * Decodes the legacy base64 {@code file} content. A null or blank value yields an empty array; malformed base64 is
-	 * reported as an internal error referencing the attachment id.
-	 */
-	public static byte[] decodeBase64(final String base64Content, final Object attachmentId) {
-		if (base64Content == null || base64Content.isBlank()) {
+		if (blob == null) {
 			return new byte[0];
 		}
-		try {
-			return Base64.getDecoder().decode(base64Content.getBytes(UTF_8));
-		} catch (final IllegalArgumentException e) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Attachment with id '%s' has malformed base64 content and cannot be read: %s".formatted(attachmentId, e.getMessage()));
-		}
+		return readBlob(blob, attachment.getId());
 	}
 
 	private static byte[] readBlob(final Blob blob, final Object attachmentId) {

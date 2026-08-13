@@ -171,19 +171,6 @@ class AttachmentIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
-	@Test
-	void test11_getAttachmentWithLegacyBase64Content() throws IOException {
-		// Attachment 4 (errand 3) is an un-migrated row: content lives base64-encoded in the legacy 'file' column.
-		// The read path must decode it on the fly and stream the same bytes as a blob-stored attachment.
-		setupCall()
-			.withHttpMethod(GET)
-			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, 3, "4"))
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(IMAGE_PNG_VALUE))
-			.withExpectedBinaryResponse("test_image.png")
-			.sendRequestAndVerifyResponse();
-	}
-
 	// The tenant-scoping tests below send a throwaway 'file' part (content.bin); the binary content is irrelevant to
 	// them, the request is rejected on the errand lookup before the upload is ever read. Pure request validation
 	// (empty/missing file part, unparsable metadata, invalid category) needs no database and lives in

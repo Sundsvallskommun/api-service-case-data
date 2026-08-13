@@ -48,7 +48,6 @@ class AttachmentEntityTest {
 		final var note = "note";
 		final var extension = "extension";
 		final var mimeType = "mimeType";
-		final var file = "file";
 		final var content = new MariaDbBlob("content".getBytes());
 		final var hash = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08";
 		final var errandId = 123L;
@@ -68,7 +67,6 @@ class AttachmentEntityTest {
 			.withNote(note)
 			.withExtension(extension)
 			.withMimeType(mimeType)
-			.withFile(file)
 			.withContent(content)
 			.withHash(hash)
 			.withErrandId(errandId)
@@ -89,7 +87,6 @@ class AttachmentEntityTest {
 		assertThat(bean.getNote()).isEqualTo(note);
 		assertThat(bean.getExtension()).isEqualTo(extension);
 		assertThat(bean.getMimeType()).isEqualTo(mimeType);
-		assertThat(bean.getFile()).isEqualTo(file);
 		assertThat(bean.getContent()).isEqualTo(content);
 		assertThat(bean.getHash()).isEqualTo(hash);
 		assertThat(bean.getErrandId()).isEqualTo(errandId);

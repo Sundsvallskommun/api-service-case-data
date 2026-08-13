@@ -4,7 +4,6 @@ import generated.se.sundsvall.messageexchange.Message;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import javax.sql.rowset.serial.SerialBlob;
@@ -569,13 +568,12 @@ class ConversationMapperTest {
 	}
 
 	@Test
-	void toMultipartFiles() throws IOException {
+	void toMultipartFiles() throws Exception {
 		// Arrange
-		final var base64Content = Base64.getEncoder().encodeToString("test content".getBytes(StandardCharsets.UTF_8));
 		final var entity = AttachmentEntity.builder()
 			.withName("document.pdf")
 			.withMimeType("application/pdf")
-			.withFile(base64Content)
+			.withContent(new SerialBlob("test content".getBytes(StandardCharsets.UTF_8)))
 			.build();
 
 		// Act
@@ -594,24 +592,6 @@ class ConversationMapperTest {
 	}
 
 	@Test
-	void toMultipartFilesPrefersBinaryContent() throws Exception {
-		// Arrange - a migrated row has the binary 'content' blob populated and no legacy base64 'file'.
-		final var content = "test content".getBytes(StandardCharsets.UTF_8);
-		final var entity = AttachmentEntity.builder()
-			.withName("document.pdf")
-			.withMimeType("application/pdf")
-			.withContent(new SerialBlob(content))
-			.build();
-
-		// Act
-		final var result = ConversationMapper.toMultipartFiles(List.of(entity));
-
-		// Assert
-		assertThat(result).hasSize(1);
-		assertThat(result.getFirst().getBytes()).isEqualTo(content);
-	}
-
-	@Test
 	void toMultipartFilesWithNullList() {
 		// Act
 		final var result = ConversationMapper.toMultipartFiles(null);
@@ -626,7 +606,6 @@ class ConversationMapperTest {
 		final var entity = AttachmentEntity.builder()
 			.withName("empty.txt")
 			.withMimeType("text/plain")
-			.withFile(null)
 			.build();
 
 		// Act
