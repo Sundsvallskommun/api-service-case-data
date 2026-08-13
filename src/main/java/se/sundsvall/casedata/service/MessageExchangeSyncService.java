@@ -88,9 +88,7 @@ public class MessageExchangeSyncService {
 	void syncAttachment(final ConversationEntity conversationEntity, final Message message, final generated.se.sundsvall.messageexchange.Attachment attachment) {
 		final var errandId = Long.valueOf(conversationEntity.getErrandId());
 
-		// Attachments referenced via Message.attachmentIds already exist on the errand but are round-tripped through Message
-		// Exchange. Skip storing a duplicate when the errand already has an attachment with the same file name.
-		if (attachmentRepository.existsByErrandIdAndMunicipalityIdAndNamespaceAndName(errandId, conversationEntity.getMunicipalityId(), conversationEntity.getNamespace(), attachment.getFileName())) {
+		if (attachment.getHash() != null && attachmentRepository.existsByErrandIdAndMunicipalityIdAndNamespaceAndHash(errandId, conversationEntity.getMunicipalityId(), conversationEntity.getNamespace(), attachment.getHash())) {
 			return;
 		}
 

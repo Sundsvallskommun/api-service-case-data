@@ -16,7 +16,7 @@ public interface AttachmentRepository extends JpaRepository<AttachmentEntity, Lo
 
 	List<AttachmentEntity> findAllByErrandIdAndMunicipalityIdAndNamespace(final Long errandId, final String municipalityId, final String namespace);
 
-	boolean existsByErrandIdAndMunicipalityIdAndNamespaceAndName(final Long errandId, final String municipalityId, final String namespace, final String name);
+	boolean existsByErrandIdAndMunicipalityIdAndNamespaceAndHash(final Long errandId, final String municipalityId, final String namespace, final String hash);
 
 	Optional<AttachmentEntity> findByIdAndErrandIdAndMunicipalityIdAndNamespace(final Long id, final Long errandId, final String municipalityId, final String namespace);
 

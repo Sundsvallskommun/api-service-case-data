@@ -32,19 +32,19 @@ VALUES (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'APPRO
         NULL, NULL, NULL, 1, '2281', 'MY_NAMESPACE');
 
 INSERT INTO attachment (id, created, updated, version, category, extension, file, mime_type, name,
-                        note, errand_id, decision_id, municipality_id, namespace)
+                        note, errand_id, decision_id, municipality_id, namespace, hash)
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'MEDICAL_CONFIRMATION', '.pdf',
         'FILE-1', 'application/pdf', 'test1.pdf', 'NOTE-1', 1, NULL, '2281',
-        'MY_NAMESPACE'),
+        'MY_NAMESPACE', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
        (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'PASSPORT_PHOTO', '.pdf',
         'FILE-2', 'application/pdf', 'test2.pdf', 'NOTE-2', 2, NULL, '2281',
-        'MY_NAMESPACE'),
+        'MY_NAMESPACE', 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'),
        (3, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'POLICE_REPORT', '.pdf',
         'FILE-3', 'application/pdf', 'test3.pdf', 'NOTE-3', 2, NULL, '2281',
-        'MY_NAMESPACE'),
+        'MY_NAMESPACE', 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'),
        (4, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, 'ANSUPA', '.pdf', 'FILE-4',
         'application/pdf', 'test4.pdf', 'NOTE-4', 2, NULL, '2281',
-        'MY_NAMESPACE');
+        'MY_NAMESPACE', 'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd');
 
 INSERT INTO stakeholder (id, created, updated, version, ad_account, authorized_signatory,
                          first_name, last_name, organization_name, organization_number, person_id,
