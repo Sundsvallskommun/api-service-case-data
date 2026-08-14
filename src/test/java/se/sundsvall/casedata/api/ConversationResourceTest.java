@@ -16,15 +16,19 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
+import se.sundsvall.casedata.api.model.conversation.ConversationReadByCount;
 import se.sundsvall.casedata.api.model.conversation.Identifier;
 import se.sundsvall.casedata.api.model.conversation.KeyValues;
+import se.sundsvall.casedata.api.model.conversation.MarkAsReadRequest;
 import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.service.ConversationService;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -254,5 +258,62 @@ class ConversationResourceTest {
 		verify(conversationServiceMock).getConversationMessageAttachment(any(String.class), any(String.class), any(Long.class), any(String.class), any(String.class), any(String.class), any(HttpServletResponse.class));
 		verifyNoMoreInteractions(conversationServiceMock, conversationServiceMock);
 
+	}
+
+	@Test
+	void markAsRead() {
+
+		// Arrange
+		final var request = MarkAsReadRequest.builder()
+			.withMessageIds(List.of(randomUUID().toString()))
+			.build();
+
+		doNothing().when(conversationServiceMock).markAsRead(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID, request);
+
+		// Act
+		webTestClient.post()
+			.uri(builder -> builder.path(BASE_URL + "/{conversationId}/messages/mark-as-read")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", ERRAND_ID, "conversationId", CONVERSATION_ID)))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(request)
+			.exchange()
+			.expectStatus().isNoContent()
+			.expectHeader().contentType(ALL_VALUE)
+			.expectBody().isEmpty();
+
+		// Assert
+		verify(conversationServiceMock).markAsRead(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID, request);
+		verifyNoMoreInteractions(conversationServiceMock);
+	}
+
+	@Test
+	void countReadBy() {
+
+		// Arrange
+		final var result = List.of(ConversationReadByCount.builder()
+			.withConversationId(CONVERSATION_ID)
+			.withMessageCount(5L)
+			.build());
+
+		when(conversationServiceMock.countReadBy(eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(ERRAND_ID), anyBoolean(), any()))
+			.thenReturn(result);
+
+		// Act
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_URL + "/count-read-by")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "errandId", ERRAND_ID)))
+			.accept(APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON)
+			.expectBodyList(ConversationReadByCount.class)
+			.returnResult();
+
+		// Assert
+		assertThat(response.getResponseBody()).isNotNull().hasSize(1);
+		assertThat(response.getResponseBody().getFirst().getConversationId()).isEqualTo(CONVERSATION_ID);
+
+		verify(conversationServiceMock).countReadBy(MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, false, null);
+		verifyNoMoreInteractions(conversationServiceMock);
 	}
 }

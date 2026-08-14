@@ -6,6 +6,7 @@ import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
@@ -211,6 +212,28 @@ class ConversationIT extends AbstractAppTest {
 			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
 			.withHeader(HEADER_NAME, "type=adAccount; someUser123")
 			.withExpectedResponseStatus(NO_CONTENT)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test12_markAsRead() {
+		setupCall()
+			.withHttpMethod(POST)
+			.withServicePath(format(PATH + "/{3}/messages/mark-as-read", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID))
+			.withContentType(APPLICATION_JSON)
+			.withRequest(REQUEST_FILE)
+			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
+			.withExpectedResponseStatus(NO_CONTENT)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test13_countReadBy() {
+		setupCall()
+			.withHttpMethod(GET)
+			.withServicePath(format(PATH + "/count-read-by", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 }

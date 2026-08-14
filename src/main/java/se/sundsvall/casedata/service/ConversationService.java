@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
+import se.sundsvall.casedata.api.model.conversation.ConversationReadByCount;
+import se.sundsvall.casedata.api.model.conversation.MarkAsReadRequest;
 import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
@@ -40,6 +42,8 @@ import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMe
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessagePage;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMessageRequest;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toMultipartFiles;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toReadByCountList;
+import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.toReadByPartCountList;
 import static se.sundsvall.casedata.service.util.mappers.ConversationMapper.updateConversationEntity;
 
 @Service
@@ -200,6 +204,46 @@ public class ConversationService {
 		}
 		messageExchangeScheduler.triggerSyncConversationsAsync();
 		return toMessagePage(response.getBody());
+	}
+
+	public void markAsRead(final String municipalityId, final String namespace, final Long errandId, final String conversationId, final MarkAsReadRequest request) {
+		final var entity = getConversationEntity(municipalityId, namespace, errandId, conversationId);
+		final var errand = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Errand not found"));
+		final var meRequest = new generated.se.sundsvall.messageexchange.MarkAsReadRequest()
+			.messageIds(request.getMessageIds())
+			.part(errand.getErrandNumber());
+		final var response = messageExchangeClient.markAsRead(municipalityId, messageExchangeNamespace, entity.getMessageExchangeId(), meRequest);
+		if (!response.getStatusCode().is2xxSuccessful()) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to mark messages as read in Message Exchange");
+		}
+	}
+
+	public List<ConversationReadByCount> countReadBy(final String municipalityId, final String namespace, final Long errandId, final boolean includeSystemMessages, final String conversationId) {
+		final List<ConversationEntity> conversations;
+		if (conversationId != null) {
+			conversations = conversationRepository.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, errandId.toString(), conversationId)
+				.map(List::of)
+				.orElse(emptyList());
+		} else {
+			conversations = conversationRepository.findByMunicipalityIdAndNamespaceAndErrandId(municipalityId, namespace, errandId.toString());
+		}
+
+		return conversations.stream()
+			.map(conv -> {
+				final var response = messageExchangeClient.countReadBy(municipalityId, messageExchangeNamespace, conv.getMessageExchangeId(), includeSystemMessages);
+				if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+					throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to retrieve read-by count from Message Exchange");
+				}
+				final var meResult = response.getBody();
+				return ConversationReadByCount.builder()
+					.withConversationId(conv.getId())
+					.withMessageCount(meResult.getMessageCount())
+					.withReadByCount(toReadByCountList(meResult.getReadByCount()))
+					.withReadByPartCount(toReadByPartCountList(meResult.getReadByPartCount()))
+					.build();
+			})
+			.toList();
 	}
 
 	private ConversationEntity getConversationEntity(final String municipalityId, final String namespace, final Long errandId, final String conversationId) {

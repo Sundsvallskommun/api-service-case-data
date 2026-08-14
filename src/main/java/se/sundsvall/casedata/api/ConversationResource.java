@@ -30,10 +30,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
+import se.sundsvall.casedata.api.model.conversation.ConversationReadByCount;
+import se.sundsvall.casedata.api.model.conversation.MarkAsReadRequest;
 import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.service.ConversationService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
@@ -186,6 +189,38 @@ class ConversationResource {
 
 		conversationService.getConversationMessageAttachment(municipalityId, namespace, errandId, conversationId, messageId, attachmentId, response);
 
+	}
+
+	@PostMapping(path = "/{conversationId}/messages/mark-as-read", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@Operation(summary = "Mark messages as read", description = "Mark messages in a conversation as read. The errand number is used as the part identifier sent to Message Exchange.", responses = {
+		@ApiResponse(responseCode = "204", description = "Successful operation", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
+	})
+	ResponseEntity<Void> markAsRead(
+		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "1") @PathVariable("errandId") final Long errandId,
+		@Parameter(name = "conversationId", description = "Conversation ID", example = "1aefbbb8-de82-414b-b5d7-ba7c5bbe4506") @ValidUuid @PathVariable("conversationId") final String conversationId,
+		@Valid @NotNull @RequestBody final MarkAsReadRequest request) {
+
+		conversationService.markAsRead(municipalityId, namespace, errandId, conversationId, request);
+		return noContent()
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
+	}
+
+	@GetMapping(path = "/count-read-by", produces = APPLICATION_JSON_VALUE)
+	@Operation(summary = "Get read-by counts per conversation", description = "Get read-by statistics for all conversations linked to an errand, optionally filtered by conversationId.", responses = {
+		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true),
+	})
+	ResponseEntity<List<ConversationReadByCount>> countReadBy(
+		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
+		@Parameter(name = "errandId", description = "Errand ID", example = "1") @PathVariable("errandId") final Long errandId,
+		@Parameter(name = "includeSystemMessages", description = "Include system-created messages in count", example = "false") @RequestParam(defaultValue = "false") final boolean includeSystemMessages,
+		@Parameter(name = "conversationId", description = "Filter to a specific conversation ID") @RequestParam(required = false) final String conversationId) {
+
+		return ok(conversationService.countReadBy(municipalityId, namespace, errandId, includeSystemMessages, conversationId));
 	}
 
 	private <T> void validate(final T object) {

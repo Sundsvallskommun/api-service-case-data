@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service;
 
 import generated.se.sundsvall.messageexchange.KeyValues;
+import generated.se.sundsvall.messageexchange.ReadByStatistics;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.casedata.api.model.conversation.Conversation;
 import se.sundsvall.casedata.api.model.conversation.ConversationType;
+import se.sundsvall.casedata.api.model.conversation.MarkAsReadRequest;
 import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
 import se.sundsvall.casedata.integration.db.ConversationRepository;
@@ -971,5 +973,235 @@ class ConversationServiceTest {
 
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(messageExchangeClientMock).readErrandAttachment(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId, messageId, attachmentId);
+	}
+
+	@Test
+	void markAsRead() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "conversationId";
+		final var messageExchangeId = "messageExchangeId";
+		final var errandNumber = "ERRAND-NUMBER-1";
+		final var messageIds = List.of("d82bd8ac-1507-4d9a-958d-369261eecc15");
+
+		final var request = MarkAsReadRequest.builder()
+			.withMessageIds(messageIds)
+			.build();
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
+			.thenReturn(Optional.of(ConversationEntity.builder().withId(conversationId).withMessageExchangeId(messageExchangeId).build()));
+
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace))
+			.thenReturn(Optional.of(ErrandEntity.builder().withErrandNumber(errandNumber).build()));
+
+		when(messageExchangeClientMock.markAsRead(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any()))
+			.thenReturn(ResponseEntity.noContent().build());
+
+		// Act
+		conversationService.markAsRead(municipalityId, namespace, errandId, conversationId, request);
+
+		// Assert
+		final var captor = ArgumentCaptor.forClass(generated.se.sundsvall.messageexchange.MarkAsReadRequest.class);
+		verify(messageExchangeClientMock).markAsRead(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), captor.capture());
+		assertThat(captor.getValue().getPart()).isEqualTo(errandNumber);
+		assertThat(captor.getValue().getMessageIds()).isEqualTo(messageIds);
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
+		verifyNoMoreInteractions(messageExchangeClientMock, conversationRepositoryMock, errandRepositoryMock);
+		verifyNoInteractions(messageServiceMock, messageExchangeSchedulerMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void markAsReadWithConversationNotFound() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "conversationId";
+
+		final var request = MarkAsReadRequest.builder()
+			.withMessageIds(List.of("d82bd8ac-1507-4d9a-958d-369261eecc15"))
+			.build();
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
+			.thenReturn(Optional.empty());
+
+		// Act & Assert
+		assertThatThrownBy(() -> conversationService.markAsRead(municipalityId, namespace, errandId, conversationId, request))
+			.isInstanceOf(RuntimeException.class)
+			.hasMessageContaining("Not Found: Conversation not found in local database");
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verifyNoInteractions(messageExchangeClientMock, errandRepositoryMock, messageServiceMock, messageExchangeSchedulerMock);
+	}
+
+	@Test
+	void markAsReadWithMessageExchangeError() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "conversationId";
+		final var messageExchangeId = "messageExchangeId";
+
+		final var request = MarkAsReadRequest.builder()
+			.withMessageIds(List.of("d82bd8ac-1507-4d9a-958d-369261eecc15"))
+			.build();
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
+			.thenReturn(Optional.of(ConversationEntity.builder().withId(conversationId).withMessageExchangeId(messageExchangeId).build()));
+
+		when(errandRepositoryMock.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace))
+			.thenReturn(Optional.of(ErrandEntity.builder().withErrandNumber("ERRAND-NUMBER-1").build()));
+
+		when(messageExchangeClientMock.markAsRead(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any()))
+			.thenReturn(ResponseEntity.internalServerError().build());
+
+		// Act & Assert
+		assertThatThrownBy(() -> conversationService.markAsRead(municipalityId, namespace, errandId, conversationId, request))
+			.isInstanceOf(RuntimeException.class)
+			.hasMessageContaining("Failed to mark messages as read in Message Exchange");
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);
+		verify(messageExchangeClientMock).markAsRead(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), any());
+		verifyNoInteractions(messageServiceMock, messageExchangeSchedulerMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void countReadBy() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "conversationId";
+		final var messageExchangeId = "messageExchangeId";
+
+		final var entity = ConversationEntity.builder()
+			.withId(conversationId)
+			.withMessageExchangeId(messageExchangeId)
+			.build();
+
+		final var meResult = new ReadByStatistics()
+			.messageCount(5L)
+			.addReadByCountItem(new generated.se.sundsvall.messageexchange.ReadByCount()
+				.identifier(new generated.se.sundsvall.messageexchange.Identifier().type("adAccount").value("joe01doe"))
+				.count(3L))
+			.addReadByPartCountItem(new generated.se.sundsvall.messageexchange.ReadByPartCount()
+				.part("ERRAND-NUMBER-1")
+				.count(5L));
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandId(municipalityId, namespace, String.valueOf(errandId)))
+			.thenReturn(List.of(entity));
+
+		when(messageExchangeClientMock.countReadBy(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId, false))
+			.thenReturn(ResponseEntity.ok(meResult));
+
+		// Act
+		final var result = conversationService.countReadBy(municipalityId, namespace, errandId, false, null);
+
+		// Assert
+		assertThat(result).hasSize(1);
+		assertThat(result.getFirst().getConversationId()).isEqualTo(conversationId);
+		assertThat(result.getFirst().getMessageCount()).isEqualTo(5L);
+		assertThat(result.getFirst().getReadByCount()).hasSize(1);
+		assertThat(result.getFirst().getReadByCount().getFirst().getCount()).isEqualTo(3L);
+		assertThat(result.getFirst().getReadByPartCount()).hasSize(1);
+		assertThat(result.getFirst().getReadByPartCount().getFirst().getPart()).isEqualTo("ERRAND-NUMBER-1");
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandId(municipalityId, namespace, String.valueOf(errandId));
+		verify(messageExchangeClientMock).countReadBy(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId, false);
+		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
+		verifyNoInteractions(errandRepositoryMock, messageServiceMock, messageExchangeSchedulerMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void countReadByWithConversationFilter() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "conversationId";
+		final var messageExchangeId = "messageExchangeId";
+
+		final var entity = ConversationEntity.builder()
+			.withId(conversationId)
+			.withMessageExchangeId(messageExchangeId)
+			.build();
+
+		final var meResult = new ReadByStatistics().messageCount(3L);
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
+			.thenReturn(Optional.of(entity));
+
+		when(messageExchangeClientMock.countReadBy(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId, false))
+			.thenReturn(ResponseEntity.ok(meResult));
+
+		// Act
+		final var result = conversationService.countReadBy(municipalityId, namespace, errandId, false, conversationId);
+
+		// Assert
+		assertThat(result).hasSize(1);
+		assertThat(result.getFirst().getConversationId()).isEqualTo(conversationId);
+		assertThat(result.getFirst().getMessageCount()).isEqualTo(3L);
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
+		verify(messageExchangeClientMock).countReadBy(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId, false);
+		verifyNoMoreInteractions(conversationRepositoryMock, messageExchangeClientMock);
+		verifyNoInteractions(errandRepositoryMock, messageServiceMock, messageExchangeSchedulerMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void countReadByWithUnrelatedConversationIdReturnsEmptyList() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var unrelatedConversationId = "unrelated-conversation-id";
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), unrelatedConversationId))
+			.thenReturn(Optional.empty());
+
+		// Act
+		final var result = conversationService.countReadBy(municipalityId, namespace, errandId, false, unrelatedConversationId);
+
+		// Assert
+		assertThat(result).isEmpty();
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), unrelatedConversationId);
+		verifyNoInteractions(messageExchangeClientMock, errandRepositoryMock, messageServiceMock, messageExchangeSchedulerMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void countReadByWithMessageExchangeError() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var errandId = 123L;
+		final var conversationId = "conversationId";
+		final var messageExchangeId = "messageExchangeId";
+
+		final var entity = ConversationEntity.builder()
+			.withId(conversationId)
+			.withMessageExchangeId(messageExchangeId)
+			.build();
+
+		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandId(municipalityId, namespace, String.valueOf(errandId)))
+			.thenReturn(List.of(entity));
+
+		when(messageExchangeClientMock.countReadBy(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId, false))
+			.thenReturn(ResponseEntity.internalServerError().build());
+
+		// Act & Assert
+		assertThatThrownBy(() -> conversationService.countReadBy(municipalityId, namespace, errandId, false, null))
+			.isInstanceOf(RuntimeException.class)
+			.hasMessageContaining("Failed to retrieve read-by count from Message Exchange");
+
+		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandId(municipalityId, namespace, String.valueOf(errandId));
+		verify(messageExchangeClientMock).countReadBy(municipalityId, MESSAGE_EXCHANGE_NAMESPACE, messageExchangeId, false);
+		verifyNoInteractions(errandRepositoryMock, messageServiceMock, messageExchangeSchedulerMock, attachmentRepositoryMock);
 	}
 }
