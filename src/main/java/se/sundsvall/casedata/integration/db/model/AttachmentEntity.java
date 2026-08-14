@@ -38,11 +38,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.javers.core.metamodel.annotation.DiffIgnore;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 
-import static org.hibernate.Length.LONG32;
-
 @Entity
-// Write only changed columns, so a metadata update neither rewrites the large 'content' blob nor resets
-// 'content'/'hash' that were filled in after the entity was loaded.
+// Write only changed columns, so a metadata update does not rewrite the large 'content' blob.
 @DynamicUpdate
 @Table(name = "attachment",
 	indexes = {
@@ -90,9 +87,6 @@ public class AttachmentEntity {
 
 	@Column(name = "mime_type")
 	private String mimeType;
-
-	@Column(name = "file", length = LONG32)
-	private String file;
 
 	@Lob
 	@Column(name = "content", columnDefinition = "longblob")

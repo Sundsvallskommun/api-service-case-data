@@ -33,6 +33,7 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
+import se.sundsvall.casedata.service.util.AttachmentContents;
 import se.sundsvall.dept44.common.validators.annotation.impl.ValidUuidConstraintValidator;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -314,11 +315,12 @@ class MessageMapperTest {
 	}
 
 	@Test
-	void toAttachment() {
+	void toAttachment() throws SQLException, IOException {
 		// Arrange
+		final var content = "content".getBytes();
 		final var attachment = MessageAttachmentEntity.builder()
 			.withAttachmentData(MessageAttachmentDataEntity.builder()
-				.withFile(new MariaDbBlob("content".getBytes()))
+				.withFile(new MariaDbBlob(content))
 				.build())
 			.withAttachmentId("attachmentId")
 			.withContentType("contentType")
@@ -328,10 +330,30 @@ class MessageMapperTest {
 		// Act
 		final var result = messageMapper.toAttachmentEntity(attachment);
 
-		// Assert
-		assertThat(result.getFile()).isEqualTo(Base64.getEncoder().encodeToString("content".getBytes()));
+		// Assert - the content is copied onto the errand attachment as a binary blob plus its SHA-256 hash.
+		assertThat(result.getContent()).isNotNull();
+		assertThat(result.getContent().getBinaryStream().readAllBytes()).isEqualTo(content);
+		assertThat(result.getHash()).isEqualTo(AttachmentContents.sha256Hex(content));
 		assertThat(result.getName()).isEqualTo("name");
 		assertThat(result.getMimeType()).isEqualTo("contentType");
+	}
+
+	@Test
+	void toAttachmentWithoutAttachmentData() {
+		// Arrange
+		final var attachment = MessageAttachmentEntity.builder()
+			.withAttachmentId("attachmentId")
+			.withContentType("contentType")
+			.withName("name")
+			.build();
+
+		// Act
+		final var result = messageMapper.toAttachmentEntity(attachment);
+
+		// Assert
+		assertThat(result.getContent()).isNull();
+		assertThat(result.getHash()).isNull();
+		assertThat(result.getName()).isEqualTo("name");
 	}
 
 	private boolean isValidUUID(final String uuid) {
@@ -417,19 +439,6 @@ class MessageMapperTest {
 	}
 
 	@Test
-	void testToContentString() {
-		// Arrange
-		final var content = "testContent".getBytes();
-		final var expectedContentString = Base64.getEncoder().encodeToString(content);
-
-		// Act
-		final var result = messageMapper.toContentString(content);
-
-		// Assert
-		assertThat(result).isEqualTo(expectedContentString);
-	}
-
-	@Test
 	void testToMessageEntityFromMessageRequest() {
 		// Arrange
 		final var errandId = 123L;
@@ -499,19 +508,6 @@ class MessageMapperTest {
 		assertThat(result.getName()).isEqualTo("name");
 		assertThat(result.getContentType()).isEqualTo("contentType");
 		assertThat(result.getMessageID()).isEqualTo("messageId");
-	}
-
-	@Test
-	void testToContentStringFromBlob() {
-		// Arrange
-		final var content = "testContent".getBytes();
-		final var blob = new MariaDbBlob(content);
-
-		// Act
-		final var result = messageMapper.toContentString(blob);
-
-		// Assert
-		assertThat(result).isEqualTo(Base64.getEncoder().encodeToString(content));
 	}
 
 	@Test
