@@ -33,8 +33,8 @@ import se.sundsvall.casedata.integration.db.model.MessageEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Classification;
 import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
-import se.sundsvall.casedata.service.util.AttachmentContents;
 import se.sundsvall.dept44.common.validators.annotation.impl.ValidUuidConstraintValidator;
+import se.sundsvall.dept44.util.HashUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
@@ -333,7 +333,7 @@ class MessageMapperTest {
 		// Assert - the content is copied onto the errand attachment as a binary blob plus its SHA-256 hash.
 		assertThat(result.getContent()).isNotNull();
 		assertThat(result.getContent().getBinaryStream().readAllBytes()).isEqualTo(content);
-		assertThat(result.getHash()).isEqualTo(AttachmentContents.sha256Hex(content));
+		assertThat(result.getHash()).isEqualTo(HashUtils.sha256Hex(content));
 		assertThat(result.getName()).isEqualTo("name");
 		assertThat(result.getMimeType()).isEqualTo("contentType");
 	}

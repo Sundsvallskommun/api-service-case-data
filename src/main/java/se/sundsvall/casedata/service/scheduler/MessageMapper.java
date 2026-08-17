@@ -3,7 +3,6 @@ package se.sundsvall.casedata.service.scheduler;
 import generated.se.sundsvall.emailreader.Email;
 import generated.se.sundsvall.emailreader.EmailAttachment;
 import generated.se.sundsvall.webmessagecollector.MessageDTO;
-import java.sql.Blob;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +21,10 @@ import se.sundsvall.casedata.integration.db.model.enums.Direction;
 import se.sundsvall.casedata.integration.db.model.enums.Header;
 import se.sundsvall.casedata.service.AttachmentContentWriter;
 import se.sundsvall.casedata.service.util.BlobBuilder;
-import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.casedata.service.util.BlobUtil;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.UUID.randomUUID;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Component
 public class MessageMapper {
@@ -195,7 +193,7 @@ public class MessageMapper {
 
 		Optional.ofNullable(attachment.getAttachmentData())
 			.map(MessageAttachmentDataEntity::getFile)
-			.ifPresent(blob -> attachmentContentWriter.applyContent(attachmentEntity, toBytes(blob)));
+			.ifPresent(blob -> attachmentContentWriter.applyContent(attachmentEntity, BlobUtil.toBytes(blob, attachment.getAttachmentId())));
 
 		return attachmentEntity;
 	}
@@ -242,18 +240,6 @@ public class MessageMapper {
 		return MessageAttachmentDataEntity.builder()
 			.withFile(blobBuilder.createBlob(result))
 			.build();
-	}
-
-	/**
-	 * Materialises the content of a message attachment's blob, so it can be copied onto the errand attachment that
-	 * mirrors it.
-	 */
-	private byte[] toBytes(final Blob blob) {
-		try (final var in = blob.getBinaryStream()) {
-			return in.readAllBytes();
-		} catch (final Exception e) {
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to read binary stream of message attachment");
-		}
 	}
 
 	public MessageEntity toMessage(final Email email, final String municipalityId, final String namespace, final Long errandId) {

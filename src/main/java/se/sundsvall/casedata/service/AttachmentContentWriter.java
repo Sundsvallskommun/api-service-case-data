@@ -4,9 +4,9 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
-import se.sundsvall.casedata.service.util.AttachmentContents;
 import se.sundsvall.casedata.service.util.BlobBuilder;
 import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.util.HashUtils;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -39,7 +39,7 @@ public class AttachmentContentWriter {
 			return;
 		}
 		try {
-			attachmentEntity.setHash(AttachmentContents.sha256Hex(file.getInputStream()));
+			attachmentEntity.setHash(HashUtils.sha256Hex(file.getInputStream()));
 			attachmentEntity.setContent(blobBuilder.createBlob(file.getInputStream(), file.getSize()));
 		} catch (final IOException e) {
 			throw Problem.valueOf(BAD_REQUEST, "%s occurred when reading uploaded file: %s".formatted(e.getClass().getSimpleName(), e.getMessage()));
@@ -55,7 +55,7 @@ public class AttachmentContentWriter {
 		if (content == null || content.length == 0) {
 			return;
 		}
-		attachmentEntity.setHash(AttachmentContents.sha256Hex(content));
+		attachmentEntity.setHash(HashUtils.sha256Hex(content));
 		attachmentEntity.setContent(blobBuilder.createBlob(content));
 	}
 }

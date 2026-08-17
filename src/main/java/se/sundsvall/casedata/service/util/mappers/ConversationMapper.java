@@ -19,8 +19,8 @@ import se.sundsvall.casedata.api.model.conversation.ReadBy;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
-import se.sundsvall.casedata.service.util.AttachmentContents;
 import se.sundsvall.casedata.service.util.Base64MultipartFile;
+import se.sundsvall.casedata.service.util.BlobUtil;
 
 import static java.util.Collections.emptyList;
 
@@ -235,7 +235,7 @@ public final class ConversationMapper {
 	}
 
 	private static byte[] readContent(final AttachmentEntity entity) {
-		return AttachmentContents.toBytes(entity);
+		return BlobUtil.toBytes(entity.getContent(), entity.getId());
 	}
 
 }
