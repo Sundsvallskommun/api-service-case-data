@@ -32,6 +32,8 @@ import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeScheduler;
+import se.sundsvall.dept44.support.Identifier;
+import se.sundsvall.dept44.support.Identifier.Type;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -985,6 +987,9 @@ class ConversationServiceTest {
 		final var messageExchangeId = "messageExchangeId";
 		final var errandNumber = "ERRAND-NUMBER-1";
 		final var messageIds = List.of("d82bd8ac-1507-4d9a-958d-369261eecc15");
+		final var adAccount = "joe01doe";
+
+		Identifier.set(Identifier.create().withType(Type.AD_ACCOUNT).withValue(adAccount));
 
 		final var request = MarkAsReadRequest.builder()
 			.withMessageIds(messageIds)
@@ -1007,6 +1012,8 @@ class ConversationServiceTest {
 		verify(messageExchangeClientMock).markAsRead(eq(municipalityId), eq(MESSAGE_EXCHANGE_NAMESPACE), eq(messageExchangeId), captor.capture());
 		assertThat(captor.getValue().getPart()).isEqualTo(errandNumber);
 		assertThat(captor.getValue().getMessageIds()).isEqualTo(messageIds);
+		assertThat(captor.getValue().getIdentifier().getType()).isEqualTo("adAccount");
+		assertThat(captor.getValue().getIdentifier().getValue()).isEqualTo(adAccount);
 
 		verify(conversationRepositoryMock).findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId);
 		verify(errandRepositoryMock).findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace);

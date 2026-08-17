@@ -26,6 +26,7 @@ import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.messageexchange.MessageExchangeClient;
 import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeScheduler;
 import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.support.Identifier;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -210,9 +211,18 @@ public class ConversationService {
 		final var entity = getConversationEntity(municipalityId, namespace, errandId, conversationId);
 		final var errand = errandRepository.findByIdAndMunicipalityIdAndNamespace(errandId, municipalityId, namespace)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Errand not found"));
+		final var meIdentifier = ofNullable(Identifier.get())
+			.flatMap(id -> switch (id.getType())
+			{
+				case AD_ACCOUNT -> Optional.of(new generated.se.sundsvall.messageexchange.Identifier().type("adAccount").value(id.getValue()));
+				case PARTY_ID -> Optional.of(new generated.se.sundsvall.messageexchange.Identifier().type("partyId").value(id.getValue()));
+				case CUSTOM -> Optional.empty();
+			})
+			.orElse(null);
 		final var meRequest = new generated.se.sundsvall.messageexchange.MarkAsReadRequest()
 			.messageIds(request.getMessageIds())
-			.part(errand.getErrandNumber());
+			.part(errand.getErrandNumber())
+			.identifier(meIdentifier);
 		final var response = messageExchangeClient.markAsRead(municipalityId, messageExchangeNamespace, entity.getMessageExchangeId(), meRequest);
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to mark messages as read in Message Exchange");

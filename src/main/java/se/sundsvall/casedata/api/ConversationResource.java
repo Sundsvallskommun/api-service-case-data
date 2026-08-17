@@ -218,7 +218,7 @@ class ConversationResource {
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "errandId", description = "Errand ID", example = "1") @PathVariable("errandId") final Long errandId,
 		@Parameter(name = "includeSystemMessages", description = "Include system-created messages in count", example = "false") @RequestParam(defaultValue = "false") final boolean includeSystemMessages,
-		@Parameter(name = "conversationId", description = "Filter to a specific conversation ID") @RequestParam(required = false) final String conversationId) {
+		@Parameter(name = "conversationId", description = "Filter to a specific conversation ID") @ValidUuid(nullable = true) @RequestParam(required = false) final String conversationId) {
 
 		return ok(conversationService.countReadBy(municipalityId, namespace, errandId, includeSystemMessages, conversationId));
 	}
