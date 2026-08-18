@@ -1,7 +1,9 @@
 package se.sundsvall.casedata.integration.messageexchange;
 
 import generated.se.sundsvall.messageexchange.Conversation;
+import generated.se.sundsvall.messageexchange.MarkAsReadRequest;
 import generated.se.sundsvall.messageexchange.Message;
+import generated.se.sundsvall.messageexchange.ReadByStatistics;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
@@ -95,4 +97,18 @@ public interface MessageExchangeClient {
 		@PathVariable final String conversationId,
 		@PathVariable final String messageId,
 		@PathVariable final String attachmentId);
+
+	@PostMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}/messages/mark-as-read", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	ResponseEntity<Void> markAsRead(
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@PathVariable final String conversationId,
+		@RequestBody final MarkAsReadRequest request);
+
+	@GetMapping(path = "/{municipalityId}/{namespace}/conversations/{conversationId}/count-read-by", produces = APPLICATION_JSON_VALUE)
+	ResponseEntity<ReadByStatistics> countReadBy(
+		@PathVariable final String municipalityId,
+		@PathVariable final String namespace,
+		@PathVariable final String conversationId,
+		@RequestParam final boolean includeSystemMessages);
 }

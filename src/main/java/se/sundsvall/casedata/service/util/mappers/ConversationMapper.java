@@ -16,6 +16,8 @@ import se.sundsvall.casedata.api.model.conversation.KeyValues;
 import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.api.model.conversation.MessageType;
 import se.sundsvall.casedata.api.model.conversation.ReadBy;
+import se.sundsvall.casedata.api.model.conversation.ReadByCount;
+import se.sundsvall.casedata.api.model.conversation.ReadByPartCount;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
@@ -199,6 +201,24 @@ public final class ConversationMapper {
 			.filter(keyValues -> Strings.CI.equals(keyValues.getKey(), key))
 			.flatMap(keyValues -> keyValues.getValues().stream())
 			.toList());
+	}
+
+	public static List<ReadByCount> toReadByCountList(final List<generated.se.sundsvall.messageexchange.ReadByCount> list) {
+		return Optional.ofNullable(list).orElse(emptyList()).stream()
+			.map(me -> ReadByCount.builder()
+				.withIdentifier(toIdentifier(me.getIdentifier()))
+				.withCount(me.getCount())
+				.build())
+			.toList();
+	}
+
+	public static List<ReadByPartCount> toReadByPartCountList(final List<generated.se.sundsvall.messageexchange.ReadByPartCount> list) {
+		return Optional.ofNullable(list).orElse(emptyList()).stream()
+			.map(me -> ReadByPartCount.builder()
+				.withPart(me.getPart())
+				.withCount(me.getCount())
+				.build())
+			.toList();
 	}
 
 	public static se.sundsvall.casedata.api.model.Attachment toAttachment(final MultipartFile attachment, final Long errandId, final String municipalityId, final String namespace) {
