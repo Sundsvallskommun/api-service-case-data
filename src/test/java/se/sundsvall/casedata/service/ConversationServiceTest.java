@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import javax.sql.rowset.serial.SerialBlob;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +36,7 @@ import se.sundsvall.casedata.service.scheduler.messageexchange.MessageExchangeSc
 import se.sundsvall.dept44.support.Identifier;
 import se.sundsvall.dept44.support.Identifier.Type;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -590,7 +592,7 @@ class ConversationServiceTest {
 	}
 
 	@Test
-	void createMessageWithErrandAttachmentIds() {
+	void createMessageWithErrandAttachmentIds() throws Exception {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -608,14 +610,14 @@ class ConversationServiceTest {
 			.withId(attachmentId1)
 			.withName("document.pdf")
 			.withMimeType("application/pdf")
-			.withFile("dGVzdA==")
+			.withContent(new SerialBlob("test".getBytes(UTF_8)))
 			.build();
 
 		final var attachmentEntity2 = se.sundsvall.casedata.integration.db.model.AttachmentEntity.builder()
 			.withId(attachmentId2)
 			.withName("image.png")
 			.withMimeType("image/png")
-			.withFile("aW1hZ2U=")
+			.withContent(new SerialBlob("image".getBytes(UTF_8)))
 			.build();
 
 		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))
@@ -673,7 +675,7 @@ class ConversationServiceTest {
 	}
 
 	@Test
-	void createMessageWithBothUploadedAndReferencedAttachments() {
+	void createMessageWithBothUploadedAndReferencedAttachments() throws Exception {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
@@ -692,7 +694,7 @@ class ConversationServiceTest {
 			.withId(attachmentId)
 			.withName("errand-doc.pdf")
 			.withMimeType("application/pdf")
-			.withFile("ZXJyYW5k")
+			.withContent(new SerialBlob("errand".getBytes(UTF_8)))
 			.build();
 
 		when(conversationRepositoryMock.findByMunicipalityIdAndNamespaceAndErrandIdAndId(municipalityId, namespace, String.valueOf(errandId), conversationId))

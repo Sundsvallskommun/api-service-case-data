@@ -19,6 +19,7 @@ import se.sundsvall.casedata.integration.db.model.MessageAttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
+import se.sundsvall.casedata.service.AttachmentContentWriter;
 import se.sundsvall.casedata.service.NotificationService;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
@@ -41,13 +42,15 @@ public class EmailReaderWorker {
 	private final EmailReaderProperties emailReaderProperties;
 	private final MessageAttachmentRepository messageAttachmentRepository;
 	private final MessageMapper messageMapper;
+	private final AttachmentContentWriter attachmentContentWriter;
 	private final NotificationService notificationService;
 	private final Dept44HealthUtility dept44HealthUtility;
 	@Value("${scheduler.emailreader.name}")
 	private String jobName;
 
 	public EmailReaderWorker(final MessageRepository repository, final ErrandRepository errandRepository, final AttachmentRepository attachmentRepository, final EmailReaderClient client, final EmailReaderProperties emailReaderProperties,
-		final MessageAttachmentRepository messageAttachmentRepository, final MessageMapper messageMapper, final NotificationService notificationService, final Dept44HealthUtility dept44HealthUtility) {
+		final MessageAttachmentRepository messageAttachmentRepository, final MessageMapper messageMapper, final AttachmentContentWriter attachmentContentWriter, final NotificationService notificationService,
+		final Dept44HealthUtility dept44HealthUtility) {
 		this.messageRepository = repository;
 		this.errandRepository = errandRepository;
 		this.attachmentRepository = attachmentRepository;
@@ -55,6 +58,7 @@ public class EmailReaderWorker {
 		this.emailReaderProperties = emailReaderProperties;
 		this.messageAttachmentRepository = messageAttachmentRepository;
 		this.messageMapper = messageMapper;
+		this.attachmentContentWriter = attachmentContentWriter;
 		this.notificationService = notificationService;
 		this.dept44HealthUtility = dept44HealthUtility;
 	}
@@ -121,7 +125,7 @@ public class EmailReaderWorker {
 			final var data = emailReaderClient.getAttachment(messageAttachment.getMunicipalityId(), attachmentId);
 
 			messageAttachment.getAttachmentData().setFile(messageMapper.toMessageAttachmentData(data).getFile());
-			attachmentEntity.setFile(messageMapper.toContentString(data));
+			attachmentContentWriter.applyContent(attachmentEntity, data);
 			messageAttachmentRepository.saveAndFlush(messageAttachment);
 			attachmentRepository.saveAndFlush(attachmentEntity);
 		} catch (final Exception e) {

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.Base64;
 import java.util.HexFormat;
 import javax.sql.rowset.serial.SerialBlob;
 import org.junit.jupiter.api.Test;
@@ -13,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.service.util.BlobBuilder;
@@ -42,31 +39,9 @@ class AttachmentContentWriterTest {
 	private AttachmentContentWriter contentWriter;
 
 	@Test
-	void dualWriteMode() throws Exception {
-		// Arrange - DUAL is the default write mode: both the base64 'file' and the binary 'content' + 'hash' are written.
-		final var content = "test content".getBytes(StandardCharsets.UTF_8);
-		final var expectedHash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(content));
-		final var blob = new SerialBlob(content);
-		final var file = new MockMultipartFile("file", "document.pdf", "application/pdf", content);
-		final var attachmentEntity = new AttachmentEntity();
-		when(blobBuilderMock.createBlob(any(byte[].class))).thenReturn(blob);
-
-		// Act
-		contentWriter.applyContent(attachmentEntity, file);
-
-		// Assert
-		verify(blobBuilderMock).createBlob(content);
-		assertThat(attachmentEntity.getFile()).isEqualTo(Base64.getEncoder().encodeToString(content));
-		assertThat(attachmentEntity.getContent()).isEqualTo(blob);
-		assertThat(attachmentEntity.getHash()).isEqualTo(expectedHash);
-	}
-
-	@Test
-	void blobWriteMode() throws Exception {
-		// Arrange - BLOB write mode (end state): only the binary 'content' + 'hash' are written, no base64 'file'. The
-		// content must be streamed (hash via DigestInputStream, blob from the input stream) and never fully materialised
-		// via getBytes().
-		ReflectionTestUtils.setField(contentWriter, "writeMode", AttachmentStorageMode.BLOB);
+	void uploadIsStoredAsBlobAndHash() throws Exception {
+		// Arrange - the content must be streamed (hash via DigestInputStream, blob from the input stream) and never
+		// fully materialised via getBytes().
 		final var content = "test content".getBytes(StandardCharsets.UTF_8);
 		final var expectedHash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(content));
 		final var blob = new SerialBlob(content);
@@ -86,31 +61,13 @@ class AttachmentContentWriterTest {
 		verify(file, never()).getBytes();
 		assertThat(attachmentEntity.getContent()).isEqualTo(blob);
 		assertThat(attachmentEntity.getHash()).isEqualTo(expectedHash);
-		assertThat(attachmentEntity.getFile()).isNull();
-	}
-
-	@Test
-	void base64WriteMode() {
-		// Arrange - BASE64 write mode (rollback target): only the legacy base64 'file' is written, no blob/hash.
-		ReflectionTestUtils.setField(contentWriter, "writeMode", AttachmentStorageMode.BASE64);
-		final var content = "test content".getBytes(StandardCharsets.UTF_8);
-		final var file = new MockMultipartFile("file", "document.pdf", "application/pdf", content);
-		final var attachmentEntity = new AttachmentEntity();
-
-		// Act
-		contentWriter.applyContent(attachmentEntity, file);
-
-		// Assert
-		verifyNoInteractions(blobBuilderMock);
-		assertThat(attachmentEntity.getFile()).isEqualTo(Base64.getEncoder().encodeToString(content));
-		assertThat(attachmentEntity.getContent()).isNull();
-		assertThat(attachmentEntity.getHash()).isNull();
 	}
 
 	@Test
 	void emptyFile() {
-		// Arrange - an empty upload leaves all columns unset regardless of write mode.
-		final var file = new MockMultipartFile("file", "empty.pdf", "application/pdf", new byte[0]);
+		// Arrange - an empty upload leaves both columns unset.
+		final var file = mock(MultipartFile.class);
+		when(file.isEmpty()).thenReturn(true);
 		final var attachmentEntity = new AttachmentEntity();
 
 		// Act
@@ -118,7 +75,6 @@ class AttachmentContentWriterTest {
 
 		// Assert
 		verifyNoInteractions(blobBuilderMock);
-		assertThat(attachmentEntity.getFile()).isNull();
 		assertThat(attachmentEntity.getContent()).isNull();
 		assertThat(attachmentEntity.getHash()).isNull();
 	}
@@ -129,11 +85,10 @@ class AttachmentContentWriterTest {
 		final var attachmentEntity = new AttachmentEntity();
 
 		// Act
-		contentWriter.applyContent(attachmentEntity, null);
+		contentWriter.applyContent(attachmentEntity, (MultipartFile) null);
 
 		// Assert
 		verifyNoInteractions(blobBuilderMock);
-		assertThat(attachmentEntity.getFile()).isNull();
 		assertThat(attachmentEntity.getContent()).isNull();
 		assertThat(attachmentEntity.getHash()).isNull();
 	}
@@ -143,7 +98,7 @@ class AttachmentContentWriterTest {
 		// Arrange - an upload that cannot be read is a client problem, not a server error.
 		final var file = mock(MultipartFile.class);
 		when(file.isEmpty()).thenReturn(false);
-		when(file.getBytes()).thenThrow(new IOException("testException"));
+		when(file.getInputStream()).thenThrow(new IOException("testException"));
 
 		// Act
 		final var exception = assertThrows(ThrowableProblem.class, () -> contentWriter.applyContent(new AttachmentEntity(), file));
@@ -152,5 +107,38 @@ class AttachmentContentWriterTest {
 		assertThat(exception)
 			.hasFieldOrPropertyWithValue("status", BAD_REQUEST)
 			.hasFieldOrPropertyWithValue("detail", "IOException occurred when reading uploaded file: testException");
+	}
+
+	@Test
+	void materialisedContentIsStoredAsBlobAndHash() throws Exception {
+		// Arrange - the collectors receive the content as a byte[] and must store it exactly like an upload.
+		final var content = "collected content".getBytes(StandardCharsets.UTF_8);
+		final var expectedHash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(content));
+		final var blob = new SerialBlob(content);
+		final var attachmentEntity = new AttachmentEntity();
+		when(blobBuilderMock.createBlob(any(byte[].class))).thenReturn(blob);
+
+		// Act
+		contentWriter.applyContent(attachmentEntity, content);
+
+		// Assert
+		verify(blobBuilderMock).createBlob(content);
+		assertThat(attachmentEntity.getContent()).isEqualTo(blob);
+		assertThat(attachmentEntity.getHash()).isEqualTo(expectedHash);
+	}
+
+	@Test
+	void nullOrEmptyMaterialisedContentLeavesEntityUntouched() {
+		// Arrange
+		final var attachmentEntity = new AttachmentEntity();
+
+		// Act
+		contentWriter.applyContent(attachmentEntity, (byte[]) null);
+		contentWriter.applyContent(attachmentEntity, new byte[0]);
+
+		// Assert
+		verifyNoInteractions(blobBuilderMock);
+		assertThat(attachmentEntity.getContent()).isNull();
+		assertThat(attachmentEntity.getHash()).isNull();
 	}
 }

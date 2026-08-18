@@ -27,7 +27,8 @@
 		"mimeType": "image/png",
 		"version": 1,
 		"namespace": "MY_NAMESPACE",
-		"name": "decision_legacy.png",
+		"name": "decision_image_2.png",
+		"hash": "429e40fd4fee7d2533ebef54d5d442c8f12adb10b63fe5c7a81cc78914c6f795",
 		"id": 2,
 		"category": "POLICE_REPORT",
 		"updated": "2022-12-02T15:15:01.563+01:00"
