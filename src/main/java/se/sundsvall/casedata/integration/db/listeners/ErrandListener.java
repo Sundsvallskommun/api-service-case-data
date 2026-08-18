@@ -4,6 +4,7 @@ import jakarta.persistence.PostPersist;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class ErrandListener {
 		// Get the latest errand with an errandNumber and only the ones within the same year. If this year i different, a new
 		// sequenceNumber begins.
 		final Optional<ErrandEntity> latestErrand = errandRepository.findTopByMunicipalityIdAndNamespaceAndCreatedIsAfterOrderByCreatedDesc(municipalityId, namespace,
-			of(now().getYear(), 1, 1, 0, 0, 0, 0, now().getOffset()));
+			of(now(ZoneId.systemDefault()).getYear(), 1, 1, 0, 0, 0, 0, now(ZoneId.systemDefault()).getOffset()));
 
 		// Default start value = 1
 		long nextSequenceNumber = 1;
@@ -78,7 +79,7 @@ public class ErrandListener {
 
 		// prefix with the abbreviation
 		return Shortcode.getByNamespace(namespace) + DELIMITER +
-			LocalDate.now().getYear() + DELIMITER +
+			LocalDate.now(ZoneId.systemDefault()).getYear() + DELIMITER +
 			String.format("%06d", nextSequenceNumber);
 	}
 }
