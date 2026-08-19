@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.service.util.mappers;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -486,7 +487,7 @@ public final class EntityMapper {
 				.withContent(obj.getContent())
 				.withCreatedBy(obj.getCreatedBy())
 				.withDescription(obj.getDescription())
-				.withExpires(ofNullable(obj.getExpires()).orElse(now().plusDays(DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS)))
+				.withExpires(ofNullable(obj.getExpires()).orElse(now(ZoneId.systemDefault()).plusDays(DEFAULT_NOTIFICATION_EXPIRATION_TIME_IN_DAYS)))
 				.withErrand(errand)
 				.withMunicipalityId(municipalityId)
 				.withNamespace(namespace)
