@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.integration.db.AttachmentRepository;
@@ -26,6 +28,7 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotifica
 @Component
 public class WebMessageCollectorWorker {
 
+	private static final Logger LOG = LoggerFactory.getLogger(WebMessageCollectorWorker.class);
 	private static final String NOTIFICATION_DESCRIPTION = "Meddelande mottaget";
 	private static final String NOTIFICATION_TYPE = "UPDATE";
 
@@ -101,6 +104,15 @@ public class WebMessageCollectorWorker {
 		messageAttachment.setAttachmentData(messageMapper.toMessageAttachmentData(data));
 		// Save the attachment
 		messageAttachmentRepository.saveAndFlush(messageAttachment);
+
+		// An errand attachment without content is indistinguishable from an empty file and is served as a broken
+		// download, so a source that returns nothing is skipped rather than stored. The message attachment above is
+		// unaffected - it keeps whatever the collector delivered.
+		if (data == null || data.length == 0) {
+			LOG.warn("Web message collector returned no content for attachment id {} on message {} - no errand attachment created", attachmentId, messageId);
+			return;
+		}
+
 		attachmentRepository.saveAndFlush(messageMapper.toAttachmentEntity(messageAttachment)
 			.withErrandId(errandId)
 			.withChannel(Channel.ESERVICE));

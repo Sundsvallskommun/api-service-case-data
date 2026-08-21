@@ -36,6 +36,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.casedata.TestUtil.MUNICIPALITY_ID;
 import static se.sundsvall.casedata.TestUtil.NAMESPACE;
@@ -171,6 +172,45 @@ class WebMessageCollectorWorkerTest {
 		assertThat(attachmentCaptor.getValue().getErrandId()).isEqualTo(errandId);
 		assertThat(attachmentCaptor.getValue().getName()).isEqualTo("fileName");
 		assertThat(attachmentCaptor.getValue().getChannel()).isEqualTo(Channel.ESERVICE);
+	}
+
+	@Test
+	void getAndProcessMessagesWhenAttachmentHasNoContent() {
+
+		// Arrange - a collector that returns no content must not leave a contentless errand attachment behind.
+		final var familyId = "123";
+		final var instance = "instance";
+		final var externalCaseId = "someExternalCaseId";
+		final var errandId = 678L;
+		final var messageDTOs = createMessages();
+		final var message = createMessage();
+		final var errandEntity = ErrandEntity.builder()
+			.withId(errandId)
+			.withErrandNumber("someErrandNumber")
+			.withExternalCaseId(externalCaseId)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(StakeholderEntity.builder()
+				.withAdAccount("adminAdAccount")
+				.withRoles(List.of(ADMINISTRATOR.name())).build()))
+			.build();
+
+		when(webMessageCollectorClientMock.getMessages(MUNICIPALITY_ID, familyId, instance)).thenReturn(messageDTOs);
+		when(errandRepositoryMock.findByExternalCaseId(externalCaseId)).thenReturn(Optional.of(errandEntity));
+		when(webMessageCollectorProperties.familyIds()).thenReturn(Map.of(MUNICIPALITY_ID, Map.of(instance, List.of(familyId))));
+		when(messageMapperMock.toMessageEntity(errandId, messageDTOs.getFirst(), MUNICIPALITY_ID, NAMESPACE)).thenReturn(message);
+		when(messageRepositoryMock.saveAndFlush(any(MessageEntity.class))).thenReturn(message.withErrandId(errandId));
+		when(messageMapperMock.toAttachmentEntity(any(generated.se.sundsvall.webmessagecollector.MessageAttachment.class), any(String.class), any(String.class), any(String.class))).thenReturn(createAttachment());
+		when(webMessageCollectorClientMock.getAttachment(any(String.class), anyInt())).thenReturn(new byte[0]);
+		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(MessageAttachmentDataEntity.builder().build());
+
+		// Act
+		webMessageCollectorWorker.getAndProcessMessages();
+
+		// Assert - the message attachment is still stored, the errand attachment is never created.
+		verify(messageAttachmentRepositoryMock).saveAndFlush(any(MessageAttachmentEntity.class));
+		verify(messageMapperMock, never()).toAttachmentEntity(any(MessageAttachmentEntity.class));
+		verifyNoInteractions(attachmentRepositoryMock);
 	}
 
 	@Test

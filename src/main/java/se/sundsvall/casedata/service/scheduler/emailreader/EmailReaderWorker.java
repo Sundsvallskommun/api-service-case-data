@@ -107,9 +107,9 @@ public class EmailReaderWorker {
 				.withChannel(Channel.EMAIL);
 
 			messageAttachment.setAttachmentData(MessageAttachmentDataEntity.builder().build()); // Create empty attachment data to populate later
-			// Save the attachment
+			// Save the attachment. The errand attachment is deliberately not saved here - it is persisted by
+			// processAttachmentData once its content is known, so a source without content never leaves a contentless row.
 			messageAttachmentRepository.save(messageAttachment);
-			attachmentRepository.save(attachmentEntity);
 
 			// Process the file content
 			processAttachmentData(attachment.getId(), messageAttachment, attachmentEntity);
@@ -125,8 +125,17 @@ public class EmailReaderWorker {
 			final var data = emailReaderClient.getAttachment(messageAttachment.getMunicipalityId(), attachmentId);
 
 			messageAttachment.getAttachmentData().setFile(messageMapper.toMessageAttachmentData(data).getFile());
-			attachmentContentWriter.applyContent(attachmentEntity, data);
 			messageAttachmentRepository.saveAndFlush(messageAttachment);
+
+			// An errand attachment without content is indistinguishable from an empty file and is served as a broken
+			// download, so a source that returns nothing is skipped rather than stored. The message attachment above is
+			// unaffected - it keeps whatever EmailReader delivered.
+			if (data == null || data.length == 0) {
+				LOG.warn("EmailReader returned no content for attachment id {} on message {} - no errand attachment created", attachmentId, messageAttachment.getMessageID());
+				return;
+			}
+
+			attachmentContentWriter.applyContent(attachmentEntity, data);
 			attachmentRepository.saveAndFlush(attachmentEntity);
 		} catch (final Exception e) {
 			dept44HealthUtility.setHealthIndicatorUnhealthy(jobName, "Error when processing attachment data");

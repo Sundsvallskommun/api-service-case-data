@@ -2,6 +2,8 @@ package se.sundsvall.casedata.service;
 
 import generated.se.sundsvall.messageexchange.Message;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,7 @@ import static se.sundsvall.casedata.service.util.mappers.EntityMapper.toNotifica
 @Service
 public class MessageExchangeSyncService {
 
+	private static final Logger LOG = LoggerFactory.getLogger(MessageExchangeSyncService.class);
 	private static final String NOTIFICATION_TYPE_UPDATE = "UPDATE";
 	private static final String NOTIFICATION_DESCRIPTION = "Ny händelse för %s";
 
@@ -120,6 +123,14 @@ public class MessageExchangeSyncService {
 			content = file.getBody().getContentAsByteArray();
 		} catch (final IOException _) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to convert attachment from Message Exchange");
+		}
+
+		// An attachment without content is indistinguishable from an empty file once stored and is served as a broken
+		// download, so it is skipped rather than persisted. Skipping instead of failing keeps the sync moving: an
+		// exception here would leave latestSyncedSequenceNumber untouched and retry the same attachment forever.
+		if (content.length == 0) {
+			LOG.warn("Message Exchange returned no content for attachment '{}' on errand {} - no attachment created", filename, errandId);
+			return;
 		}
 
 		final var attachment = toAttachment(filename, mimeType, errandId, municipalityId, namespace, channel);

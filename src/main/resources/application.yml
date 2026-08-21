@@ -210,19 +210,17 @@ server:
 # Logbook
 #----------------------------------------
 logbook:
-  # Exclude the attachment endpoints from payload logging. Their bodies are large
-  # base64 blobs (whole-file downloads/uploads). Logging them forces Logbook to
-  # buffer the body and JsonPath-parse it in full before the '$..file' redaction
-  # can run - which trips Jackson's 20M-char StreamReadConstraints limit and
-  # spikes the heap (contributing to OOM restarts). These bodies carry no useful
-  # log value, so we skip them entirely. Metadata for other endpoints is
-  # unaffected, and errands that *embed* attachments are still redacted below.
+  # Exclude the attachment endpoints from payload logging. Their bodies are the raw
+  # file bytes (whole-file uploads/downloads), so logging them forces Logbook to
+  # buffer the entire body - spiking the heap and contributing to OOM restarts - for
+  # content that carries no log value at all. Metadata for other endpoints is
+  # unaffected; errands and decisions that embed attachments carry only attachment
+  # metadata, so there is nothing to redact there.
   excluded:
     paths: '**/attachments,**/attachments/**'
   body-filters:
     json-path:
-      - key: '$..file'
-        value: '[base64]'
+      # Message attachments are still submitted as base64 in a 'content' field.
       - key: '$..content'
         value: '[base64]'
 
