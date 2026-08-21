@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.service.util;
 
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
@@ -24,17 +23,18 @@ public final class ResponseStreamer {
 	private ResponseStreamer() {}
 
 	/**
-	 * Streams an attachment's binary content. An attachment stored without content is served as an empty body. The id is
-	 * supplied by the caller rather than read from the entity, so a failure is reported against the id the request asked
-	 * for.
+	 * Streams an attachment's binary content. Every path that creates an attachment writes its content through
+	 * {@code AttachmentContentWriter}, which rejects empty content, so a persisted attachment always has some. A missing
+	 * blob therefore means the row is broken rather than empty, and is reported as such instead of being served as a
+	 * silently empty file. The id is supplied by the caller rather than read from the entity, so a failure is reported
+	 * against the id the request asked for.
 	 */
 	public static void streamAttachment(final HttpServletResponse response, final AttachmentEntity attachmentEntity, final Long attachmentId) {
 		final var blob = attachmentEntity.getContent();
-		if (blob != null) {
-			streamBlob(response, attachmentEntity.getName(), attachmentEntity.getMimeType(), blob, attachmentId);
-		} else {
-			streamBytes(response, attachmentEntity.getName(), attachmentEntity.getMimeType(), new byte[0], attachmentId);
+		if (blob == null) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Attachment with id '%s' has no content".formatted(attachmentId));
 		}
+		streamBlob(response, attachmentEntity.getName(), attachmentEntity.getMimeType(), blob, attachmentId);
 	}
 
 	/**
@@ -49,19 +49,6 @@ public final class ResponseStreamer {
 				StreamUtils.copy(in, response.getOutputStream());
 			}
 		} catch (final IOException | SQLException e) {
-			throw copyFailed(attachmentId, e);
-		}
-	}
-
-	/**
-	 * Streams already-materialised bytes.
-	 */
-	public static void streamBytes(final HttpServletResponse response, final String fileName, final String mimeType, final byte[] content, final Object attachmentId) {
-		try (final InputStream in = new ByteArrayInputStream(content)) {
-			addHeaders(response, fileName, mimeType);
-			response.setContentLengthLong(content.length);
-			StreamUtils.copy(in, response.getOutputStream());
-		} catch (final IOException e) {
 			throw copyFailed(attachmentId, e);
 		}
 	}
