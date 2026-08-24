@@ -105,29 +105,27 @@ class AttachmentServiceTest {
 	}
 
 	@Test
-	void findAttachmentAsStreamedResponseWithoutContent() throws Exception {
+	void findAttachmentAsStreamedResponseWithoutContent() {
 
-		// Arrange - an attachment stored without content is served as an empty body rather than failing.
+		// Arrange - every path that creates an attachment stores content, so a row without it is broken rather than empty
+		// and must be reported as such instead of being served as a silently empty file.
 		final var errandId = 1L;
 		final var attachmentId = 123L;
-		final var mimeType = "application/pdf";
-		final var fileName = "document.pdf";
 		final var attachmentEntity = AttachmentEntity.builder()
-			.withName(fileName)
-			.withMimeType(mimeType)
+			.withName("document.pdf")
+			.withMimeType("application/pdf")
 			.build();
 		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(attachmentEntity));
-		when(servletResponseMock.getOutputStream()).thenReturn(servletOutputStreamMock);
 
 		// Act
-		attachmentService.findAttachmentAsStreamedResponse(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock);
+		final var exception = assertThrows(ThrowableProblem.class, () -> attachmentService.findAttachmentAsStreamedResponse(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock));
 
 		// Assert
+		assertThat(exception)
+			.hasFieldOrPropertyWithValue("status", INTERNAL_SERVER_ERROR)
+			.hasFieldOrPropertyWithValue("detail", "Attachment with id '123' has no content");
 		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(servletResponseMock).addHeader(CONTENT_TYPE, mimeType);
-		verify(servletResponseMock).addHeader(CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
-		verify(servletResponseMock).setContentLengthLong(0);
-		verify(servletResponseMock).getOutputStream();
+		verifyNoInteractions(servletResponseMock);
 	}
 
 	@Test

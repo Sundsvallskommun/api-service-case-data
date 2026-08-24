@@ -64,30 +64,36 @@ class AttachmentContentWriterTest {
 	}
 
 	@Test
-	void emptyFile() {
-		// Arrange - an empty upload leaves both columns unset.
+	void emptyFileIsRejected() {
+		// Arrange - an empty upload must not produce a contentless attachment row.
 		final var file = mock(MultipartFile.class);
 		when(file.isEmpty()).thenReturn(true);
 		final var attachmentEntity = new AttachmentEntity();
 
 		// Act
-		contentWriter.applyContent(attachmentEntity, file);
+		final var exception = assertThrows(ThrowableProblem.class, () -> contentWriter.applyContent(attachmentEntity, file));
 
 		// Assert
+		assertThat(exception)
+			.hasFieldOrPropertyWithValue("status", BAD_REQUEST)
+			.hasFieldOrPropertyWithValue("detail", "The attachment content must not be empty");
 		verifyNoInteractions(blobBuilderMock);
 		assertThat(attachmentEntity.getContent()).isNull();
 		assertThat(attachmentEntity.getHash()).isNull();
 	}
 
 	@Test
-	void missingFile() {
+	void missingFileIsRejected() {
 		// Arrange - no upload at all is treated the same as an empty one.
 		final var attachmentEntity = new AttachmentEntity();
 
 		// Act
-		contentWriter.applyContent(attachmentEntity, (MultipartFile) null);
+		final var exception = assertThrows(ThrowableProblem.class, () -> contentWriter.applyContent(attachmentEntity, (MultipartFile) null));
 
 		// Assert
+		assertThat(exception)
+			.hasFieldOrPropertyWithValue("status", BAD_REQUEST)
+			.hasFieldOrPropertyWithValue("detail", "The attachment content must not be empty");
 		verifyNoInteractions(blobBuilderMock);
 		assertThat(attachmentEntity.getContent()).isNull();
 		assertThat(attachmentEntity.getHash()).isNull();
@@ -128,15 +134,21 @@ class AttachmentContentWriterTest {
 	}
 
 	@Test
-	void nullOrEmptyMaterialisedContentLeavesEntityUntouched() {
-		// Arrange
+	void nullOrEmptyMaterialisedContentIsRejected() {
+		// Arrange - the collectors must not be able to store a contentless attachment either.
 		final var attachmentEntity = new AttachmentEntity();
 
 		// Act
-		contentWriter.applyContent(attachmentEntity, (byte[]) null);
-		contentWriter.applyContent(attachmentEntity, new byte[0]);
+		final var nullException = assertThrows(ThrowableProblem.class, () -> contentWriter.applyContent(attachmentEntity, (byte[]) null));
+		final var emptyException = assertThrows(ThrowableProblem.class, () -> contentWriter.applyContent(attachmentEntity, new byte[0]));
 
 		// Assert
+		assertThat(nullException)
+			.hasFieldOrPropertyWithValue("status", BAD_REQUEST)
+			.hasFieldOrPropertyWithValue("detail", "The attachment content must not be empty");
+		assertThat(emptyException)
+			.hasFieldOrPropertyWithValue("status", BAD_REQUEST)
+			.hasFieldOrPropertyWithValue("detail", "The attachment content must not be empty");
 		verifyNoInteractions(blobBuilderMock);
 		assertThat(attachmentEntity.getContent()).isNull();
 		assertThat(attachmentEntity.getHash()).isNull();
