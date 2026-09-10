@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import se.sundsvall.casedata.api.model.BulkEmailRequest;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.service.MessageService;
@@ -93,6 +96,22 @@ class MessageResource {
 			fromPath("/{municipalityId}/{namespace}/errands/{errandId}/messages/{messageId}")
 				.buildAndExpand(municipalityId, namespace, errandId, result.getMessageId())
 				.toUri())
+			.header(CONTENT_TYPE, ALL_VALUE)
+			.build();
+	}
+
+	@PostMapping(path = "/errands/{errandId}/messages/email/batch", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@Operation(summary = "Send a batch email in context of an errand", description = "Sends one individual email per recipient specified in the request", responses = {
+		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+	})
+	ResponseEntity<Void> sendBulkEmail(
+		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@Parameter(name = "errandId", description = "Errand ID", example = "123") @PathVariable final Long errandId,
+		@Valid @NotNull @RequestBody final BulkEmailRequest request) {
+
+		service.sendBulkEmail(errandId, request, municipalityId, namespace);
+		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}

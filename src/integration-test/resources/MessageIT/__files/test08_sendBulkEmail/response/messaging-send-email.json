@@ -1,0 +1,25 @@
+{
+	"batchId": "dd42ccfb-2afc-491f-aa26-83a3625f7d05",
+	"messages": [
+		{
+			"messageId": "91f0dec4-0c18-4dc3-a726-bddd7646e348",
+			"deliveries": [
+				{
+					"deliveryId": "9d4bafb6-3c95-4f78-8f5a-f6a2e3c1a123",
+					"messageType": "EMAIL",
+					"status": "SENT"
+				}
+			]
+		},
+		{
+			"messageId": "91f0dec4-0c18-4dc3-a726-bddd7646e349",
+			"deliveries": [
+				{
+					"deliveryId": "9d4bafb6-3c95-4f78-8f5a-f6a2e3c1a124",
+					"messageType": "EMAIL",
+					"status": "SENT"
+				}
+			]
+		}
+	]
+}

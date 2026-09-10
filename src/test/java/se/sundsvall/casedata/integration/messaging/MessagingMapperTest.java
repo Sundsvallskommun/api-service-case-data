@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import se.sundsvall.casedata.api.model.BulkEmailRequest;
 import se.sundsvall.casedata.api.model.CaseType;
+import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
 import se.sundsvall.casedata.integration.db.model.ErrandEntity;
 import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
@@ -168,6 +170,52 @@ class MessagingMapperTest {
 
 		// Assert - one combined batch request carries a party per recipient, instead of one request per recipient
 		assertThat(bean.getParties()).containsExactly(new Party(firstEmail), new Party(secondEmail));
+	}
+
+	@Test
+	void toEmailBatchRequestForBulkEmailRequestCreatesOnePartyPerRecipient() {
+		// Arrange
+		final var firstEmail = "first@example.com";
+		final var secondEmail = "second@example.com";
+		final var senderEmail = "sender@example.com";
+		final var senderName = "Sender Name";
+		final var request = BulkEmailRequest.builder()
+			.withRecipients(List.of(firstEmail, secondEmail))
+			.withSubject("Subject")
+			.withMessage("Message in plain text")
+			.withHtmlMessage("<p>Message in html</p>")
+			.withDepartmentName("CONVERSATION")
+			.withAttachments(List.of(MessageRequest.AttachmentRequest.builder()
+				.withName("file.txt")
+				.withContentType("text/plain")
+				.withContent("aGVsbG8=")
+				.build()))
+			.build();
+		final var messagingSettings = MessagingSettings.builder()
+			.withContactInformationEmail(senderEmail)
+			.withContactInformationEmailName(senderName)
+			.build();
+
+		// Act
+		final var bean = MessagingMapper.toEmailBatchRequest(request, messagingSettings, MessagingMapper.toEmailAttachments(request.getAttachments()));
+
+		// Assert
+		assertThat(bean.getParties()).containsExactly(new Party(firstEmail), new Party(secondEmail));
+		assertThat(bean.getSubject()).isEqualTo("Subject");
+		assertThat(bean.getMessage()).isEqualTo("Message in plain text");
+		assertThat(bean.getHtmlMessage()).isEqualTo("<p>Message in html</p>");
+		assertThat(bean.getSender().getName()).isEqualTo(senderName);
+		assertThat(bean.getSender().getAddress()).isEqualTo(senderEmail);
+		assertThat(bean.getAttachments()).hasSize(1).first().satisfies(attachment -> {
+			assertThat(attachment.getName()).isEqualTo("file.txt");
+			assertThat(attachment.getContentType()).isEqualTo("text/plain");
+			assertThat(attachment.getContent()).isEqualTo("aGVsbG8=");
+		});
+	}
+
+	@Test
+	void toEmailAttachmentsReturnsEmptyListForNullInput() {
+		assertThat(MessagingMapper.toEmailAttachments(null)).isEmpty();
 	}
 
 	@Test

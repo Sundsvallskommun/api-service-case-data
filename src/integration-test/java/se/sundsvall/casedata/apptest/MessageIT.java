@@ -126,4 +126,19 @@ class MessageIT extends AbstractAppTest {
 			.withExpectedResponse(RESPONSE_FILE)
 			.sendRequestAndVerifyResponse();
 	}
+
+	/**
+	 * Test to verify that a POST to the /email/batch endpoint sends one individual email per recipient - via
+	 * Messaging's batch endpoint - instead of recording a Message on the errand.
+	 */
+	@Test
+	void test08_sendBulkEmail() {
+		setupCall()
+			.withHttpMethod(POST)
+			.withServicePath(PATH + "/email/batch")
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(NO_CONTENT)
+			.withExpectedResponseBodyIsNull()
+			.sendRequestAndVerifyResponse();
+	}
 }

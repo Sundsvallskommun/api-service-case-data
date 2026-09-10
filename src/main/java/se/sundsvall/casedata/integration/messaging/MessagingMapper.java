@@ -2,6 +2,7 @@ package se.sundsvall.casedata.integration.messaging;
 
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import generated.se.sundsvall.messaging.Email;
+import generated.se.sundsvall.messaging.EmailAttachment;
 import generated.se.sundsvall.messaging.EmailBatchRequest;
 import generated.se.sundsvall.messaging.EmailSender;
 import generated.se.sundsvall.messaging.MessageParty;
@@ -12,6 +13,7 @@ import generated.se.sundsvall.messaging.Sms;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import se.sundsvall.casedata.api.model.BulkEmailRequest;
 import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.validation.enums.StakeholderRole;
 import se.sundsvall.casedata.integration.db.model.ContactInformationEntity;
@@ -48,6 +50,42 @@ public final class MessagingMapper {
 			.sender(new EmailSender()
 				.name(messagingSettings.getContactInformationEmailName())
 				.address(messagingSettings.getContactInformationEmail()));
+	}
+
+	/**
+	 * Builds a batch email request for a manually composed message, sent to every recipient in the request as an
+	 * individual email via Messaging's batch endpoint. Unlike {@link #toEmailBatchRequest(ErrandEntity, MessagingSettings,
+	 * List, int, CaseType)}, the subject and message are taken verbatim from the caller instead of being built from a
+	 * templated support text.
+	 *
+	 * @param  request           the bulk email request containing recipients, subject, message and attachments
+	 * @param  messagingSettings the messaging settings to resolve the sender address from
+	 * @param  attachments       the attachments to include on the email
+	 * @return                   the resulting batch email request
+	 */
+	public static EmailBatchRequest toEmailBatchRequest(final BulkEmailRequest request, final MessagingSettings messagingSettings, final List<EmailAttachment> attachments) {
+		return new EmailBatchRequest()
+			.parties(request.getRecipients().stream()
+				.map(Party::new)
+				.toList())
+			.subject(request.getSubject())
+			.message(request.getMessage())
+			.htmlMessage(request.getHtmlMessage())
+			.attachments(attachments)
+			.sender(new EmailSender()
+				.name(messagingSettings.getContactInformationEmailName())
+				.address(messagingSettings.getContactInformationEmail()));
+	}
+
+	public static List<EmailAttachment> toEmailAttachments(final List<se.sundsvall.casedata.api.model.MessageRequest.AttachmentRequest> attachmentRequests) {
+		return ofNullable(attachmentRequests)
+			.orElse(emptyList())
+			.stream()
+			.map(attachment -> new EmailAttachment()
+				.name(attachment.getName())
+				.contentType(attachment.getContentType())
+				.content(attachment.getContent()))
+			.toList();
 	}
 
 	public static MessageRequest toMessagingMessageRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, CaseType caseType) {

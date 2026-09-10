@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import se.sundsvall.casedata.api.model.BulkEmailRequest;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -32,6 +33,7 @@ import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubTy
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_OWNER_SUPPORT_TEXT;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_REPORTER_SUPPORT_TEXT;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.findStakeholderEmails;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailAttachments;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailBatchRequest;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toMessagingMessageRequest;
 import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
@@ -103,6 +105,26 @@ public class MessageService {
 		}
 
 		return mapper.toMessageResponse(messageEntity, true);
+	}
+
+	/**
+	 * Sends a manually composed email to a list of recipients - one individual email per recipient - via Messaging's
+	 * batch endpoint. Unlike {@link #create(Long, MessageRequest, String, String)}, the email is actually transmitted
+	 * via Messaging rather than merely recorded on the errand.
+	 *
+	 * @param errandId       of the errand the email is sent in the context of
+	 * @param request        the recipients, subject, message and attachments to send
+	 * @param municipalityId of the errand the email is sent in the context of
+	 * @param namespace      of the errand the email is sent in the context of
+	 */
+	public void sendBulkEmail(final Long errandId, final BulkEmailRequest request, final String municipalityId, final String namespace) {
+		verifyErrandExists(errandId, municipalityId, namespace);
+
+		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, request.getDepartmentName());
+		final var attachments = toEmailAttachments(request.getAttachments());
+		final var emailBatchRequest = toEmailBatchRequest(request, messagingSettings, attachments);
+
+		messagingClient.sendEmailBatch(municipalityId, emailBatchRequest);
 	}
 
 	public void updateViewedStatus(final Long errandId, final String messageId, final String municipalityId, final String namespace, final boolean isViewed) {

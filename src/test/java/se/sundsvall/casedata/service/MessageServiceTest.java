@@ -26,6 +26,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import se.sundsvall.casedata.api.model.BulkEmailRequest;
 import se.sundsvall.casedata.api.model.CaseType;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.Notification;
@@ -321,6 +322,57 @@ class MessageServiceTest {
 		assertThat(emailBatchRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
 		assertThat(emailBatchRequestCaptor.getValue().getParties()).extracting(Party::getEmailAddress).containsExactly(emailAddress);
 		verifyNoMoreInteractions(messageRepositoryMock, messageMapperMock, messagingClientMock);
+	}
+
+	@Test
+	void sendBulkEmail() {
+		// Arrange
+		final var errandId = 1L;
+		final var firstEmail = "first@example.com";
+		final var secondEmail = "second@example.com";
+		final var senderEmail = "sender@example.com";
+		final var request = BulkEmailRequest.builder()
+			.withRecipients(List.of(firstEmail, secondEmail))
+			.withSubject("Subject")
+			.withMessage("Message")
+			.withDepartmentName(DEPARTMENT_ID)
+			.build();
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().withContactInformationEmail(senderEmail).build());
+
+		// Act
+		messageService.sendBulkEmail(errandId, request, MUNICIPALITY_ID, NAMESPACE);
+
+		// Assert - one individual email per recipient is sent via a single batch call
+		verify(errandRepositoryMock).existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
+		verify(messagingClientMock).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
+		assertThat(emailBatchRequestCaptor.getValue().getParties()).extracting(Party::getEmailAddress).containsExactly(firstEmail, secondEmail);
+		assertThat(emailBatchRequestCaptor.getValue().getSubject()).isEqualTo("Subject");
+		assertThat(emailBatchRequestCaptor.getValue().getMessage()).isEqualTo("Message");
+		assertThat(emailBatchRequestCaptor.getValue().getSender().getAddress()).isEqualTo(senderEmail);
+		verifyNoMoreInteractions(errandRepositoryMock, messagingSettingsIntegrationMock, messagingClientMock, notificationServiceMock, messageMapperMock);
+	}
+
+	@Test
+	void sendBulkEmailWithErrandNotFound() {
+		// Arrange
+		final var errandId = 1L;
+		final var request = BulkEmailRequest.builder()
+			.withRecipients(List.of("first@example.com"))
+			.withSubject("Subject")
+			.withMessage("Message")
+			.withDepartmentName(DEPARTMENT_ID)
+			.build();
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(false);
+
+		// Act & Assert
+		assertThatThrownBy(() -> messageService.sendBulkEmail(errandId, request, MUNICIPALITY_ID, NAMESPACE))
+			.isInstanceOf(ThrowableProblem.class)
+			.hasFieldOrPropertyWithValue("status", NOT_FOUND);
+
+		verify(errandRepositoryMock).existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoInteractions(messagingSettingsIntegrationMock, messagingClientMock);
 	}
 
 	@ParameterizedTest
