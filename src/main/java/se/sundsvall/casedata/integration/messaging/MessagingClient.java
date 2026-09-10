@@ -1,6 +1,8 @@
 package se.sundsvall.casedata.integration.messaging;
 
+import generated.se.sundsvall.messaging.EmailBatchRequest;
 import generated.se.sundsvall.messaging.EmailRequest;
+import generated.se.sundsvall.messaging.MessageBatchResult;
 import generated.se.sundsvall.messaging.MessageRequest;
 import generated.se.sundsvall.messaging.MessageResult;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -39,4 +41,16 @@ public interface MessagingClient {
 	MessageResult sendEmail(
 		@PathVariable final String municipalityId,
 		@RequestBody final EmailRequest emailRequest);
+
+	/**
+	 * Send an individual email to each party in a single batch call.
+	 *
+	 * @param  municipalityId    the id of the municipality to send the emails to
+	 * @param  emailBatchRequest containing email information and the parties to send it to
+	 * @return                   response containing a batch id and delivery results for each sent email
+	 */
+	@PostMapping(path = "/{municipalityId}/email/batch", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+	MessageBatchResult sendEmailBatch(
+		@PathVariable final String municipalityId,
+		@RequestBody final EmailBatchRequest emailBatchRequest);
 }

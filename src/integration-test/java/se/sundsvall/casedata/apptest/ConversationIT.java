@@ -213,4 +213,26 @@ class ConversationIT extends AbstractAppTest {
 			.withExpectedResponseStatus(NO_CONTENT)
 			.sendRequestAndVerifyResponse();
 	}
+
+	/**
+	 * Test to verify that when an errand has several stakeholders with the reporter role, a single combined email
+	 * (with all reporter e-mail addresses in the recipients array) is sent via Messaging instead of one email per
+	 * reporter. The stub in messaging-send-email.json only matches a request carrying both reporter addresses, so
+	 * the test fails if the two are sent as separate emails.
+	 */
+	@Test
+	void test12_createMessageWithTypeInternalToMultipleReporters() throws FileNotFoundException {
+		final var errandId = 5;
+		final var internalConversationId = "896a44d8-724b-11ed-a840-0242ac110006";
+
+		setupCall()
+			.withHttpMethod(POST)
+			.withServicePath(format(PATH + "/{3}/messages", MUNICIPALITY_ID, NAMESPACE, errandId, internalConversationId))
+			.withContentType(MULTIPART_FORM_DATA)
+			.withRequestFile("message", REQUEST_FILE)
+			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
+			.withHeader(HEADER_NAME, "type=adAccount; adm02adm")
+			.withExpectedResponseStatus(NO_CONTENT)
+			.sendRequestAndVerifyResponse();
+	}
 }

@@ -23,7 +23,6 @@ import se.sundsvall.dept44.support.Identifier.Type;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ObjectUtils.notEqual;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -32,8 +31,8 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.R
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_OWNER_SUPPORT_TEXT;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_REPORTER_SUPPORT_TEXT;
-import static se.sundsvall.casedata.integration.messaging.MessagingMapper.findStakeholderEmail;
-import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailRequest;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.findStakeholderEmails;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailBatchRequest;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toMessagingMessageRequest;
 import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
@@ -95,10 +94,12 @@ public class MessageService {
 		final var messageEntity = messageRepository.save(mapper.toMessageEntity(request, errandId, municipalityId, namespace));
 		notificationService.create(municipalityId, namespace, toNotification(errandEntity, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errandEntity);
 
-		final var reporterStakeholder = getReporterStakeholder(errandEntity);
+		final var notifiableReporters = getReporterStakeholders(errandEntity).stream()
+			.filter(reporter -> notEqual(reporter.getAdAccount(), request.getUsername()))
+			.toList();
 
-		if (doesCaseTypeExist(municipalityId, namespace, errandEntity.getCaseType()) && reporterStakeholder != null && !reporterStakeholder.getAdAccount().equals(request.getUsername())) {
-			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, DEPARTMENT_NAME_PARATRANSIT);
+		if (doesCaseTypeExist(municipalityId, namespace, errandEntity.getCaseType()) && !notifiableReporters.isEmpty()) {
+			sendEmailNotification(municipalityId, namespace, errandEntity, notifiableReporters, DEPARTMENT_NAME_PARATRANSIT);
 		}
 
 		return mapper.toMessageResponse(messageEntity, true);
@@ -142,23 +143,27 @@ public class MessageService {
 	 */
 	public void sendMessageNotification(final String municipalityId, final String namespace, final Long errandId, final String departmentName) {
 		final var errandEntity = fetchErrand(municipalityId, namespace, errandId);
-		final var applicantStakeholder = getApplicantStakeholder(errandEntity);
+		final var applicantStakeholders = getApplicantStakeholders(errandEntity);
+		final var notifiableApplicants = applicantStakeholders.stream()
+			.filter(applicant -> !creatorIsSameAsApplicant(applicant))
+			.toList();
 
-		if (creatorIsSameAsApplicant(applicantStakeholder)) {
+		if (!applicantStakeholders.isEmpty() && notifiableApplicants.isEmpty()) {
 			return;
 		}
 
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
 		final var caseType = metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType());
 
-		final var applicantEmail = findStakeholderEmail(applicantStakeholder);
-		if (isNotBlank(applicantEmail)) {
-			final var emailRequest = toEmailRequest(errandEntity, messagingSettings, applicantStakeholder, TYPE_OWNER_SUPPORT_TEXT, caseType);
-			messagingClient.sendEmail(municipalityId, emailRequest);
+		final var applicantEmails = findStakeholderEmails(notifiableApplicants);
+		if (!applicantEmails.isEmpty()) {
+			final var emailBatchRequest = toEmailBatchRequest(errandEntity, messagingSettings, applicantEmails, TYPE_OWNER_SUPPORT_TEXT, caseType);
+			messagingClient.sendEmailBatch(municipalityId, emailBatchRequest);
 			return;
 		}
 
-		if (applicantStakeholder != null && isNotBlank(applicantStakeholder.getPersonId())) {
+		final var hasApplicantWithPersonId = notifiableApplicants.stream().anyMatch(applicant -> isNotBlank(applicant.getPersonId()));
+		if (hasApplicantWithPersonId) {
 			final var messageRequest = toMessagingMessageRequest(errandEntity, messagingSettings, caseType);
 			final var result = messagingClient.sendMessage(municipalityId, messageRequest);
 			if (result == null) {
@@ -180,11 +185,13 @@ public class MessageService {
 	 */
 	public void sendEmailNotification(final String municipalityId, final String namespace, final Long errandId, final String departmentName) {
 		final var errandEntity = fetchErrand(municipalityId, namespace, errandId);
-		final var reporterStakeholder = getReporterStakeholder(errandEntity);
+		final var notifiableReporters = getReporterStakeholders(errandEntity).stream()
+			.filter(this::isEmailNotificationToBeSent)
+			.toList();
 
-		// Create a notification and send email if logic determins that mail should be sent
-		if (isEmailNotificationToBeSent(reporterStakeholder)) {
-			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, departmentName);
+		// Create a notification and send a combined email if logic determins that mail should be sent
+		if (!notifiableReporters.isEmpty()) {
+			sendEmailNotification(municipalityId, namespace, errandEntity, notifiableReporters, departmentName);
 		}
 	}
 
@@ -206,33 +213,33 @@ public class MessageService {
 			.orElse(true);
 	}
 
-	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName) {
-		if (isBlank(findStakeholderEmail(stakeholderEntity))) {
+	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final List<StakeholderEntity> stakeholderEntities, final String departmentName) {
+		final var recipientEmails = findStakeholderEmails(stakeholderEntities);
+		if (recipientEmails.isEmpty()) {
 			LOGGER.warn("Cannot send reporter notification for errand '{}' in namespace '{}' for municipality '{}': reporter stakeholder has no email", errandEntity.getId(), sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
 			return;
 		}
 
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
-		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity, TYPE_REPORTER_SUPPORT_TEXT,
+		final var request = toEmailBatchRequest(errandEntity, messagingSettings, recipientEmails, TYPE_REPORTER_SUPPORT_TEXT,
 			metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType()));
-		messagingClient.sendEmail(errandEntity.getMunicipalityId(), request);
+		messagingClient.sendEmailBatch(errandEntity.getMunicipalityId(), request);
 	}
 
-	private StakeholderEntity getReporterStakeholder(final ErrandEntity errandEntity) {
-		return getStakeholderByRole(errandEntity, REPORTER.name());
+	private List<StakeholderEntity> getReporterStakeholders(final ErrandEntity errandEntity) {
+		return getStakeholdersByRole(errandEntity, REPORTER.name());
 	}
 
-	private StakeholderEntity getApplicantStakeholder(final ErrandEntity errandEntity) {
-		return getStakeholderByRole(errandEntity, APPLICANT.name());
+	private List<StakeholderEntity> getApplicantStakeholders(final ErrandEntity errandEntity) {
+		return getStakeholdersByRole(errandEntity, APPLICANT.name());
 	}
 
-	private StakeholderEntity getStakeholderByRole(final ErrandEntity errandEntity, final String role) {
+	private List<StakeholderEntity> getStakeholdersByRole(final ErrandEntity errandEntity, final String role) {
 		return ofNullable(errandEntity.getStakeholders())
 			.orElse(emptyList())
 			.stream()
 			.filter(stakeholder -> ofNullable(stakeholder.getRoles()).orElse(emptyList()).contains(role))
-			.findFirst()
-			.orElse(null);
+			.toList();
 	}
 
 	/**

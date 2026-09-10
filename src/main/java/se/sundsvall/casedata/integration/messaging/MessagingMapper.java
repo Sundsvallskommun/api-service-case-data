@@ -2,11 +2,12 @@ package se.sundsvall.casedata.integration.messaging;
 
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import generated.se.sundsvall.messaging.Email;
-import generated.se.sundsvall.messaging.EmailRequest;
+import generated.se.sundsvall.messaging.EmailBatchRequest;
 import generated.se.sundsvall.messaging.EmailSender;
 import generated.se.sundsvall.messaging.MessageParty;
 import generated.se.sundsvall.messaging.MessageRequest;
 import generated.se.sundsvall.messaging.MessageSender;
+import generated.se.sundsvall.messaging.Party;
 import generated.se.sundsvall.messaging.Sms;
 import java.util.List;
 import java.util.Objects;
@@ -37,11 +38,13 @@ public final class MessagingMapper {
 		// Private constructor to prevent instantiation
 	}
 
-	public static EmailRequest toEmailRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, final StakeholderEntity stakeholderEntity, int supportTextType, CaseType caseType) {
-		return new EmailRequest()
+	public static EmailBatchRequest toEmailBatchRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, final List<String> recipientEmails, int supportTextType, CaseType caseType) {
+		return new EmailBatchRequest()
+			.parties(recipientEmails.stream()
+				.map(Party::new)
+				.toList())
 			.subject(SUBJECT_TEMPLATE.formatted(caseType.getDisplayName(), errandEntity.getErrandNumber()))
 			.message(createBody(errandEntity, messagingSettings, supportTextType, caseType))
-			.recipients(ofNullable(findStakeholderEmail(stakeholderEntity)).map(List::of).orElse(null))
 			.sender(new EmailSender()
 				.name(messagingSettings.getContactInformationEmailName())
 				.address(messagingSettings.getContactInformationEmail()));
@@ -128,6 +131,23 @@ public final class MessagingMapper {
 			.findFirst()
 			.map(ContactInformationEntity::getValue)
 			.orElse(null);
+	}
+
+	/**
+	 * Resolves the distinct, non-blank e-mail addresses for a list of stakeholders, so that a single combined message
+	 * can be sent to all of them via Messaging's recipients array instead of one message per stakeholder.
+	 *
+	 * @param  stakeholderEntities the stakeholders to resolve e-mail addresses for
+	 * @return                     the distinct, non-blank e-mail addresses found among the stakeholders
+	 */
+	public static List<String> findStakeholderEmails(final List<StakeholderEntity> stakeholderEntities) {
+		return ofNullable(stakeholderEntities)
+			.orElse(emptyList())
+			.stream()
+			.map(MessagingMapper::findStakeholderEmail)
+			.filter(StringUtils::isNotBlank)
+			.distinct()
+			.toList();
 	}
 
 	public static String toFilterString(final String namespace, final String departmentName) {

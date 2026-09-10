@@ -1,7 +1,8 @@
 package se.sundsvall.casedata.service;
 
-import generated.se.sundsvall.messaging.EmailRequest;
+import generated.se.sundsvall.messaging.EmailBatchRequest;
 import generated.se.sundsvall.messaging.MessageResult;
+import generated.se.sundsvall.messaging.Party;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Blob;
@@ -136,7 +137,7 @@ class MessageServiceTest {
 	private ArgumentCaptor<generated.se.sundsvall.messaging.MessageRequest> messageRequestCaptor;
 
 	@Captor
-	private ArgumentCaptor<EmailRequest> emailRequestCaptor;
+	private ArgumentCaptor<EmailBatchRequest> emailBatchRequestCaptor;
 
 	@BeforeEach
 	void setup() {
@@ -316,9 +317,9 @@ class MessageServiceTest {
 		});
 		verify(messageMapperMock).toMessageEntity(request, errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messageRepositoryMock).save(any());
-		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
-		assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
-		assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(emailAddress);
+		verify(messagingClientMock).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
+		assertThat(emailBatchRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
+		assertThat(emailBatchRequestCaptor.getValue().getParties()).extracting(Party::getEmailAddress).containsExactly(emailAddress);
 		verifyNoMoreInteractions(messageRepositoryMock, messageMapperMock, messagingClientMock);
 	}
 
@@ -392,11 +393,61 @@ class MessageServiceTest {
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
-		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
-		assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(emailAddress);
-		assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
+		verify(messagingClientMock).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
+		assertThat(emailBatchRequestCaptor.getValue().getParties()).extracting(Party::getEmailAddress).containsExactly(emailAddress);
+		assertThat(emailBatchRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
 		verify(messagingClientMock, never()).sendMessage(any(), any());
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
+	}
+
+	@Test
+	void sendMessageNotificationSendsOneCombinedEmailToMultipleApplicantsExcludingCreator() {
+		// Arrange
+		final var creatorPartyId = UUID.randomUUID().toString();
+		Identifier.set(Identifier.create().withType(PARTY_ID).withValue(creatorPartyId));
+		final var errandId = 1L;
+		final var firstApplicantEmail = "first.applicant@example.com";
+		final var secondApplicantEmail = "second.applicant@example.com";
+		final var creatorApplicant = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withPersonId(creatorPartyId)
+			.withContactInformation(List.of(ContactInformationEntity.builder()
+				.withContactType(EMAIL)
+				.withValue("creator.applicant@example.com")
+				.build()))
+			.build();
+		final var firstApplicant = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withContactInformation(List.of(ContactInformationEntity.builder()
+				.withContactType(EMAIL)
+				.withValue(firstApplicantEmail)
+				.build()))
+			.build();
+		final var secondApplicant = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withContactInformation(List.of(ContactInformationEntity.builder()
+				.withContactType(EMAIL)
+				.withValue(secondApplicantEmail)
+				.build()))
+			.build();
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withErrandNumber("123456789")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(creatorApplicant, firstApplicant, secondApplicant))
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
+
+		// Act
+		messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
+
+		// Assert - one combined email is sent to all applicants except the one that created the message
+		verify(messagingClientMock).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
+		assertThat(emailBatchRequestCaptor.getValue().getParties()).extracting(Party::getEmailAddress).containsExactlyInAnyOrder(firstApplicantEmail, secondApplicantEmail);
+		verify(messagingClientMock, never()).sendMessage(any(), any());
 	}
 
 	@Test
@@ -431,7 +482,7 @@ class MessageServiceTest {
 		assertThat(messageRequestCaptor.getValue().getMessages()).hasSize(1);
 		assertThat(messageRequestCaptor.getValue().getMessages().getFirst().getParty().getPartyId())
 			.isEqualTo(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
-		verify(messagingClientMock, never()).sendEmail(any(), any());
+		verify(messagingClientMock, never()).sendEmailBatch(any(), any());
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
 	}
 
@@ -459,7 +510,7 @@ class MessageServiceTest {
 
 		// Assert
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(messagingClientMock, never()).sendEmail(any(), any());
+		verify(messagingClientMock, never()).sendEmailBatch(any(), any());
 		verify(messagingClientMock, never()).sendMessage(any(), any());
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
 	}
@@ -496,8 +547,8 @@ class MessageServiceTest {
 		messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
 
 		// Assert
-		verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
-		assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(emailAddress);
+		verify(messagingClientMock).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
+		assertThat(emailBatchRequestCaptor.getValue().getParties()).extracting(Party::getEmailAddress).containsExactly(emailAddress);
 	}
 
 	@Test
@@ -607,9 +658,9 @@ class MessageServiceTest {
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		if (emailShouldBeSent) {
 			verify(messagingSettingsIntegrationMock).getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID);
-			verify(messagingClientMock).sendEmail(eq(MUNICIPALITY_ID), emailRequestCaptor.capture());
-			assertThat(emailRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
-			assertThat(emailRequestCaptor.getValue().getRecipients()).containsExactly(stakeholderEntity.getContactInformation().getFirst().getValue());
+			verify(messagingClientMock).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
+			assertThat(emailBatchRequestCaptor.getValue().getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayname 123456789");
+			assertThat(emailBatchRequestCaptor.getValue().getParties()).extracting(Party::getEmailAddress).containsExactly(stakeholderEntity.getContactInformation().getFirst().getValue());
 		}
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
 
@@ -640,6 +691,47 @@ class MessageServiceTest {
 		verify(errandRepositoryMock).findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(messagingSettingsIntegrationMock, messagingClientMock);
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
+	}
+
+	@Test
+	void sendEmailNotificationSendsOneCombinedEmailToMultipleReporters() {
+		// Arrange - no Identifier set (setup removes it), so both reporters are notifiable
+		final var errandId = 1L;
+		final var firstReporterEmail = "first.reporter@example.com";
+		final var secondReporterEmail = "second.reporter@example.com";
+		final var firstReporter = StakeholderEntity.builder()
+			.withAdAccount("firstReporterAdAccount")
+			.withRoles(List.of(StakeholderRole.REPORTER.name()))
+			.withContactInformation(List.of(ContactInformationEntity.builder()
+				.withContactType(EMAIL)
+				.withValue(firstReporterEmail)
+				.build()))
+			.build();
+		final var secondReporter = StakeholderEntity.builder()
+			.withAdAccount("secondReporterAdAccount")
+			.withRoles(List.of(StakeholderRole.REPORTER.name()))
+			.withContactInformation(List.of(ContactInformationEntity.builder()
+				.withContactType(EMAIL)
+				.withValue(secondReporterEmail)
+				.build()))
+			.build();
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withErrandNumber("123456789")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(firstReporter, secondReporter))
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
+
+		// Act
+		messageService.sendEmailNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
+
+		// Assert - a single email is sent with both reporters as recipients, instead of one email per reporter
+		verify(messagingClientMock).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
+		assertThat(emailBatchRequestCaptor.getValue().getParties()).extracting(Party::getEmailAddress).containsExactlyInAnyOrder(firstReporterEmail, secondReporterEmail);
 	}
 
 	@MethodSource("reporterEmailArgumentProvider")

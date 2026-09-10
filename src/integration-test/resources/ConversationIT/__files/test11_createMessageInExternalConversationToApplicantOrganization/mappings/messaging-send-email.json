@@ -1,14 +1,15 @@
 {
 	"request": {
 		"method": "POST",
-		"url": "/messaging/2281/email",
+		"url": "/messaging/2281/email/batch",
 		"bodyPatterns": [
 			{
 				"equalToJson": {
-					"recipients": [
-						"applicant.org@testdomain.local"
+					"parties": [
+						{
+							"emailAddress": "applicant.org@testdomain.local"
+						}
 					],
-					"cc": [],
 					"subject": "Nytt meddelande kopplat till ärendet Nytt parkeringstillstånd ERRAND-NUMBER-4",
 					"message": "Hej , om du vill kontakta oss så kan det göras via e-post eller telefon",
 					"sender": {

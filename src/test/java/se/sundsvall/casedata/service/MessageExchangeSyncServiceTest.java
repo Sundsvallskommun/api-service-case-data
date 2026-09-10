@@ -159,7 +159,7 @@ class MessageExchangeSyncServiceTest {
 			.build();
 
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(MESSAGE_EXCHANGE_NS), any(), any(), any()))
-			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier(errandAdministratorOwnerId))))));
+			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier().value(errandAdministratorOwnerId))))));
 
 		// Act
 		var result = service.syncMessages(conversationEntity, errandAdministratorOwnerId);
@@ -189,8 +189,8 @@ class MessageExchangeSyncServiceTest {
 
 		when(messageExchangeClientMock.getMessages(eq(municipalityId), eq(MESSAGE_EXCHANGE_NS), any(), any(), any()))
 			.thenReturn(ResponseEntity.ok(new PageImpl<>(List.of(
-				new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier(errandAdministratorOwnerId)),
-				new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier("otherUserId"))))));
+				new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier().value(errandAdministratorOwnerId)),
+				new generated.se.sundsvall.messageexchange.Message().createdBy(new Identifier().value("otherUserId"))))));
 
 		// Act
 		var result = service.syncMessages(conversationEntity, errandAdministratorOwnerId);
