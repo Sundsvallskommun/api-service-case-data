@@ -2,6 +2,7 @@ package se.sundsvall.casedata.api.model;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -38,6 +39,7 @@ public class BulkEmailRequest {
 	@Schema(description = "The department name to use when resolving which messaging settings (i.e. sender address) to use", examples = "CONVERSATION", requiredMode = REQUIRED)
 	private String departmentName;
 
+	@Valid
 	@ArraySchema(schema = @Schema(description = "List with Base64 encoded email attachments"))
 	private List<MessageRequest.AttachmentRequest> attachments;
 }

@@ -10,6 +10,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.casedata.api.model.BulkEmailRequest;
+import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.service.MessageService;
 import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
@@ -83,6 +84,39 @@ class MessageResourceFailureTest {
 		assertThat(response.getViolations())
 			.extracting("field")
 			.contains("recipients");
+	}
+
+	@Test
+	void postBulkEmailWithInvalidAttachment() {
+		// Arrange - attachment content is blank and its name is missing, both of which are only caught if
+		// BulkEmailRequest.attachments cascades validation into each AttachmentRequest via @Valid
+		final var request = BulkEmailRequest.builder()
+			.withRecipients(List.of("recipient@example.com"))
+			.withSubject("Subject")
+			.withMessage("Message")
+			.withDepartmentName("CONVERSATION")
+			.withAttachments(List.of(MessageRequest.AttachmentRequest.builder()
+				.withContent("")
+				.build()))
+			.build();
+
+		// Act
+		final var response = webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(PATH + "/email/batch").build(MUNICIPALITY_ID, NAMESPACE, 1L))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(request)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON_VALUE)
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		verifyNoInteractions(messageServiceMock);
+		assertThat(response.getViolations())
+			.extracting("field")
+			.contains("attachments[0].content", "attachments[0].name");
 	}
 
 }
