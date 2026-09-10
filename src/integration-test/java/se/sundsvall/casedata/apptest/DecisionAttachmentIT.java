@@ -28,8 +28,8 @@ import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 /**
- * Attachments owned by a decision. Decision 1 belongs to errand 1 and owns attachments 1 (blob) and 2 (legacy base64);
- * attachment 3 belongs directly to errand 1. Decision 2 belongs to errand 2.
+ * Attachments owned by a decision. Decision 1 belongs to errand 1 and owns attachments 1 and 2; attachment 3 belongs
+ * directly to errand 1. Decision 2 belongs to errand 2.
  */
 @WireMockAppTestSuite(files = "classpath:/DecisionAttachmentIT", classes = Application.class)
 @Sql({
@@ -54,19 +54,6 @@ class DecisionAttachmentIT extends AbstractAppTest {
 		setupCall()
 			.withHttpMethod(GET)
 			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, DECISION_ID, "1"))
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(IMAGE_PNG_VALUE))
-			.withExpectedBinaryResponse("test_image.png")
-			.sendRequestAndVerifyResponse();
-	}
-
-	@Test
-	void test02_getAttachmentWithLegacyBase64Content() throws IOException {
-		// Attachment 2 is an un-migrated row: the content lives base64-encoded in the legacy 'file' column and must be
-		// decoded on the fly, yielding the same bytes as a blob-stored attachment.
-		setupCall()
-			.withHttpMethod(GET)
-			.withServicePath(format(ATTACHMENT_BY_ID_PATH, MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, DECISION_ID, "2"))
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(IMAGE_PNG_VALUE))
 			.withExpectedBinaryResponse("test_image.png")

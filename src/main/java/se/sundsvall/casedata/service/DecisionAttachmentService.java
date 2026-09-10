@@ -65,7 +65,7 @@ public class DecisionAttachmentService {
 	/**
 	 * Streams the raw binary content of a decision attachment to the supplied response. See
 	 * {@link AttachmentService#findAttachmentAsStreamedResponse(Long, Long, String, String, HttpServletResponse)} for how
-	 * the content is located during the base64-to-binary migration.
+	 * the content is located.
 	 */
 	public void findAttachmentAsStreamedResponse(final Long errandId, final Long decisionId, final Long attachmentId, final String municipalityId, final String namespace, final HttpServletResponse response) {
 		verifyDecisionOnErrand(errandId, decisionId, municipalityId, namespace);

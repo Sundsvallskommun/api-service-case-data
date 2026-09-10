@@ -1,5 +1,6 @@
 package se.sundsvall.casedata.service.scheduler.supensions;
 
+import java.time.ZoneId;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ public class SuspensionWorker {
 	@Transactional
 	public void processExpiredSuspensions() {
 		errandRepository
-			.findAllBySuspendedToBefore(now())
+			.findAllBySuspendedToBefore(now(ZoneId.systemDefault()))
 			.forEach(this::processSuspension);
 	}
 

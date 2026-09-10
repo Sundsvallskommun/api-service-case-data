@@ -27,6 +27,7 @@ import se.sundsvall.casedata.integration.db.model.StakeholderEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
 import se.sundsvall.casedata.integration.emailreader.EmailReaderClient;
 import se.sundsvall.casedata.integration.emailreader.configuration.EmailReaderProperties;
+import se.sundsvall.casedata.service.AttachmentContentWriter;
 import se.sundsvall.casedata.service.NotificationService;
 import se.sundsvall.casedata.service.scheduler.MessageMapper;
 import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
@@ -61,6 +62,9 @@ class EmailReaderWorkerTest {
 
 	@Mock
 	private MessageMapper messageMapperMock;
+
+	@Mock
+	private AttachmentContentWriter attachmentContentWriterMock;
 
 	@Mock
 	private MessageAttachmentRepository messageAttachmentRepositoryMock;
@@ -160,6 +164,7 @@ class EmailReaderWorkerTest {
 
 		when(messageMapperMock.toAttachmentEntity(any(EmailAttachment.class), any(), any(), any())).thenReturn(messageAttachmentEntity);
 		when(messageMapperMock.toAttachmentEntity(any())).thenReturn(attachmentEntity);
+		when(emailReaderClientMock.getAttachment(any(), any())).thenReturn("someData".getBytes());
 		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(MessageAttachmentDataEntity.builder().build());
 		// Act
 		final var result = emailReaderWorker.save(email);
@@ -172,7 +177,6 @@ class EmailReaderWorkerTest {
 		verify(notificationServiceMock).create(eq(municipalityId), eq(namespace), notificationCaptor.capture(), same(errandEntity));
 		verify(messageAttachmentRepositoryMock).save(any());
 		verify(messageAttachmentRepositoryMock).saveAndFlush(any());
-		verify(attachmentRepositoryMock).save(any());
 		verify(attachmentRepositoryMock).saveAndFlush(any());
 		verifyNoMoreInteractions(errandRepositoryMock, messageRepositoryMock, notificationServiceMock, attachmentRepositoryMock, messageAttachmentRepositoryMock, dept44HealthUtilityMock);
 	}
@@ -346,14 +350,14 @@ class EmailReaderWorkerTest {
 
 		when(messageMapperMock.toAttachmentEntity(attachment, messageId, municipalityId, namespace)).thenReturn(messageAttachment);
 		when(messageMapperMock.toAttachmentEntity(messageAttachment)).thenReturn(attachmentEntity);
+		when(emailReaderClientMock.getAttachment(any(), any())).thenReturn("someData".getBytes());
 		when(messageMapperMock.toMessageAttachmentData(any())).thenReturn(MessageAttachmentDataEntity.builder().build());
 
 		// Act
 		emailReaderWorker.processAttachment(attachment, messageId, errandId, municipalityId, namespace);
 
-		// Assert
+		// Assert - the errand attachment is only persisted once its content is known, hence saveAndFlush without a save.
 		verify(messageAttachmentRepositoryMock).save(messageAttachment);
-		verify(attachmentRepositoryMock).save(attachmentEntity);
 		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachment);
 		verify(attachmentRepositoryMock).saveAndFlush(attachmentEntity);
 		verifyNoMoreInteractions(messageAttachmentRepositoryMock, attachmentRepositoryMock);
@@ -386,15 +390,37 @@ class EmailReaderWorkerTest {
 
 		when(emailReaderClientMock.getAttachment(any(), any())).thenReturn(data);
 		when(messageMapperMock.toMessageAttachmentData(data)).thenReturn(MessageAttachmentDataEntity.builder().build());
-		when(messageMapperMock.toContentString(data)).thenReturn("someContentString");
 
 		// Act
 		emailReaderWorker.processAttachmentData(1L, messageAttachment, attachmentEntity);
 
 		// Assert
+		verify(attachmentContentWriterMock).applyContent(attachmentEntity, data);
 		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachment);
 		verify(attachmentRepositoryMock).saveAndFlush(attachmentEntity);
 		verifyNoMoreInteractions(messageAttachmentRepositoryMock, attachmentRepositoryMock);
+	}
+
+	@Test
+	void processAttachmentDataWithoutContent() {
+		// Arrange - a source that returns nothing must not leave a contentless errand attachment behind.
+		final var messageAttachment = MessageAttachmentEntity.builder()
+			.withMessageID("someMessageId")
+			.withAttachmentData(MessageAttachmentDataEntity.builder().build())
+			.build();
+		final var attachmentEntity = new AttachmentEntity();
+		final var data = new byte[0];
+
+		when(emailReaderClientMock.getAttachment(any(), any())).thenReturn(data);
+		when(messageMapperMock.toMessageAttachmentData(data)).thenReturn(MessageAttachmentDataEntity.builder().build());
+
+		// Act
+		emailReaderWorker.processAttachmentData(1L, messageAttachment, attachmentEntity);
+
+		// Assert - the message attachment is still stored, the errand attachment is never created.
+		verify(messageAttachmentRepositoryMock).saveAndFlush(messageAttachment);
+		verifyNoInteractions(attachmentContentWriterMock, attachmentRepositoryMock);
+		verifyNoMoreInteractions(messageAttachmentRepositoryMock);
 	}
 
 	@Test

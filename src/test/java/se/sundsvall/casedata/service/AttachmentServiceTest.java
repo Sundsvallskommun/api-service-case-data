@@ -4,7 +4,6 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.rowset.serial.SerialBlob;
@@ -106,31 +105,27 @@ class AttachmentServiceTest {
 	}
 
 	@Test
-	void findAttachmentAsStreamedResponseFromLegacyBase64File() throws Exception {
+	void findAttachmentAsStreamedResponseWithoutContent() {
 
-		// Arrange - rows created before the binary-storage migration only have the legacy base64 file column populated.
+		// Arrange - every path that creates an attachment stores content, so a row without it is broken rather than empty
+		// and must be reported as such instead of being served as a silently empty file.
 		final var errandId = 1L;
 		final var attachmentId = 123L;
-		final var content = "test content";
-		final var mimeType = "application/pdf";
-		final var fileName = "document.pdf";
 		final var attachmentEntity = AttachmentEntity.builder()
-			.withName(fileName)
-			.withMimeType(mimeType)
-			.withFile(Base64.getEncoder().encodeToString(content.getBytes(StandardCharsets.UTF_8)))
+			.withName("document.pdf")
+			.withMimeType("application/pdf")
 			.build();
 		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(attachmentEntity));
-		when(servletResponseMock.getOutputStream()).thenReturn(servletOutputStreamMock);
 
 		// Act
-		attachmentService.findAttachmentAsStreamedResponse(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock);
+		final var exception = assertThrows(ThrowableProblem.class, () -> attachmentService.findAttachmentAsStreamedResponse(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock));
 
 		// Assert
+		assertThat(exception)
+			.hasFieldOrPropertyWithValue("status", INTERNAL_SERVER_ERROR)
+			.hasFieldOrPropertyWithValue("detail", "Attachment with id '123' has no content");
 		verify(attachmentRepositoryMock).findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE);
-		verify(servletResponseMock).addHeader(CONTENT_TYPE, mimeType);
-		verify(servletResponseMock).addHeader(CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
-		verify(servletResponseMock).setContentLengthLong(content.getBytes(StandardCharsets.UTF_8).length);
-		verify(servletResponseMock).getOutputStream();
+		verifyNoInteractions(servletResponseMock);
 	}
 
 	@Test
@@ -155,13 +150,13 @@ class AttachmentServiceTest {
 		// Arrange
 		final var errandId = 1L;
 		final var attachmentId = 123L;
-		final var content = "test content";
+		final var content = "test content".getBytes(StandardCharsets.UTF_8);
 		final var mimeType = "application/pdf";
 		final var fileName = "document.pdf";
 		final var attachmentEntity = AttachmentEntity.builder()
 			.withName(fileName)
 			.withMimeType(mimeType)
-			.withFile(Base64.getEncoder().encodeToString(content.getBytes(StandardCharsets.UTF_8)))
+			.withContent(new SerialBlob(content))
 			.build();
 		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(attachmentEntity));
 		when(servletResponseMock.getOutputStream()).thenThrow(new IOException("testException"));
@@ -174,29 +169,6 @@ class AttachmentServiceTest {
 		assertThat(exception.getMessage()).isEqualTo("Internal Server Error: IOException occurred when copying file with attachment id '123' to response: testException");
 		verify(servletResponseMock).addHeader(CONTENT_TYPE, mimeType);
 		verify(servletResponseMock).addHeader(CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
-	}
-
-	@Test
-	void findAttachmentAsStreamedResponseWithMalformedLegacyBase64() {
-
-		// Arrange - a legacy row whose 'file' column holds non-base64 content must yield a controlled Problem, not a raw
-		// IllegalArgumentException.
-		final var errandId = 1L;
-		final var attachmentId = 123L;
-		final var attachmentEntity = AttachmentEntity.builder()
-			.withName("document.pdf")
-			.withMimeType("application/pdf")
-			.withFile("this is not valid base64 @@@")
-			.build();
-		when(attachmentRepositoryMock.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(attachmentEntity));
-
-		// Act
-		final var exception = assertThrows(ThrowableProblem.class, () -> attachmentService.findAttachmentAsStreamedResponse(errandId, attachmentId, MUNICIPALITY_ID, NAMESPACE, servletResponseMock));
-
-		// Assert
-		assertThat(exception.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR);
-		assertThat(exception.getMessage()).startsWith("Internal Server Error: Attachment with id '123' has malformed base64 content and cannot be read:");
-		verifyNoInteractions(servletResponseMock);
 	}
 
 	@Test

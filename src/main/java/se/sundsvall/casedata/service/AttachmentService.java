@@ -53,13 +53,8 @@ public class AttachmentService {
 	}
 
 	/**
-	 * Streams the raw binary content of an attachment to the supplied response.
-	 *
-	 * <p>
-	 * New attachments are stored as a binary blob in the {@code attachment.content} column. Rows created before the
-	 * binary-storage migration still hold their content base64-encoded in the legacy {@code attachment.file} column; for
-	 * those the content is decoded on the fly. This fallback is removed once all rows have been migrated and the legacy
-	 * column dropped.
+	 * Streams the raw binary content of an attachment to the supplied response. Content is stored as a binary blob in the
+	 * {@code attachment.content} column and streamed straight from there.
 	 */
 	public void findAttachmentAsStreamedResponse(final Long errandId, final Long attachmentId, final String municipalityId, final String namespace, final HttpServletResponse response) {
 		final var attachmentEntity = attachmentRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(attachmentId, errandId, municipalityId, namespace)

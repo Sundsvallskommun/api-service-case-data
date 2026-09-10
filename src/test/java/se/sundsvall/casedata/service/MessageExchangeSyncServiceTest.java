@@ -279,7 +279,9 @@ class MessageExchangeSyncServiceTest {
 		when(messageExchangeClientMock.readErrandAttachment(eq(municipalityId), any(), any(), any(), eq(attachment.getId())))
 			.thenReturn(ResponseEntity.ok()
 				.header("Content-Type", "application/octet-stream")
-				.body(new InputStreamResource(new ByteArrayInputStream(new byte[0]))));
+				.body(new InputStreamResource(new ByteArrayInputStream(new byte[] {
+					1, 23, 45
+				}))));
 
 		// Act
 		service.syncAttachment(conversationEntity, message, attachment);
@@ -335,7 +337,9 @@ class MessageExchangeSyncServiceTest {
 		when(messageExchangeClientMock.readErrandAttachment(eq(municipalityId), any(), any(), any(), eq(attachment.getId())))
 			.thenReturn(ResponseEntity.ok()
 				.header("Content-Type", "application/octet-stream")
-				.body(new InputStreamResource(new ByteArrayInputStream(new byte[0]))));
+				.body(new InputStreamResource(new ByteArrayInputStream(new byte[] {
+					1, 23, 45
+				}))));
 
 		// Act
 		service.syncAttachment(conversationEntity, message, attachment);
@@ -355,7 +359,9 @@ class MessageExchangeSyncServiceTest {
 		final var namespace = "namespace";
 		final var file = ResponseEntity.ok()
 			.header("Content-Type", "application/octet-stream")
-			.body(new InputStreamResource(new ByteArrayInputStream(new byte[0])));
+			.body(new InputStreamResource(new ByteArrayInputStream(new byte[] {
+				1, 23, 45
+			})));
 		final var attachmentCaptor = ArgumentCaptor.forClass(Attachment.class);
 
 		// Act
@@ -366,6 +372,24 @@ class MessageExchangeSyncServiceTest {
 		assertThat(attachmentCaptor.getValue().getChannel()).isEqualTo(Channel.WEB_UI.name());
 		verifyNoMoreInteractions(attachmentServiceMock);
 		verifyNoInteractions(conversationRepositoryMock, messageExchangeClientMock);
+	}
+
+	@Test
+	void saveAttachmentWithoutContent() {
+		// Arrange - an attachment without content is skipped rather than stored. Skipping instead of failing lets the
+		// conversation sync advance past it instead of retrying the same attachment forever.
+		final var errandId = 123L;
+		final var municipalityId = "municipalityId";
+		final var namespace = "namespace";
+		final var file = ResponseEntity.ok()
+			.header("Content-Type", "application/octet-stream")
+			.body(new InputStreamResource(new ByteArrayInputStream(new byte[0])));
+
+		// Act
+		service.saveAttachment(errandId, municipalityId, namespace, file, Channel.WEB_UI);
+
+		// Assert
+		verifyNoInteractions(attachmentServiceMock, conversationRepositoryMock, messageExchangeClientMock);
 	}
 
 	@Test

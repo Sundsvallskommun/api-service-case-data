@@ -1,0 +1,18 @@
+{
+	"messageCount": 5,
+	"readByCount": [
+		{
+			"identifier": {
+				"type": "adAccount",
+				"value": "joe01doe"
+			},
+			"count": 3
+		}
+	],
+	"readByPartCount": [
+		{
+			"part": "ERRAND-NUMBER-1",
+			"count": 5
+		}
+	]
+}

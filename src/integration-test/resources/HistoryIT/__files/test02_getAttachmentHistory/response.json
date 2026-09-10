@@ -111,23 +111,6 @@
 			"cdoId": 2,
 			"entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
 		},
-		"property": "file",
-		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
-		"right": "JVBERi0xLjUKJeLjz9"
-	},
-	{
-		"changeType": "InitialValueChange",
-		"commitMetadata": {
-			"author": "ANDSOD",
-			"commitDateInstant": "2024-01-25T12:00:00Z",
-			"id": 2,
-			"properties": [],
-			"commitDate": "2024-01-25T12:00:00"
-		},
-		"globalId": {
-			"cdoId": 2,
-			"entity": "se.sundsvall.casedata.integration.db.model.AttachmentEntity"
-		},
 		"property": "municipalityId",
 		"propertyChangeType": "PROPERTY_VALUE_CHANGED",
 		"right": "2281"

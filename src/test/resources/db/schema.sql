@@ -16,7 +16,6 @@
         namespace varchar(255),
         channel varchar(255),
         content longblob,
-        file longtext,
         primary key (id)
     ) engine=InnoDB;
 

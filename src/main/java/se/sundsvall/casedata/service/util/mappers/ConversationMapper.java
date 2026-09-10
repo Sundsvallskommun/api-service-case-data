@@ -16,11 +16,13 @@ import se.sundsvall.casedata.api.model.conversation.KeyValues;
 import se.sundsvall.casedata.api.model.conversation.Message;
 import se.sundsvall.casedata.api.model.conversation.MessageType;
 import se.sundsvall.casedata.api.model.conversation.ReadBy;
+import se.sundsvall.casedata.api.model.conversation.ReadByCount;
+import se.sundsvall.casedata.api.model.conversation.ReadByPartCount;
 import se.sundsvall.casedata.integration.db.model.AttachmentEntity;
 import se.sundsvall.casedata.integration.db.model.ConversationEntity;
 import se.sundsvall.casedata.integration.db.model.enums.Channel;
-import se.sundsvall.casedata.service.util.AttachmentContents;
 import se.sundsvall.casedata.service.util.Base64MultipartFile;
+import se.sundsvall.casedata.service.util.BlobUtil;
 
 import static java.util.Collections.emptyList;
 
@@ -201,6 +203,24 @@ public final class ConversationMapper {
 			.toList());
 	}
 
+	public static List<ReadByCount> toReadByCountList(final List<generated.se.sundsvall.messageexchange.ReadByCount> list) {
+		return Optional.ofNullable(list).orElse(emptyList()).stream()
+			.map(me -> ReadByCount.builder()
+				.withIdentifier(toIdentifier(me.getIdentifier()))
+				.withCount(me.getCount())
+				.build())
+			.toList();
+	}
+
+	public static List<ReadByPartCount> toReadByPartCountList(final List<generated.se.sundsvall.messageexchange.ReadByPartCount> list) {
+		return Optional.ofNullable(list).orElse(emptyList()).stream()
+			.map(me -> ReadByPartCount.builder()
+				.withPart(me.getPart())
+				.withCount(me.getCount())
+				.build())
+			.toList();
+	}
+
 	public static se.sundsvall.casedata.api.model.Attachment toAttachment(final MultipartFile attachment, final Long errandId, final String municipalityId, final String namespace) {
 
 		return se.sundsvall.casedata.api.model.Attachment.builder()
@@ -235,7 +255,7 @@ public final class ConversationMapper {
 	}
 
 	private static byte[] readContent(final AttachmentEntity entity) {
-		return AttachmentContents.toBytes(entity);
+		return BlobUtil.toBytes(entity.getContent(), entity.getId());
 	}
 
 }
