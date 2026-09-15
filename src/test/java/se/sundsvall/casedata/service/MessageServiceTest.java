@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.service;
 
 import generated.se.sundsvall.messaging.EmailBatchRequest;
+import generated.se.sundsvall.messaging.MessageBatchResult;
 import generated.se.sundsvall.messaging.MessageResult;
 import generated.se.sundsvall.messaging.Party;
 import jakarta.servlet.ServletOutputStream;
@@ -339,6 +340,7 @@ class MessageServiceTest {
 			.build();
 		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
 		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().withContactInformationEmail(senderEmail).build());
+		when(messagingClientMock.sendEmailBatch(any(), any())).thenReturn(new MessageBatchResult());
 
 		// Act
 		messageService.sendBulkEmail(errandId, request, MUNICIPALITY_ID, NAMESPACE);
@@ -373,6 +375,27 @@ class MessageServiceTest {
 
 		verify(errandRepositoryMock).existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoInteractions(messagingSettingsIntegrationMock, messagingClientMock);
+	}
+
+	@Test
+	void sendBulkEmailFailed() {
+		// Arrange
+		final var errandId = 1L;
+		final var request = BulkEmailRequest.builder()
+			.withRecipients(List.of("first@example.com"))
+			.withSubject("Subject")
+			.withMessage("Message")
+			.withDepartmentName(DEPARTMENT_ID)
+			.build();
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		when(messagingClientMock.sendEmailBatch(any(), any())).thenReturn(null);
+
+		// Act & Assert
+		assertThatThrownBy(() -> messageService.sendBulkEmail(errandId, request, MUNICIPALITY_ID, NAMESPACE))
+			.isInstanceOf(ThrowableProblem.class)
+			.hasFieldOrPropertyWithValue("status", INTERNAL_SERVER_ERROR)
+			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to send bulk email");
 	}
 
 	@ParameterizedTest

@@ -1,7 +1,6 @@
 package se.sundsvall.casedata.integration.messaging;
 
 import generated.se.sundsvall.messaging.EmailBatchRequest;
-import generated.se.sundsvall.messaging.EmailRequest;
 import generated.se.sundsvall.messaging.MessageBatchResult;
 import generated.se.sundsvall.messaging.MessageRequest;
 import generated.se.sundsvall.messaging.MessageResult;
@@ -30,17 +29,6 @@ public interface MessagingClient {
 	MessageResult sendMessage(
 		@PathVariable final String municipalityId,
 		@RequestBody final MessageRequest messageRequest);
-
-	/**
-	 * Send a email to a single recipient.
-	 *
-	 * @param municipalityId the id of the municipality to send the email to
-	 * @param emailRequest   containing email information
-	 */
-	@PostMapping(path = "/{municipalityId}/email", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-	MessageResult sendEmail(
-		@PathVariable final String municipalityId,
-		@RequestBody final EmailRequest emailRequest);
 
 	/**
 	 * Send an individual email to each party in a single batch call.

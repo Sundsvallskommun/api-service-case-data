@@ -32,6 +32,7 @@ import static se.sundsvall.casedata.api.model.validation.enums.StakeholderRole.R
 import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubType.MESSAGE;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_OWNER_SUPPORT_TEXT;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_REPORTER_SUPPORT_TEXT;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.findFirstRecipientFirstName;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.findStakeholderEmails;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailAttachments;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailBatchRequest;
@@ -124,7 +125,10 @@ public class MessageService {
 		final var attachments = toEmailAttachments(request.getAttachments());
 		final var emailBatchRequest = toEmailBatchRequest(request, messagingSettings, attachments);
 
-		messagingClient.sendEmailBatch(municipalityId, emailBatchRequest);
+		final var result = messagingClient.sendEmailBatch(municipalityId, emailBatchRequest);
+		if (result == null) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to send bulk email");
+		}
 	}
 
 	public void updateViewedStatus(final Long errandId, final String messageId, final String municipalityId, final String namespace, final boolean isViewed) {
@@ -179,14 +183,20 @@ public class MessageService {
 
 		final var applicantEmails = findStakeholderEmails(notifiableApplicants);
 		if (!applicantEmails.isEmpty()) {
-			final var emailBatchRequest = toEmailBatchRequest(errandEntity, messagingSettings, applicantEmails, TYPE_OWNER_SUPPORT_TEXT, caseType);
-			messagingClient.sendEmailBatch(municipalityId, emailBatchRequest);
+			final var greetingFirstName = findFirstRecipientFirstName(notifiableApplicants);
+			final var emailBatchRequest = toEmailBatchRequest(errandEntity, messagingSettings, applicantEmails, greetingFirstName, TYPE_OWNER_SUPPORT_TEXT, caseType);
+			final var result = messagingClient.sendEmailBatch(municipalityId, emailBatchRequest);
+			if (result == null) {
+				LOGGER.warn("Failed to send applicant notification email for errand '{}' in namespace '{}' for municipality '{}'", errandId, sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
+			}
 			return;
 		}
 
-		final var hasApplicantWithPersonId = notifiableApplicants.stream().anyMatch(applicant -> isNotBlank(applicant.getPersonId()));
-		if (hasApplicantWithPersonId) {
-			final var messageRequest = toMessagingMessageRequest(errandEntity, messagingSettings, caseType);
+		final var applicantsWithPersonId = notifiableApplicants.stream()
+			.filter(applicant -> isNotBlank(applicant.getPersonId()))
+			.toList();
+		if (!applicantsWithPersonId.isEmpty()) {
+			final var messageRequest = toMessagingMessageRequest(errandEntity, messagingSettings, applicantsWithPersonId, caseType);
 			final var result = messagingClient.sendMessage(municipalityId, messageRequest);
 			if (result == null) {
 				throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message notification");
@@ -243,9 +253,13 @@ public class MessageService {
 		}
 
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
-		final var request = toEmailBatchRequest(errandEntity, messagingSettings, recipientEmails, TYPE_REPORTER_SUPPORT_TEXT,
+		final var greetingFirstName = findFirstRecipientFirstName(stakeholderEntities);
+		final var request = toEmailBatchRequest(errandEntity, messagingSettings, recipientEmails, greetingFirstName, TYPE_REPORTER_SUPPORT_TEXT,
 			metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType()));
-		messagingClient.sendEmailBatch(errandEntity.getMunicipalityId(), request);
+		final var result = messagingClient.sendEmailBatch(errandEntity.getMunicipalityId(), request);
+		if (result == null) {
+			LOGGER.warn("Failed to send reporter notification email for errand '{}' in namespace '{}' for municipality '{}'", errandEntity.getId(), sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
+		}
 	}
 
 	private List<StakeholderEntity> getReporterStakeholders(final ErrandEntity errandEntity) {

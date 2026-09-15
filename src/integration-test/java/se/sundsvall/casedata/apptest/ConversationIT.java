@@ -238,7 +238,7 @@ class ConversationIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test12_markAsRead() {
+	void test13_markAsRead() {
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(format(PATH + "/{3}/messages/mark-as-read", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID))
@@ -250,7 +250,7 @@ class ConversationIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test13_countReadBy() {
+	void test14_countReadBy() {
 		setupCall()
 			.withHttpMethod(GET)
 			.withServicePath(format(PATH + "/count-read-by", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))
