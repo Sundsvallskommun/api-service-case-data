@@ -27,7 +27,7 @@ import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_R
 class MessagingMapperTest {
 
 	@Test
-	void toEmailBatchRequestForOwner() {
+	void toEmailBatchRequestsForOwner() {
 
 		// Arrange
 		final var firstName = "Test";
@@ -46,20 +46,21 @@ class MessagingMapperTest {
 			""";
 		final var smsSender = "TestSender";
 		final var url = "https://example.com/contact";
+		final var applicant = StakeholderEntity.builder()
+			.withFirstName(firstName)
+			.withContactInformation(List.of(
+				ContactInformationEntity.builder()
+					.withContactType(EMAIL)
+					.withValue(emailAddress)
+					.build()))
+			.withRoles(List.of(APPLICANT.name()))
+			.build();
 		final var errandEntity = ErrandEntity.builder()
 			.withId(123L)
 			.withNamespace(namespace)
 			.withMunicipalityId(municipalityId)
 			.withErrandNumber(errandNumber)
-			.withStakeholders(List.of(StakeholderEntity.builder()
-				.withFirstName(firstName)
-				.withContactInformation(List.of(
-					ContactInformationEntity.builder()
-						.withContactType(EMAIL)
-						.withValue(emailAddress)
-						.build()))
-				.withRoles(List.of(APPLICANT.name()))
-				.build()))
+			.withStakeholders(List.of(applicant))
 			.build();
 		final var messagingSettings = MessagingSettings.builder()
 			.withOwnerSupportText(supportText)
@@ -70,10 +71,12 @@ class MessagingMapperTest {
 			.build();
 
 		// Act
-		final var bean = MessagingMapper.toEmailBatchRequest(errandEntity, messagingSettings, List.of(emailAddress), firstName, TYPE_OWNER_SUPPORT_TEXT,
+		final var result = MessagingMapper.toEmailBatchRequests(errandEntity, messagingSettings, List.of(applicant), TYPE_OWNER_SUPPORT_TEXT,
 			CaseType.builder().withDisplayName(displayName).build());
 
 		// Assert
+		assertThat(result).hasSize(1);
+		final var bean = result.getFirst();
 		assertThat(bean).isNotNull().hasNoNullFieldsOrPropertiesExcept("htmlMessage");
 		assertThat(bean.getParties()).containsExactly(new Party(emailAddress));
 		assertThat(bean.getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayName 123456789");
@@ -89,7 +92,7 @@ class MessagingMapperTest {
 	}
 
 	@Test
-	void toEmailBatchRequestForReporter() {
+	void toEmailBatchRequestsForReporter() {
 
 		// Arrange
 		final var firstName = "Test";
@@ -110,20 +113,21 @@ class MessagingMapperTest {
 
 		final var smsSender = "TestSender";
 		final var url = "https://example.com/contact";
+		final var reporter = StakeholderEntity.builder()
+			.withFirstName(firstName)
+			.withContactInformation(List.of(
+				ContactInformationEntity.builder()
+					.withContactType(EMAIL)
+					.withValue(emailAddress)
+					.build()))
+			.withRoles(List.of(REPORTER.name()))
+			.build();
 		final var errandEntity = ErrandEntity.builder()
 			.withId(123L)
 			.withNamespace(namespace)
 			.withMunicipalityId(municipalityId)
 			.withErrandNumber(errandNumber)
-			.withStakeholders(List.of(StakeholderEntity.builder()
-				.withFirstName(firstName)
-				.withContactInformation(List.of(
-					ContactInformationEntity.builder()
-						.withContactType(EMAIL)
-						.withValue(emailAddress)
-						.build()))
-				.withRoles(List.of(REPORTER.name()))
-				.build()))
+			.withStakeholders(List.of(reporter))
 			.build();
 		final var messagingSettings = MessagingSettings.builder()
 			.withReporterSupportText(supportText)
@@ -134,10 +138,12 @@ class MessagingMapperTest {
 			.build();
 
 		// Act
-		final var bean = MessagingMapper.toEmailBatchRequest(errandEntity, messagingSettings, List.of(emailAddress), firstName, TYPE_REPORTER_SUPPORT_TEXT,
+		final var result = MessagingMapper.toEmailBatchRequests(errandEntity, messagingSettings, List.of(reporter), TYPE_REPORTER_SUPPORT_TEXT,
 			CaseType.builder().withDisplayName(displayName).build());
 
 		// Assert
+		assertThat(result).hasSize(1);
+		final var bean = result.getFirst();
 		assertThat(bean).isNotNull().hasNoNullFieldsOrPropertiesExcept("htmlMessage");
 		assertThat(bean.getParties()).containsExactly(new Party(emailAddress));
 		assertThat(bean.getSubject()).isEqualTo("Nytt meddelande kopplat till ärendet Case type displayName 123456789");
@@ -151,27 +157,77 @@ class MessagingMapperTest {
 			""");
 		assertThat(bean.getSender().getName()).isEqualTo(emailName);
 		assertThat(bean.getSender().getAddress()).isEqualTo(emailAddress);
-
 	}
 
 	@Test
-	void toEmailBatchRequestWithMultipleRecipientsCreatesOnePartyPerRecipient() {
-		// Arrange
-		final var firstEmail = "first@example.com";
-		final var secondEmail = "second@example.com";
+	void toEmailBatchRequestsBuildsOnePersonalizedRequestPerRecipient() {
+		// Arrange - each recipient must get their own request/greeting, instead of one shared body sent to every party
+		final var firstEmail = "anna@example.com";
+		final var secondEmail = "bertil@example.com";
 		final var errandEntity = ErrandEntity.builder()
 			.withErrandNumber("123456789")
 			.build();
 		final var messagingSettings = MessagingSettings.builder()
-			.withReporterSupportText("Hej %s, %s %s %s%s")
+			.withReporterSupportText("Hej %s, angaende %s %s%s%s")
+			.build();
+		final var firstRecipient = StakeholderEntity.builder()
+			.withFirstName("Anna")
+			.withContactInformation(List.of(ContactInformationEntity.builder().withContactType(EMAIL).withValue(firstEmail).build()))
+			.build();
+		final var secondRecipient = StakeholderEntity.builder()
+			.withFirstName("Bertil")
+			.withContactInformation(List.of(ContactInformationEntity.builder().withContactType(EMAIL).withValue(secondEmail).build()))
 			.build();
 
 		// Act
-		final var bean = MessagingMapper.toEmailBatchRequest(errandEntity, messagingSettings, List.of(firstEmail, secondEmail), "Test", TYPE_REPORTER_SUPPORT_TEXT,
+		final var result = MessagingMapper.toEmailBatchRequests(errandEntity, messagingSettings, List.of(firstRecipient, secondRecipient), TYPE_REPORTER_SUPPORT_TEXT,
 			CaseType.builder().withDisplayName("displayName").build());
 
-		// Assert - one combined batch request carries a party per recipient, instead of one request per recipient
-		assertThat(bean.getParties()).containsExactly(new Party(firstEmail), new Party(secondEmail));
+		// Assert - two separate requests, each with a single party and its own recipient's name in the greeting
+		assertThat(result).hasSize(2);
+		assertThat(result.get(0).getParties()).containsExactly(new Party(firstEmail));
+		assertThat(result.get(0).getMessage()).startsWith("Hej Anna,");
+		assertThat(result.get(1).getParties()).containsExactly(new Party(secondEmail));
+		assertThat(result.get(1).getMessage()).startsWith("Hej Bertil,");
+	}
+
+	@Test
+	void toEmailBatchRequestsDeduplicatesRecipientsWithSameEmail() {
+		// Arrange
+		final var sharedEmail = "shared@example.com";
+		final var errandEntity = ErrandEntity.builder().withErrandNumber("123456789").build();
+		final var messagingSettings = MessagingSettings.builder().withReporterSupportText("Hej %s, %s %s%s%s").build();
+		final var firstRecipient = StakeholderEntity.builder()
+			.withFirstName("Anna")
+			.withContactInformation(List.of(ContactInformationEntity.builder().withContactType(EMAIL).withValue(sharedEmail).build()))
+			.build();
+		final var secondRecipient = StakeholderEntity.builder()
+			.withFirstName("Bertil")
+			.withContactInformation(List.of(ContactInformationEntity.builder().withContactType(EMAIL).withValue(sharedEmail).build()))
+			.build();
+
+		// Act
+		final var result = MessagingMapper.toEmailBatchRequests(errandEntity, messagingSettings, List.of(firstRecipient, secondRecipient), TYPE_REPORTER_SUPPORT_TEXT,
+			CaseType.builder().withDisplayName("displayName").build());
+
+		// Assert - only the first occurrence of the shared e-mail address is kept
+		assertThat(result).hasSize(1);
+		assertThat(result.getFirst().getMessage()).startsWith("Hej Anna,");
+	}
+
+	@Test
+	void toEmailBatchRequestsSkipsRecipientsWithoutEmail() {
+		// Arrange
+		final var errandEntity = ErrandEntity.builder().withErrandNumber("123456789").build();
+		final var messagingSettings = MessagingSettings.builder().withReporterSupportText("Hej %s, %s %s%s%s").build();
+		final var recipientWithoutEmail = StakeholderEntity.builder().withFirstName("Anna").build();
+
+		// Act
+		final var result = MessagingMapper.toEmailBatchRequests(errandEntity, messagingSettings, List.of(recipientWithoutEmail), TYPE_REPORTER_SUPPORT_TEXT,
+			CaseType.builder().withDisplayName("displayName").build());
+
+		// Assert
+		assertThat(result).isEmpty();
 	}
 
 	@Test
@@ -287,7 +343,7 @@ class MessagingMapperTest {
 		"not-a-uuid",
 		""
 	})
-	void toMessagingMessageRequestDoesNotThrowForNonUuidPersonId(final String personId) {
+	void toMessagingMessageRequestFiltersOutRecipientsWithNonUuidPersonId(final String personId) {
 		final var applicant = StakeholderEntity.builder()
 			.withRoles(List.of(APPLICANT.name()))
 			.withFirstName("Test")
@@ -305,11 +361,11 @@ class MessagingMapperTest {
 			.withSmsSender("TestSender")
 			.build();
 
-		// A non-UUID personId must not abort the notification flow - it resolves to a null partyId instead of throwing
+		// A non-UUID personId is required by the Messaging contract (partyId is required) - the recipient is skipped
+		// entirely instead of being sent with a null partyId, which would fail the whole request
 		final var request = MessagingMapper.toMessagingMessageRequest(errandEntity, messagingSettings, List.of(applicant), CaseType.builder().withDisplayName("displayName").build());
 
-		assertThat(request.getMessages()).hasSize(1);
-		assertThat(request.getMessages().getFirst().getParty().getPartyId()).isNull();
+		assertThat(request.getMessages()).isEmpty();
 	}
 
 	@Test
@@ -353,22 +409,6 @@ class MessagingMapperTest {
 		assertThat(request.getMessages().get(1).getParty().getPartyId()).isEqualTo(secondApplicantPartyId);
 	}
 
-	@Test
-	void findFirstRecipientFirstNameReturnsFirstNameOfFirstStakeholderWithEmail() {
-		final var withoutEmail = StakeholderEntity.builder().withFirstName("NoEmail").build();
-		final var withEmail = StakeholderEntity.builder()
-			.withFirstName("Anna")
-			.withContactInformation(List.of(ContactInformationEntity.builder().withContactType(EMAIL).withValue("anna@example.com").build()))
-			.build();
-
-		assertThat(MessagingMapper.findFirstRecipientFirstName(List.of(withoutEmail, withEmail))).isEqualTo("Anna");
-	}
-
-	@Test
-	void findFirstRecipientFirstNameReturnsNullForNullInput() {
-		assertThat(MessagingMapper.findFirstRecipientFirstName(null)).isNull();
-	}
-
 	@ParameterizedTest
 	@ValueSource(strings = {
 		"556002-1361",
@@ -385,24 +425,6 @@ class MessagingMapperTest {
 	void toUuidOrNullReturnsUuidForValidValue() {
 		final var uuid = randomUUID();
 		assertThat(MessagingMapper.toUuidOrNull(uuid.toString())).isEqualTo(uuid);
-	}
-
-	@Test
-	void findStakeholderEmailsReturnsDistinctNonBlankEmails() {
-		final var firstEmail = "first@example.com";
-		final var secondEmail = "second@example.com";
-		final var stakeholders = List.of(
-			StakeholderEntity.builder().withContactInformation(List.of(ContactInformationEntity.builder().withContactType(EMAIL).withValue(firstEmail).build())).build(),
-			StakeholderEntity.builder().withContactInformation(List.of(ContactInformationEntity.builder().withContactType(EMAIL).withValue(secondEmail).build())).build(),
-			StakeholderEntity.builder().withContactInformation(List.of(ContactInformationEntity.builder().withContactType(EMAIL).withValue(firstEmail).build())).build(),
-			StakeholderEntity.builder().build());
-
-		assertThat(MessagingMapper.findStakeholderEmails(stakeholders)).containsExactlyInAnyOrder(firstEmail, secondEmail);
-	}
-
-	@Test
-	void findStakeholderEmailsReturnsEmptyListForNullInput() {
-		assertThat(MessagingMapper.findStakeholderEmails(null)).isEmpty();
 	}
 
 	@Test

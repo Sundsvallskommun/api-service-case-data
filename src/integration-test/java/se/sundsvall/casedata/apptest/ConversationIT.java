@@ -216,10 +216,10 @@ class ConversationIT extends AbstractAppTest {
 	}
 
 	/**
-	 * Test to verify that when an errand has several stakeholders with the reporter role, a single combined email
-	 * (with all reporter e-mail addresses in the recipients array) is sent via Messaging instead of one email per
-	 * reporter. The stub in messaging-send-email.json only matches a request carrying both reporter addresses, so
-	 * the test fails if the two are sent as separate emails.
+	 * Test to verify that when an errand has several stakeholders with the reporter role, one individual email per
+	 * reporter is sent via Messaging's batch endpoint, instead of a single email carrying every reporter's address.
+	 * The stubs in messaging-send-email-reporter-one.json and messaging-send-email-reporter-two.json each only match
+	 * a request carrying a single reporter's address, so the test fails if both addresses are sent in one call.
 	 */
 	@Test
 	void test12_createMessageWithTypeInternalToMultipleReporters() throws FileNotFoundException {

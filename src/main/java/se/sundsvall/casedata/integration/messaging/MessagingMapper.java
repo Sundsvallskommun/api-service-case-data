@@ -12,6 +12,7 @@ import generated.se.sundsvall.messaging.Party;
 import generated.se.sundsvall.messaging.Sms;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -39,36 +40,40 @@ public final class MessagingMapper {
 	}
 
 	/**
-	 * Builds a batch email request for a templated notification, sent to every recipient in {@code recipientEmails} as
-	 * an individual email via Messaging's batch endpoint. Since the batch endpoint sends the same message to every
-	 * party in one call, the greeting can only be personalized with a single name - {@code greetingFirstName} should
-	 * therefore be the first name of one of the actual recipients (typically the first), not an unrelated stakeholder.
+	 * Builds one batch email request per recipient for a templated notification, each carrying a single party and a
+	 * message body personalized with that recipient's own first name. Messaging's {@code /email/batch} endpoint sends
+	 * the exact same subject/message to every party in a single call - it has no per-party template variables - so a
+	 * personalized greeting can only be achieved by sending one call per recipient, the same reasoning that gives
+	 * {@link #toMessagingMessageRequest} one {@code Message} per recipient. Recipients sharing an e-mail address are
+	 * deduplicated, keeping the first occurrence; recipients without a resolvable e-mail address are skipped.
 	 *
 	 * @param  errandEntity      the errand the notification concerns
 	 * @param  messagingSettings the messaging settings to resolve support text, sender address, etc. from
-	 * @param  recipientEmails   the e-mail addresses to send the notification to
-	 * @param  greetingFirstName the first name to use in the support text greeting
+	 * @param  recipients        the stakeholders to send the notification to
 	 * @param  supportTextType   which support text (owner or reporter) to build the message from
 	 * @param  caseType          the case type of the errand
-	 * @return                   the resulting batch email request
+	 * @return                   one batch email request per distinct recipient e-mail address
 	 */
-	public static EmailBatchRequest toEmailBatchRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, final List<String> recipientEmails, final String greetingFirstName, int supportTextType, CaseType caseType) {
-		return new EmailBatchRequest()
-			.parties(recipientEmails.stream()
-				.map(Party::new)
-				.toList())
-			.subject(SUBJECT_TEMPLATE.formatted(caseType.getDisplayName(), errandEntity.getErrandNumber()))
-			.message(createBody(errandEntity, messagingSettings, supportTextType, caseType, greetingFirstName))
-			.sender(new EmailSender()
-				.name(messagingSettings.getContactInformationEmailName())
-				.address(messagingSettings.getContactInformationEmail()));
+	public static List<EmailBatchRequest> toEmailBatchRequests(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, final List<StakeholderEntity> recipients, int supportTextType, CaseType caseType) {
+		final var seenEmails = new HashSet<String>();
+		return recipients.stream()
+			.filter(recipient -> StringUtils.isNotBlank(findStakeholderEmail(recipient)))
+			.filter(recipient -> seenEmails.add(findStakeholderEmail(recipient)))
+			.map(recipient -> new EmailBatchRequest()
+				.parties(List.of(new Party(findStakeholderEmail(recipient))))
+				.subject(SUBJECT_TEMPLATE.formatted(caseType.getDisplayName(), errandEntity.getErrandNumber()))
+				.message(createBody(errandEntity, messagingSettings, supportTextType, caseType, recipient.getFirstName()))
+				.sender(new EmailSender()
+					.name(messagingSettings.getContactInformationEmailName())
+					.address(messagingSettings.getContactInformationEmail())))
+			.toList();
 	}
 
 	/**
 	 * Builds a batch email request for a manually composed message, sent to every recipient in the request as an
-	 * individual email via Messaging's batch endpoint. Unlike {@link #toEmailBatchRequest(ErrandEntity, MessagingSettings,
-	 * List, int, CaseType)}, the subject and message are taken verbatim from the caller instead of being built from a
-	 * templated support text.
+	 * individual email via Messaging's batch endpoint. Unlike {@link #toEmailBatchRequests}, the subject and message
+	 * are taken verbatim from the caller instead of being built from a templated support text, so there is no
+	 * per-recipient personalization to lose by sending all recipients in a single call.
 	 *
 	 * @param  request           the bulk email request containing recipients, subject, message and attachments
 	 * @param  messagingSettings the messaging settings to resolve the sender address from
@@ -105,17 +110,21 @@ public final class MessagingMapper {
 	/**
 	 * Builds a message request sending one individually personalized message per recipient via Messaging's /messages
 	 * endpoint, so that each recipient's own first name is used in their greeting and only the recipients actually
-	 * meant to be notified (as determined by the caller) receive a message.
+	 * meant to be notified (as determined by the caller) receive a message. {@code MessageParty.partyId} is required
+	 * by the Messaging contract, so recipients whose {@code personId} cannot be parsed as a UUID (e.g. an
+	 * organisationsnummer or personnummer) are skipped entirely rather than sent with a null partyId, which would fail
+	 * the whole request.
 	 *
 	 * @param  errandEntity      the errand the notification concerns
 	 * @param  messagingSettings the messaging settings to resolve support text, sender address, etc. from
 	 * @param  recipients        the stakeholders to send a message to
 	 * @param  caseType          the case type of the errand
-	 * @return                   the resulting message request, containing one message per recipient
+	 * @return                   the resulting message request, containing one message per recipient with a valid partyId
 	 */
 	public static MessageRequest toMessagingMessageRequest(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, final List<StakeholderEntity> recipients, CaseType caseType) {
 		return new MessageRequest()
 			.messages(recipients.stream()
+				.filter(recipient -> toUuidOrNull(recipient.getPersonId()) != null)
 				.map(recipient -> new generated.se.sundsvall.messaging.Message()
 					.subject(SUBJECT_TEMPLATE.formatted(caseType.getDisplayName(), errandEntity.getErrandNumber()))
 					.message(createBody(errandEntity, messagingSettings, TYPE_OWNER_SUPPORT_TEXT, caseType, recipient.getFirstName()))
@@ -130,7 +139,15 @@ public final class MessagingMapper {
 	}
 
 	static String createBody(final ErrandEntity errandEntity, final MessagingSettings messagingSettings, int supportTextType, CaseType caseType, final String greetingFirstName) {
-		final var nullableSupportText = TYPE_REPORTER_SUPPORT_TEXT == supportTextType ? messagingSettings.getReporterSupportText() : messagingSettings.getOwnerSupportText();
+		String nullableSupportText;
+		String url;
+		if (TYPE_REPORTER_SUPPORT_TEXT == supportTextType) {
+			nullableSupportText = messagingSettings.getReporterSupportText();
+			url = messagingSettings.getKatlaUrl();
+		} else {
+			nullableSupportText = messagingSettings.getOwnerSupportText();
+			url = messagingSettings.getContactInformationUrl();
+		}
 
 		return ofNullable(nullableSupportText)
 			.filter(StringUtils::isNotBlank)
@@ -139,20 +156,20 @@ public final class MessagingMapper {
 				greetingFirstName,
 				caseType.getDisplayName(),
 				errandEntity.getErrandNumber(),
-				TYPE_REPORTER_SUPPORT_TEXT == supportTextType ? messagingSettings.getKatlaUrl() : messagingSettings.getContactInformationUrl(),
+				url,
 				errandEntity.getErrandNumber()))
 			.orElse("");
 	}
 
 	/**
 	 * Parses the provided value into a UUID. Returns null instead of throwing if the value is not a valid UUID (e.g. an
-	 * organisationsnummer, personnummer or any other arbitrary string), so that a non-UUID personId does not abort the
-	 * notification flow.
+	 * organisationsnummer, personnummer or any other arbitrary string), so that a caller can filter out recipients with
+	 * a non-UUID personId instead of having the parse failure abort the notification flow.
 	 *
 	 * @param  value the value to parse
 	 * @return       the parsed UUID, or null if the value is not a valid UUID
 	 */
-	static UUID toUuidOrNull(final String value) {
+	public static UUID toUuidOrNull(final String value) {
 		try {
 			return UUID.fromString(value);
 		} catch (final Exception e) {
@@ -171,40 +188,6 @@ public final class MessagingMapper {
 			.filter(contactInformation -> Objects.equals(EMAIL, contactInformation.getContactType()))
 			.findFirst()
 			.map(ContactInformationEntity::getValue)
-			.orElse(null);
-	}
-
-	/**
-	 * Resolves the distinct, non-blank e-mail addresses for a list of stakeholders, so that a single combined message
-	 * can be sent to all of them via Messaging's recipients array instead of one message per stakeholder.
-	 *
-	 * @param  stakeholderEntities the stakeholders to resolve e-mail addresses for
-	 * @return                     the distinct, non-blank e-mail addresses found among the stakeholders
-	 */
-	public static List<String> findStakeholderEmails(final List<StakeholderEntity> stakeholderEntities) {
-		return ofNullable(stakeholderEntities)
-			.orElse(emptyList())
-			.stream()
-			.map(MessagingMapper::findStakeholderEmail)
-			.filter(StringUtils::isNotBlank)
-			.distinct()
-			.toList();
-	}
-
-	/**
-	 * Resolves the first name of the first stakeholder in the list that has a resolvable e-mail address, so that a
-	 * greeting used in a combined batch email correlates with one of the stakeholders it is actually being sent to.
-	 *
-	 * @param  stakeholderEntities the stakeholders to resolve a first name from
-	 * @return                     the first name of the first stakeholder with a resolvable e-mail address, or null
-	 */
-	public static String findFirstRecipientFirstName(final List<StakeholderEntity> stakeholderEntities) {
-		return ofNullable(stakeholderEntities)
-			.orElse(emptyList())
-			.stream()
-			.filter(stakeholder -> StringUtils.isNotBlank(findStakeholderEmail(stakeholder)))
-			.findFirst()
-			.map(StakeholderEntity::getFirstName)
 			.orElse(null);
 	}
 

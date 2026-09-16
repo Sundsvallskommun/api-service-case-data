@@ -8,9 +8,6 @@
 					"parties": [
 						{
 							"emailAddress": "reporter.one@testdomain.local"
-						},
-						{
-							"emailAddress": "reporter.two@testdomain.local"
 						}
 					],
 					"subject": "Nytt meddelande kopplat till ärendet Ansökan färdtjänst ERRAND-NUMBER-5",
@@ -33,5 +30,5 @@
 		"bodyFileName": "test12_createMessageWithTypeInternalToMultipleReporters/response/messaging-send-email.json",
 		"status": 200
 	},
-	"name": "messaging-send-email"
+	"name": "messaging-send-email-reporter-one"
 }

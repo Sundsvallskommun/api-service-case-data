@@ -1,8 +1,10 @@
 package se.sundsvall.casedata.service;
 
+import generated.se.sundsvall.messaging.DeliveryResult;
 import generated.se.sundsvall.messaging.EmailBatchRequest;
 import generated.se.sundsvall.messaging.MessageBatchResult;
 import generated.se.sundsvall.messaging.MessageResult;
+import generated.se.sundsvall.messaging.MessageStatus;
 import generated.se.sundsvall.messaging.Party;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -61,6 +63,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -398,6 +401,32 @@ class MessageServiceTest {
 			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to send bulk email");
 	}
 
+	@Test
+	void sendBulkEmailFailedWhenDeliveryFails() {
+		// Arrange - the envelope (MessageBatchResult) is non-null, but one of the individual deliveries within it failed
+		final var errandId = 1L;
+		final var request = BulkEmailRequest.builder()
+			.withRecipients(List.of("first@example.com", "second@example.com"))
+			.withSubject("Subject")
+			.withMessage("Message")
+			.withDepartmentName(DEPARTMENT_ID)
+			.build();
+		when(errandRepositoryMock.existsByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(true);
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		final var failedDelivery = new DeliveryResult().status(MessageStatus.FAILED);
+		final var successfulDelivery = new DeliveryResult().status(MessageStatus.SENT);
+		final var result = new MessageBatchResult().messages(List.of(
+			new MessageResult().deliveries(List.of(successfulDelivery)),
+			new MessageResult().deliveries(List.of(failedDelivery))));
+		when(messagingClientMock.sendEmailBatch(any(), any())).thenReturn(result);
+
+		// Act & Assert
+		assertThatThrownBy(() -> messageService.sendBulkEmail(errandId, request, MUNICIPALITY_ID, NAMESPACE))
+			.isInstanceOf(ThrowableProblem.class)
+			.hasFieldOrPropertyWithValue("status", INTERNAL_SERVER_ERROR)
+			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to send bulk email");
+	}
+
 	@ParameterizedTest
 	@ValueSource(booleans = {
 		true, false
@@ -476,7 +505,7 @@ class MessageServiceTest {
 	}
 
 	@Test
-	void sendMessageNotificationSendsOneCombinedEmailToMultipleApplicantsExcludingCreator() {
+	void sendMessageNotificationSendsIndividualEmailToEachNotifiableApplicant() {
 		// Arrange
 		final var creatorPartyId = UUID.randomUUID().toString();
 		Identifier.set(Identifier.create().withType(PARTY_ID).withValue(creatorPartyId));
@@ -515,13 +544,18 @@ class MessageServiceTest {
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
 		when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
+		when(messagingClientMock.sendEmailBatch(any(), any())).thenReturn(new MessageBatchResult());
 
 		// Act
 		messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
 
-		// Assert - one combined email is sent to all applicants except the one that created the message
-		verify(messagingClientMock).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
-		assertThat(emailBatchRequestCaptor.getValue().getParties()).extracting(Party::getEmailAddress).containsExactlyInAnyOrder(firstApplicantEmail, secondApplicantEmail);
+		// Assert - one individual email is sent per applicant, excluding the one that created the message, so no
+		// recipient's greeting discloses another recipient's name
+		verify(messagingClientMock, times(2)).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
+		assertThat(emailBatchRequestCaptor.getAllValues())
+			.flatExtracting(EmailBatchRequest::getParties)
+			.extracting(Party::getEmailAddress)
+			.containsExactlyInAnyOrder(firstApplicantEmail, secondApplicantEmail);
 		verify(messagingClientMock, never()).sendMessage(any(), any());
 	}
 
@@ -559,6 +593,35 @@ class MessageServiceTest {
 			.isEqualTo(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
 		verify(messagingClientMock, never()).sendEmailBatch(any(), any());
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
+	}
+
+	@Test
+	void sendMessageNotificationSkipsApplicantWithNonUuidPersonId() {
+		// Arrange - a personnummer/organisationsnummer is not a valid partyId (required by the Messaging contract), so
+		// this applicant must be filtered out rather than sent through with a null partyId, which would fail the request
+		Identifier.set(Identifier.create().withType(PARTY_ID).withValue(UUID.randomUUID().toString()));
+		final var errandId = 1L;
+		final var applicant = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withPersonId("199001011234")
+			.build();
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withErrandNumber("123456789")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(applicant))
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
+
+		// Act
+		messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
+
+		// Assert - falls through to the final warning instead of calling sendMessage with an unparseable partyId
+		verify(messagingClientMock, never()).sendMessage(any(), any());
+		verify(messagingClientMock, never()).sendEmailBatch(any(), any());
 	}
 
 	@Test
@@ -769,7 +832,7 @@ class MessageServiceTest {
 	}
 
 	@Test
-	void sendEmailNotificationSendsOneCombinedEmailToMultipleReporters() {
+	void sendEmailNotificationSendsIndividualEmailToEachReporter() {
 		// Arrange - no Identifier set (setup removes it), so both reporters are notifiable
 		final var errandId = 1L;
 		final var firstReporterEmail = "first.reporter@example.com";
@@ -800,13 +863,17 @@ class MessageServiceTest {
 		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
 		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
 		when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
+		when(messagingClientMock.sendEmailBatch(any(), any())).thenReturn(new MessageBatchResult());
 
 		// Act
 		messageService.sendEmailNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
 
-		// Assert - a single email is sent with both reporters as recipients, instead of one email per reporter
-		verify(messagingClientMock).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
-		assertThat(emailBatchRequestCaptor.getValue().getParties()).extracting(Party::getEmailAddress).containsExactlyInAnyOrder(firstReporterEmail, secondReporterEmail);
+		// Assert - one individual email is sent per reporter, so neither reporter's greeting discloses the other's name
+		verify(messagingClientMock, times(2)).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
+		assertThat(emailBatchRequestCaptor.getAllValues())
+			.flatExtracting(EmailBatchRequest::getParties)
+			.extracting(Party::getEmailAddress)
+			.containsExactlyInAnyOrder(firstReporterEmail, secondReporterEmail);
 	}
 
 	@MethodSource("reporterEmailArgumentProvider")
