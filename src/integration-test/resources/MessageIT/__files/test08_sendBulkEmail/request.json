@@ -1,0 +1,9 @@
+{
+	"recipients": [
+		"first.recipient@testdomain.local",
+		"second.recipient@testdomain.local"
+	],
+	"subject": "Bulk email subject",
+	"message": "Bulk email message",
+	"departmentName": "CONVERSATION"
+}

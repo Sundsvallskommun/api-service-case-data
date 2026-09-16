@@ -7,11 +7,14 @@
 				"equalToJson": {
 					"parties": [
 						{
-							"emailAddress": "reporter.email@testdomain.local"
+							"emailAddress": "first.recipient@testdomain.local"
+						},
+						{
+							"emailAddress": "second.recipient@testdomain.local"
 						}
 					],
-					"subject": "Nytt meddelande kopplat till ärendet Ansökan färdtjänst ERRAND-NUMBER-3",
-					"message": "Hej Reporter, du har ett meddelande rörande ärende med titel Ansökan färdtjänst (ärendenr ERRAND-NUMBER-3). Använd länken https://katla.domain.tld/ERRAND-NUMBER-3 för att komma till ärendet.",
+					"subject": "Bulk email subject",
+					"message": "Bulk email message",
 					"sender": {
 						"name": "no-reply.6@localhost.local",
 						"address": "no-reply.6@localhost.local"
@@ -27,7 +30,7 @@
 		"headers": {
 			"Content-Type": "application/json"
 		},
-		"bodyFileName": "test08_createMessageWithTypeInternalToReporter/response/messaging-send-email.json",
+		"bodyFileName": "test08_sendBulkEmail/response/messaging-send-email.json",
 		"status": 200
 	},
 	"name": "messaging-send-email"

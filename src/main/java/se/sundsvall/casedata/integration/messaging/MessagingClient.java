@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.integration.messaging;
 
-import generated.se.sundsvall.messaging.EmailRequest;
+import generated.se.sundsvall.messaging.EmailBatchRequest;
+import generated.se.sundsvall.messaging.MessageBatchResult;
 import generated.se.sundsvall.messaging.MessageRequest;
 import generated.se.sundsvall.messaging.MessageResult;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -30,13 +31,18 @@ public interface MessagingClient {
 		@RequestBody final MessageRequest messageRequest);
 
 	/**
-	 * Send a email to a single recipient.
+	 * Send an individual email to each party in a single batch call. Messaging sends the batch asynchronously - the
+	 * response reflects the state of the request at the time it was accepted, not the eventual delivery outcome.
+	 * Each {@code DeliveryResult.status} is therefore typically {@code PENDING} in the response to this call; a later
+	 * {@code FAILED}/{@code NOT_SENT} outcome is not something this call can observe.
 	 *
-	 * @param municipalityId the id of the municipality to send the email to
-	 * @param emailRequest   containing email information
+	 * @param  municipalityId    the id of the municipality to send the emails to
+	 * @param  emailBatchRequest containing email information and the parties to send it to
+	 * @return                   response containing a batch id and the (likely still pending) delivery status for
+	 *                           each party at acceptance time
 	 */
-	@PostMapping(path = "/{municipalityId}/email", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-	MessageResult sendEmail(
+	@PostMapping(path = "/{municipalityId}/email/batch", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+	MessageBatchResult sendEmailBatch(
 		@PathVariable final String municipalityId,
-		@RequestBody final EmailRequest emailRequest);
+		@RequestBody final EmailBatchRequest emailBatchRequest);
 }

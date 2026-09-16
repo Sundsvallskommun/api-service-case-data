@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "13.1"
+  version: "13.2"
 servers:
-- url: http://localhost:61752
+- url: http://localhost:52467
   description: Generated server url
 tags:
 - name: Notifications
@@ -1493,6 +1493,72 @@ paths:
         required: true
       responses:
         "201":
+          description: No content - Successful operation
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/errands/{errandId}/messages/email/batch:
+    post:
+      tags:
+      - Messages
+      summary: Send a batch email in context of an errand
+      description: "Sends one individual email per recipient specified in the request.\
+        \ This call blocks until Messaging's batch endpoint responds - bounded by\
+        \ the recipient limit on BulkEmailRequest and the messaging Feign client's\
+        \ read timeout - but Messaging delivers the batch asynchronously. A successful\
+        \ (204) response means Messaging accepted the batch for delivery, not that\
+        \ every email was actually delivered; a delivery that fails after acceptance\
+        \ is not reflected in this response."
+      operationId: sendBulkEmail
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality ID
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: namespace
+        in: path
+        description: Namespace
+        required: true
+        schema:
+          type: string
+          pattern: "[\\w|\\-]+"
+        example: MY_NAMESPACE
+      - name: errandId
+        in: path
+        description: Errand ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulkEmailRequest"
+        required: true
+      responses:
+        "204":
           description: No content - Successful operation
         "400":
           description: Bad request
@@ -5879,11 +5945,11 @@ components:
     JsonNode:
       type: object
       properties:
+        container:
+          type: boolean
         number:
           type: boolean
-        valueNode:
-          type: boolean
-        missingNode:
+        floatingPointNumber:
           type: boolean
         nodeType:
           type: string
@@ -5900,6 +5966,10 @@ components:
         string:
           type: boolean
         integralNumber:
+          type: boolean
+        missingNode:
+          type: boolean
+        valueNode:
           type: boolean
         pojo:
           type: boolean
@@ -5921,10 +5991,6 @@ components:
         boolean:
           type: boolean
         binary:
-          type: boolean
-        container:
-          type: boolean
-        floatingPointNumber:
           type: boolean
         empty:
           type: boolean
@@ -6393,6 +6459,56 @@ components:
         internal:
           type: boolean
           description: Is message internal
+    BulkEmailRequest:
+      type: object
+      properties:
+        recipients:
+          type: array
+          items:
+            type: string
+            format: email
+            description: "Email address for a recipient. One individual email is sent\
+              \ per recipient. Limited to 200 recipients per request, since each is\
+              \ sent as a synchronous call to Messaging's batch endpoint."
+            examples:
+            - recipient@recipient.se
+            minLength: 1
+          maxItems: 200
+          minItems: 0
+        subject:
+          type: string
+          description: Subject
+          examples:
+          - Subject
+          minLength: 1
+        message:
+          type: string
+          description: Message in plain text
+          examples:
+          - Message in plain text
+          minLength: 1
+        htmlMessage:
+          type: string
+          description: Message in HTML format
+          examples:
+          - <p>Hello world</p>
+        departmentName:
+          type: string
+          description: The department name to use when resolving which messaging settings
+            (i.e. sender address) to use
+          examples:
+          - CONVERSATION
+          minLength: 1
+        attachments:
+          type: array
+          items:
+            $ref: "#/components/schemas/MessageAttachment"
+            description: List with Base64 encoded email attachments
+      required:
+      - departmentName
+      - message
+      - recipients
+      - subject
     Conversation:
       type: object
       description: Conversation model
@@ -6469,55 +6585,6 @@ components:
           type: array
           items:
             type: string
-    ReadBy:
-      type: object
-      description: Readby model
-      properties:
-        identifier:
-          $ref: "#/components/schemas/Identifier"
-          description: The identifier of the person who read the message.
-          examples:
-          - joe01doe
-        readAt:
-          type: string
-          format: date-time
-          description: The timestamp when the message was read.
-          examples:
-          - 2023-01-01T12:00:00+01:00
-    ConversationAttachment:
-      type: object
-      description: ConversationAttachment model
-      properties:
-        id:
-          type: string
-          description: ConversationAttachment ID
-          examples:
-          - cb20c51f-fcf3-42c0-b613-de563634a8ec
-        fileName:
-          type: string
-          description: Name of the file
-          examples:
-          - my-file.txt
-        fileSize:
-          type: integer
-          format: int32
-          description: Size of the file in bytes
-          examples:
-          - 1024
-        mimeType:
-          type: string
-          description: Mime type of the file
-        hash:
-          type: string
-          description: Hash of the file content
-          examples:
-          - a3b4c5d6e7f8...
-        created:
-          type: string
-          format: date-time
-          description: The attachment created date
-          examples:
-          - 2023-01-01T00:00:00+01:00
     Message:
       type: object
       description: Message model
@@ -6582,6 +6649,55 @@ components:
           readOnly: true
       required:
       - content
+    ReadBy:
+      type: object
+      description: Readby model
+      properties:
+        identifier:
+          $ref: "#/components/schemas/Identifier"
+          description: The identifier of the person who read the message.
+          examples:
+          - joe01doe
+        readAt:
+          type: string
+          format: date-time
+          description: The timestamp when the message was read.
+          examples:
+          - 2023-01-01T12:00:00+01:00
+    ConversationAttachment:
+      type: object
+      description: ConversationAttachment model
+      properties:
+        id:
+          type: string
+          description: ConversationAttachment ID
+          examples:
+          - cb20c51f-fcf3-42c0-b613-de563634a8ec
+        fileName:
+          type: string
+          description: Name of the file
+          examples:
+          - my-file.txt
+        fileSize:
+          type: integer
+          format: int32
+          description: Size of the file in bytes
+          examples:
+          - 1024
+        mimeType:
+          type: string
+          description: Mime type of the file
+        hash:
+          type: string
+          description: Hash of the file content
+          examples:
+          - a3b4c5d6e7f8...
+        created:
+          type: string
+          format: date-time
+          description: The attachment created date
+          examples:
+          - 2023-01-01T00:00:00+01:00
     MarkAsReadRequest:
       type: object
       description: Request to mark messages as read
@@ -6814,17 +6930,6 @@ components:
         totalElements:
           type: integer
           format: int64
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
         size:
           type: integer
           format: int32
@@ -6835,6 +6940,17 @@ components:
         number:
           type: integer
           format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
     PageableObject:
@@ -7103,17 +7219,6 @@ components:
         totalElements:
           type: integer
           format: int64
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
         size:
           type: integer
           format: int32
@@ -7124,6 +7229,17 @@ components:
         number:
           type: integer
           format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
     ConversationReadByCount:
@@ -7180,17 +7296,6 @@ components:
         totalElements:
           type: integer
           format: int64
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
         size:
           type: integer
           format: int32
@@ -7201,6 +7306,17 @@ components:
         number:
           type: integer
           format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
   securitySchemes: {}

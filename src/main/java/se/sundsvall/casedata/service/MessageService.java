@@ -1,11 +1,15 @@
 package se.sundsvall.casedata.service;
 
+import generated.se.sundsvall.messaging.DeliveryResult;
+import generated.se.sundsvall.messaging.MessageBatchResult;
+import generated.se.sundsvall.messaging.MessageStatus;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import se.sundsvall.casedata.api.model.BulkEmailRequest;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.integration.db.ErrandRepository;
@@ -23,7 +27,6 @@ import se.sundsvall.dept44.support.Identifier.Type;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ObjectUtils.notEqual;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -33,8 +36,11 @@ import static se.sundsvall.casedata.integration.db.model.enums.NotificationSubTy
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_OWNER_SUPPORT_TEXT;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.TYPE_REPORTER_SUPPORT_TEXT;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.findStakeholderEmail;
-import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailRequest;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailAttachments;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailBatchRequest;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toEmailBatchRequests;
 import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toMessagingMessageRequest;
+import static se.sundsvall.casedata.integration.messaging.MessagingMapper.toUuidOrNull;
 import static se.sundsvall.casedata.service.model.Constants.DEPARTMENT_NAME_PARATRANSIT;
 import static se.sundsvall.casedata.service.util.Constants.ERRAND_ENTITY_NOT_FOUND;
 import static se.sundsvall.casedata.service.util.Constants.MESSAGE_ATTACHMENT_ENTITY_NOT_FOUND;
@@ -95,13 +101,51 @@ public class MessageService {
 		final var messageEntity = messageRepository.save(mapper.toMessageEntity(request, errandId, municipalityId, namespace));
 		notificationService.create(municipalityId, namespace, toNotification(errandEntity, NOTIFICATION_TYPE, NOTIFICATION_DESCRIPTION, MESSAGE), errandEntity);
 
-		final var reporterStakeholder = getReporterStakeholder(errandEntity);
+		final var notifiableReporters = getReporterStakeholders(errandEntity).stream()
+			.filter(reporter -> notEqual(reporter.getAdAccount(), request.getUsername()))
+			.toList();
 
-		if (doesCaseTypeExist(municipalityId, namespace, errandEntity.getCaseType()) && reporterStakeholder != null && !reporterStakeholder.getAdAccount().equals(request.getUsername())) {
-			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, DEPARTMENT_NAME_PARATRANSIT);
+		if (doesCaseTypeExist(municipalityId, namespace, errandEntity.getCaseType()) && !notifiableReporters.isEmpty()) {
+			sendEmailNotification(municipalityId, namespace, errandEntity, notifiableReporters, DEPARTMENT_NAME_PARATRANSIT);
 		}
 
 		return mapper.toMessageResponse(messageEntity, true);
+	}
+
+	/**
+	 * Sends a manually composed email to a list of recipients - one individual email per recipient - via Messaging's
+	 * batch endpoint. Unlike {@link #create(Long, MessageRequest, String, String)}, the email is actually transmitted
+	 * via Messaging rather than merely recorded on the errand.
+	 * <p>
+	 * Messaging accepts and delivers the batch asynchronously: a successful return only means Messaging accepted the
+	 * batch for delivery, and only an immediate ({@code FAILED}/{@code NOT_SENT}) rejection at acceptance time is
+	 * caught here as an error. A delivery that fails later, after Messaging has accepted it (still {@code PENDING} in
+	 * this call's response), is not detected by this method.
+	 *
+	 * @param errandId       of the errand the email is sent in the context of
+	 * @param request        the recipients, subject, message and attachments to send
+	 * @param municipalityId of the errand the email is sent in the context of
+	 * @param namespace      of the errand the email is sent in the context of
+	 */
+	public void sendBulkEmail(final Long errandId, final BulkEmailRequest request, final String municipalityId, final String namespace) {
+		verifyErrandExists(errandId, municipalityId, namespace);
+
+		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, request.getDepartmentName());
+		final var attachments = toEmailAttachments(request.getAttachments());
+		final var emailBatchRequest = toEmailBatchRequest(request, messagingSettings, attachments);
+
+		final var result = messagingClient.sendEmailBatch(municipalityId, emailBatchRequest);
+		if (result == null) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to send bulk email");
+		}
+
+		// Deliveries are typically still PENDING at this point (Messaging sends asynchronously) - this only catches
+		// a delivery already known to have failed at acceptance time, not one that fails later
+		final var deliveries = deliveries(result);
+		final var failedDeliveryCount = deliveries.stream().filter(MessageService::isFailedDelivery).count();
+		if (failedDeliveryCount > 0) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to send bulk email: %d of %d deliveries failed".formatted(failedDeliveryCount, deliveries.size()));
+		}
 	}
 
 	public void updateViewedStatus(final Long errandId, final String messageId, final String municipalityId, final String namespace, final boolean isViewed) {
@@ -142,32 +186,52 @@ public class MessageService {
 	 */
 	public void sendMessageNotification(final String municipalityId, final String namespace, final Long errandId, final String departmentName) {
 		final var errandEntity = fetchErrand(municipalityId, namespace, errandId);
-		final var applicantStakeholder = getApplicantStakeholder(errandEntity);
+		final var applicantStakeholders = getApplicantStakeholders(errandEntity);
+		final var notifiableApplicants = applicantStakeholders.stream()
+			.filter(applicant -> !creatorIsSameAsApplicant(applicant))
+			.toList();
 
-		if (creatorIsSameAsApplicant(applicantStakeholder)) {
+		if (!applicantStakeholders.isEmpty() && notifiableApplicants.isEmpty()) {
 			return;
 		}
 
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
 		final var caseType = metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType());
 
-		final var applicantEmail = findStakeholderEmail(applicantStakeholder);
-		if (isNotBlank(applicantEmail)) {
-			final var emailRequest = toEmailRequest(errandEntity, messagingSettings, applicantStakeholder, TYPE_OWNER_SUPPORT_TEXT, caseType);
-			messagingClient.sendEmail(municipalityId, emailRequest);
-			return;
+		// The channel (email vs. /messages) is chosen per applicant, not for the group as a whole, so an applicant
+		// without an email address still gets notified via /messages when a sibling applicant does have one
+		final var applicantsWithEmail = notifiableApplicants.stream()
+			.filter(applicant -> isNotBlank(findStakeholderEmail(applicant)))
+			.toList();
+		if (!applicantsWithEmail.isEmpty()) {
+			toEmailBatchRequests(errandEntity, messagingSettings, applicantsWithEmail, TYPE_OWNER_SUPPORT_TEXT, caseType)
+				.forEach(emailBatchRequest -> {
+					final var result = messagingClient.sendEmailBatch(municipalityId, emailBatchRequest);
+					if ((result == null) || hasFailedDelivery(result)) {
+						LOGGER.warn("Failed to send applicant notification email for errand '{}' in namespace '{}' for municipality '{}'", errandId, sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
+					}
+				});
 		}
 
-		if (applicantStakeholder != null && isNotBlank(applicantStakeholder.getPersonId())) {
-			final var messageRequest = toMessagingMessageRequest(errandEntity, messagingSettings, caseType);
+		final var applicantsWithoutEmailButWithPersonId = notifiableApplicants.stream()
+			.filter(applicant -> !isNotBlank(findStakeholderEmail(applicant)))
+			.filter(applicant -> toUuidOrNull(applicant.getPersonId()) != null)
+			.toList();
+		if (!applicantsWithoutEmailButWithPersonId.isEmpty()) {
+			final var messageRequest = toMessagingMessageRequest(errandEntity, messagingSettings, applicantsWithoutEmailButWithPersonId, caseType);
 			final var result = messagingClient.sendMessage(municipalityId, messageRequest);
 			if (result == null) {
 				throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message notification");
 			}
-			return;
 		}
 
-		LOGGER.warn("Cannot send applicant notification for errand '{}' in namespace '{}' for municipality '{}': applicant stakeholder has neither email nor partyId", errandId, sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
+		final var applicantsWithoutNotificationChannel = notifiableApplicants.stream()
+			.filter(applicant -> !isNotBlank(findStakeholderEmail(applicant)))
+			.filter(applicant -> toUuidOrNull(applicant.getPersonId()) == null)
+			.toList();
+		if (!applicantsWithoutNotificationChannel.isEmpty()) {
+			LOGGER.warn("Cannot send applicant notification for errand '{}' in namespace '{}' for municipality '{}': applicant stakeholder has neither email nor partyId", errandId, sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
+		}
 	}
 
 	/**
@@ -180,11 +244,13 @@ public class MessageService {
 	 */
 	public void sendEmailNotification(final String municipalityId, final String namespace, final Long errandId, final String departmentName) {
 		final var errandEntity = fetchErrand(municipalityId, namespace, errandId);
-		final var reporterStakeholder = getReporterStakeholder(errandEntity);
+		final var notifiableReporters = getReporterStakeholders(errandEntity).stream()
+			.filter(this::isEmailNotificationToBeSent)
+			.toList();
 
-		// Create a notification and send email if logic determins that mail should be sent
-		if (isEmailNotificationToBeSent(reporterStakeholder)) {
-			sendEmailNotification(municipalityId, namespace, errandEntity, reporterStakeholder, departmentName);
+		// Send an individually personalized email to each reporter if logic determins that mail should be sent
+		if (!notifiableReporters.isEmpty()) {
+			sendEmailNotification(municipalityId, namespace, errandEntity, notifiableReporters, departmentName);
 		}
 	}
 
@@ -206,33 +272,65 @@ public class MessageService {
 			.orElse(true);
 	}
 
-	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final StakeholderEntity stakeholderEntity, final String departmentName) {
-		if (isBlank(findStakeholderEmail(stakeholderEntity))) {
+	private void sendEmailNotification(final String municipalityId, final String namespace, final ErrandEntity errandEntity, final List<StakeholderEntity> stakeholderEntities, final String departmentName) {
+		final var hasEmailRecipient = stakeholderEntities.stream().anyMatch(stakeholder -> isNotBlank(findStakeholderEmail(stakeholder)));
+		if (!hasEmailRecipient) {
 			LOGGER.warn("Cannot send reporter notification for errand '{}' in namespace '{}' for municipality '{}': reporter stakeholder has no email", errandEntity.getId(), sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
 			return;
 		}
 
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
-		final var request = toEmailRequest(errandEntity, messagingSettings, stakeholderEntity, TYPE_REPORTER_SUPPORT_TEXT,
-			metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType()));
-		messagingClient.sendEmail(errandEntity.getMunicipalityId(), request);
+		final var caseType = metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType());
+		toEmailBatchRequests(errandEntity, messagingSettings, stakeholderEntities, TYPE_REPORTER_SUPPORT_TEXT, caseType)
+			.forEach(emailBatchRequest -> {
+				final var result = messagingClient.sendEmailBatch(errandEntity.getMunicipalityId(), emailBatchRequest);
+				if ((result == null) || hasFailedDelivery(result)) {
+					LOGGER.warn("Failed to send reporter notification email for errand '{}' in namespace '{}' for municipality '{}'", errandEntity.getId(), sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
+				}
+			});
 	}
 
-	private StakeholderEntity getReporterStakeholder(final ErrandEntity errandEntity) {
-		return getStakeholderByRole(errandEntity, REPORTER.name());
+	/**
+	 * Checks whether any individual delivery within a batch result is already known to have failed, since
+	 * {@link MessageBatchResult} itself being non-null only means Messaging accepted the request for asynchronous
+	 * delivery. Messaging sends batches asynchronously, so deliveries are typically still {@code PENDING} in the
+	 * response to the call that produced this result - this only catches a failure Messaging could already report at
+	 * acceptance time, not one occurring later in the actual (asynchronous) send.
+	 *
+	 * @param  result the batch result to inspect
+	 * @return        true if any delivery within the batch already has a failed status
+	 */
+	private static boolean hasFailedDelivery(final MessageBatchResult result) {
+		return deliveries(result).stream().anyMatch(MessageService::isFailedDelivery);
 	}
 
-	private StakeholderEntity getApplicantStakeholder(final ErrandEntity errandEntity) {
-		return getStakeholderByRole(errandEntity, APPLICANT.name());
+	private static List<DeliveryResult> deliveries(final MessageBatchResult result) {
+		return ofNullable(result.getMessages())
+			.orElse(emptyList())
+			.stream()
+			.flatMap(message -> ofNullable(message.getDeliveries()).orElse(emptyList()).stream())
+			.toList();
 	}
 
-	private StakeholderEntity getStakeholderByRole(final ErrandEntity errandEntity, final String role) {
+	private static boolean isFailedDelivery(final DeliveryResult delivery) {
+		final var status = delivery.getStatus();
+		return (status == MessageStatus.FAILED) || (status == MessageStatus.NOT_SENT);
+	}
+
+	private List<StakeholderEntity> getReporterStakeholders(final ErrandEntity errandEntity) {
+		return getStakeholdersByRole(errandEntity, REPORTER.name());
+	}
+
+	private List<StakeholderEntity> getApplicantStakeholders(final ErrandEntity errandEntity) {
+		return getStakeholdersByRole(errandEntity, APPLICANT.name());
+	}
+
+	private List<StakeholderEntity> getStakeholdersByRole(final ErrandEntity errandEntity, final String role) {
 		return ofNullable(errandEntity.getStakeholders())
 			.orElse(emptyList())
 			.stream()
 			.filter(stakeholder -> ofNullable(stakeholder.getRoles()).orElse(emptyList()).contains(role))
-			.findFirst()
-			.orElse(null);
+			.toList();
 	}
 
 	/**

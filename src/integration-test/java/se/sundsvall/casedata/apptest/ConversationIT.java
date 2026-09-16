@@ -215,8 +215,30 @@ class ConversationIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
+	/**
+	 * Test to verify that when an errand has several stakeholders with the reporter role, one individual email per
+	 * reporter is sent via Messaging's batch endpoint, instead of a single email carrying every reporter's address.
+	 * The stubs in messaging-send-email-reporter-one.json and messaging-send-email-reporter-two.json each only match
+	 * a request carrying a single reporter's address, so the test fails if both addresses are sent in one call.
+	 */
 	@Test
-	void test12_markAsRead() {
+	void test12_createMessageWithTypeInternalToMultipleReporters() throws FileNotFoundException {
+		final var errandId = 5;
+		final var internalConversationId = "896a44d8-724b-11ed-a840-0242ac110006";
+
+		setupCall()
+			.withHttpMethod(POST)
+			.withServicePath(format(PATH + "/{3}/messages", MUNICIPALITY_ID, NAMESPACE, errandId, internalConversationId))
+			.withContentType(MULTIPART_FORM_DATA)
+			.withRequestFile("message", REQUEST_FILE)
+			.withHeader(X_JWT_ASSERTION_HEADER_KEY, JWT_HEADER_VALUE)
+			.withHeader(HEADER_NAME, "type=adAccount; adm02adm")
+			.withExpectedResponseStatus(NO_CONTENT)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test13_markAsRead() {
 		setupCall()
 			.withHttpMethod(POST)
 			.withServicePath(format(PATH + "/{3}/messages/mark-as-read", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID, CONVERSATION_ID))
@@ -228,7 +250,7 @@ class ConversationIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test13_countReadBy() {
+	void test14_countReadBy() {
 		setupCall()
 			.withHttpMethod(GET)
 			.withServicePath(format(PATH + "/count-read-by", MUNICIPALITY_ID, NAMESPACE, ERRAND_ID))

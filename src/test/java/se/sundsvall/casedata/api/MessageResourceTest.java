@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.casedata.Application;
+import se.sundsvall.casedata.api.model.BulkEmailRequest;
 import se.sundsvall.casedata.api.model.MessageRequest;
 import se.sundsvall.casedata.api.model.MessageResponse;
 import se.sundsvall.casedata.service.MessageService;
@@ -142,6 +143,31 @@ class MessageResourceTest {
 
 		// Assert
 		verify(messageServiceMock).create(errandId, request, MUNICIPALITY_ID, NAMESPACE);
+		verifyNoMoreInteractions(messageServiceMock);
+	}
+
+	@Test
+	void postBulkEmail() {
+		// Arrange
+		final var errandId = 123L;
+		final var request = BulkEmailRequest.builder()
+			.withRecipients(List.of("first@example.com", "second@example.com"))
+			.withSubject("Subject")
+			.withMessage("Message")
+			.withDepartmentName("CONVERSATION")
+			.build();
+
+		// Act
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(BASE_URL + "/email/batch").build(MUNICIPALITY_ID, NAMESPACE, errandId))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(request)
+			.exchange()
+			.expectStatus().isNoContent()
+			.expectHeader().contentType(ALL_VALUE);
+
+		// Assert
+		verify(messageServiceMock).sendBulkEmail(errandId, request, MUNICIPALITY_ID, NAMESPACE);
 		verifyNoMoreInteractions(messageServiceMock);
 	}
 

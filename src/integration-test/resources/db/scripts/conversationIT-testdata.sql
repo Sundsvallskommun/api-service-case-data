@@ -2,7 +2,8 @@ INSERT INTO errand(id, created, updated, version, application_received, case_tit
 VALUES (1, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'UNKNOWN', '', '', NULL, 'ERRAND-NUMBER-1', '', '2281', 'Aktualisering', 'MEDIUM', '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'UNKNOWN', NULL, 'MY_NAMESPACE'),
        (2, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'UNKNOWN', '', '', NULL, 'ERRAND-NUMBER-2', '', '2281', 'Aktualisering', 'MEDIUM', '896a44d8-724b-11ed-a840-0242ac110002', NULL, 'UNKNOWN', 'UNKNOWN', NULL, 'MY_NAMESPACE'),
        (3, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'Avvikelseärende', 'PARATRANSIT', 'UNKNOWN', 'UNKNOWN', '', '', NULL, 'ERRAND-NUMBER-3', '', '2281', 'Aktualisering', 'MEDIUM', '896a44d8-724b-11ed-a840-0242ac110003', NULL, 'UNKNOWN', 'UNKNOWN', NULL, 'MY_NAMESPACE'),
-       (4, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'UNKNOWN', '', '', NULL, 'ERRAND-NUMBER-4', '', '2281', 'Aktualisering', 'MEDIUM', '896a44d8-724b-11ed-a840-0242ac110005', NULL, 'UNKNOWN', 'UNKNOWN', NULL, 'MY_NAMESPACE');
+       (4, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'Nytt parkeringstillstånd', 'PARKING_PERMIT', 'UNKNOWN', 'UNKNOWN', '', '', NULL, 'ERRAND-NUMBER-4', '', '2281', 'Aktualisering', 'MEDIUM', '896a44d8-724b-11ed-a840-0242ac110005', NULL, 'UNKNOWN', 'UNKNOWN', NULL, 'MY_NAMESPACE'),
+       (5, '2022-12-02 15:13:45.363', '2022-12-02 15:15:01.563', 1, NULL, 'Avvikelseärende', 'PARATRANSIT', 'UNKNOWN', 'UNKNOWN', '', '', NULL, 'ERRAND-NUMBER-5', '', '2281', 'Aktualisering', 'MEDIUM', '896a44d8-724b-11ed-a840-0242ac110008', NULL, 'UNKNOWN', 'UNKNOWN', NULL, 'MY_NAMESPACE');
 
 -- Insert data into stakeholder table
 INSERT INTO stakeholder (id, created, updated, version, ad_account, authorized_signatory, first_name, last_name, organization_name, organization_number, person_id, `type`, errand_id, municipality_id, namespace)
@@ -10,32 +11,42 @@ VALUES (1, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'own01
        (2, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, null, 'Citizen Citizensson', 'Citizen', 'Citizensson', 'Sundsvalls testfabrik', '19900202-5678', '352ec7b4-cae0-4216-8d47-3e10246b2952', 'PERSON', 1, '2281', 'MY_NAMESPACE'),
        (3, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'adm01adm', 'Admin Adminsson', 'Admin', 'Adminsson', 'Sundsvalls testfabrik', '19900303-2345', NULL, 'PERSON', 3, '2281', 'MY_NAMESPACE'),
        (4, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'tes02rep', 'Reporter Reportersson', 'Reporter', 'Reportersson', 'Sundsvalls testfabrik', '19900404-6789', NULL, 'PERSON', 3, '2281', 'MY_NAMESPACE'),
-       (5, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, NULL, NULL, '', '', 'Testbolag 4 AB', '556002-1361', NULL, 'ORGANIZATION', 4, '2281', 'MY_NAMESPACE');
+       (5, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, NULL, NULL, '', '', 'Testbolag 4 AB', '556002-1361', NULL, 'ORGANIZATION', 4, '2281', 'MY_NAMESPACE'),
+       (6, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'adm02adm', 'Admin Adminsson', 'Admin', 'Adminsson', 'Sundsvalls testfabrik', '19900505-3456', NULL, 'PERSON', 5, '2281', 'MY_NAMESPACE'),
+       (7, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'tes03rep', 'Reporter Reportersson', 'Reporter', 'Reportersson', 'Sundsvalls testfabrik', '19900606-4567', NULL, 'PERSON', 5, '2281', 'MY_NAMESPACE'),
+       (8, '2024-04-17 11:42:42.362476', '2024-04-17 11:42:42.362476', 0, 'tes04rep', 'Reporter Reportersson', 'Reporter', 'Reportersson', 'Sundsvalls testfabrik', '19900707-5678', NULL, 'PERSON', 5, '2281', 'MY_NAMESPACE');
 
 INSERT INTO stakeholder_roles(stakeholder_id, roles, role_order)
 VALUES (1, 'ADMINISTRATOR', 0),
        (2, 'APPLICANT', 0),
        (3, 'ADMINISTRATOR', 0),
        (4, 'REPORTER', 0),
-       (5, 'APPLICANT', 0);
+       (5, 'APPLICANT', 0),
+       (6, 'ADMINISTRATOR', 0),
+       (7, 'REPORTER', 0),
+       (8, 'REPORTER', 0);
 
 INSERT INTO stakeholder_contact_information(stakeholder_id, contact_type, value, contact_information_order)
 VALUES (4, 'EMAIL', 'reporter.email@testdomain.local', 0),
-       (5, 'EMAIL', 'applicant.org@testdomain.local', 0);
+       (5, 'EMAIL', 'applicant.org@testdomain.local', 0),
+       (7, 'EMAIL', 'reporter.one@testdomain.local', 0),
+       (8, 'EMAIL', 'reporter.two@testdomain.local', 0);
 
 -- Insert data into conversation table
 INSERT INTO conversation (municipality_id, latest_synced_sequence_number, namespace, type, errand_id, id, message_exchange_id, topic)
 VALUES ('2281', 100, 'MY_NAMESPACE', 'EXTERNAL', '1', '896a44d8-724b-11ed-a840-0242ac110002', 'c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c5', 'Topic 1'),
        ('2281', 101, 'MY_NAMESPACE', 'INTERNAL', '2', '896a44d8-724b-11ed-a840-0242ac110003', 'c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c6', 'Topic 2'),
        ('2281', 102, 'MY_NAMESPACE', 'INTERNAL', '3', '896a44d8-724b-11ed-a840-0242ac110004', 'c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c7', 'Topic 3'),
-       ('2281', 103, 'MY_NAMESPACE', 'EXTERNAL', '4', '896a44d8-724b-11ed-a840-0242ac110005', 'c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c8', 'Topic 4');
+       ('2281', 103, 'MY_NAMESPACE', 'EXTERNAL', '4', '896a44d8-724b-11ed-a840-0242ac110005', 'c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c8', 'Topic 4'),
+       ('2281', 104, 'MY_NAMESPACE', 'INTERNAL', '5', '896a44d8-724b-11ed-a840-0242ac110006', 'c1a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c9', 'Topic 5');
 
 -- Insert data into conversation_relation_id table
 INSERT INTO conversation_relation_id (conversation_id, relation_id)
 VALUES ('896a44d8-724b-11ed-a840-0242ac110002', 'RELATION-ID-1'),
        ('896a44d8-724b-11ed-a840-0242ac110003', 'RELATION-ID-2'),
        ('896a44d8-724b-11ed-a840-0242ac110004', 'RELATION-ID-3'),
-       ('896a44d8-724b-11ed-a840-0242ac110005', 'RELATION-ID-4');
+       ('896a44d8-724b-11ed-a840-0242ac110005', 'RELATION-ID-4'),
+       ('896a44d8-724b-11ed-a840-0242ac110006', 'RELATION-ID-5');
 
 -- Insert attachment data for errand 1 (used in test10_createMessageWithAttachmentIds)
 INSERT INTO attachment (id, created, updated, version, category, extension, content, hash, mime_type, name, note, errand_id, decision_id, municipality_id, namespace)
