@@ -101,9 +101,14 @@ class MessageResource {
 	}
 
 	@PostMapping(path = "/errands/{errandId}/messages/email/batch", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
-	@Operation(summary = "Send a batch email in context of an errand", description = "Sends one individual email per recipient specified in the request", responses = {
-		@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
-	})
+	@Operation(summary = "Send a batch email in context of an errand",
+		description = "Sends one individual email per recipient specified in the request. This call blocks until Messaging's batch endpoint responds - "
+			+ "bounded by the recipient limit on BulkEmailRequest and the messaging Feign client's read timeout - but Messaging delivers the batch "
+			+ "asynchronously. A successful (204) response means Messaging accepted the batch for delivery, not that every email was actually delivered; "
+			+ "a delivery that fails after acceptance is not reflected in this response.",
+		responses = {
+			@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
+		})
 	ResponseEntity<Void> sendBulkEmail(
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,

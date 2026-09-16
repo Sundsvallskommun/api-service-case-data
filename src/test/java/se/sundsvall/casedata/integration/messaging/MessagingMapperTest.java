@@ -272,6 +272,25 @@ class MessagingMapperTest {
 	}
 
 	@Test
+	void toEmailBatchRequestForBulkEmailRequestDeduplicatesRecipients() {
+		// Arrange - a caller-supplied duplicate address must not result in the same email being sent twice
+		final var email = "duplicate@example.com";
+		final var request = BulkEmailRequest.builder()
+			.withRecipients(List.of(email, email))
+			.withSubject("Subject")
+			.withMessage("Message")
+			.withDepartmentName("CONVERSATION")
+			.build();
+		final var messagingSettings = MessagingSettings.builder().build();
+
+		// Act
+		final var bean = MessagingMapper.toEmailBatchRequest(request, messagingSettings, List.of());
+
+		// Assert
+		assertThat(bean.getParties()).containsExactly(new Party(email));
+	}
+
+	@Test
 	void toEmailAttachmentsReturnsEmptyListForNullInput() {
 		assertThat(MessagingMapper.toEmailAttachments(null)).isEmpty();
 	}

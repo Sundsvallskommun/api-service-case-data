@@ -1,6 +1,7 @@
 package se.sundsvall.casedata.api;
 
 import java.util.List;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -62,6 +63,37 @@ class MessageResourceFailureTest {
 		// Arrange
 		final var request = BulkEmailRequest.builder()
 			.withRecipients(List.of())
+			.withSubject("Subject")
+			.withMessage("Message")
+			.withDepartmentName("CONVERSATION")
+			.build();
+
+		// Act
+		final var response = webTestClient.post()
+			.uri(uriBuilder -> uriBuilder.path(PATH + "/email/batch").build(MUNICIPALITY_ID, NAMESPACE, 1L))
+			.contentType(APPLICATION_JSON)
+			.bodyValue(request)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON_VALUE)
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		verifyNoInteractions(messageServiceMock);
+		assertThat(response.getViolations())
+			.extracting("field")
+			.contains("recipients");
+	}
+
+	@Test
+	void postBulkEmailWithTooManyRecipients() {
+		// Arrange - recipients is capped since each is sent as a synchronous call to Messaging's batch endpoint
+		final var request = BulkEmailRequest.builder()
+			.withRecipients(IntStream.range(0, 201)
+				.mapToObj(i -> "recipient" + i + "@example.com")
+				.toList())
 			.withSubject("Subject")
 			.withMessage("Message")
 			.withDepartmentName("CONVERSATION")

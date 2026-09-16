@@ -73,7 +73,8 @@ public final class MessagingMapper {
 	 * Builds a batch email request for a manually composed message, sent to every recipient in the request as an
 	 * individual email via Messaging's batch endpoint. Unlike {@link #toEmailBatchRequests}, the subject and message
 	 * are taken verbatim from the caller instead of being built from a templated support text, so there is no
-	 * per-recipient personalization to lose by sending all recipients in a single call.
+	 * per-recipient personalization to lose by sending all recipients in a single call. Recipients are deduplicated,
+	 * so a caller-supplied duplicate address does not result in the same email being sent twice.
 	 *
 	 * @param  request           the bulk email request containing recipients, subject, message and attachments
 	 * @param  messagingSettings the messaging settings to resolve the sender address from
@@ -83,6 +84,7 @@ public final class MessagingMapper {
 	public static EmailBatchRequest toEmailBatchRequest(final BulkEmailRequest request, final MessagingSettings messagingSettings, final List<EmailAttachment> attachments) {
 		return new EmailBatchRequest()
 			.parties(request.getRecipients().stream()
+				.distinct()
 				.map(Party::new)
 				.toList())
 			.subject(request.getSubject())

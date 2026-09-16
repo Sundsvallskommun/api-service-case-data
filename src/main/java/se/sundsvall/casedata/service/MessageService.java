@@ -116,6 +116,11 @@ public class MessageService {
 	 * Sends a manually composed email to a list of recipients - one individual email per recipient - via Messaging's
 	 * batch endpoint. Unlike {@link #create(Long, MessageRequest, String, String)}, the email is actually transmitted
 	 * via Messaging rather than merely recorded on the errand.
+	 * <p>
+	 * Messaging accepts and delivers the batch asynchronously: a successful return only means Messaging accepted the
+	 * batch for delivery, and only an immediate ({@code FAILED}/{@code NOT_SENT}) rejection at acceptance time is
+	 * caught here as an error. A delivery that fails later, after Messaging has accepted it (still {@code PENDING} in
+	 * this call's response), is not detected by this method.
 	 *
 	 * @param errandId       of the errand the email is sent in the context of
 	 * @param request        the recipients, subject, message and attachments to send
@@ -130,8 +135,16 @@ public class MessageService {
 		final var emailBatchRequest = toEmailBatchRequest(request, messagingSettings, attachments);
 
 		final var result = messagingClient.sendEmailBatch(municipalityId, emailBatchRequest);
-		if ((result == null) || hasFailedDelivery(result)) {
+		if (result == null) {
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to send bulk email");
+		}
+
+		// Deliveries are typically still PENDING at this point (Messaging sends asynchronously) - this only catches
+		// a delivery already known to have failed at acceptance time, not one that fails later
+		final var deliveries = deliveries(result);
+		final var failedDeliveryCount = deliveries.stream().filter(MessageService::isFailedDelivery).count();
+		if (failedDeliveryCount > 0) {
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to send bulk email: %d of %d deliveries failed".formatted(failedDeliveryCount, deliveries.size()));
 		}
 	}
 
@@ -185,31 +198,40 @@ public class MessageService {
 		final var messagingSettings = messagingSettingsIntegration.getMessagingsettings(municipalityId, namespace, departmentName);
 		final var caseType = metadataService.getCaseType(municipalityId, namespace, errandEntity.getCaseType());
 
-		final var hasApplicantEmail = notifiableApplicants.stream().anyMatch(applicant -> isNotBlank(findStakeholderEmail(applicant)));
-		if (hasApplicantEmail) {
-			toEmailBatchRequests(errandEntity, messagingSettings, notifiableApplicants, TYPE_OWNER_SUPPORT_TEXT, caseType)
+		// The channel (email vs. /messages) is chosen per applicant, not for the group as a whole, so an applicant
+		// without an email address still gets notified via /messages when a sibling applicant does have one
+		final var applicantsWithEmail = notifiableApplicants.stream()
+			.filter(applicant -> isNotBlank(findStakeholderEmail(applicant)))
+			.toList();
+		if (!applicantsWithEmail.isEmpty()) {
+			toEmailBatchRequests(errandEntity, messagingSettings, applicantsWithEmail, TYPE_OWNER_SUPPORT_TEXT, caseType)
 				.forEach(emailBatchRequest -> {
 					final var result = messagingClient.sendEmailBatch(municipalityId, emailBatchRequest);
 					if ((result == null) || hasFailedDelivery(result)) {
 						LOGGER.warn("Failed to send applicant notification email for errand '{}' in namespace '{}' for municipality '{}'", errandId, sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
 					}
 				});
-			return;
 		}
 
-		final var applicantsWithPersonId = notifiableApplicants.stream()
+		final var applicantsWithoutEmailButWithPersonId = notifiableApplicants.stream()
+			.filter(applicant -> !isNotBlank(findStakeholderEmail(applicant)))
 			.filter(applicant -> toUuidOrNull(applicant.getPersonId()) != null)
 			.toList();
-		if (!applicantsWithPersonId.isEmpty()) {
-			final var messageRequest = toMessagingMessageRequest(errandEntity, messagingSettings, applicantsWithPersonId, caseType);
+		if (!applicantsWithoutEmailButWithPersonId.isEmpty()) {
+			final var messageRequest = toMessagingMessageRequest(errandEntity, messagingSettings, applicantsWithoutEmailButWithPersonId, caseType);
 			final var result = messagingClient.sendMessage(municipalityId, messageRequest);
 			if (result == null) {
 				throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Failed to create message notification");
 			}
-			return;
 		}
 
-		LOGGER.warn("Cannot send applicant notification for errand '{}' in namespace '{}' for municipality '{}': applicant stakeholder has neither email nor partyId", errandId, sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
+		final var applicantsWithoutNotificationChannel = notifiableApplicants.stream()
+			.filter(applicant -> !isNotBlank(findStakeholderEmail(applicant)))
+			.filter(applicant -> toUuidOrNull(applicant.getPersonId()) == null)
+			.toList();
+		if (!applicantsWithoutNotificationChannel.isEmpty()) {
+			LOGGER.warn("Cannot send applicant notification for errand '{}' in namespace '{}' for municipality '{}': applicant stakeholder has neither email nor partyId", errandId, sanitizeForLogging(namespace), sanitizeForLogging(municipalityId));
+		}
 	}
 
 	/**
@@ -269,19 +291,30 @@ public class MessageService {
 	}
 
 	/**
-	 * Checks whether any individual delivery within a batch result failed, since {@link MessageBatchResult} itself
-	 * being non-null only means Messaging accepted the request - each recipient's own delivery can still have failed.
+	 * Checks whether any individual delivery within a batch result is already known to have failed, since
+	 * {@link MessageBatchResult} itself being non-null only means Messaging accepted the request for asynchronous
+	 * delivery. Messaging sends batches asynchronously, so deliveries are typically still {@code PENDING} in the
+	 * response to the call that produced this result - this only catches a failure Messaging could already report at
+	 * acceptance time, not one occurring later in the actual (asynchronous) send.
 	 *
 	 * @param  result the batch result to inspect
-	 * @return        true if any delivery within the batch has a failed status
+	 * @return        true if any delivery within the batch already has a failed status
 	 */
 	private static boolean hasFailedDelivery(final MessageBatchResult result) {
+		return deliveries(result).stream().anyMatch(MessageService::isFailedDelivery);
+	}
+
+	private static List<DeliveryResult> deliveries(final MessageBatchResult result) {
 		return ofNullable(result.getMessages())
 			.orElse(emptyList())
 			.stream()
 			.flatMap(message -> ofNullable(message.getDeliveries()).orElse(emptyList()).stream())
-			.map(DeliveryResult::getStatus)
-			.anyMatch(status -> (status == MessageStatus.FAILED) || (status == MessageStatus.NOT_SENT));
+			.toList();
+	}
+
+	private static boolean isFailedDelivery(final DeliveryResult delivery) {
+		final var status = delivery.getStatus();
+		return (status == MessageStatus.FAILED) || (status == MessageStatus.NOT_SENT);
 	}
 
 	private List<StakeholderEntity> getReporterStakeholders(final ErrandEntity errandEntity) {

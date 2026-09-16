@@ -31,11 +31,15 @@ public interface MessagingClient {
 		@RequestBody final MessageRequest messageRequest);
 
 	/**
-	 * Send an individual email to each party in a single batch call.
+	 * Send an individual email to each party in a single batch call. Messaging sends the batch asynchronously - the
+	 * response reflects the state of the request at the time it was accepted, not the eventual delivery outcome.
+	 * Each {@code DeliveryResult.status} is therefore typically {@code PENDING} in the response to this call; a later
+	 * {@code FAILED}/{@code NOT_SENT} outcome is not something this call can observe.
 	 *
 	 * @param  municipalityId    the id of the municipality to send the emails to
 	 * @param  emailBatchRequest containing email information and the parties to send it to
-	 * @return                   response containing a batch id and delivery results for each sent email
+	 * @return                   response containing a batch id and the (likely still pending) delivery status for
+	 *                           each party at acceptance time
 	 */
 	@PostMapping(path = "/{municipalityId}/email/batch", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 	MessageBatchResult sendEmailBatch(

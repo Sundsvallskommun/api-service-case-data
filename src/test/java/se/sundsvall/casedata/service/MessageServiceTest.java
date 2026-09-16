@@ -420,11 +420,11 @@ class MessageServiceTest {
 			new MessageResult().deliveries(List.of(failedDelivery))));
 		when(messagingClientMock.sendEmailBatch(any(), any())).thenReturn(result);
 
-		// Act & Assert
+		// Act & Assert - the failure count is reported so the caller does not have to guess who was not notified
 		assertThatThrownBy(() -> messageService.sendBulkEmail(errandId, request, MUNICIPALITY_ID, NAMESPACE))
 			.isInstanceOf(ThrowableProblem.class)
 			.hasFieldOrPropertyWithValue("status", INTERNAL_SERVER_ERROR)
-			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to send bulk email");
+			.hasFieldOrPropertyWithValue("message", "Internal Server Error: Failed to send bulk email: 1 of 2 deliveries failed");
 	}
 
 	@ParameterizedTest
@@ -593,6 +593,51 @@ class MessageServiceTest {
 			.isEqualTo(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
 		verify(messagingClientMock, never()).sendEmailBatch(any(), any());
 		verifyNoMoreInteractions(errandRepositoryMock, notificationServiceMock, messageMapperMock);
+	}
+
+	@Test
+	void sendMessageNotificationSendsEmailAndMessageToDifferentApplicantsBasedOnAvailableChannel() {
+		// Arrange - the channel is chosen per applicant: one has only an email address, the other only a partyId.
+		// Both must be notified via their own channel, instead of the group-wide email-vs-messages decision dropping
+		// the partyId-only applicant entirely just because a sibling applicant has an email
+		Identifier.set(Identifier.create().withType(PARTY_ID).withValue(UUID.randomUUID().toString()));
+		final var errandId = 1L;
+		final var messageId = UUID.randomUUID();
+		final var applicantEmail = "email.applicant@example.com";
+		final var applicantWithEmail = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withContactInformation(List.of(ContactInformationEntity.builder()
+				.withContactType(EMAIL)
+				.withValue(applicantEmail)
+				.build()))
+			.build();
+		final var applicantWithPersonId = StakeholderEntity.builder()
+			.withRoles(List.of(StakeholderRole.APPLICANT.name()))
+			.withPersonId("123e4567-e89b-12d3-a456-426614174000")
+			.build();
+		final var errand = ErrandEntity.builder()
+			.withId(errandId)
+			.withErrandNumber("123456789")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withStakeholders(List.of(applicantWithEmail, applicantWithPersonId))
+			.build();
+		when(errandRepositoryMock.findWithPessimisticLockingByIdAndMunicipalityIdAndNamespace(errandId, MUNICIPALITY_ID, NAMESPACE)).thenReturn(Optional.of(errand));
+		when(messagingSettingsIntegrationMock.getMessagingsettings(MUNICIPALITY_ID, NAMESPACE, DEPARTMENT_ID)).thenReturn(MessagingSettings.builder().build());
+		when(metadataserviceMock.getCaseType(eq(MUNICIPALITY_ID), eq(NAMESPACE), any())).thenReturn(CaseType.builder().withDisplayName("Case type displayname").build());
+		when(messagingClientMock.sendEmailBatch(any(), any())).thenReturn(new MessageBatchResult());
+		when(messagingClientMock.sendMessage(eq(MUNICIPALITY_ID), any())).thenReturn(new MessageResult().messageId(messageId));
+
+		// Act
+		messageService.sendMessageNotification(MUNICIPALITY_ID, NAMESPACE, errandId, DEPARTMENT_ID);
+
+		// Assert - the email applicant is notified via email, the partyId-only applicant via /messages
+		verify(messagingClientMock).sendEmailBatch(eq(MUNICIPALITY_ID), emailBatchRequestCaptor.capture());
+		assertThat(emailBatchRequestCaptor.getValue().getParties()).extracting(Party::getEmailAddress).containsExactly(applicantEmail);
+		verify(messagingClientMock).sendMessage(eq(MUNICIPALITY_ID), messageRequestCaptor.capture());
+		assertThat(messageRequestCaptor.getValue().getMessages()).hasSize(1);
+		assertThat(messageRequestCaptor.getValue().getMessages().getFirst().getParty().getPartyId())
+			.isEqualTo(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
 	}
 
 	@Test

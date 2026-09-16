@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "13.2"
 servers:
-- url: http://localhost:57176
+- url: http://localhost:52467
   description: Generated server url
 tags:
 - name: Notifications
@@ -1519,7 +1519,13 @@ paths:
       tags:
       - Messages
       summary: Send a batch email in context of an errand
-      description: Sends one individual email per recipient specified in the request
+      description: "Sends one individual email per recipient specified in the request.\
+        \ This call blocks until Messaging's batch endpoint responds - bounded by\
+        \ the recipient limit on BulkEmailRequest and the messaging Feign client's\
+        \ read timeout - but Messaging delivers the batch asynchronously. A successful\
+        \ (204) response means Messaging accepted the batch for delivery, not that\
+        \ every email was actually delivered; a delivery that fails after acceptance\
+        \ is not reflected in this response."
       operationId: sendBulkEmail
       parameters:
       - name: municipalityId
@@ -5943,6 +5949,8 @@ components:
           type: boolean
         number:
           type: boolean
+        floatingPointNumber:
+          type: boolean
         nodeType:
           type: string
           enum:
@@ -5983,8 +5991,6 @@ components:
         boolean:
           type: boolean
         binary:
-          type: boolean
-        floatingPointNumber:
           type: boolean
         empty:
           type: boolean
@@ -6461,12 +6467,14 @@ components:
           items:
             type: string
             format: email
-            description: Email address for a recipient. One individual email is sent
-              per recipient.
+            description: "Email address for a recipient. One individual email is sent\
+              \ per recipient. Limited to 200 recipients per request, since each is\
+              \ sent as a synchronous call to Messaging's batch endpoint."
             examples:
             - recipient@recipient.se
             minLength: 1
-          minItems: 1
+          maxItems: 200
+          minItems: 0
         subject:
           type: string
           description: Subject
@@ -6948,8 +6956,6 @@ components:
     PageableObject:
       type: object
       properties:
-        sort:
-          $ref: "#/components/schemas/SortObject"
         paged:
           type: boolean
         pageNumber:
@@ -6958,6 +6964,8 @@ components:
         pageSize:
           type: integer
           format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
         unpaged:
           type: boolean
         offset:

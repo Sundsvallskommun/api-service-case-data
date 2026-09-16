@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,10 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 public class BulkEmailRequest {
 
 	@NotEmpty
-	@ArraySchema(schema = @Schema(description = "Email address for a recipient. One individual email is sent per recipient.", examples = "recipient@recipient.se", requiredMode = REQUIRED))
+	@Size(max = 200)
+	@ArraySchema(schema = @Schema(description = "Email address for a recipient. One individual email is sent per recipient. Limited to 200 recipients per request, since each is sent as a synchronous call to Messaging's batch endpoint.",
+		examples = "recipient@recipient.se",
+		requiredMode = REQUIRED))
 	private List<@NotBlank @Email String> recipients;
 
 	@NotBlank
