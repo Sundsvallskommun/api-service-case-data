@@ -1,7 +1,10 @@
 package se.sundsvall.casedata.integration.db;
 
+import jakarta.persistence.EntityManager;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.casedata.api.filter.IncomingRequestFilter;
 import se.sundsvall.casedata.integration.db.config.JaversConfiguration;
 import se.sundsvall.casedata.integration.db.listeners.ErrandListener;
+import se.sundsvall.casedata.integration.db.model.enums.DecisionOutcome;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,6 +47,9 @@ class DecisionRepositoryTest {
 	@Autowired
 	private DecisionRepository decisionRepository;
 
+	@Autowired
+	private EntityManager entityManager;
+
 	@Test
 	void findByIdAndErrandIdAndMunicipalityIdAndNamespace() {
 
@@ -72,5 +79,24 @@ class DecisionRepositoryTest {
 
 		// Assert
 		assertThat(result).isNotNull().isEmpty();
+	}
+
+	@ParameterizedTest
+	@EnumSource(DecisionOutcome.class)
+	void saveDecisionOutcome(final DecisionOutcome decisionOutcome) {
+
+		// Arrange
+		final var id = 2L;
+		final var errandId = 1L;
+		final var decision = decisionRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
+		decision.setDecisionOutcome(decisionOutcome);
+
+		// Act
+		decisionRepository.saveAndFlush(decision);
+		entityManager.clear();
+
+		// Assert
+		final var result = decisionRepository.findByIdAndErrandIdAndMunicipalityIdAndNamespace(id, errandId, MUNICIPALITY_ID, NAMESPACE).orElseThrow();
+		assertThat(result.getDecisionOutcome()).isEqualTo(decisionOutcome);
 	}
 }

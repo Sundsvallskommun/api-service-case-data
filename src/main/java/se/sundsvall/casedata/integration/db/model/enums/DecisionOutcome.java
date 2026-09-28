@@ -5,7 +5,9 @@ package se.sundsvall.casedata.integration.db.model.enums;
  * REJECTION (avslag)
  * DISMISSAL (avvisande)
  * CANCELLATION (avskrivande)
+ * CONDITIONAL_APPROVAL (bifall med villkor)
+ * REVOCATION (återkallelse av tidigare utfärdat tillstånd)
  */
 public enum DecisionOutcome {
-	APPROVAL, REJECTION, DISMISSAL, CANCELLATION
+	APPROVAL, REJECTION, DISMISSAL, CANCELLATION, CONDITIONAL_APPROVAL, REVOCATION
 }

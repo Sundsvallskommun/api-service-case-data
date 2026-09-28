@@ -67,7 +67,7 @@
         municipality_id varchar(255),
         namespace varchar(255),
         description text,
-        decision_outcome enum ('APPROVAL','CANCELLATION','DISMISSAL','REJECTION'),
+        decision_outcome enum ('APPROVAL','CANCELLATION','CONDITIONAL_APPROVAL','DISMISSAL','REJECTION','REVOCATION'),
         decision_type enum ('FINAL','PROPOSED','RECOMMENDED'),
         primary key (id)
     ) engine=InnoDB;
