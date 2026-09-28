@@ -5,7 +5,7 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "13.2"
+  version: "14.0"
 servers:
 - url: http://localhost:52467
   description: Generated server url
@@ -5588,6 +5588,8 @@ components:
           - REJECTION
           - DISMISSAL
           - CANCELLATION
+          - CONDITIONAL_APPROVAL
+          - REVOCATION
           examples:
           - GRANTED
         description:
@@ -6886,6 +6888,8 @@ components:
           - REJECTION
           - DISMISSAL
           - CANCELLATION
+          - CONDITIONAL_APPROVAL
+          - REVOCATION
           examples:
           - GRANTED
         description:
