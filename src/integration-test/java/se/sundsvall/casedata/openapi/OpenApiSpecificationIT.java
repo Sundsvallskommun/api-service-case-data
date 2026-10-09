@@ -1,6 +1,5 @@
 package se.sundsvall.casedata.openapi;
 
-import tools.jackson.dataformat.yaml.YAMLMapper;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -16,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.util.UriComponentsBuilder;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.util.ResourceUtils;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 import static java.nio.file.Files.writeString;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;

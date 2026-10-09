@@ -1,20 +1,5 @@
 package se.sundsvall.casedata.apptest;
 
-import static java.text.MessageFormat.format;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.HttpHeaders.LOCATION;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
-import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
-import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
-import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
-import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,6 +16,21 @@ import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.casedata.Application;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+
+import static java.text.MessageFormat.format;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpHeaders.LOCATION;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
+import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
+import static se.sundsvall.casedata.apptest.util.TestConstants.MUNICIPALITY_ID;
+import static se.sundsvall.casedata.apptest.util.TestConstants.NAMESPACE;
+import static se.sundsvall.dept44.support.Identifier.HEADER_NAME;
 
 /**
  * Exercises how an uploaded attachment is persisted - as a binary blob plus its SHA-256 hash - and that it can be read
