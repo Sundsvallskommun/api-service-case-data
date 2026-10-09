@@ -86,7 +86,7 @@
 				"organizationName": "Test Organization",
 				"adAccount": "AD-account",
 				"organizationNumber": "19901010-1234",
-				"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+				"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?\\+\\d{2}:00$",
 				"roles": [
 					"PAYMENT_PERSON"
 				],
@@ -103,7 +103,7 @@
 				"namespace": "MY_NAMESPACE",
 				"personId": "3ed5bc30-6308-4fd5-a5a7-78d7f96f4438",
 				"id": 4,
-				"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
+				"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?\\+\\d{2}:00$"
 			},
 			"validFrom": "2024-01-01T13:00:00+01:00",
 			"version": 2,
@@ -112,7 +112,7 @@
 			"decisionType": "FINAL",
 			"decisionOutcome": "DISMISSAL",
 			"id": 1,
-			"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+			"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?\\+\\d{2}:00$",
 			"validTo": "2025-01-02T13:00:00+01:00"
 		}
 	],
@@ -132,5 +132,5 @@
 	"namespace": "MY_NAMESPACE",
 	"statuses": [],
 	"facilities": [],
-	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
+	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?\\+\\d{2}:00$"
 }

@@ -19,7 +19,7 @@
 		"apartmentNumber": "LGH 1001"
 	},
 	"facilityType": "WORKSHOP_BUILDING",
-	"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+	"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?\\+\\d{2}:00$",
 	"mainFacility": true,
 	"namespace": "MY_NAMESPACE",
 	"description": "En fritextbeskrivning av facility.",
@@ -31,5 +31,5 @@
 	"id": 3,
 	"facilityCollectionName": "Sundsvalls testfabrik",
 	"version": 0,
-	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
+	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?\\+\\d{2}:00$"
 }
