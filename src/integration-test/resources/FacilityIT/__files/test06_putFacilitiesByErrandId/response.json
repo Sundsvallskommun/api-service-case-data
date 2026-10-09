@@ -32,7 +32,7 @@
 		"id": 1,
 		"facilityCollectionName": "FacilityCollectionName 1",
 		"version": 3,
-		"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
+		"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?\\+\\d{2}:00$"
 	},
 	{
 		"municipalityId": "2281",
@@ -63,7 +63,7 @@
 		"id": 2,
 		"facilityCollectionName": "FacilityCollectionName 3",
 		"version": 3,
-		"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
+		"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?\\+\\d{2}:00$"
 	},
 	{
 		"municipalityId": "2281",
@@ -86,7 +86,7 @@
 			"apartmentNumber": "apartmentNumber 3"
 		},
 		"facilityType": "WEEKEND_COTTAGE",
-		"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$",
+		"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?\\+\\d{2}:00$",
 		"mainFacility": false,
 		"namespace": "MY_NAMESPACE",
 		"description": "Description 3",
@@ -94,6 +94,6 @@
 		"id": 3,
 		"facilityCollectionName": "FacilityCollectionName 3",
 		"version": 0,
-		"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,6}\\+\\d{2}:00$"
+		"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?\\+\\d{2}:00$"
 	}
 ]
