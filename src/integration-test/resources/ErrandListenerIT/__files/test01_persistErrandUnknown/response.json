@@ -145,7 +145,7 @@
 	"facilities": [
 		{
 			"id": 1,
-			"version": 1,
+			"version": 0,
 			"municipalityId": "2281",
 			"namespace": "SBK_PARKING_PERMIT",
 			"description": "Test facility",
@@ -250,7 +250,7 @@
 	"notes": [
 		{
 			"id": 1,
-			"version": 1,
+			"version": 0,
 			"municipalityId": "2281",
 			"namespace": "SBK_PARKING_PERMIT",
 			"title": "Test note",
@@ -268,7 +268,7 @@
 		},
 		{
 			"id": 2,
-			"version": 1,
+			"version": 0,
 			"municipalityId": "2281",
 			"namespace": "SBK_PARKING_PERMIT",
 			"title": "sRGrJyRKNn",

@@ -20,6 +20,7 @@ public class NoteListener {
 	@PrePersist
 	private void postPersist(final NoteEntity noteEntity) {
 		noteEntity.setCreatedBy(getAdUser());
+		noteEntity.setUpdatedBy(getAdUser());
 		errandListener.updateErrandFields(noteEntity.getErrand());
 	}
 
